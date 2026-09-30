@@ -1,19 +1,20 @@
 'use client';
 
 import React, { useState } from 'react';
+import { speakCroatian } from '@/utils/speech';
 
 export interface Flashcard {
   id: string;
   hr_text: string;
   ua_translation: string;
   phonetic_note?: string;
+  audio_url?: string; // Додано поле для хмарного або локального аудіопосилання
 }
 
 interface FlashcardTrainerProps {
   cards: Flashcard[];
   onFinishSession: () => void;
-  // Функція для запису результату в Supabase: 1 - Складно, 2 - Добре, 3 - Легко
-  onRateCard: (cardId: string, rating: number) => void; 
+  onRateCard: (cardId: string, rating: number) => void;
 }
 
 export default function FlashcardTrainer({ cards, onFinishSession, onRateCard }: FlashcardTrainerProps) {
@@ -56,8 +57,21 @@ export default function FlashcardTrainer({ cards, onFinishSession, onRateCard }:
           onClick={() => !isFlipped && setIsFlipped(true)}
           className={`relative w-full min-h-[300px] bg-white rounded-3xl shadow-lg border border-gray-100 p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 ${isFlipped ? 'shadow-xl' : 'hover:-translate-y-1'}`}
         >
-          {/* Хорватська (Лицьова сторона) */}
-          <h3 className="text-3xl font-bold text-gray-800 mb-4">{currentCard.hr_text}</h3>
+          {/* Хорватська (Лицьова сторона) та кнопка аудіо */}
+          <div className="flex flex-col items-center w-full">
+            <h3 className="text-3xl font-bold text-gray-800 mb-2">{currentCard.hr_text}</h3>
+            
+            {/* Універсальна кнопка аудіо */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation(); // Запобігає перевороту картки при кліку на кнопку
+                speakCroatian(currentCard.audio_url || currentCard.hr_text);
+              }}
+              className="mb-4 bg-blue-50 text-blue-600 px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-blue-100 transition shadow-sm"
+            >
+              🔊 Прослухати вимову
+            </button>
+          </div>
           
           {/* Підказка вимови */}
           {currentCard.phonetic_note && (
@@ -77,7 +91,7 @@ export default function FlashcardTrainer({ cards, onFinishSession, onRateCard }:
         </div>
       </div>
 
-      {/* Кнопки оцінки (з'являються тільки після розкриття картки) */}
+      {/* Кнопки оцінки */}
       <div className={`grid grid-cols-3 gap-3 transition-opacity duration-300 ${isFlipped ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
         <button 
           onClick={() => handleRate(1)}
