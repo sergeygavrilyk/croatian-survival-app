@@ -48,8 +48,15 @@ export default function FlashcardTrainer({ cards, onFinishSession, onRateCard }:
   return (
     <div className="max-w-md mx-auto p-4 flex flex-col min-h-screen bg-gray-50">
       <div className="flex justify-between items-center mb-6 text-gray-500 text-sm font-medium">
-        <span>Тренажер слів</span>
-        <span>{currentIndex + 1} / {cards.length}</span>
+        <button 
+          onClick={onFinishSession} 
+          className="text-blue-500 hover:text-blue-700 flex items-center gap-1 active:scale-95 transition-transform"
+        >
+          ← Назад
+        </button>
+        <span className="bg-white px-3 py-1 rounded-full shadow-sm border border-gray-100">
+          {currentIndex + 1} / {cards.length}
+        </span>
       </div>
 
       <div className="flex-1 flex flex-col justify-center mb-8 perspective-1000">
@@ -64,9 +71,9 @@ export default function FlashcardTrainer({ cards, onFinishSession, onRateCard }:
             {/* Універсальна кнопка аудіо */}
             <button
               onClick={(e) => {
-                e.stopPropagation(); // Запобігає перевороту картки при кліку на кнопку
-                speakCroatian(currentCard.audio_url || currentCard.hr_text);
-              }}
+  e.stopPropagation();
+  speakCroatian(currentCard.hr_text); 
+}}
               className="mb-4 bg-blue-50 text-blue-600 px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-blue-100 transition shadow-sm"
             >
               🔊 Прослухати вимову

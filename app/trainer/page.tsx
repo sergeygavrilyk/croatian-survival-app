@@ -1,159 +1,87 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import FlashcardTrainer, { Flashcard } from '@/components/FlashcardTrainer';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+import { createClient } from '@/utils/supabase/client';
+import { rateFlashcard } from '@/app/actions/srs'; // Наша нова логіка SM-2
 
 export default function TrainerPage() {
   const [cards, setCards] = useState<Flashcard[]>([]);
   const [loading, setLoading] = useState(true);
-  const [userId, setUserId] = useState<string | null>(null);
+  
+  const supabase = createClient();
+  const router = useRouter();
 
   useEffect(() => {
-    async function initSessionAndFetchCards() {
+    async function fetchCardsToReview() {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        
-        if (!session?.user?.id) {
-          // Завантажуємо всі колонки через зірочку, щоб уникнути помилок неіснуючих полів
-          const { data: fallbackVocabulary, error: fallbackError } = await supabase
-            .from('vocabulary')
-            .select('*')
-            .limit(10);
-          
-          if (fallbackError) {
-            console.error('Помилка завантаження словника:', fallbackError.message);
-          } else if (fallbackVocabulary) {
-            const formattedFallback: Flashcard[] = fallbackVocabulary.map((item: any) => ({
-              id: String(item.id || item.vocabulary_id || Math.random()),
-              // Шукаємо хорватський текст у різних можливих варіантах назв колонок
-              hr_text: item.phrase_hr || item.hr_text || item.word_hr || item.croatian || Object.values(item)[1] || '',
-              // Шукаємо український переклад
-              ua_translation: item.phrase_uk || item.ua_translation || item.word_uk || item.ukrainian || item.translation || Object.values(item)[2] || '',
-              // Приклад або примітка
-              phonetic_note: item.context_example || item.phonetic_note || item.example || '',
-            }));
-            setCards(formattedFallback);
-          }
-          setLoading(false);
-          return;
-        }
-
-        const currentUserId = session.user.id;
-        setUserId(currentUserId);
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return; // Middleware і так захищає роут, але робимо перевірку
 
         const now = new Date().toISOString();
 
+        // 1. Шукаємо картки, які час повторювати на сьогодні
         const { data: progressData, error: progressError } = await supabase
           .from('user_progress')
           .select('vocabulary_id')
-          .eq('user_id', currentUserId)
+          .eq('user_id', user.id)
           .lte('next_review_date', now);
 
-        if (progressError) {
-          console.error('Помилка завантаження прогресу:', progressError.message);
-          setLoading(false);
-          return;
-        }
+        if (progressError) throw progressError;
 
         let vocabIds = progressData ? progressData.map(p => p.vocabulary_id) : [];
+        let vocabData = null;
 
-        if (vocabIds.length === 0) {
-          const { data: fallbackVocabulary, error: fallbackError } = await supabase
-            .from('vocabulary')
-            .select('*')
-            .limit(10);
-          
-          if (fallbackError) {
-            console.error('Помилка завантаження словника:', fallbackError.message);
-          } else if (fallbackVocabulary) {
-            const formattedFallback: Flashcard[] = fallbackVocabulary.map((item: any) => ({
-              id: String(item.id || item.vocabulary_id || Math.random()),
-              hr_text: item.phrase_hr || item.hr_text || item.word_hr || item.croatian || Object.values(item)[1] || '',
-              ua_translation: item.phrase_uk || item.ua_translation || item.word_uk || item.ukrainian || item.translation || Object.values(item)[2] || '',
-              phonetic_note: item.context_example || item.phonetic_note || item.example || '',
-            }));
-            setCards(formattedFallback);
-          }
-        } else {
-          const { data: vocabData, error: vocabError } = await supabase
+        // 2. Якщо є що повторювати — завантажуємо ці слова
+        if (vocabIds.length > 0) {
+          const { data, error } = await supabase
             .from('vocabulary')
             .select('*')
             .in('id', vocabIds);
+            
+          if (error) throw error;
+          vocabData = data;
+        } 
+        // 3. Якщо на сьогодні повторень немає — даємо нові слова
+        else {
+          const { data, error } = await supabase
+            .from('vocabulary')
+            .select('*')
+            .limit(10);
+            
+          if (error) throw error;
+          vocabData = data;
+        }
 
-          if (vocabError) {
-            console.error('Помилка завантаження слів:', vocabError.message);
-          } else if (vocabData) {
-            const formattedCards: Flashcard[] = vocabData.map((item: any) => ({
-              id: String(item.id || item.vocabulary_id || Math.random()),
-              hr_text: item.phrase_hr || item.hr_text || item.word_hr || item.croatian || Object.values(item)[1] || '',
-              ua_translation: item.phrase_uk || item.ua_translation || item.word_uk || item.ukrainian || item.translation || Object.values(item)[2] || '',
-              phonetic_note: item.context_example || item.phonetic_note || item.example || '',
-            }));
-            setCards(formattedCards);
-          }
+        // 4. Форматуємо отримані дані під інтерфейс компонента Flashcard
+        if (vocabData) {
+          const formattedCards: Flashcard[] = vocabData.map((item: any) => ({
+            id: String(item.id),
+            hr_text: item.hr_text || '',
+            ua_translation: item.ua_translation || '',
+            phonetic_note: item.phonetic_note || '',
+          }));
+          setCards(formattedCards);
         }
       } catch (err) {
-        console.error('Помилка ініціалізації:', err);
+        console.error('Помилка завантаження тренажера:', err);
       } finally {
         setLoading(false);
       }
     }
 
-    initSessionAndFetchCards();
-  }, []);
+    fetchCardsToReview();
+  }, [supabase]);
 
+  // Викликаємо Server Action для безпечного розрахунку інтервалів
   const handleRateCard = async (cardId: string, rating: number) => {
-    if (!userId) return;
-
     try {
-      const { data: currentProgress } = await supabase
-        .from('user_progress')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('vocabulary_id', cardId)
-        .single();
-
-      let interval = currentProgress?.interval_days || 0;
-      let ease = currentProgress?.ease_factor || 2.5;
-
-      if (rating === 1) {
-        interval = 0;
-        ease = Math.max(1.3, ease - 0.2);
-      } else if (rating === 2) {
-        interval = interval === 0 ? 1 : Math.round(interval * ease);
-      } else if (rating === 3) {
-        interval = interval === 0 ? 4 : Math.round(interval * ease * 1.5);
-        ease = ease + 0.15;
-      }
-
-      const nextReviewDate = new Date();
-      nextReviewDate.setDate(nextReviewDate.getDate() + interval);
-
-      await supabase
-        .from('user_progress')
-        .upsert(
-          {
-            user_id: userId,
-            vocabulary_id: Number(cardId),
-            interval_days: interval,
-            ease_factor: ease,
-            next_review_date: nextReviewDate.toISOString(),
-          },
-          { onConflict: 'user_id, vocabulary_id' }
-        );
-    } catch (err) {
-      console.error('Помилка оновлення прогресу в БД:', err);
+      const result = await rateFlashcard(cardId, rating);
+      console.log(`Прогрес збережено. Наступний показ через ${result.intervalDays} днів.`);
+    } catch (error) {
+      console.error('Помилка при збереженні прогресу:', error);
     }
-  };
-
-  const handleFinishSession = () => {
-    window.location.href = '/';
   };
 
   if (loading) {
@@ -165,10 +93,10 @@ export default function TrainerPage() {
   }
 
   return (
-    <FlashcardTrainer
-      cards={cards}
-      onFinishSession={handleFinishSession}
-      onRateCard={handleRateCard}
+    <FlashcardTrainer 
+      cards={cards} 
+      onFinishSession={() => router.push('/lessons')} 
+      onRateCard={handleRateCard} 
     />
   );
 }

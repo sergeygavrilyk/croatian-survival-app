@@ -1,13 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
-import { speakCroatian } from '@/utils/speech'; // 1. Імпортуємо функцію озвучення
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+import { useRouter } from 'next/navigation';
+import { createClient } from '@/utils/supabase/client'; // Використовуємо наш налаштований SSR-клієнт
+import { speakCroatian } from '@/utils/speech';
 
 interface Topic {
   id: string;
@@ -27,10 +23,21 @@ interface VocabularyItem {
 }
 
 export default function LessonsPage() {
+  // Усі хуки та ініціалізації мають бути ВНУТРІШНЬОЮ частиною компонента
+  const router = useRouter();
+  const supabase = createClient();
+
   const [topics, setTopics] = useState<Topic[]>([]);
   const [vocabulary, setVocabulary] = useState<VocabularyItem[]>([]);
   const [selectedTopicId, setSelectedTopicId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // Функція виходу
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push('/login');
+    router.refresh();
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -70,7 +77,7 @@ export default function LessonsPage() {
     }
 
     fetchData();
-  }, []);
+  }, [supabase]);
 
   if (loading) {
     return (
@@ -89,13 +96,27 @@ export default function LessonsPage() {
   return (
     <div className="max-w-4xl mx-auto p-4 min-h-screen bg-gray-50 pb-12">
       {/* Шапка */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Хорватська для виживання</h1>
+      <div className="flex justify-between items-start mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">Навчальні модулі</h1>
+          <div className="flex items-center gap-3 mt-1">
+            <a href="/" className="text-sm text-blue-500 hover:text-blue-600 hover:underline font-medium">
+              ← На дашборд
+            </a>
+            <span className="text-gray-300">|</span>
+            <button 
+              onClick={handleLogout} 
+              className="text-sm text-red-500 hover:text-red-600 hover:underline font-medium"
+            >
+              Вийти
+            </button>
+          </div>
+        </div>
         <a 
           href="/trainer" 
-          className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow hover:bg-blue-700 transition"
+          className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow hover:bg-blue-700 transition shrink-0"
         >
-          Перейти до тренажера ➔
+          Тренажер ➔
         </a>
       </div>
 
@@ -151,7 +172,6 @@ export default function LessonsPage() {
                     </div>
                   )}
                   
-                  {/* Кнопка озвучення тепер правильно всередині мапування */}
                   <button
                     onClick={() => speakCroatian(item.hr_text)}
                     className="p-2.5 bg-white text-blue-600 rounded-xl shadow-sm border border-gray-100 hover:bg-blue-50 transition"
