@@ -1,0 +1,250 @@
+{
+  "modules": [
+    {
+      "id": "module_1",
+      "title_hr": "Osnove i pozdravi",
+      "title_ua": "Основи та привітання",
+      "description": "Базові фрази для першого контакту та прояву ввічливості.",
+      "dialogue": [
+        { "speaker": "A", "hr_text": "Dobar dan! Kako ste?", "ua_translation": "Добрий день! Як ви?" },
+        { "speaker": "B", "hr_text": "Dobar dan. Hvala, dobro. A vi?", "ua_translation": "Добрий день. Дякую, добре. А ви?" },
+        { "speaker": "A", "hr_text": "I ja sam dobro, hvala.", "ua_translation": "І я добре, дякую." },
+        { "speaker": "B", "hr_text": "Doviđenja i ugodan dan!", "ua_translation": "До побачення і гарного дня!" }
+      ],
+      "phrases": [
+        { "hr_text": "Oprostite, ne razumijem.", "ua_translation": "Вибачте, я не розумію.", "phonetic_note": "[Опро́стіте, не розу́мієм]" },
+        { "hr_text": "Govorite li engleski?", "ua_translation": "Ви розмовляєте англійською?", "phonetic_note": "[Гово́ріте лі е́нглескі]" },
+        { "hr_text": "Možete li ponoviti?", "ua_translation": "Можете повторити?", "phonetic_note": "[Мо́жете лі поно́віті]" },
+        { "hr_text": "Kako se kaže... na hrvatskom?", "ua_translation": "Як сказати... хорватською?", "phonetic_note": "[Ка́ко се ка́же... на хр́ватском]" },
+        { "hr_text": "Drago mi je.", "ua_translation": "Дуже приємно.", "phonetic_note": "[Дра́го мі є]" },
+        { "hr_text": "Ja sam iz Ukrajine.", "ua_translation": "Я з України.", "phonetic_note": "[Я сам із Украї́не]" },
+        { "hr_text": "Sve je u redu.", "ua_translation": "Все гаразд.", "phonetic_note": "[Све є у ре́ду]" },
+        { "hr_text": "Nema problema.", "ua_translation": "Немає проблем.", "phonetic_note": "[Не́ма пробле́ма]" },
+        { "hr_text": "Trebam pomoć.", "ua_translation": "Мені потрібна допомога.", "phonetic_note": "[Тре́бам по́моч]" },
+        { "hr_text": "Hvala lijepa.", "ua_translation": "Дуже дякую.", "phonetic_note": "[Хва́ла ліє́па]" }
+      ],
+      "vocabulary": [
+        { "hr_text": "ja", "ua_translation": "я", "phonetic_note": "[я]" },
+        { "hr_text": "ti", "ua_translation": "ти", "phonetic_note": "[ті]" },
+        { "hr_text": "biti", "ua_translation": "бути", "phonetic_note": "[бі́ті]" },
+        { "hr_text": "imati", "ua_translation": "мати", "phonetic_note": "[і́маті]" },
+        { "hr_text": "dan", "ua_translation": "день", "phonetic_note": "[дан]" },
+        { "hr_text": "noć", "ua_translation": "ніч", "phonetic_note": "[ноч]" },
+        { "hr_text": "jutro", "ua_translation": "ранок", "phonetic_note": "[ю́тро]" },
+        { "hr_text": "večer", "ua_translation": "вечір", "phonetic_note": "[ве́чер]" },
+        { "hr_text": "da", "ua_translation": "так", "phonetic_note": "[да]" },
+        { "hr_text": "ne", "ua_translation": "ні", "phonetic_note": "[не]" },
+        { "hr_text": "molim", "ua_translation": "будь ласка", "phonetic_note": "[мо́лім]" },
+        { "hr_text": "hvala", "ua_translation": "дякую", "phonetic_note": "[хва́ла]" },
+        { "hr_text": "bok", "ua_translation": "привіт / бувай (неформально)", "phonetic_note": "[бок]" },
+        { "hr_text": "tko", "ua_translation": "хто", "phonetic_note": "[тко]" },
+        { "hr_text": "što", "ua_translation": "що", "phonetic_note": "[што]" }
+      ]
+    },
+    {
+      "id": "module_2",
+      "title_hr": "Supermarket i tržnica",
+      "title_ua": "Супермаркет та ринок",
+      "description": "Покупки, ціни, розрахунок на касі.",
+      "dialogue": [
+        { "speaker": "A", "hr_text": "Dobar dan. Mogu li dobiti pola kile jabuka?", "ua_translation": "Добрий день. Можна мені півкіло яблук?" },
+        { "speaker": "B", "hr_text": "Izvolite. Trebate li još nešto?", "ua_translation": "Прошу. Потрібно ще щось?" },
+        { "speaker": "A", "hr_text": "Ne, to je sve. Koliko sam dužan?", "ua_translation": "Ні, це все. Скільки з мене?" },
+        { "speaker": "B", "hr_text": "To je tri eura. Želite li vrećicu?", "ua_translation": "Це три євро. Бажаєте пакетик?" }
+      ],
+      "phrases": [
+        { "hr_text": "Koliko to košta?", "ua_translation": "Скільки це коштує?", "phonetic_note": "[Колі́ко то ко́шта]" },
+        { "hr_text": "Mogu li platiti karticom?", "ua_translation": "Чи можу я оплатити карткою?", "phonetic_note": "[Мо́гу лі пла́тіті ка́ртіцом]" },
+        { "hr_text": "Plaćam gotovinom.", "ua_translation": "Оплачую готівкою.", "phonetic_note": "[Пла́чам готові́ном]" },
+        { "hr_text": "Gdje je blagajna?", "ua_translation": "Де каса?", "phonetic_note": "[Ґдє є бла́гайна]" },
+        { "hr_text": "Imate li sitnog?", "ua_translation": "Чи маєте дрібні?", "phonetic_note": "[І́мате лі сі́тног]" },
+        { "hr_text": "Trebam račun, molim.", "ua_translation": "Мені потрібен чек, будь ласка.", "phonetic_note": "[Тре́бам ра́чун, мо́лім]" },
+        { "hr_text": "Dajte mi jednu vrećicu.", "ua_translation": "Дайте мені один пакетик.", "phonetic_note": "[Да́йте мі є́дну вре́чіцу]" },
+        { "hr_text": "Trebam hranu za psa.", "ua_translation": "Мені потрібен корм для собаки.", "phonetic_note": "[Тре́бам хра́ну за пса]" },
+        { "hr_text": "Gdje mogu naći voće?", "ua_translation": "Де я можу знайти фрукти?", "phonetic_note": "[Ґдє мо́гу на́чі во́че]" },
+        { "hr_text": "To je preskupo.", "ua_translation": "Це занадто дорого.", "phonetic_note": "[То є преску́по]" }
+      ],
+      "vocabulary": [
+        { "hr_text": "kruh", "ua_translation": "хліб", "phonetic_note": "[крух]" },
+        { "hr_text": "mlijeko", "ua_translation": "молоко", "phonetic_note": "[мліє́ко]" },
+        { "hr_text": "voda", "ua_translation": "вода", "phonetic_note": "[во́да]" },
+        { "hr_text": "meso", "ua_translation": "м'ясо", "phonetic_note": "[ме́со]" },
+        { "hr_text": "riba", "ua_translation": "риба", "phonetic_note": "[рі́ба]" },
+        { "hr_text": "povrće", "ua_translation": "овочі", "phonetic_note": "[по́врче]" },
+        { "hr_text": "voće", "ua_translation": "фрукти", "phonetic_note": "[во́че]" },
+        { "hr_text": "cijena", "ua_translation": "ціна", "phonetic_note": "[ціє́на]" },
+        { "hr_text": "novac", "ua_translation": "гроші", "phonetic_note": "[но́вац]" },
+        { "hr_text": "kartica", "ua_translation": "картка", "phonetic_note": "[ка́ртіца]" },
+        { "hr_text": "račun", "ua_translation": "чек / рахунок", "phonetic_note": "[ра́чун]" },
+        { "hr_text": "skupo", "ua_translation": "дорого", "phonetic_note": "[ску́по]" },
+        { "hr_text": "jeftino", "ua_translation": "дешево", "phonetic_note": "[є́фтіно]" },
+        { "hr_text": "otvoreno", "ua_translation": "відчинено", "phonetic_note": "[отво́рено]" },
+        { "hr_text": "zatvoreno", "ua_translation": "зачинено", "phonetic_note": "[затво́рено]" }
+      ]
+    },
+    {
+      "id": "module_3",
+      "title_hr": "Kafić i restoran",
+      "title_ua": "Кафе та ресторан",
+      "description": "Замовлення їжі та напоїв, бронювання столика.",
+      "dialogue": [
+        { "speaker": "Konobar", "hr_text": "Izvolite, što ćete popiti?", "ua_translation": "Прошу, що будете пити?" },
+        { "speaker": "Gost", "hr_text": "Molim vas jednu kavu s mlijekom i čaj.", "ua_translation": "Будь ласка, одну каву з молоком та чай." },
+        { "speaker": "Konobar", "hr_text": "Želite li nešto za pojesti?", "ua_translation": "Бажаєте щось поїсти?" },
+        { "speaker": "Gost", "hr_text": "Ne, hvala. Samo račun poslije.", "ua_translation": "Ні, дякую. Тільки рахунок потім." }
+      ],
+      "phrases": [
+        { "hr_text": "Mogu li dobiti jelovnik?", "ua_translation": "Можна мені меню?", "phonetic_note": "[Мо́гу лі до́біті єло́внік]" },
+        { "hr_text": "Što preporučujete?", "ua_translation": "Що ви рекомендуєте?", "phonetic_note": "[Што препору́чуєте]" },
+        { "hr_text": "Želim naručiti.", "ua_translation": "Я хочу замовити.", "phonetic_note": "[Же́лім нару́чіті]" },
+        { "hr_text": "Kavu s mlijekom, molim.", "ua_translation": "Каву з молоком, будь ласка.", "phonetic_note": "[Ка́ву с мліє́ком, мо́лім]" },
+        { "hr_text": "Imate li slobodan stol?", "ua_translation": "У вас є вільний столик?", "phonetic_note": "[І́мате лі сло́бодан стол]" },
+        { "hr_text": "Račun, molim vas.", "ua_translation": "Рахунок, будь ласка.", "phonetic_note": "[Ра́чун, мо́лім вас]" },
+        { "hr_text": "Bilo je jako ukusno.", "ua_translation": "Було дуже смачно.", "phonetic_note": "[Бі́ло є я́ко уку́сно]" },
+        { "hr_text": "Mogu li platiti odvojeno?", "ua_translation": "Чи можемо ми заплатити окремо?", "phonetic_note": "[Мо́гу лі пла́тіті одво́єно]" },
+        { "hr_text": "Zadržite ostatak.", "ua_translation": "Здачі не треба (залиште решту).", "phonetic_note": "[Задр́жіте оста́так]" },
+        { "hr_text": "Ovo nije ono što sam naručio.", "ua_translation": "Це не те, що я замовив.", "phonetic_note": "[О́во ні́є о́но што сам нару́чіо]" }
+      ],
+      "vocabulary": [
+        { "hr_text": "kava", "ua_translation": "кава", "phonetic_note": "[ка́ва]" },
+        { "hr_text": "čaj", "ua_translation": "чай", "phonetic_note": "[чай]" },
+        { "hr_text": "sok", "ua_translation": "сік", "phonetic_note": "[сок]" },
+        { "hr_text": "stol", "ua_translation": "стіл", "phonetic_note": "[стол]" },
+        { "hr_text": "konobar", "ua_translation": "офіціант", "phonetic_note": "[ко́нобар]" },
+        { "hr_text": "jelovnik", "ua_translation": "меню", "phonetic_note": "[єло́внік]" },
+        { "hr_text": "hrana", "ua_translation": "їжа", "phonetic_note": "[хра́на]" },
+        { "hr_text": "piće", "ua_translation": "напої", "phonetic_note": "[пі́че]" },
+        { "hr_text": "doručak", "ua_translation": "сніданок", "phonetic_note": "[до́ручак]" },
+        { "hr_text": "ručak", "ua_translation": "обід", "phonetic_note": "[ру́чак]" },
+        { "hr_text": "večera", "ua_translation": "вечеря", "phonetic_note": "[ве́чера]" },
+        { "hr_text": "čaša", "ua_translation": "склянка", "phonetic_note": "[ча́ша]" },
+        { "hr_text": "šalica", "ua_translation": "чашка", "phonetic_note": "[ша́ліца]" },
+        { "hr_text": "slatko", "ua_translation": "солодке", "phonetic_note": "[сла́тко]" },
+        { "hr_text": "slano", "ua_translation": "солоне", "phonetic_note": "[сла́но]" }
+      ]
+    },
+    {
+      "id": "module_4",
+      "title_hr": "Transport i navigacija",
+      "title_ua": "Транспорт та навігація",
+      "description": "Орієнтація в місті, паркування авто та транспорт.",
+      "dialogue": [
+        { "speaker": "Vozač", "hr_text": "Oprostite, gdje mogu parkirati auto ovdje blizu?", "ua_translation": "Вибачте, де тут поруч я можу припаркувати авто?" },
+        { "speaker": "Prolaznik", "hr_text": "Idite pravo i onda skrenite lijevo. Tamo je veliki parking.", "ua_translation": "Ідіть прямо і потім поверніть ліворуч. Там великий паркінг." },
+        { "speaker": "Vozač", "hr_text": "Je li se plaća?", "ua_translation": "Він платний?" },
+        { "speaker": "Prolaznik", "hr_text": "Da, jedan euro po satu. Možete platiti preko SMS-a.", "ua_translation": "Так, один євро за годину. Можете оплатити через SMS." }
+      ],
+      "phrases": [
+        { "hr_text": "Gdje je autobusni kolodvor?", "ua_translation": "Де автобусний вокзал?", "phonetic_note": "[Ґдє є ауто́бусні ко́лодвор]" },
+        { "hr_text": "Kako doći do centra?", "ua_translation": "Як дістатися до центру?", "phonetic_note": "[Ка́ко до́чі до це́нтра]" },
+        { "hr_text": "Skrenite desno na semaforu.", "ua_translation": "Поверніть праворуч на світлофорі.", "phonetic_note": "[Скре́ніте де́сно на се́мафору]" },
+        { "hr_text": "Trebam mehaničara za auto.", "ua_translation": "Мені потрібен механік для авто.", "phonetic_note": "[Тре́бам меха́нічара за а́уто]" },
+        { "hr_text": "Imam mali auto.", "ua_translation": "У мене маленьке авто.", "phonetic_note": "[І́мам ма́лі а́уто]" },
+        { "hr_text": "Gdje je najbliža benzinska postaja?", "ua_translation": "Де найближча заправка?", "phonetic_note": "[Ґдє є на́йбліжа бе́нзінска по́стая]" },
+        { "hr_text": "Jednu kartu u jednom smjeru.", "ua_translation": "Один квиток в один бік.", "phonetic_note": "[Є́дну ка́рту у є́дном смє́ру]" },
+        { "hr_text": "Kada polazi autobus?", "ua_translation": "Коли відправляється автобус?", "phonetic_note": "[Ка́да по́лазі ауто́бус]" },
+        { "hr_text": "Možete li mi pokazati na karti?", "ua_translation": "Можете показати мені на карті?", "phonetic_note": "[Мо́жете лі мі пока́заті на ка́рті]" },
+        { "hr_text": "Izgubio sam se.", "ua_translation": "Я заблукав.", "phonetic_note": "[Ізгу́біо сам се]" }
+      ],
+      "vocabulary": [
+        { "hr_text": "auto", "ua_translation": "авто", "phonetic_note": "[а́уто]" },
+        { "hr_text": "autobus", "ua_translation": "автобус", "phonetic_note": "[ауто́бус]" },
+        { "hr_text": "kolodvor", "ua_translation": "вокзал", "phonetic_note": "[ко́лодвор]" },
+        { "hr_text": "stanica", "ua_translation": "зупинка", "phonetic_note": "[ста́ніца]" },
+        { "hr_text": "karta", "ua_translation": "квиток / карта", "phonetic_note": "[ка́рта]" },
+        { "hr_text": "ulica", "ua_translation": "вулиця", "phonetic_note": "[у́ліца]" },
+        { "hr_text": "centar", "ua_translation": "центр", "phonetic_note": "[це́нтар]" },
+        { "hr_text": "lijevo", "ua_translation": "ліворуч", "phonetic_note": "[ліє́во]" },
+        { "hr_text": "desno", "ua_translation": "праворуч", "phonetic_note": "[де́сно]" },
+        { "hr_text": "pravo", "ua_translation": "прямо", "phonetic_note": "[пра́во]" },
+        { "hr_text": "blizu", "ua_translation": "близько", "phonetic_note": "[блі́зу]" },
+        { "hr_text": "daleko", "ua_translation": "далеко", "phonetic_note": "[дале́ко]" },
+        { "hr_text": "parking", "ua_translation": "паркінг", "phonetic_note": "[па́ркінг]" },
+        { "hr_text": "voziti", "ua_translation": "водити", "phonetic_note": "[во́зіті]" },
+        { "hr_text": "stati", "ua_translation": "зупинитися", "phonetic_note": "[ста́ті]" }
+      ]
+    },
+    {
+      "id": "module_5",
+      "title_hr": "Stanarina i kućanstvo",
+      "title_ua": "Оренда та побутові питання",
+      "description": "Спілкування з орендодавцем, розв'язання комунальних проблем.",
+      "dialogue": [
+        { "speaker": "Stanar", "hr_text": "Dobar dan. Imamo problem u stanu. Internet uopće ne radi.", "ua_translation": "Добрий день. У нас проблема у квартирі. Інтернет зовсім не працює." },
+        { "speaker": "Najmodavac", "hr_text": "Jeste li probali resetirati ruter?", "ua_translation": "Ви пробували перезавантажити роутер?" },
+        { "speaker": "Stanar", "hr_text": "Jesam, ali ne pomaže. Radim od kuće pa mi hitno treba.", "ua_translation": "Так, але не допомагає. Я працюю з дому, тому мені потрібно терміново." },
+        { "speaker": "Najmodavac", "hr_text": "Razumijem. Nazvat ću operatera i javiti vam.", "ua_translation": "Розумію. Я зателефоную оператору і повідомлю вам." }
+      ],
+      "phrases": [
+        { "hr_text": "Nema tople vode.", "ua_translation": "Немає гарячої води.", "phonetic_note": "[Не́ма то́пле во́де]" },
+        { "hr_text": "Internet je jako spor.", "ua_translation": "Інтернет дуже повільний.", "phonetic_note": "[І́нтернет є я́ко спор]" },
+        { "hr_text": "Radim od kuće.", "ua_translation": "Я працюю з дому.", "phonetic_note": "[Ра́дім од ку́че]" },
+        { "hr_text": "Bojler ne radi.", "ua_translation": "Бойлер не працює.", "phonetic_note": "[Бо́йлер не ра́ді]" },
+        { "hr_text": "Kada možete doći popraviti?", "ua_translation": "Коли можете прийти полагодити?", "phonetic_note": "[Ка́да мо́жете до́чі попра́віті]" },
+        { "hr_text": "Gdje je prekidač za struju?", "ua_translation": "Де щиток/вимикач струму?", "phonetic_note": "[Ґдє є прекі́дач за стру́ю]" },
+        { "hr_text": "Izgubio sam ključ.", "ua_translation": "Я загубив ключ.", "phonetic_note": "[Ізгу́біо сам клю́ч]" },
+        { "hr_text": "Trebam platiti račune za režije.", "ua_translation": "Мені потрібно оплатити комунальні рахунки.", "phonetic_note": "[Тре́бам пла́тіті рачу́не за ре́жіє]" },
+        { "hr_text": "Klima uređaj curi.", "ua_translation": "Кондиціонер тече.", "phonetic_note": "[Клі́ма у́реджай цу́рі]" },
+        { "hr_text": "Možete li mi pomoći s ugovorom?", "ua_translation": "Можете допомогти мені з договором?", "phonetic_note": "[Мо́жете лі мі помо́чі с у́говором]" }
+      ],
+      "vocabulary": [
+        { "hr_text": "stan", "ua_translation": "квартира", "phonetic_note": "[стан]" },
+        { "hr_text": "kuća", "ua_translation": "будинок", "phonetic_note": "[ку́ча]" },
+        { "hr_text": "ključ", "ua_translation": "ключ", "phonetic_note": "[клю́ч]" },
+        { "hr_text": "vrata", "ua_translation": "двері", "phonetic_note": "[вра́та]" },
+        { "hr_text": "prozor", "ua_translation": "вікно", "phonetic_note": "[про́зор]" },
+        { "hr_text": "struja", "ua_translation": "електрика", "phonetic_note": "[стру́я]" },
+        { "hr_text": "grijanje", "ua_translation": "опалення", "phonetic_note": "[грі́янє]" },
+        { "hr_text": "klima", "ua_translation": "кондиціонер", "phonetic_note": "[клі́ма]" },
+        { "hr_text": "režije", "ua_translation": "комунальні послуги", "phonetic_note": "[ре́жіє]" },
+        { "hr_text": "najmodavac", "ua_translation": "орендодавець", "phonetic_note": "[на́ймодавац]" },
+        { "hr_text": "kupaonica", "ua_translation": "ванна кімната", "phonetic_note": "[купао́ніца]" },
+        { "hr_text": "soba", "ua_translation": "кімната", "phonetic_note": "[со́ба]" },
+        { "hr_text": "popraviti", "ua_translation": "полагодити", "phonetic_note": "[попра́віті]" },
+        { "hr_text": "raditi", "ua_translation": "працювати", "phonetic_note": "[ра́діті]" },
+        { "hr_text": "problem", "ua_translation": "проблема", "phonetic_note": "[пробле́ма]" }
+      ]
+    },
+    {
+      "id": "module_6",
+      "title_hr": "Zdravlje i ljekarna",
+      "title_ua": "Здоров'я та аптека",
+      "description": "Похід до аптеки, опис симптомів, запис до лікаря.",
+      "dialogue": [
+        { "speaker": "Pacijent", "hr_text": "Dobar dan. Trebam nešto protiv bolova u grlu.", "ua_translation": "Добрий день. Мені потрібно щось від болю в горлі." },
+        { "speaker": "Ljekarnik", "hr_text": "Imate li visoku temperaturu?", "ua_translation": "У вас є висока температура?" },
+        { "speaker": "Pacijent", "hr_text": "Ne, samo me malo boli kad gutam.", "ua_translation": "Ні, тільки трохи болить, коли ковтаю." },
+        { "speaker": "Ljekarnik", "hr_text": "Uzмите ove pastile. Tri puta dnevno poslije jela.", "ua_translation": "Візьміть ці пастилки. Тричі на день після їжі." }
+      ],
+      "phrases": [
+        { "hr_text": "Boli me glava.", "ua_translation": "У мене болить голова.", "phonetic_note": "[Бо́лі ме гла́ва]" },
+        { "hr_text": "Imam visoku temperaturu.", "ua_translation": "У мене висока температура.", "phonetic_note": "[І́мам ві́соку температу́ру]" },
+        { "hr_text": "Trebam nešto protiv prehlade.", "ua_translation": "Мені потрібно щось від застуди.", "phonetic_note": "[Тре́бам не́што про́тів пре́хладе]" },
+        { "hr_text": "Trebam li recept za ovo?", "ua_translation": "Чи потрібен рецепт на це?", "phonetic_note": "[Тре́бам лі ре́цепт за о́во]" },
+        { "hr_text": "Ne osjećam se dobro.", "ua_translation": "Я погано почуваюся.", "phonetic_note": "[Не осє́чам се до́бро]" },
+        { "hr_text": "Trebam ići doktoru.", "ua_translation": "Мені потрібно до лікаря.", "phonetic_note": "[Тре́бам і́чі до́ктору]" },
+        { "hr_text": "Pozovite hitnu pomoć!", "ua_translation": "Викличте швидку допомогу!", "phonetic_note": "[Позо́віте хі́тну по́моч]" },
+        { "hr_text": "Imam alergiju na penicilin.", "ua_translation": "У мене алергія на пеніцилін.", "phonetic_note": "[І́мам але́ргію на пеніцілі́н]" },
+        { "hr_text": "Gdje je dežurna ljekarna?", "ua_translation": "Де чергова аптека?", "phonetic_note": "[Ґдє є де́журна лєка́рна]" },
+        { "hr_text": "Koliko puta dnevno?", "ua_translation": "Скільки разів на день?", "phonetic_note": "[Колі́ко пу́та дне́вно]" }
+      ],
+      "vocabulary": [
+        { "hr_text": "ljekarna", "ua_translation": "аптека", "phonetic_note": "[лєка́рна]" },
+        { "hr_text": "doktor", "ua_translation": "лікар", "phonetic_note": "[до́ктор]" },
+        { "hr_text": "bolnica", "ua_translation": "лікарня", "phonetic_note": "[бо́льніца]" },
+        { "hr_text": "lijek", "ua_translation": "ліки", "phonetic_note": "[ліє́к]" },
+        { "hr_text": "bol", "ua_translation": "біль", "phonetic_note": "[бол]" },
+        { "hr_text": "glava", "ua_translation": "голова", "phonetic_note": "[гла́ва]" },
+        { "hr_text": "ruka", "ua_translation": "рука", "phonetic_note": "[ру́ка]" },
+        { "hr_text": "noga", "ua_translation": "нога", "phonetic_note": "[но́га]" },
+        { "hr_text": "trbuh", "ua_translation": "живіт", "phonetic_note": "[тр́бух]" },
+        { "hr_text": "temperatura", "ua_translation": "температура", "phonetic_note": "[температу́ра]" },
+        { "hr_text": "recept", "ua_translation": "рецепт", "phonetic_note": "[ре́цепт]" },
+        { "hr_text": "hitna", "ua_translation": "швидка допомога", "phonetic_note": "[хі́тна]" },
+        { "hr_text": "zdravlje", "ua_translation": "здоров'я", "phonetic_note": "[здра́влє]" },
+        { "hr_text": "boljeti", "ua_translation": "боліти", "phonetic_note": "[бо́лєті]" },
+        { "hr_text": "pomoć", "ua_translation": "допомога", "phonetic_note": "[по́моч]" }
+      ]
+    }
+  ]
+}
