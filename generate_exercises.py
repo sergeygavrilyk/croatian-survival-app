@@ -1,10 +1,15 @@
 import random
 import json
+import os
+from dotenv import load_dotenv
 from supabase import create_client, Client
 
 # Конфігурація
-SUPABASE_URL = "" # або "your-key-here"
-SUPABASE_KEY = "" # або "your-key-here"
+# Завантажуємо ключі з файлу .env.local
+load_dotenv('.env.local')
+
+SUPABASE_URL = os.getenv("NEXT_PUBLIC_SUPABASE_URL")
+SUPABASE_KEY = os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY") # Або створити окрему змінну для Service Key
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 print("Завантаження реплік з бази...")

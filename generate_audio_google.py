@@ -1,11 +1,14 @@
 import os
+from dotenv import load_dotenv
 import tempfile
 from supabase import create_client, Client
 from gtts import gTTS
 
 # 1. КОНФІГУРАЦІЯ SUPABASE
-SUPABASE_URL = "" # або "your-key-here"
-SUPABASE_KEY = "" # або "your-key-here"
+# Завантажуємо ключі з файлу .env.local
+load_dotenv('.env.local')
+SUPABASE_URL = os.getenv("NEXT_PUBLIC_SUPABASE_URL")
+SUPABASE_KEY = os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY") # Або створити окрему змінну для Service Key
 BUCKET_NAME = "audio"
 
 # Ініціалізація клієнта
