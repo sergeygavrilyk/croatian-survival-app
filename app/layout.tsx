@@ -1,15 +1,17 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin", "cyrillic"] });
+// Підключаємо два шрифти (виправлено сабсет для Plus Jakarta Sans на cyrillic-ext)
+const inter = Inter({ subsets: ["latin", "cyrillic"], variable: "--font-inter" });
+const jakarta = Plus_Jakarta_Sans({ subsets: ["latin", "cyrillic-ext"], variable: "--font-jakarta" });
 
 export const viewport: Viewport = {
   themeColor: "#3b82f6",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  userScalable: false, // Запобігає зумуванню на iOS для ефекту нативного додатку
+  userScalable: false, 
 };
 
 export const metadata: Metadata = {
@@ -30,7 +32,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="uk">
-      <body className={inter.className} suppressHydrationWarning>{children}</body>
+      <body 
+        className={`${inter.variable} ${jakarta.variable} font-sans bg-slate-50 text-slate-900 antialiased`} 
+        suppressHydrationWarning
+      >
+        {children}
+      </body>
     </html>
   );
 }
