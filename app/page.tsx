@@ -206,7 +206,7 @@ export default function Home() {
       
       <div className="space-y-3">
         {topics.slice(0, 3).map((topic) => (
-          <Link href={`/lessons`} key={topic.id} className="block">
+          <Link href={`/lesson/${topic.id}`} key={topic.id} className="block">
             <div className="bg-white p-5 rounded-[1.5rem] shadow-sm border border-gray-100 hover:border-blue-200 transition-all active:scale-[0.98] flex justify-between items-center">
               <div>
                 <h3 className="text-base font-bold text-gray-900 mb-1">{topic.title_hr}</h3>
