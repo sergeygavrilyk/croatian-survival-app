@@ -151,6 +151,13 @@ export default function LessonsPage() {
               {currentTopic.description}
             </p>
           )}
+      {/* Кнопка переходу до діалогу */}
+          <button
+            onClick={() => router.push(`/lesson/${currentTopic.id}`)}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-colors active:scale-95 flex items-center justify-center gap-2 mb-8"
+          >
+            💬 Пройти діалог теми
+          </button>
 
           <h3 className="text-md font-semibold text-gray-700 mb-3">Корисні слова та фрази теми:</h3>
           
