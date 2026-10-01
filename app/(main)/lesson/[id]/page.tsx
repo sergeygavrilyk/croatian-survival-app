@@ -27,6 +27,7 @@ interface WordDefinition {
   id: string;
   hr_text: string;
   ua_translation: string;
+  phonetic_note?: string; // <--- Додайте цей рядок
 }
 
 export default function LessonDialoguePage() {
