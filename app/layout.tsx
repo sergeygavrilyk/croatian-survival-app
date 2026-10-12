@@ -1,17 +1,20 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import AnalyticsSession from "@/components/AnalyticsSession";
+import MotionProvider from "@/components/MotionProvider";
+import BottomNav from "@/components/ui/BottomNav";
 
-// Підключаємо два шрифти (виправлено сабсет для Plus Jakarta Sans на cyrillic-ext)
-const inter = Inter({ subsets: ["latin", "cyrillic"], variable: "--font-inter" });
-const jakarta = Plus_Jakarta_Sans({ subsets: ["latin", "cyrillic-ext"], variable: "--font-jakarta" });
+// Inter — основний текст, Plus Jakarta Sans — заголовки (docs/DESIGN_SYSTEM.md §4)
+const inter = Inter({ subsets: ["latin", "latin-ext", "cyrillic"], variable: "--font-inter" });
+const jakarta = Plus_Jakarta_Sans({ subsets: ["latin", "latin-ext", "cyrillic-ext"], variable: "--font-jakarta" });
 
+// Масштабування не блокуємо (§98, WCAG 1.4.4). viewportFit — для safe-area на iPhone.
 export const viewport: Viewport = {
-  themeColor: "#3b82f6",
+  themeColor: "#2563eb",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false, 
+  viewportFit: "cover",
 };
 
 export const metadata: Metadata = {
@@ -31,12 +34,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="uk">
-      <body 
-        className={`${inter.variable} ${jakarta.variable} font-sans bg-slate-50 text-slate-900 antialiased`} 
-        suppressHydrationWarning
-      >
-        {children}
+    <html lang="uk" className={`${inter.variable} ${jakarta.variable}`}>
+      <body className="font-sans bg-canvas text-ink antialiased" suppressHydrationWarning>
+        <AnalyticsSession />
+        <MotionProvider>
+          {children}
+          <BottomNav />
+        </MotionProvider>
       </body>
     </html>
   );

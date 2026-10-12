@@ -1,43 +1,79 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useEffect, useState, useCallback } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import { motion } from 'framer-motion';
 import { speakCroatian } from '@/utils/speech';
+import PracticeTabs from '@/components/ui/PracticeTabs';
+
+const PAGE_SIZE = 30; // Розмір однієї порції слів
 
 export default function DictionaryPage() {
-  const router = useRouter();
   const supabase = createClient();
+  
   const [words, setWords] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
 
-  useEffect(() => {
-    async function fetchWords() {
-      try {
-        // Отримуємо очищені унікальні слова з бази (ліміт для швидкодії)
-        const { data, error } = await supabase
-          .from('vocabulary')
-          .select('*')
-          .neq('item_type', 'dialogue_line')
-          .order('frequency_rank', { ascending: true })
-          .limit(300);
-
-        if (data && !error) {
-          setWords(data);
-        }
-      } catch (err) {
-        console.error('Помилка завантаження словника:', err);
-      } finally {
-        setLoading(false);
-      }
+  // ОПТИМІЗОВАНО: Порційне завантаження з точковими полями
+  const fetchWords = useCallback(async (pageIndex: number, isReset: boolean = false) => {
+    if (isReset) {
+      setLoading(true);
+    } else {
+      setLoadingMore(true);
     }
 
-    fetchWords();
+    const from = pageIndex * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
+
+    try {
+      const { data, error } = await supabase
+        .from('lexemes')
+        .select('id, lemma, ukrainian_translation, part_of_speech, cefr') // Точкові поля замість *
+        .eq('status', 'PUBLISHED')
+        .not('lemma', 'like', '%:%') // без реплік діалогів («Konobar: …»)
+        .order('frequency_rank', { ascending: true, nullsFirst: false })
+        .order('lemma', { ascending: true })
+        .range(from, to); // Пагінація на рівні БД
+
+      if (error) throw error;
+
+      if (data) {
+        if (data.length < PAGE_SIZE) {
+          setHasMore(false); // Досягли кінця словника
+        }
+        // Поля під існуючу розмітку картки слова
+        const mapped = data.map((lex) => ({
+          id: lex.id,
+          hr_text: lex.lemma,
+          ua_translation: lex.ukrainian_translation,
+          phonetic_note: [lex.part_of_speech, lex.cefr].filter(Boolean).join(' · '),
+        }));
+        setWords(prev => isReset ? mapped : [...prev, ...mapped]);
+      }
+    } catch (err) {
+      console.error('Помилка завантаження словника:', err);
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
+    }
   }, [supabase]);
 
-  // Фільтрація слів за пошуком (хорватською або українською)
+  useEffect(() => {
+    fetchWords(0, true);
+  }, [fetchWords]);
+
+  const loadMore = () => {
+    if (loadingMore || !hasMore) return;
+    const nextPage = page + 1;
+    setPage(nextPage);
+    fetchWords(nextPage, false);
+  };
+
+  // Фільтрація завантажених слів за пошуком
   const filteredWords = words.filter(word => {
     if (!searchQuery) return true;
     const query = searchQuery.toLowerCase();
@@ -48,13 +84,12 @@ export default function DictionaryPage() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-32 font-sans overflow-x-hidden">
+    <div className="min-h-screen pb-28 font-sans overflow-x-hidden">
       
-      {/* Шапка з пошуком (Glassmorphism) */}
+      {/* Шапка з пошуком */}
       <header className="sticky top-0 z-20 backdrop-blur-2xl bg-white/70 border-b border-slate-200/50 px-6 pt-10 pb-6 shadow-sm">
-        <h1 className="font-heading text-3xl font-extrabold text-slate-800 tracking-tight mb-4">
-          Мій Словник 📖
-        </h1>
+        <h1 className="font-heading text-h1 mb-2">Практика</h1>
+        <PracticeTabs className="mb-4" />
         
         <div className="relative">
           <input 
@@ -86,7 +121,7 @@ export default function DictionaryPage() {
             {searchQuery ? 'Результати пошуку' : 'Всі слова'}
           </h2>
           <span className="text-xs font-bold bg-slate-200 text-slate-500 px-2 py-1 rounded-lg">
-            {filteredWords.length}
+            {filteredWords.length} показано
           </span>
         </div>
 
@@ -100,7 +135,7 @@ export default function DictionaryPage() {
               <motion.div 
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: Math.min(index * 0.02, 0.5) }} // Обмеження затримки для великих списків
+                transition={{ delay: Math.min(index * 0.02, 0.3) }}
                 key={word.id} 
                 className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex justify-between items-center hover:shadow-md transition-shadow"
               >
@@ -124,6 +159,30 @@ export default function DictionaryPage() {
                 </button>
               </motion.div>
             ))}
+
+            {/* Кнопка "Завантажити ще" */}
+            {hasMore && !searchQuery && (
+              <button
+                onClick={loadMore}
+                disabled={loadingMore}
+                className="mt-4 w-full bg-indigo-50 text-indigo-600 font-bold py-4 rounded-2xl shadow-sm border border-indigo-100 active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {loadingMore ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                    <span>Завантаження...</span>
+                  </>
+                ) : (
+                  <span>Завантажити ще 30 слів ➔</span>
+                )}
+              </button>
+            )}
+
+            {!hasMore && !searchQuery && (
+              <div className="text-center text-xs text-slate-400 mt-6 font-medium">
+                Ви переглянули весь словник 🎉
+              </div>
+            )}
           </div>
         ) : (
           <div className="text-center py-20 text-slate-400 bg-white rounded-3xl border border-dashed border-slate-200">
@@ -133,26 +192,6 @@ export default function DictionaryPage() {
         )}
       </main>
 
-      {/* Нижня навігація */}
-      <div className="fixed bottom-6 left-0 right-0 px-6 z-50">
-        <div className="bg-white/80 backdrop-blur-2xl border border-white/50 p-2 rounded-[2rem] shadow-2xl shadow-slate-300/50 flex justify-between items-center">
-          <button onClick={() => router.push('/')} className="flex-1 flex flex-col items-center gap-1 py-3 text-slate-400 hover:text-slate-600 transition-colors">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-            <span className="text-[10px] font-bold">Головна</span>
-          </button>
-          
-          <button onClick={() => router.push('/lessons')} className="flex-1 flex flex-col items-center gap-1 py-3 text-slate-400 hover:text-slate-600 transition-colors">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
-            <span className="text-[10px] font-bold">Уроки</span>
-          </button>
-          
-          {/* Активна кнопка Словника */}
-          <button className="flex-1 flex flex-col items-center gap-1 py-3 text-indigo-600">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
-            <span className="text-[10px] font-bold">Словник</span>
-          </button>
-        </div>
-      </div>
     </div>
   );
 }

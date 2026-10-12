@@ -10,6 +10,8 @@ export interface Flashcard {
   ua_translation: string;
   phonetic_note?: string;
   audio_url?: string;
+  /** Приклад речення хорватською (показується після перевертання картки) */
+  example?: string;
 }
 
 interface FlashcardTrainerProps {
@@ -66,9 +68,9 @@ export default function FlashcardTrainer({ cards, onFinishSession, onRateCard }:
   const currentCard = cards[currentIndex];
 
   const handleSwipe = (direction: 'left' | 'right') => {
-    // Якщо вправо (Знаю) — ставимо найвищу оцінку (3)
-    // Якщо вліво (Не знаю) — ставимо найнижчу оцінку (1)
-    const rating = direction === 'right' ? 3 : 1;
+    // Згідно з нашим новим SRS: 
+    // 1 - Знаю (вправо), 0 - Не знаю (вліво)
+    const rating = direction === 'right' ? 1 : 0;
     
     onRateCard(currentCard.id, rating);
     setIsFlipped(false);
@@ -175,6 +177,20 @@ export default function FlashcardTrainer({ cards, onFinishSession, onRateCard }:
                 <p className="text-2xl font-bold text-blue-600">
                   {currentCard.ua_translation}
                 </p>
+                {currentCard.example && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation(); // не перегортати картку
+                      speakCroatian(currentCard.example!);
+                    }}
+                    className="mt-5 mx-auto max-w-full text-left flex items-start gap-2 text-gray-600 text-base leading-snug italic hover:text-blue-700"
+                    aria-label="Прослухати приклад"
+                  >
+                    <span aria-hidden="true" className="not-italic">🔊</span>
+                    <span>{currentCard.example}</span>
+                  </button>
+                )}
               </div>
             </div>
 

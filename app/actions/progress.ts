@@ -1,42 +1,25 @@
 'use server';
 
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { completeLesson as completeLessonCore } from '@/lib/learning';
+import { requireLearningContext, withRequestMeta } from '@/lib/server-context';
+import type { EventProps } from '@/lib/analytics';
 
-export async function markTopicAsCompleted(topicId: string) {
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { cookies: { getAll: () => cookieStore.getAll(), setAll: () => {} } }
-  );
-
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
-  if (authError || !user) throw new Error('Не авторизовано');
-
-  // 1. Перевіряємо, чи є вже запис про цю тему
-  const { data: existing } = await supabase
-    .from('topic_progress')
-    .select('id')
-    .eq('user_id', user.id)
-    .eq('topic_id', topicId)
-    .maybeSingle();
-
-  if (existing) {
-    // 2. Якщо є — оновлюємо дату завершення
-    await supabase.from('topic_progress').update({
-      status: 'completed',
-      completed_at: new Date().toISOString()
-    }).eq('id', existing.id);
-  } else {
-    // 3. Якщо немає — створюємо новий запис
-    await supabase.from('topic_progress').insert({
-      user_id: user.id,
-      topic_id: topicId,
-      status: 'completed',
-      completed_at: new Date().toISOString()
-    });
-  }
-
-  return { success: true };
+/**
+ * Завершення уроку (VS-002: «completes → receives review»):
+ * урок → lesson_progress, слова уроку → повторення на завтра, подія lesson_completed.
+ * Логіка — у lib/learning.ts (completeLesson).
+ *
+ * @param context session_id, duration_ms, level — для аналітики (необов'язково)
+ */
+export async function completeLesson(lessonId: string, context: Pick<EventProps, 'session_id' | 'duration_ms' | 'level'> = {}) {
+  const { userId, repo } = await requireLearningContext();
+  return completeLessonCore(repo, {
+    userId,
+    lessonId,
+    context: await withRequestMeta({
+      session_id: context.session_id,
+      duration_ms: context.duration_ms,
+      level: context.level,
+    }),
+  });
 }

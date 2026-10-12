@@ -1,40 +1,135 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/*
+ * Дизайн-система Croatia survival — токени (docs/DESIGN_SYSTEM.md §3).
+ * Компоненти використовують семантичні класи: bg-primary, bg-surface, text-ink,
+ * text-ink-muted, border-line, rounded-card, text-word… а не bg-blue-600 / text-gray-500.
+ * Поза @layer тут нічого не стилізуємо — такі правила перебивають класи Tailwind.
+ */
 
+/* Шрифти: next/font кладе змінні на <html>, тому inline */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-jakarta), var(--font-inter), ui-sans-serif, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@theme {
+  /* Поверхні й текст */
+  --color-canvas: var(--color-slate-50);
+  --color-surface: var(--color-white);
+  --color-surface-muted: var(--color-slate-100);
+  --color-line: var(--color-slate-200);
+  --color-ink: var(--color-slate-900);
+  --color-ink-muted: var(--color-slate-600);
+  --color-ink-subtle: var(--color-slate-500);
+
+  /* Дія */
+  --color-primary: var(--color-blue-600);
+  --color-primary-hover: var(--color-blue-700);
+  --color-primary-pressed: var(--color-blue-800);
+  --color-primary-soft: var(--color-blue-50);
+  --color-primary-ink: var(--color-blue-700);
+
+  /* Зворотний зв'язок */
+  --color-success: var(--color-emerald-600);
+  --color-success-soft: var(--color-emerald-50);
+  --color-success-line: var(--color-emerald-200);
+  --color-success-ink: var(--color-emerald-700);
+  --color-warning: var(--color-amber-500);
+  --color-warning-soft: var(--color-amber-50);
+  --color-warning-line: var(--color-amber-200);
+  --color-warning-ink: var(--color-amber-800);
+  --color-danger: var(--color-rose-600);
+  --color-danger-soft: var(--color-rose-50);
+  --color-danger-line: var(--color-rose-200);
+  --color-danger-ink: var(--color-rose-700);
+
+  /* AI */
+  --color-ai: var(--color-indigo-600);
+  --color-ai-soft: var(--color-indigo-50);
+  --color-ai-line: var(--color-indigo-100);
+  --color-ai-ink: var(--color-indigo-700);
+
+  /* Форми */
+  --radius-control: 0.75rem;
+  --radius-card: 1rem;
+  --radius-hero: 1.5rem;
+
+  /* Типографіка */
+  --text-display: 2rem;
+  --text-display--line-height: 2.5rem;
+  --text-display--font-weight: 700;
+  --text-h1: 1.75rem;
+  --text-h1--line-height: 2.25rem;
+  --text-h1--font-weight: 700;
+  --text-h2: 1.375rem;
+  --text-h2--line-height: 1.75rem;
+  --text-h2--font-weight: 700;
+  --text-h3: 1.125rem;
+  --text-h3--line-height: 1.5rem;
+  --text-h3--font-weight: 700;
+  --text-body-lg: 1.0625rem;
+  --text-body-lg--line-height: 1.625rem;
+  --text-body: 1rem;
+  --text-body--line-height: 1.5rem;
+  --text-label: 0.875rem;
+  --text-label--line-height: 1.25rem;
+  --text-label--font-weight: 600;
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1rem;
+  --text-caption--font-weight: 500;
+  --text-word: 2.25rem;
+  --text-word--line-height: 2.75rem;
+  --text-word--font-weight: 700;
+
+  /* Рух */
+  --ease-out-soft: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --animate-fade-in-up: fade-in-up 220ms var(--ease-out-soft) both;
+  --animate-wave: wave 2.5s infinite;
+
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes wave {
+    0%, 60%, 100% { transform: rotate(0deg); }
+    10%, 30% { transform: rotate(14deg); }
+    20% { transform: rotate(-8deg); }
+    40% { transform: rotate(-4deg); }
+    50% { transform: rotate(10deg); }
   }
 }
 
-@keyframes wave {
-  0% { transform: rotate(0.0deg) }
-  10% { transform: rotate(14.0deg) }
-  20% { transform: rotate(-8.0deg) }
-  30% { transform: rotate(14.0deg) }
-  40% { transform: rotate(-4.0deg) }
-  50% { transform: rotate(10.0deg) }
-  60% { transform: rotate(0.0deg) }
-  100% { transform: rotate(0.0deg) }
-}
-.animate-wave {
-  animation: wave 2.5s infinite;
+@layer base {
+  /* Темна тема — пізніше і свідомо, через токени. Поки лише світла. */
+  html {
+    color-scheme: light;
+  }
+
+  body {
+    @apply bg-canvas text-ink font-sans antialiased;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary;
+  }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* «Зменшити рух» у системі — прибираємо неістотну анімацію (§98, WCAG 2.3.3) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
