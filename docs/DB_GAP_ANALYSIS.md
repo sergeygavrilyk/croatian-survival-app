@@ -94,4 +94,5 @@
 6. ✅ **M8 — говоріння** (`20261012220000_m8_speaking.sql`): `speaking_sessions`, `speaking_attempts` (без аудіо, лише текст розпізнавання).
 7. ✅ **M9 — рольова гра** (`20261012230000_m9_roleplay.sql`): `ai_conversations` (ситуація, рівень, репліки, підсумок, кінець), `ai_messages` (переклад, виправлення; append-only), `user_errors`.
 8. ✅ **M10 — порядок уроків** (`20261012240000_m10_lesson_order.sql`): `lessons.order_index` (NOT NULL, ≥ 1), `unique (unit_id, order_index)`, тригер ставить новий урок у кінець юніту. Разом із ним — data-fix `20261012_curriculum_a0_v1.sql` (програма A0 + каркас A1–B2).
-9. Далі — таблиці під кожен вертикальний зріз (speaking, assistant_requests, assessments…), коли до нього доходить черга.
+9. ✅ **M11 — збережені переклади** (`20261013100000_m11_translation_cache.sql`): `translation_cache` — особистий кеш перекладів «Мені потрібно сказати…» (RLS: лише свої).
+10. Далі — таблиці під кожен вертикальний зріз (speaking, assistant_requests, assessments…), коли до нього доходить черга.

@@ -32,6 +32,7 @@ function aiErrorText(err: unknown): string {
   if (err instanceof AIError) {
     if (err.code === 'not_configured') return 'AI не налаштовано: немає ключа GEMINI_API_KEY у .env.local.';
     if (err.code === 'rate_limited') return 'Ліміт розмов з AI на сьогодні вичерпано. Повертайтеся завтра.';
+    if (err.code === 'unavailable') return 'AI зараз перевантажений. Спробуйте ще раз за хвилину.';
   }
   return 'AI зараз не відповів як слід. Спробуйте ще раз.';
 }

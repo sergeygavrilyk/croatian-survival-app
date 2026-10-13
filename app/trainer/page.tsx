@@ -10,15 +10,22 @@ import { track } from '@/lib/analytics-client';
 import { firstExample, type AnswerCheck } from '@/lib/answer';
 import PracticeTabs from '@/components/ui/PracticeTabs';
 
-const LEVELS = ['A0', 'A1', 'A2', 'B1'] as const;
+// 'ALL' — усі слова, які користувач уже вчить, незалежно від рівня (типово)
+const LEVELS = ['ALL', 'A0', 'A1', 'A2', 'B1'] as const;
 type Level = (typeof LEVELS)[number];
+const levelLabel = (lvl: Level) => (lvl === 'ALL' ? 'Усі' : lvl);
 
-/** «Картки» — впізнати слово (свайп); «Написати» — згадати і ввести слово самому (VS-001). */
+/**
+ * «Картки» — впізнати слово (свайп); «Написати» — згадати і ввести слово самому (VS-001).
+ * В обох режимах — ЛИШЕ слова, які користувач уже вчить (user_progress):
+ * слова пройдених уроків і ті, що він сам додав у словник. Нових слів тренажер не підкидає.
+ */
 type Mode = 'recognize' | 'write';
-type SessionKind = 'review' | 'new' | 'write';
+type SessionKind = 'review' | 'practice' | 'write';
 
 const SESSION_SIZE = 10;
-const PREFS_KEY = 'cs_trainer_prefs';
+// v2: типовий рівень став «Усі» (старі збережені налаштування з рівнем A1 ігноруємо)
+const PREFS_KEY = 'cs_trainer_prefs_v2';
 const LEXEME_FIELDS = 'id, lemma, ukrainian_translation, part_of_speech, audio_url, examples';
 
 interface LexemeRow {
@@ -42,7 +49,9 @@ const toCard = (item: LexemeRow): Flashcard & WriteCard => ({
 export default function TrainerPage() {
   const [cards, setCards] = useState<(Flashcard & WriteCard)[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedLevel, setSelectedLevel] = useState<Level>('A1');
+  const [selectedLevel, setSelectedLevel] = useState<Level>('ALL');
+  // Скільки всього слів користувач уже вчить (для порожнього стану)
+  const [learningCount, setLearningCount] = useState(0);
   const [mode, setMode] = useState<Mode>('recognize');
   const [saveError, setSaveError] = useState(false);
   // Ключ сесії: новий набір карток → компонент тренажера починає з першої картки
@@ -92,7 +101,7 @@ export default function TrainerPage() {
 
         const nowMs = Date.now();
 
-        // 1. Усі слова, які користувач уже вчить
+        // 1. Усі слова, які користувач уже вчить (пройдені в уроках або додані в словник)
         const { data: progressData, error: progressError } = await supabase
           .from('user_progress')
           .select('lexeme_id, next_review_date')
@@ -100,66 +109,38 @@ export default function TrainerPage() {
 
         if (progressError) throw progressError;
 
-        const progress = (progressData ?? []).map(p => ({
-          id: p.lexeme_id as string,
-          dueAt: new Date(p.next_review_date).getTime(),
-        }));
-        const knownIds = new Set(progress.map(p => p.id));
-        const dueIds = progress.filter(p => p.dueAt <= nowMs).map(p => p.id);
+        // Спершу ті, що чекають повторення найдовше
+        const progress = (progressData ?? [])
+          .map(p => ({
+            id: p.lexeme_id as string,
+            dueAt: p.next_review_date ? new Date(p.next_review_date).getTime() : 0,
+          }))
+          .sort((a, b) => a.dueAt - b.dueAt);
+        const dueIds = new Set(progress.filter(p => p.dueAt <= nowMs).map(p => p.id));
+        const ordered = progress.map(p => p.id).slice(0, 300);
 
-        let lexemeData: LexemeRow[] = [];
-        let kind: SessionKind;
-
-        if (mode === 'write') {
-          // «Написати»: лише слова, які користувач уже бачив (спочатку ті, що на повторенні),
-          // бо згадати слово, якого ще не вчив, неможливо.
-          kind = 'write';
-          const ordered = [...progress].sort((a, b) => a.dueAt - b.dueAt).map(p => p.id).slice(0, 200);
-          if (ordered.length > 0) {
-            const { data, error } = await supabase
-              .from('lexemes')
-              .select(LEXEME_FIELDS)
-              .in('id', ordered)
-              .eq('cefr', selectedLevel)
-              // Лише чинні слова (речення й репліки перенесено в phrases / conversations → DEPRECATED)
-              .eq('status', 'PUBLISHED');
-            if (error) throw error;
-            const byId = new Map(((data ?? []) as LexemeRow[]).map(row => [row.id, row]));
-            lexemeData = ordered.map(id => byId.get(id)).filter((r): r is LexemeRow => !!r).slice(0, SESSION_SIZE);
-          }
-        } else {
-          // «Картки»: спочатку повторення на сьогодні, потім нові слова до повної сесії
-          if (dueIds.length > 0) {
-            const { data, error } = await supabase
-              .from('lexemes')
-              .select(LEXEME_FIELDS)
-              .in('id', dueIds.slice(0, 200))
-              .eq('cefr', selectedLevel)
-              .eq('status', 'PUBLISHED')
-              .limit(SESSION_SIZE);
-
-            if (error) throw error;
-            lexemeData = (data ?? []) as LexemeRow[];
-          }
-          kind = lexemeData.length > 0 ? 'review' : 'new';
-
-          // Нові слова за частотністю (принцип Парето), без тих, що вже в повтореннях
-          if (lexemeData.length < SESSION_SIZE) {
-            const { data, error } = await supabase
-              .from('lexemes')
-              .select(LEXEME_FIELDS)
-              .eq('cefr', selectedLevel)
-              .eq('status', 'PUBLISHED')
-              .order('frequency_rank', { ascending: true, nullsFirst: false })
-              .limit(Math.min(SESSION_SIZE + knownIds.size, 1000));
-
-            if (error) throw error;
-            const fresh = ((data ?? []) as LexemeRow[])
-              .filter(item => !knownIds.has(item.id))
-              .slice(0, SESSION_SIZE - lexemeData.length);
-            lexemeData = [...lexemeData, ...fresh];
-          }
+        // 2. Самі слова (лише чинні; за потреби — одного рівня)
+        let rows: LexemeRow[] = [];
+        if (ordered.length > 0) {
+          let query = supabase
+            .from('lexemes')
+            .select(LEXEME_FIELDS)
+            .in('id', ordered)
+            // Лише чинні слова (речення й репліки перенесено в phrases / conversations → DEPRECATED)
+            .eq('status', 'PUBLISHED');
+          if (selectedLevel !== 'ALL') query = query.eq('cefr', selectedLevel);
+          const { data, error } = await query;
+          if (error) throw error;
+          const byId = new Map(((data ?? []) as LexemeRow[]).map(row => [row.id, row]));
+          rows = ordered.map(id => byId.get(id)).filter((r): r is LexemeRow => !!r);
         }
+
+        // 3. Сесія: спершу слова «на сьогодні», потім — решта вивчених (повторити наперед)
+        const lexemeData = rows.slice(0, SESSION_SIZE);
+        const hasDue = lexemeData.some(r => dueIds.has(r.id));
+        const kind: SessionKind = mode === 'write' ? 'write' : hasDue ? 'review' : 'practice';
+
+        if (!cancelled) setLearningCount(progress.length);
 
         if (cancelled) return;
 
@@ -235,9 +216,9 @@ export default function TrainerPage() {
     void recordAnswer(card.id, result.correct, responseTimeMs);
   };
 
-  const emptyText = mode === 'write'
-    ? `На рівні ${selectedLevel} ще немає слів, які ви вчите. Почніть з режиму «Картки» або з уроку.`
-    : `На рівні ${selectedLevel} поки немає нових слів.`;
+  const emptyText = learningCount === 0
+    ? 'Тут з’являться слова з пройдених уроків і ті, що ви додали в словник.'
+    : `На рівні ${selectedLevel} ви ще не вчите жодного слова. Оберіть «Усі» або інший рівень.`;
 
   return (
     <div className="min-h-screen pb-28">
@@ -277,7 +258,7 @@ export default function TrainerPage() {
                 : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-100'
             }`}
           >
-            Рівень {lvl}
+            {lvl === 'ALL' ? 'Усі рівні' : `Рівень ${levelLabel(lvl)}`}
           </button>
         ))}
       </div>
@@ -292,17 +273,25 @@ export default function TrainerPage() {
 
       {loading ? (
         <div className="flex justify-center items-center h-64 text-gray-500">
-          Підготовка карток рівня {selectedLevel}...
+          Підготовка карток…
         </div>
       ) : cards.length === 0 ? (
         <div className="text-center py-20 px-4">
-          <p className="text-gray-600 font-medium mb-2">{emptyText}</p>
-          <button
-            onClick={() => router.push('/')}
-            className="text-blue-600 underline text-sm"
-          >
-            Повернутися на головну
-          </button>
+          <p className="text-gray-600 font-medium mb-4">{emptyText}</p>
+          <div className="flex flex-col gap-2 max-w-xs mx-auto">
+            <button
+              onClick={() => router.push('/lessons')}
+              className="min-h-11 bg-blue-600 text-white font-bold rounded-xl px-4"
+            >
+              До уроків
+            </button>
+            <button
+              onClick={() => router.push('/dictionary')}
+              className="min-h-11 text-blue-700 font-semibold rounded-xl px-4"
+            >
+              Відкрити словник
+            </button>
+          </div>
         </div>
       ) : mode === 'write' ? (
         <WriteTrainer

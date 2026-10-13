@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useTransform, type PanInfo } from 'framer-motion';
 import { speakCroatian } from '@/utils/speech';
 
 export interface Flashcard {
@@ -20,24 +20,138 @@ interface FlashcardTrainerProps {
   onRateCard: (cardId: string, rating: number) => void;
 }
 
-export default function FlashcardTrainer({ cards, onFinishSession, onRateCard }: FlashcardTrainerProps) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isFlipped, setIsFlipped] = useState(false);
+type SwipeDirection = 'left' | 'right';
 
-  // Framer Motion значення для відслідковування свайпу
+/** Поріг свайпу в пікселях, після якого картка зараховується */
+const SWIPE_THRESHOLD = 100;
+
+/** Куди відлітає картка, що йде (custom з AnimatePresence — напрямок останнього свайпу) */
+const cardVariants = {
+  enter: { scale: 0.95, opacity: 0, y: 20, x: 0 },
+  center: { scale: 1, opacity: 1, y: 0 },
+  exit: (direction: SwipeDirection) => ({
+    x: direction === 'right' ? 420 : -420,
+    rotate: direction === 'right' ? 15 : -15,
+    opacity: 0,
+    transition: { duration: 0.25 },
+  }),
+};
+
+interface SwipeCardProps {
+  card: Flashcard;
+  isFlipped: boolean;
+  onFlip: () => void;
+  onSwipe: (direction: SwipeDirection) => void;
+}
+
+/**
+ * Одна картка зі свайпом. У кожної картки — власна позиція (MotionValue):
+ * раніше позиція була спільною для всіх карток, і анімація «відльоту» старої картки
+ * зсувала вбік нову (на iPhone картка «западала» вліво й лишалася червоною).
+ */
+function SwipeCard({ card, isFlipped, onFlip, onSwipe }: SwipeCardProps) {
   const x = useMotionValue(0);
-  
-  // Трансформації для зміни кольору та нахилу під час свайпу
   const rotate = useTransform(x, [-200, 200], [-15, 15]);
   const background = useTransform(
     x,
     [-150, 0, 150],
-    ['#fee2e2', '#ffffff', '#dcfce3'] // Червоний (Вліво) <- Білий -> Зелений (Вправо)
+    ['#fee2e2', '#ffffff', '#dcfce3'] // Червоний (вліво) ← білий → зелений (вправо)
   );
-  
-  // Прозорість іконок "Знаю" / "Не знаю" під час потягування
-  const opacityRight = useTransform(x, [0, 100], [0, 1]); 
-  const opacityLeft = useTransform(x, [0, -100], [0, 1]); 
+  // Прозорість позначок «Знаю» / «Вчити» під час потягування
+  const opacityRight = useTransform(x, [0, SWIPE_THRESHOLD], [0, 1]);
+  const opacityLeft = useTransform(x, [0, -SWIPE_THRESHOLD], [0, 1]);
+
+  const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    if (info.offset.x > SWIPE_THRESHOLD) onSwipe('right');
+    else if (info.offset.x < -SWIPE_THRESHOLD) onSwipe('left');
+    // інакше картка сама повертається в центр (dragConstraints)
+  };
+
+  return (
+    <motion.div
+      style={{ x, rotate, backgroundColor: background }}
+      drag="x"
+      dragConstraints={{ left: 0, right: 0 }}
+      dragElastic={0.9}
+      onDragEnd={handleDragEnd}
+      variants={cardVariants}
+      initial="enter"
+      animate="center"
+      exit="exit"
+      whileDrag={{ scale: 1.03, cursor: 'grabbing' }}
+      onTap={onFlip}
+      className="absolute w-full max-w-[340px] aspect-[3/4] rounded-[2rem] shadow-md border border-gray-100 flex flex-col items-center justify-center p-8 cursor-grab touch-pan-y select-none z-20"
+    >
+      {/* Позначки свайпу (з'являються під час потягування) */}
+      <motion.div style={{ opacity: opacityRight }} aria-hidden="true" className="absolute top-8 left-8 border-4 border-green-500 text-green-500 font-black text-2xl uppercase tracking-widest px-4 py-1 rounded-xl rotate-[-15deg]">
+        Знаю
+      </motion.div>
+      <motion.div style={{ opacity: opacityLeft }} aria-hidden="true" className="absolute top-8 right-8 border-4 border-red-500 text-red-500 font-black text-2xl uppercase tracking-widest px-4 py-1 rounded-xl rotate-[15deg]">
+        Вчити
+      </motion.div>
+
+      {/* Контент картки */}
+      <div className="text-center w-full flex flex-col items-center">
+        <span className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4 block">
+          {card.phonetic_note || 'Слово'}
+        </span>
+
+        <h2 lang="hr" className="text-4xl font-black text-gray-900 mb-6 drop-shadow-sm break-words w-full">
+          {card.hr_text}
+        </h2>
+
+        {/* Кнопка аудіо */}
+        <button
+          type="button"
+          onPointerDownCapture={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.stopPropagation(); // щоб не перегорталася картка
+            speakCroatian(card.hr_text);
+          }}
+          aria-label="Прослухати слово"
+          className={`mb-6 bg-blue-50 text-blue-600 w-12 h-12 rounded-full flex items-center justify-center hover:bg-blue-100 transition shadow-sm ${isFlipped ? 'opacity-0 h-0 mb-0 pointer-events-none' : 'opacity-100'}`}
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+        </button>
+
+        {/* Переклад з'являється по тапу на картку */}
+        <div className={`transition-all duration-300 w-full ${isFlipped ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none h-0'}`}>
+          <div className="w-12 h-1 bg-gray-200 mx-auto rounded-full mb-6"></div>
+          <p className="text-2xl font-bold text-blue-600">
+            {card.ua_translation}
+          </p>
+          {card.example && (
+            <button
+              type="button"
+              onPointerDownCapture={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.stopPropagation(); // не перегортати картку
+                speakCroatian(card.example!);
+              }}
+              className="mt-5 mx-auto max-w-full text-left flex items-start gap-2 text-gray-600 text-base leading-snug italic hover:text-blue-700"
+              aria-label="Прослухати приклад"
+            >
+              <span aria-hidden="true" className="not-italic">🔊</span>
+              <span lang="hr">{card.example}</span>
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Підказка знизу картки */}
+      <p className="absolute bottom-6 text-gray-400 text-xs font-semibold uppercase tracking-widest flex items-center gap-2">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+        Тап — переклад, свайп — відповідь
+      </p>
+    </motion.div>
+  );
+}
+
+export default function FlashcardTrainer({ cards, onFinishSession, onRateCard }: FlashcardTrainerProps) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isFlipped, setIsFlipped] = useState(false);
+  // Напрямок останнього свайпу — щоб стара картка відлітала в правильний бік
+  const [direction, setDirection] = useState<SwipeDirection>('right');
 
   const totalCards = cards.length;
   const progressPercentage = totalCards === 0 ? 0 : Math.round((currentIndex / totalCards) * 100);
@@ -67,28 +181,12 @@ export default function FlashcardTrainer({ cards, onFinishSession, onRateCard }:
 
   const currentCard = cards[currentIndex];
 
-  const handleSwipe = (direction: 'left' | 'right') => {
-    // Згідно з нашим новим SRS: 
-    // 1 - Знаю (вправо), 0 - Не знаю (вліво)
-    const rating = direction === 'right' ? 1 : 0;
-    
-    onRateCard(currentCard.id, rating);
+  const handleSwipe = (swipe: SwipeDirection) => {
+    // 1 — «Знаю» (вправо), 0 — «Не знаю» (вліво)
+    onRateCard(currentCard.id, swipe === 'right' ? 1 : 0);
+    setDirection(swipe);
     setIsFlipped(false);
     setCurrentIndex((prev) => prev + 1);
-    
-    // Скидаємо позицію x після свайпу
-    x.set(0); 
-  };
-
-  const handleDragEnd = (event: any, info: any) => {
-    // Поріг свайпу (100 пікселів), після якого картка зараховується
-    if (info.offset.x > 100) {
-      handleSwipe('right');
-    } else if (info.offset.x < -100) {
-      handleSwipe('left');
-    } else {
-      // Якщо не дотягнули, плавно повертаємо в центр (це робить Framer Motion автоматично через dragConstraints)
-    }
   };
 
   return (
@@ -123,95 +221,30 @@ export default function FlashcardTrainer({ cards, onFinishSession, onRateCard }:
 
       {/* 2. Зона карток (Tinder Swipe) */}
       <main className="flex-1 relative flex items-center justify-center px-4">
-        <AnimatePresence>
-          <motion.div
-            key={currentIndex}
-            style={{ x, rotate, backgroundColor: background }}
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            onDragEnd={handleDragEnd}
-            initial={{ scale: 0.95, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ 
-              x: x.get() > 0 ? 300 : -300, 
-              opacity: 0, 
-              scale: 0.9, 
-              transition: { duration: 0.2 } 
-            }}
-            whileDrag={{ scale: 1.05, cursor: 'grabbing' }}
-            onClick={() => setIsFlipped(!isFlipped)}
-            className="absolute w-full max-w-[340px] aspect-[3/4] rounded-[2rem] shadow-2xl border border-gray-100 flex flex-col items-center justify-center p-8 cursor-grab transform-style-3d touch-none z-20"
-          >
-            {/* Індикатори свайпу (З'являються під час потягування) */}
-            <motion.div style={{ opacity: opacityRight }} className="absolute top-8 left-8 border-4 border-green-500 text-green-500 font-black text-2xl uppercase tracking-widest px-4 py-1 rounded-xl rotate-[-15deg]">
-              Знаю
-            </motion.div>
-            <motion.div style={{ opacity: opacityLeft }} className="absolute top-8 right-8 border-4 border-red-500 text-red-500 font-black text-2xl uppercase tracking-widest px-4 py-1 rounded-xl rotate-[15deg]">
-              Вчити
-            </motion.div>
-
-            {/* Контент картки */}
-            <div className="text-center w-full flex flex-col items-center">
-              <span className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4 block">
-                {currentCard.phonetic_note || 'Слово'}
-              </span>
-              
-              <h2 className="text-4xl font-black text-gray-900 mb-6 drop-shadow-sm break-words w-full">
-                {currentCard.hr_text}
-              </h2>
-              
-              {/* Кнопка аудіо */}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation(); // Щоб не перегорталася картка
-                  speakCroatian(currentCard.hr_text); 
-                }}
-                className={`mb-6 bg-blue-50 text-blue-600 w-12 h-12 rounded-full flex items-center justify-center hover:bg-blue-100 transition shadow-sm active:scale-90 ${isFlipped ? 'opacity-0 h-0 mb-0 pointer-events-none' : 'opacity-100'}`}
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
-              </button>
-              
-              {/* Переклад з'являється по кліку на картку */}
-              <div className={`transition-all duration-300 w-full ${isFlipped ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none h-0'}`}>
-                <div className="w-12 h-1 bg-gray-200 mx-auto rounded-full mb-6"></div>
-                <p className="text-2xl font-bold text-blue-600">
-                  {currentCard.ua_translation}
-                </p>
-                {currentCard.example && (
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation(); // не перегортати картку
-                      speakCroatian(currentCard.example!);
-                    }}
-                    className="mt-5 mx-auto max-w-full text-left flex items-start gap-2 text-gray-600 text-base leading-snug italic hover:text-blue-700"
-                    aria-label="Прослухати приклад"
-                  >
-                    <span aria-hidden="true" className="not-italic">🔊</span>
-                    <span>{currentCard.example}</span>
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {/* Підказка знизу картки */}
-            <p className="absolute bottom-6 text-gray-400 text-xs font-semibold uppercase tracking-widest flex items-center gap-2">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-              Тап — переклад, Свайп — відповідь
-            </p>
-          </motion.div>
+        <AnimatePresence initial={false} custom={direction}>
+          <SwipeCard
+            key={currentCard.id + ':' + currentIndex}
+            card={currentCard}
+            isFlipped={isFlipped}
+            onFlip={() => setIsFlipped((f) => !f)}
+            onSwipe={handleSwipe}
+          />
         </AnimatePresence>
       </main>
 
       {/* 3. Опціональні кнопки управління (для тих, хто не любить або не може свайпати) */}
       <footer className="pb-12 px-8 flex justify-center gap-8 z-10">
         <button 
+          type="button"
+          aria-label="Не знаю — вчити ще"
           onClick={() => handleSwipe('left')}
           className="w-16 h-16 bg-white border-2 border-red-100 text-red-500 rounded-full shadow-lg flex flex-col items-center justify-center hover:bg-red-50 hover:border-red-200 active:scale-90 transition-all"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
         </button>
         <button 
+          type="button"
+          aria-label="Знаю"
           onClick={() => handleSwipe('right')}
           className="w-16 h-16 bg-white border-2 border-green-100 text-green-500 rounded-full shadow-lg flex flex-col items-center justify-center hover:bg-green-50 hover:border-green-200 active:scale-90 transition-all"
         >

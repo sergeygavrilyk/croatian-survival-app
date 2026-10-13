@@ -30,7 +30,8 @@ export interface AIResult {
 }
 
 export class AIError extends Error {
-  constructor(public code: 'not_configured' | 'provider_error' | 'invalid_output' | 'rate_limited', message?: string) {
+  /** unavailable — жодна модель не відповіла (перевантаження / вимкнена модель), варто спробувати пізніше */
+  constructor(public code: 'not_configured' | 'provider_error' | 'invalid_output' | 'rate_limited' | 'unavailable', message?: string) {
     super(message ?? code);
     this.name = 'AIError';
   }

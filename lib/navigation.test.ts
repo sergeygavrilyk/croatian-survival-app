@@ -14,7 +14,7 @@ test('нижня панель показується на екранах вкл�
 });
 
 test('нижня панель схована в уроці, на вході й в адмінці', () => {
-  for (const p of ['/lesson/c0000000-0000-0000-0000-000000000001', '/login', '/admin', '/lessonsx', '/trainerx', '/situations/cafe_restaurant/roleplay', '/onboarding']) {
+  for (const p of ['/lesson/c0000000-0000-0000-0000-000000000001', '/login', '/admin', '/lessonsx', '/trainerx', '/situations/cafe_restaurant/roleplay', '/onboarding', '/reset-password']) {
     assert.equal(showsBottomNav(p), false, p);
   }
 });

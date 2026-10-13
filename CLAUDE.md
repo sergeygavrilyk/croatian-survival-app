@@ -58,7 +58,7 @@ lib/               логіка без БД: srs.ts (повторення), anal
                    answer.ts (перевірка введення), navigation.ts (вкладки), situations.ts (довідник і зведення ситуацій),
                    placement.ts (оцінка тесту рівня), onboarding.ts, progress.ts, speaking.ts (оцінка мовлення),
                    speech-provider.ts (інтерфейс §79), ai-provider.ts (інтерфейс §78), roleplay.ts (сценарії, інструкції AI, розбір JSON),
-                   format.ts (множина), ui.ts (cn, shuffle) + тести; ai-gemini.ts, ai-usage-server.ts — лише сервер
+                   format.ts (множина), ui.ts (cn, shuffle), ai-fallback.ts (запасні моделі AI), phrase-match.ts (пошук перекладу в перевіреному контенті) + тести; ai-gemini.ts, ai-usage-server.ts — лише сервер
                    learning-repo-supabase.ts і server-context.ts — лише для сервера
 utils/supabase/     client.ts (браузер), server.ts (server actions / server components)
 utils/speech.ts     озвучення (/api/tts); utils/speech-recognition.ts — розпізнавання в браузері
@@ -77,7 +77,7 @@ docs/               ТЗ і стан проєкту
 - Сервер: `createClient()` з `utils/supabase/server.ts` (не копіюй `createServerClient` у кожен action). Браузер: `utils/supabase/client.ts`.
 - **RLS обов'язковий** для кожної нової таблиці. Дані користувача обмежуються через `auth.uid()`. Контент змінюють лише довірені серверні або адмінські операції.
 - `SUPABASE_SERVICE_ROLE_KEY` — тільки на сервері і тільки там, де без нього не обійтися. Ніколи з префіксом `NEXT_PUBLIC_`, ніколи в клієнтському коді.
-- Весь AI — через абстракцію `AIProvider` (§78: інтерфейс `lib/ai-provider.ts`, Gemini — `lib/ai-gemini.ts` → `getAIProvider()`; облік у `ai_usage_events` уже всередині), все мовлення — через `SpeechProvider` (§79: інтерфейс `lib/speech-provider.ts`, браузерна реалізація `utils/speech-recognition.ts` — Web Speech API, hr-HR). Не додавай нових прямих викликів SDK у server actions і не викликай `SpeechRecognition` напряму з компонентів.
+- Весь AI — через абстракцію `AIProvider` (§78: інтерфейс `lib/ai-provider.ts`, Gemini — `lib/ai-gemini.ts` → `getAIProvider()`; облік у `ai_usage_events` уже всередині; запасні моделі — `lib/ai-fallback.ts`, змінні `GEMINI_MODEL` / `GEMINI_FALLBACK_MODELS`), все мовлення — через `SpeechProvider` (§79: інтерфейс `lib/speech-provider.ts`, браузерна реалізація `utils/speech-recognition.ts` — Web Speech API, hr-HR). Не додавай нових прямих викликів SDK у server actions і не викликай `SpeechRecognition` напряму з компонентів.
 - Відповідь AI, яку бачить користувач, — лише через перевірку (`parseRoleplayTurn` тощо): строгий JSON, хорватський текст без кирилиці, обрізання довжини. Текст користувача в інструкціях AI — це дані, а не команди. Кожна AI-функція має денний ліміт (§97) і позначку «AI» в інтерфейсі.
 - Аудіо користувача не зберігаємо (§97): лише розпізнаний текст. Оцінку мовлення сервер перераховує сам (`lib/speaking.ts`), клієнтському вердикту не довіряє.
 - Мова інтерфейсу — українська. Ідентифікатори в коді — англійською. Коментарі можна українською.

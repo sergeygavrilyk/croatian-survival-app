@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import { speakCroatian } from '@/utils/speech';
-import { quickTranslateToCroatian } from '@/app/actions/translate';
+import { quickTranslateToCroatian, type TranslationSource } from '@/app/actions/translate';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -18,6 +18,9 @@ export default function DashboardPage() {
   // Стейт для фічі "Що сказати?"
   const [phrase, setPhrase] = useState('');
   const [quickTranslation, setQuickTranslation] = useState('');
+  const [translateError, setTranslateError] = useState('');
+  const [translationSource, setTranslationSource] = useState<TranslationSource>('ai');
+  const [canRetry, setCanRetry] = useState(false);
   const [isTranslating, setIsTranslating] = useState(false);
 
   const [stats, setStats] = useState({
@@ -169,20 +172,41 @@ export default function DashboardPage() {
     fetchDashboardData();
   }, [supabase, router]);
 
-  const handleQuickTranslate = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const runTranslate = async () => {
     if (!phrase.trim() || isTranslating) return;
-    
+
     setIsTranslating(true);
+    setTranslateError('');
+    setCanRetry(false);
     try {
-      const translation = await quickTranslateToCroatian(phrase);
-      setQuickTranslation(translation);
+      const result = await quickTranslateToCroatian(phrase);
+      if (result.ok) {
+        setQuickTranslation(result.text);
+        setTranslationSource(result.source);
+      } else {
+        setQuickTranslation('');
+        setTranslateError(result.error);
+        setCanRetry(result.retryable);
+      }
     } catch (error) {
       console.error(error);
-      setQuickTranslation("Помилка підключення до перекладача.");
+      setQuickTranslation('');
+      setTranslateError('Немає зв’язку з сервером. Перевірте інтернет і спробуйте ще раз.');
+      setCanRetry(true);
     } finally {
       setIsTranslating(false);
     }
+  };
+
+  const handleQuickTranslate = (e: React.FormEvent) => {
+    e.preventDefault();
+    void runTranslate();
+  };
+
+  const sourceLabel: Record<TranslationSource, string> = {
+    verified: '✓ Перевірена фраза застосунку',
+    cache: 'Ваш попередній переклад · AI',
+    ai: 'Переклад AI',
   };
     
   const progressPercent = stats.totalWords > 0 
@@ -307,6 +331,32 @@ export default function DashboardPage() {
               </button>
             </form>
 
+            {translateError && (
+              <div role="alert" className="mt-4 flex items-start gap-3 bg-danger-soft border border-danger-line text-danger-ink p-4 rounded-card">
+                <div className="flex-1">
+                  <p className="text-body font-medium">{translateError}</p>
+                  {canRetry && (
+                    <button
+                      type="button"
+                      onClick={() => void runTranslate()}
+                      disabled={isTranslating}
+                      className="mt-3 min-h-11 px-4 bg-white text-danger-ink font-semibold rounded-control border border-danger-line disabled:opacity-50"
+                    >
+                      {isTranslating ? 'Перекладаємо…' : 'Спробувати ще раз'}
+                    </button>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setTranslateError('')}
+                  aria-label="Закрити повідомлення"
+                  className="w-11 h-11 -m-2 shrink-0 flex items-center justify-center rounded-control"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+
             <AnimatePresence>
               {quickTranslation && (
                 <motion.div 
@@ -315,7 +365,10 @@ export default function DashboardPage() {
                   exit={{ opacity: 0, height: 0, marginTop: 0 }}
                   className="bg-blue-50 border border-blue-100 p-4 rounded-2xl"
                 >
-                  <p className="font-heading font-bold text-blue-900 text-lg mb-3">{quickTranslation}</p>
+                  <p className={`text-caption font-semibold uppercase tracking-wide mb-1 ${translationSource === 'verified' ? 'text-success-ink' : 'text-ai-ink'}`}>
+                    {sourceLabel[translationSource]}
+                  </p>
+                  <p lang="hr" className="font-heading font-bold text-blue-900 text-lg mb-3">{quickTranslation}</p>
                   <div className="flex gap-2">
                     <button 
                       onClick={() => speakCroatian(quickTranslation)}
@@ -324,7 +377,8 @@ export default function DashboardPage() {
                       🔊 Слухати
                     </button>
                     <button 
-                      onClick={() => { setPhrase(''); setQuickTranslation(''); }}
+                      onClick={() => { setPhrase(''); setQuickTranslation(''); setTranslateError(''); setCanRetry(false); }}
+                      aria-label="Очистити переклад"
                       className="w-10 h-10 bg-white text-slate-400 rounded-xl shadow-sm border border-blue-100 flex items-center justify-center active:scale-95 transition-transform"
                     >
                       ✕

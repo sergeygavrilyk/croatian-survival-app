@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
+import { CircleCheck } from 'lucide-react';
 
 interface Module {
   id: string;
@@ -89,6 +90,30 @@ export default function LessonsPage() {
   
   const [expandedModuleId, setExpandedModuleId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  // Пройдені уроки — завжди свіжі з сервера (не кешуємо: прогрес змінюється після кожного уроку)
+  const [completedIds, setCompletedIds] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    let cancelled = false;
+    async function fetchCompleted() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data, error } = await supabase
+        .from('lesson_progress')
+        .select('lesson_id')
+        .eq('user_id', user.id)
+        .eq('status', 'completed');
+      if (error) {
+        console.error('Помилка завантаження прогресу уроків:', error);
+        return;
+      }
+      if (!cancelled) setCompletedIds(new Set((data ?? []).map(row => row.lesson_id as string)));
+    }
+    fetchCompleted();
+    return () => {
+      cancelled = true;
+    };
+  }, [supabase]);
 
   // 1. Завантаження модулів з урахуванням localStorage кешу
   useEffect(() => {
@@ -285,7 +310,17 @@ export default function LessonsPage() {
                         Модуль {module.order_index}
                       </div>
                       <h2 className="font-heading text-lg font-extrabold text-slate-800 leading-tight mb-1 truncate">{module.title_ua}</h2>
-                      {module.title_hr && <h3 className="text-sm font-medium text-slate-400 truncate">{module.title_hr}</h3>}
+                      {module.title_hr && <h3 lang="hr" className="text-sm font-medium text-slate-400 truncate">{module.title_hr}</h3>}
+                      {(() => {
+                        const moduleLessons = (units[module.id] || []).flatMap(u => lessons[u.id] || []);
+                        if (moduleLessons.length === 0) return null;
+                        const doneCount = moduleLessons.filter(l => completedIds.has(l.id)).length;
+                        return (
+                          <p className={`text-xs font-semibold mt-1 ${doneCount === moduleLessons.length ? 'text-success-ink' : 'text-slate-500'}`}>
+                            Пройдено {doneCount} з {moduleLessons.length}
+                          </p>
+                        );
+                      })()}
                     </div>
                     <div className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-transform duration-300 ${isExpanded ? 'rotate-180 bg-slate-100' : 'bg-slate-50'}`}>
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-slate-400" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
@@ -323,24 +358,33 @@ export default function LessonsPage() {
                                     {(lessons[unit.id] || []).length === 0 ? (
                                        <div className="text-xs text-slate-400 p-2 italic">Немає уроків</div>
                                     ) : (
-                                      (lessons[unit.id] || []).map(lesson => (
+                                      (lessons[unit.id] || []).map(lesson => {
+                                        const done = completedIds.has(lesson.id);
+                                        return (
                                         <button 
                                           key={lesson.id}
+                                          aria-label={done ? `${lesson.title_ua} — пройдено` : lesson.title_ua}
                                           onClick={(e) => {
                                             e.stopPropagation();
                                             router.push(`/lesson/${lesson.id}`);
                                           }} 
-                                          className={`w-full flex items-center justify-between p-4 rounded-xl shadow-sm transition-transform active:scale-[0.98] border ${lesson.status === 'PUBLISHED' ? 'bg-white border-slate-200 hover:border-indigo-300' : 'bg-slate-100 border-slate-100 opacity-70'}`}
+                                          className={`w-full flex items-center justify-between gap-3 p-4 rounded-xl shadow-sm transition-transform active:scale-[0.98] border ${done ? 'bg-success-soft border-success-line' : 'bg-white border-slate-200 hover:border-indigo-300'}`}
                                         >
                                           <div className="text-left">
                                             <div className="text-sm font-bold text-slate-800">{lesson.title_ua}</div>
-                                            {lesson.title_hr && <div className="text-xs text-slate-500 mt-0.5">{lesson.title_hr}</div>}
+                                            {lesson.title_hr && <div lang="hr" className="text-xs text-slate-500 mt-0.5">{lesson.title_hr}</div>}
+                                            {done && <div className="text-xs font-semibold text-success-ink mt-1">Пройдено · можна повторити</div>}
                                           </div>
-                                          <div className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${theme.lightBg} ${theme.text}`}>
-                                            ➔
-                                          </div>
+                                          {done ? (
+                                            <CircleCheck aria-hidden="true" className="shrink-0 w-8 h-8 text-success-ink" />
+                                          ) : (
+                                            <div aria-hidden="true" className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${theme.lightBg} ${theme.text}`}>
+                                              ➔
+                                            </div>
+                                          )}
                                         </button>
-                                      ))
+                                        );
+                                      })
                                     )}
                                   </div>
                                 </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 
@@ -10,8 +10,16 @@ export default function LoginPage() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
   const router = useRouter();
   const supabase = createClient();
+
+  // Повернення з недійсного посилання з листа (/auth/confirm → /login?error=link)
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get('error') === 'link') {
+      setError('Посилання з листа недійсне або застаріле. Надішліть новий лист і відкрийте його на цьому ж пристрої.');
+    }
+  }, []);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,15 +50,18 @@ export default function LoginPage() {
   };
 
   const handleResetPassword = async () => {
+    setNotice(null);
     if (!email) {
       setError('Введіть ваш email для відновлення пароля');
       return;
     }
+    setError(null);
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
+      // Посилання з листа веде на /auth/confirm, а звідти — на сторінку нового пароля
+      redirectTo: `${window.location.origin}/auth/confirm?next=/reset-password`,
     });
     if (error) setError(error.message);
-    else alert('Лист для відновлення надіслано! Перевірте пошту.');
+    else setNotice('Лист надіслано. Відкрийте посилання з нього на цьому ж пристрої.');
   };
 
   return (
@@ -101,7 +112,8 @@ export default function LoginPage() {
             )}
           </div>
 
-          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+          {error && <p role="alert" className="text-red-600 text-sm text-center">{error}</p>}
+          {notice && <p role="status" className="text-emerald-700 text-sm text-center">{notice}</p>}
 
           <button
             type="submit"

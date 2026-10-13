@@ -51,6 +51,8 @@ export default function RoleplayChat({
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Що повторити кнопкою «Спробувати ще раз» (лише для дій з AI)
+  const [retryAction, setRetryAction] = useState<'start' | 'send' | 'finish' | null>(null);
   const [userTurns, setUserTurns] = useState(0);
   const [finished, setFinished] = useState(false);
   const [autoSpeak, setAutoSpeak] = useState(true);
@@ -79,10 +81,12 @@ export default function RoleplayChat({
   const start = async () => {
     setBusy(true);
     setError(null);
+    setRetryAction(null);
     const res = await startRoleplay(situation.code);
     setBusy(false);
     if (!res.ok) {
       setError(res.error);
+      setRetryAction('start');
       return;
     }
     setConversationId(res.conversationId);
@@ -99,6 +103,7 @@ export default function RoleplayChat({
     if (!text || !conversationId || busy || finished) return;
     setBusy(true);
     setError(null);
+    setRetryAction(null);
     const userId = `u${Date.now()}`;
     setMessages((m) => [...m, { id: userId, role: 'user', text }]);
     setInput('');
@@ -109,6 +114,7 @@ export default function RoleplayChat({
       setMessages((m) => m.filter((x) => x.id !== userId));
       setInput(text);
       setError(res.error);
+      setRetryAction('send');
       return;
     }
     setMessages((m) => m.map((x) => (x.id === userId ? { ...x, correction: res.turn.correction } : x)));
@@ -122,10 +128,12 @@ export default function RoleplayChat({
     setConfirmExit(false);
     setBusy(true);
     setError(null);
+    setRetryAction(null);
     const res = await finishRoleplay(conversationId);
     setBusy(false);
     if (!res.ok) {
       setError(res.error);
+      setRetryAction('finish');
       return;
     }
     setResult(res);
@@ -138,6 +146,7 @@ export default function RoleplayChat({
       return;
     }
     setError(null);
+    setRetryAction(null);
     setListening(true);
     const session = browserSpeech.transcribe({ lang: 'hr-HR', maxAlternatives: 1, onInterim: (t) => setInput(t) });
     listeningRef.current = session;
@@ -358,7 +367,17 @@ export default function RoleplayChat({
             <Button onClick={() => void finish()}>Подивитися підсумок</Button>
           </Card>
         )}
-        {error && <ErrorBox text={error} />}
+        {error && (
+          <ErrorBox
+            text={error}
+            onRetry={
+              busy ? undefined
+                : retryAction === 'send' ? () => void send()
+                : retryAction === 'finish' ? () => void finish()
+                : undefined
+            }
+          />
+        )}
         <div ref={endRef} />
       </main>
 
@@ -457,10 +476,19 @@ export default function RoleplayChat({
   );
 }
 
-function ErrorBox({ text }: { text: string }) {
+function ErrorBox({ text, onRetry }: { text: string; onRetry?: () => void }) {
   return (
-    <p role="alert" className="rounded-card border border-danger-line bg-danger-soft p-4 text-body text-danger-ink">
-      {text}
-    </p>
+    <div role="alert" className="rounded-card border border-danger-line bg-danger-soft p-4 text-body text-danger-ink">
+      <p>{text}</p>
+      {onRetry && (
+        <button
+          type="button"
+          onClick={onRetry}
+          className="mt-3 min-h-11 rounded-control border border-danger-line bg-surface px-4 font-semibold"
+        >
+          Спробувати ще раз
+        </button>
+      )}
+    </div>
   );
 }
