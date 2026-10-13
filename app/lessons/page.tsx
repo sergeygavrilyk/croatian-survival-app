@@ -48,7 +48,8 @@ const getTopicIcon = (title: string) => {
 
 // Кеш списку модулів / уроків у браузері: версія змінюється, коли змінюється програма,
 // а TTL гарантує, що нові уроки з'являться без очищення сховища.
-const CURRICULUM_CACHE_VERSION = 'v2';
+// v3 (2026-10-13): опубліковано A1; порожній рівень більше не кешуємо.
+const CURRICULUM_CACHE_VERSION = 'v3';
 const CURRICULUM_CACHE_TTL_MS = 6 * 60 * 60 * 1000; // 6 годин
 
 function readCache<T>(key: string): T | null {
@@ -146,8 +147,9 @@ export default function LessonsPage() {
         if (error) throw error;
         const fetchedModules = data || [];
         
-        // Зберігаємо у клієнтський кеш
-        writeCache(cacheKey, fetchedModules);
+        // Зберігаємо у клієнтський кеш. Порожній рівень не кешуємо: щойно там з'являться
+        // модулі, користувач має їх побачити одразу, а не через 6 годин.
+        if (fetchedModules.length > 0) writeCache(cacheKey, fetchedModules);
         
         setModules(fetchedModules);
         if (fetchedModules.length > 0) {

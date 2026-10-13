@@ -7,7 +7,7 @@
     "build": "next build --webpack",
     "start": "next start",
     "lint": "next lint",
-    "test": "node --test --experimental-strip-types lib/srs.test.ts lib/analytics.test.ts lib/learning.test.ts lib/answer.test.ts lib/navigation.test.ts lib/ai-usage.test.ts lib/screens.test.ts lib/speaking.test.ts lib/roleplay.test.ts lib/ai-fallback.test.ts lib/phrase-match.test.ts lib/mistakes.test.ts",
+    "test": "node --test --experimental-strip-types lib/srs.test.ts lib/analytics.test.ts lib/learning.test.ts lib/answer.test.ts lib/navigation.test.ts lib/ai-usage.test.ts lib/screens.test.ts lib/speaking.test.ts lib/roleplay.test.ts lib/ai-fallback.test.ts lib/phrase-match.test.ts lib/mistakes.test.ts lib/lesson-flow.test.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

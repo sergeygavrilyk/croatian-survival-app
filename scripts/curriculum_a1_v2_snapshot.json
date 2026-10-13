@@ -1,0 +1,1025 @@
+{
+ "_note": "Знімок опублікованих слів робочої бази (2026-10-13), на які посилаються уроки доповнення A1 (curriculum_a1_v2): лема як у базі + переклад. Потрібен gen_curriculum_a1_v2.py, щоб тексти вправ на слова були відомі до запуску SQL. Даних користувачів тут немає.",
+ "lexemes": {
+  "alat": [
+   "alat",
+   "інструмент"
+  ],
+  "bajka": [
+   "bajka",
+   "казка"
+  ],
+  "baterija": [
+   "baterija",
+   "батарея / акумулятор"
+  ],
+  "boravište": [
+   "boravište",
+   "тимчасове перебування / реєстрація"
+  ],
+  "brod": [
+   "brod",
+   "корабель"
+  ],
+  "brzina": [
+   "brzina",
+   "швидкість"
+  ],
+  "cijepiti": [
+   "cijepiti",
+   "вакцинувати"
+  ],
+  "datoteka": [
+   "datoteka",
+   "файл"
+  ],
+  "dijeliti": [
+   "dijeliti",
+   "ділитися"
+  ],
+  "diploma": [
+   "diploma",
+   "диплом"
+  ],
+  "djevojka": [
+   "djevojka",
+   "дівчина"
+  ],
+  "dječja kolica": [
+   "dječja kolica",
+   "дитячий візочок"
+  ],
+  "dlaka": [
+   "dlaka",
+   "шерсть"
+  ],
+  "dnevni meni": [
+   "dnevni meni",
+   "денне меню"
+  ],
+  "dodati": [
+   "dodati",
+   "додати"
+  ],
+  "dogovoriti se": [
+   "dogovoriti se",
+   "домовитися"
+  ],
+  "dostava": [
+   "dostava",
+   "доставка"
+  ],
+  "dostaviti": [
+   "dostaviti",
+   "доставити"
+  ],
+  "dozvola": [
+   "dozvola",
+   "дозвіл / ліцензія"
+  ],
+  "društvene mreže": [
+   "društvene mreže",
+   "соціальні мережі"
+  ],
+  "džemper": [
+   "džemper",
+   "светр"
+  ],
+  "ekran": [
+   "ekran",
+   "екрані / дисплей"
+  ],
+  "evakuacija": [
+   "evakuacija",
+   "евакуація"
+  ],
+  "fakultet": [
+   "fakultet",
+   "факультет / університет"
+  ],
+  "festival": [
+   "festival",
+   "фестиваль"
+  ],
+  "flaster": [
+   "flaster",
+   "пластир"
+  ],
+  "galerija": [
+   "galerija",
+   "галерея"
+  ],
+  "gips": [
+   "gips",
+   "гіпс"
+  ],
+  "glumac": [
+   "glumac",
+   "актор"
+  ],
+  "govedina": [
+   "govedina",
+   "яловичина"
+  ],
+  "grupa": [
+   "grupa",
+   "група"
+  ],
+  "hladnoća": [
+   "hladnoća",
+   "холод"
+  ],
+  "igrač": [
+   "igrač",
+   "гравець"
+  ],
+  "iseliti se": [
+   "iseliti se",
+   "виїхати (з житла)"
+  ],
+  "isključiti": [
+   "isključiti",
+   "вимкнути; виключити"
+  ],
+  "ispit": [
+   "ispit",
+   "іспит / екзамен"
+  ],
+  "izgubiti": [
+   "izgubiti",
+   "загубити / втратити"
+  ],
+  "izložba": [
+   "izložba",
+   "виставка"
+  ],
+  "iznajmiti": [
+   "iznajmiti",
+   "орендувати / здати в оренду"
+  ],
+  "jamstvo": [
+   "jamstvo",
+   "гарантія"
+  ],
+  "jezero": [
+   "jezero",
+   "озеро"
+  ],
+  "kalendar": [
+   "kalendar",
+   "календар"
+  ],
+  "kapa": [
+   "kapa",
+   "шапка"
+  ],
+  "kaput": [
+   "kaput",
+   "пальто"
+  ],
+  "kazalište": [
+   "kazalište",
+   "театр"
+  ],
+  "kašljati": [
+   "kašljati",
+   "кашляти"
+  ],
+  "keks": [
+   "keks",
+   "печиво"
+  ],
+  "kihati": [
+   "kihati",
+   "чхати"
+  ],
+  "klima": [
+   "klima",
+   "кондиціонер"
+  ],
+  "komentar": [
+   "komentar",
+   "коментар"
+  ],
+  "koncert": [
+   "koncert",
+   "концерт"
+  ],
+  "kotač": [
+   "kotač",
+   "колесо"
+  ],
+  "kočnica": [
+   "kočnica",
+   "гальмо"
+  ],
+  "kružni tok": [
+   "kružni tok",
+   "кільцева розв'язка"
+  ],
+  "krv": [
+   "krv",
+   "кров"
+  ],
+  "krvariti": [
+   "krvariti",
+   "кровоточити"
+  ],
+  "kuhar": [
+   "kuhar",
+   "кухар"
+  ],
+  "kupac": [
+   "kupac",
+   "покупець"
+  ],
+  "kvačilo": [
+   "Kvačilo",
+   "Зчеплення"
+  ],
+  "laboratorij": [
+   "laboratorij",
+   "лабораторія"
+  ],
+  "lajati": [
+   "lajati",
+   "гавкати"
+  ],
+  "leći": [
+   "leći",
+   "лягти"
+  ],
+  "ljubav": [
+   "ljubav",
+   "любов"
+  ],
+  "ljubazan": [
+   "ljubazan",
+   "ввічливий; добрий"
+  ],
+  "lonac": [
+   "lonac",
+   "каструля"
+  ],
+  "lopta": [
+   "lopta",
+   "м'яч"
+  ],
+  "luka": [
+   "luka",
+   "порт"
+  ],
+  "mapa": [
+   "mapa",
+   "папка"
+  ],
+  "marenda": [
+   "marenda",
+   "перекус / пізній сніданок"
+  ],
+  "maslac": [
+   "maslac",
+   "вершкове масло"
+  ],
+  "mast": [
+   "mast",
+   "мазь"
+  ],
+  "mačić": [
+   "mačić",
+   "кошеня"
+  ],
+  "mačka": [
+   "mačka",
+   "кішка"
+  ],
+  "mehaničar": [
+   "mehaničar",
+   "механік"
+  ],
+  "mesnica": [
+   "mesnica",
+   "м'ясна лавка"
+  ],
+  "mijenjati": [
+   "mijenjati",
+   "змінювати"
+  ],
+  "miješati": [
+   "miješati",
+   "мішати"
+  ],
+  "mir": [
+   "mir",
+   "мир"
+  ],
+  "miš": [
+   "miš",
+   "миша"
+  ],
+  "mjeriti": [
+   "mjeriti",
+   "вимірювати"
+  ],
+  "momčad": [
+   "momčad",
+   "команда (спортивна)"
+  ],
+  "motor": [
+   "motor",
+   "двигун"
+  ],
+  "nada": [
+   "nada",
+   "надія"
+  ],
+  "nalaz krvi": [
+   "nalaz krvi",
+   "аналіз крові"
+  ],
+  "naučiti": [
+   "naučiti",
+   "вивчити"
+  ],
+  "nedostatak": [
+   "nedostatak",
+   "недолік; нестача"
+  ],
+  "nezaposlen": [
+   "nezaposlen",
+   "безробітний"
+  ],
+  "nos": [
+   "nos",
+   "ніс"
+  ],
+  "nositi": [
+   "nositi",
+   "носити / одягати"
+  ],
+  "obiteljski liječnik": [
+   "Obiteljski liječnik",
+   "Сімейний лікар"
+  ],
+  "objasniti": [
+   "objasniti",
+   "пояснити"
+  ],
+  "objaviti": [
+   "objaviti",
+   "опублікувати"
+  ],
+  "obrisati": [
+   "obrisati",
+   "видалити"
+  ],
+  "obveza": [
+   "obveza",
+   "зобов'язання"
+  ],
+  "ocjena": [
+   "ocjena",
+   "оцінка"
+  ],
+  "odgoditi": [
+   "odgoditi",
+   "відкласти"
+  ],
+  "odgovor": [
+   "odgovor",
+   "відповідь"
+  ],
+  "odgovoran": [
+   "odgovoran",
+   "відповідальний"
+  ],
+  "odgovoriti": [
+   "odgovoriti",
+   "відповісти"
+  ],
+  "odmoran": [
+   "odmoran",
+   "відпочилий"
+  ],
+  "opasno": [
+   "opasno",
+   "небезпечно"
+  ],
+  "opasnost": [
+   "opasnost",
+   "небезпека"
+  ],
+  "opušten": [
+   "opušten",
+   "розслаблений"
+  ],
+  "otkazati": [
+   "otkazati",
+   "скасувати"
+  ],
+  "ozljeda": [
+   "ozljeda",
+   "травма"
+  ],
+  "pakirati": [
+   "pakirati",
+   "пакувати"
+  ],
+  "papir": [
+   "papir",
+   "папір"
+  ],
+  "partner": [
+   "partner",
+   "партнер"
+  ],
+  "pasti": [
+   "pasti",
+   "впасти"
+  ],
+  "pauza": [
+   "pauza",
+   "перерва"
+  ],
+  "peći": [
+   "peći",
+   "випікати, смажити"
+  ],
+  "pijesak": [
+   "pijesak",
+   "пісок"
+  ],
+  "pjevač": [
+   "pjevač",
+   "співак"
+  ],
+  "pješak": [
+   "pješak",
+   "пішохід"
+  ],
+  "plakati": [
+   "plakati",
+   "плакати"
+  ],
+  "plan": [
+   "plan",
+   "план"
+  ],
+  "planirati": [
+   "planirati",
+   "планувати"
+  ],
+  "pobijediti": [
+   "pobijediti",
+   "перемогти"
+  ],
+  "podrum": [
+   "podrum",
+   "підвал"
+  ],
+  "poklopac": [
+   "poklopac",
+   "кришка"
+  ],
+  "poljubac": [
+   "poljubac",
+   "поцілунок"
+  ],
+  "poplava": [
+   "poplava",
+   "повінь"
+  ],
+  "popravak": [
+   "popravak",
+   "ремонт"
+  ],
+  "poslodavac": [
+   "poslodavac",
+   "роботодавець"
+  ],
+  "potres": [
+   "potres",
+   "землетрус"
+  ],
+  "potrošnja": [
+   "potrošnja",
+   "споживання; витрати"
+  ],
+  "povijest": [
+   "povijest",
+   "історія"
+  ],
+  "povodac": [
+   "Povodac",
+   "Повідець"
+  ],
+  "pozornica": [
+   "pozornica",
+   "сцена"
+  ],
+  "pošiljka": [
+   "pošiljka",
+   "поштове відправлення"
+  ],
+  "poštanski sandučić": [
+   "poštanski sandučić",
+   "поштова скринька"
+  ],
+  "poštovati": [
+   "poštovati",
+   "поважати"
+  ],
+  "požar": [
+   "požar",
+   "пожежа"
+  ],
+  "pratiti": [
+   "pratiti",
+   "стежити, супроводжувати"
+  ],
+  "pravilna prehrana": [
+   "pravilna prehrana",
+   "правильне харчування"
+  ],
+  "pravilo": [
+   "pravilo",
+   "правило"
+  ],
+  "prazan": [
+   "prazan",
+   "порожній"
+  ],
+  "prebivalište": [
+   "prebivalište",
+   "постійне місце проживання / прописка"
+  ],
+  "predati": [
+   "predati",
+   "здати, передати"
+  ],
+  "predavanje": [
+   "predavanje",
+   "лекція"
+  ],
+  "prednost": [
+   "prednost",
+   "перевага"
+  ],
+  "predstava": [
+   "predstava",
+   "вистава"
+  ],
+  "pregledati": [
+   "pregledati",
+   "оглянути (лікарем)"
+  ],
+  "preporuka": [
+   "preporuka",
+   "рекомендація"
+  ],
+  "presjedanje": [
+   "presjedanje",
+   "пересадка (на транспорті)"
+  ],
+  "preuzeti": [
+   "preuzeti",
+   "завантажити; взяти"
+  ],
+  "prijaviti se": [
+   "prijaviti se",
+   "зареєструватися"
+  ],
+  "prijevod": [
+   "prijevod",
+   "переклад"
+  ],
+  "prijevoz": [
+   "prijevoz",
+   "транспорт"
+  ],
+  "priroda": [
+   "priroda",
+   "природа"
+  ],
+  "privatan": [
+   "privatan",
+   "приватний"
+  ],
+  "profil": [
+   "profil",
+   "профіль"
+  ],
+  "prsten": [
+   "prsten",
+   "каблучка"
+  ],
+  "pržiti": [
+   "pržiti",
+   "смажити"
+  ],
+  "publika": [
+   "publika",
+   "публіка"
+  ],
+  "putnik": [
+   "putnik",
+   "пасажир / мандрівник"
+  ],
+  "radnik": [
+   "radnik",
+   "робітник"
+  ],
+  "radno mjesto": [
+   "radno mjesto",
+   "робоче місце"
+  ],
+  "rana": [
+   "rana",
+   "рана"
+  ],
+  "razina": [
+   "razina",
+   "рівень"
+  ],
+  "razlika": [
+   "razlika",
+   "різниця"
+  ],
+  "računalo": [
+   "računalo",
+   "комп'ютер"
+  ],
+  "rep": [
+   "rep",
+   "хвіст"
+  ],
+  "rezati": [
+   "rezati",
+   "різати"
+  ],
+  "ribarnica": [
+   "ribarnica",
+   "ринок риби"
+  ],
+  "riva": [
+   "riva",
+   "набережна"
+  ],
+  "rječnik": [
+   "rječnik",
+   "словник"
+  ],
+  "rješenje": [
+   "rješenje",
+   "офіційне рішення"
+  ],
+  "rukavice": [
+   "rukavice",
+   "рукавички"
+  ],
+  "san": [
+   "san",
+   "сон"
+  ],
+  "sanjati": [
+   "sanjati",
+   "мріяти, бачити сни"
+  ],
+  "savjet": [
+   "savjet",
+   "порада"
+  ],
+  "servis": [
+   "servis",
+   "сервіс; майстерня"
+  ],
+  "sigurnost": [
+   "sigurnost",
+   "безпека"
+  ],
+  "sjetiti se": [
+   "sjetiti se",
+   "згадати"
+  ],
+  "skladište": [
+   "skladište",
+   "склад"
+  ],
+  "sklonište": [
+   "sklonište",
+   "сховище / укриття"
+  ],
+  "slavlje": [
+   "slavlje",
+   "святкування"
+  ],
+  "sličan": [
+   "sličan",
+   "схожий"
+  ],
+  "slomiti": [
+   "slomiti",
+   "зламати"
+  ],
+  "slušalice": [
+   "slušalice",
+   "навушники"
+  ],
+  "smijati se": [
+   "smijati se",
+   "сміятися"
+  ],
+  "smjer": [
+   "smjer",
+   "напрямок"
+  ],
+  "smještaj": [
+   "smještaj",
+   "житло / розміщення"
+  ],
+  "snimiti": [
+   "snimiti",
+   "записати, зняти"
+  ],
+  "spasiti": [
+   "spasiti",
+   "врятувати"
+  ],
+  "specijalist": [
+   "specijalist",
+   "спеціаліст"
+  ],
+  "spoj": [
+   "spoj",
+   "з'єднання"
+  ],
+  "spomenik": [
+   "spomenik",
+   "пам'ятник"
+  ],
+  "spremiti": [
+   "spremiti",
+   "зберегти"
+  ],
+  "stara jezgra": [
+   "stara jezgra",
+   "старе місто"
+  ],
+  "stoljeće": [
+   "stoljeće",
+   "століття"
+  ],
+  "stranica": [
+   "stranica",
+   "сторінка"
+  ],
+  "stres": [
+   "stres",
+   "стрес"
+  ],
+  "strop": [
+   "strop",
+   "стеля"
+  ],
+  "strpljiv": [
+   "strpljiv",
+   "терплячий"
+  ],
+  "stupanj": [
+   "stupanj",
+   "ступінь, градус"
+  ],
+  "stvar": [
+   "stvar",
+   "річ; предмет; справа"
+  ],
+  "suknja": [
+   "suknja",
+   "спідниця"
+  ],
+  "svjetlo": [
+   "svjetlo",
+   "світло / фара"
+  ],
+  "tava": [
+   "tava",
+   "сковорідка"
+  ],
+  "tenisice": [
+   "tenisice",
+   "кросівки"
+  ],
+  "težak": [
+   "težak",
+   "важкий / складний"
+  ],
+  "težina": [
+   "težina",
+   "вага, складність"
+  ],
+  "tim": [
+   "tim",
+   "команда"
+  ],
+  "tipkovnica": [
+   "tipkovnica",
+   "клавіатура"
+  ],
+  "tišina": [
+   "tišina",
+   "тиша"
+  ],
+  "tlak": [
+   "tlak",
+   "тиск"
+  ],
+  "toplomjer": [
+   "toplomjer",
+   "термометр"
+  ],
+  "točan": [
+   "točan",
+   "правильний / точний"
+  ],
+  "trajati": [
+   "trajati",
+   "тривати"
+  ],
+  "trener": [
+   "trener",
+   "тренер"
+  ],
+  "trening": [
+   "trening",
+   "тренування"
+  ],
+  "turistički vodič": [
+   "turistički vodič",
+   "туристичний гід"
+  ],
+  "umjetnost": [
+   "umjetnost",
+   "мистецтво"
+  ],
+  "upozorenje": [
+   "upozorenje",
+   "попередження"
+  ],
+  "upute": [
+   "upute",
+   "інструкції"
+  ],
+  "uputnica": [
+   "uputnica",
+   "направлення"
+  ],
+  "utakmica": [
+   "utakmica",
+   "матч / гра"
+  ],
+  "uvjet": [
+   "uvjet",
+   "умова"
+  ],
+  "uzak": [
+   "uzak",
+   "вузький"
+  ],
+  "uzbuna": [
+   "uzbuna",
+   "тривога"
+  ],
+  "učionica": [
+   "učionica",
+   "клас, аудиторія"
+  ],
+  "vatrogasac": [
+   "vatrogasac",
+   "пожежник"
+  ],
+  "veterinar": [
+   "veterinar",
+   "ветеринар"
+  ],
+  "video": [
+   "video",
+   "відео"
+  ],
+  "vijest": [
+   "vijest",
+   "новина"
+  ],
+  "vjenčanje": [
+   "vjenčanje",
+   "весілля"
+  ],
+  "vježba": [
+   "vježba",
+   "вправа / тренування"
+  ],
+  "vježbati": [
+   "vježbati",
+   "тренуватися; виконувати вправи"
+  ],
+  "voditelj": [
+   "voditelj",
+   "керівник, ведучий"
+  ],
+  "zaboraviti": [
+   "zaboraviti",
+   "забути"
+  ],
+  "zadatak": [
+   "zadatak",
+   "завдання"
+  ],
+  "zagrljaj": [
+   "zagrljaj",
+   "обійми"
+  ],
+  "zajednica": [
+   "zajednica",
+   "спільнота"
+  ],
+  "zajednički": [
+   "zajednički",
+   "спільний"
+  ],
+  "zaljubiti se": [
+   "zaljubiti se",
+   "закохатися"
+  ],
+  "zavjesa": [
+   "zavjesa",
+   "завіса, штора"
+  ],
+  "zavod za zapošljavanje": [
+   "zavod za zapošljavanje",
+   "центр зайнятості"
+  ],
+  "zavoj": [
+   "zavoj",
+   "бинт / пов'язка"
+  ],
+  "zdrav život": [
+   "zdrav život",
+   "здоровий спосіб життя"
+  ],
+  "zid": [
+   "zid",
+   "стіна"
+  ],
+  "znamenitost": [
+   "znamenitost",
+   "визначна пам'ятка"
+  ],
+  "zvuk": [
+   "zvuk",
+   "звук"
+  ],
+  "zvučnik": [
+   "zvučnik",
+   "динамік"
+  ],
+  "čarape": [
+   "čarape",
+   "шкарпетки"
+  ],
+  "čizme": [
+   "čizme",
+   "чоботи"
+  ],
+  "šal": [
+   "šal",
+   "шарф"
+  ],
+  "šapa": [
+   "šapa",
+   "лапа"
+  ],
+  "širok": [
+   "širok",
+   "широкий"
+  ],
+  "štedjeti": [
+   "štedjeti",
+   "заощаджувати"
+  ],
+  "štene": [
+   "štene",
+   "цуценя"
+  ],
+  "šuma": [
+   "šuma",
+   "ліс"
+  ],
+  "životinja": [
+   "životinja",
+   "тварина"
+  ],
+  "životopis": [
+   "životopis",
+   "резюме"
+  ]
+ }
+}

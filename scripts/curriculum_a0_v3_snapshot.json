@@ -1,0 +1,409 @@
+{
+ "_note": "Знімок опублікованих слів робочої бази (2026-10-13), на які посилаються нові уроки A0 (curriculum_a0_v3) і яких немає в curriculum_a0_v2_snapshot.json: лема як у базі + переклад. Даних користувачів тут немає.",
+ "lexemes": {
+  "bicikl": [
+   "bicikl",
+   "велосипед"
+  ],
+  "bijel": [
+   "bijel",
+   "білий"
+  ],
+  "bolnica": [
+   "bolnica",
+   "лікарня"
+  ],
+  "boravak": [
+   "boravak",
+   "перебування; проживання"
+  ],
+  "crn": [
+   "crn",
+   "чорний"
+  ],
+  "cura": [
+   "cura",
+   "дівчина (романтично)"
+  ],
+  "datum": [
+   "datum",
+   "дата"
+  ],
+  "devedeset": [
+   "devedeset",
+   "дев'яносто"
+  ],
+  "devetnaest": [
+   "devetnaest",
+   "дев'ятнадцять"
+  ],
+  "dečko": [
+   "dečko",
+   "хлопець (романтично)"
+  ],
+  "dobar tek": [
+   "dobar tek",
+   "Смачного!"
+  ],
+  "dokument": [
+   "dokument",
+   "документ"
+  ],
+  "drag": [
+   "drag",
+   "дорогий"
+  ],
+  "dvanaest": [
+   "dvanaest",
+   "дванадцять"
+  ],
+  "dvorište": [
+   "dvorište",
+   "подвір'я"
+  ],
+  "evo": [
+   "evo",
+   "тут"
+  ],
+  "fotografija": [
+   "fotografija",
+   "фотографія"
+  ],
+  "hodnik": [
+   "hodnik",
+   "коридор"
+  ],
+  "ispričavam se": [
+   "ispričavam se",
+   "перепрошую"
+  ],
+  "jedanaest": [
+   "jedanaest",
+   "одинадцять"
+  ],
+  "jučer": [
+   "jučer",
+   "вчора"
+  ],
+  "knjižnica": [
+   "knjižnica",
+   "бібліотека"
+  ],
+  "kopija": [
+   "kopija",
+   "копія"
+  ],
+  "kuća": [
+   "kuća",
+   "дім"
+  ],
+  "led": [
+   "led",
+   "лід"
+  ],
+  "lipanj": [
+   "lipanj",
+   "червень"
+  ],
+  "listopad": [
+   "listopad",
+   "жовтень"
+  ],
+  "mineralna voda": [
+   "mineralna voda",
+   "мінеральна вода"
+  ],
+  "miran": [
+   "miran",
+   "спокійний"
+  ],
+  "mlad": [
+   "mlad",
+   "молодий"
+  ],
+  "most": [
+   "most",
+   "міст"
+  ],
+  "mup": [
+   "mUP",
+   "МВС / Міністерство внутрішніх справ"
+  ],
+  "navečer": [
+   "navečer",
+   "ввечері"
+  ],
+  "naći": [
+   "naći",
+   "знайти"
+  ],
+  "nema problema": [
+   "nema problema",
+   "немає проблем"
+  ],
+  "novčanik": [
+   "novčanik",
+   "гаманець"
+  ],
+  "ogledalo": [
+   "ogledalo",
+   "дзеркало"
+  ],
+  "oib": [
+   "OIB",
+   "Ідентифікаційний номер (OIB)"
+  ],
+  "opet": [
+   "opet",
+   "знову"
+  ],
+  "osamdeset": [
+   "osamdeset",
+   "вісімдесят"
+  ],
+  "osamnaest": [
+   "osamnaest",
+   "вісімнадцять"
+  ],
+  "osoba": [
+   "osoba",
+   "особа"
+  ],
+  "osobna iskaznica": [
+   "osobna iskaznica",
+   "посвідчення особи"
+  ],
+  "otprilike": [
+   "otprilike",
+   "приблизно"
+  ],
+  "ožujak": [
+   "ožujak",
+   "березень"
+  ],
+  "petnaest": [
+   "petnaest",
+   "п'ятнадцять"
+  ],
+  "pećnica": [
+   "pećnica",
+   "духовка"
+  ],
+  "piletina": [
+   "piletina",
+   "курятина"
+  ],
+  "pisati": [
+   "pisati",
+   "писати"
+  ],
+  "pivo": [
+   "pivo",
+   "пиво"
+  ],
+  "pola": [
+   "pola",
+   "половина"
+  ],
+  "policajac": [
+   "policajac",
+   "поліцейський"
+  ],
+  "policija": [
+   "policija",
+   "поліція"
+  ],
+  "pomoć": [
+   "pomoć",
+   "допомога"
+  ],
+  "ponoviti": [
+   "ponoviti",
+   "повторити"
+  ],
+  "prekjučer": [
+   "prekjučer",
+   "позавчора"
+  ],
+  "prekosutra": [
+   "prekosutra",
+   "післязавтра"
+  ],
+  "prijaviti": [
+   "prijaviti",
+   "зареєструвати; повідомити"
+  ],
+  "prosinac": [
+   "prosinac",
+   "грудень"
+  ],
+  "prvi": [
+   "prvi",
+   "перший"
+  ],
+  "puno": [
+   "puno",
+   "багато"
+  ],
+  "raskrižje": [
+   "raskrižje",
+   "перехрестя"
+  ],
+  "razumjeti": [
+   "razumjeti",
+   "розуміти"
+  ],
+  "rodbina": [
+   "rodbina",
+   "родичі"
+  ],
+  "sedamdeset": [
+   "sedamdeset",
+   "сімдесят"
+  ],
+  "sedamnaest": [
+   "sedamnaest",
+   "сімнадцять"
+  ],
+  "semafor": [
+   "semafor",
+   "світлофор"
+  ],
+  "siv": [
+   "siv",
+   "сірий"
+  ],
+  "smeđ": [
+   "smeđ",
+   "коричневий"
+  ],
+  "sto": [
+   "sto",
+   "сто"
+  ],
+  "stranac": [
+   "stranac",
+   "іноземець"
+  ],
+  "studeni": [
+   "studeni",
+   "листопад"
+  ],
+  "svibanj": [
+   "svibanj",
+   "травень"
+  ],
+  "svinjetina": [
+   "svinjetina",
+   "свинина"
+  ],
+  "tek": [
+   "tek",
+   "тільки-но, щойно"
+  ],
+  "telefon": [
+   "telefon",
+   "телефон"
+  ],
+  "tečaj": [
+   "tečaj",
+   "курс (навчальний / валютний)"
+  ],
+  "tisuća": [
+   "tisuća",
+   "тисяча"
+  ],
+  "tjedan": [
+   "tjedan",
+   "тиждень"
+  ],
+  "travanj": [
+   "travanj",
+   "квітень"
+  ],
+  "treći": [
+   "treći",
+   "третій"
+  ],
+  "trgovina": [
+   "trgovina",
+   "магазин / крамниця"
+  ],
+  "trinaest": [
+   "trinaest",
+   "тринадцять"
+  ],
+  "ujutro": [
+   "ujutro",
+   "вранці"
+  ],
+  "unuk": [
+   "unuk",
+   "онук"
+  ],
+  "unutra": [
+   "unutra",
+   "всередині / всередину"
+  ],
+  "veljača": [
+   "veljača",
+   "лютий"
+  ],
+  "večera": [
+   "večera",
+   "вечеря"
+  ],
+  "više": [
+   "više",
+   "більше"
+  ],
+  "vrt": [
+   "vrt",
+   "сад"
+  ],
+  "zahod": [
+   "zahod",
+   "туалет"
+  ],
+  "zelen": [
+   "zelen",
+   "зелений"
+  ],
+  "zgrada": [
+   "zgrada",
+   "будівля"
+  ],
+  "čaša": [
+   "čaša",
+   "склянка / келих"
+  ],
+  "čekati": [
+   "čekati",
+   "чекати"
+  ],
+  "četrnaest": [
+   "četrnaest",
+   "чотирнадцять"
+  ],
+  "šalica": [
+   "šalica",
+   "чашка"
+  ],
+  "šesnaest": [
+   "šesnaest",
+   "шістнадцять"
+  ],
+  "šezdeset": [
+   "šezdeset",
+   "шістдесят"
+  ],
+  "štednjak": [
+   "štednjak",
+   "плита (для готування)"
+  ],
+  "žut": [
+   "žut",
+   "жовтий"
+  ]
+ }
+}
