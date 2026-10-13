@@ -48,7 +48,7 @@ npm test           # node --test (потрібен Node 22.6+): lib/*.test.ts
 
 ```
 app/
-  page.tsx, lessons/, (main)/lesson/[id]/, trainer/, dictionary/, situations/ (+ [code]), onboarding/, profile/, login/, admin/
+  page.tsx, lessons/, (main)/lesson/[id]/, trainer/, mistakes/, dictionary/, situations/ (+ [code]), onboarding/, profile/, login/, admin/
   actions/          server actions: srs (оцінка картки), progress (completeLesson), analytics (trackEvent), onboarding (тест рівня, профіль), speaking, roleplay (AI), lesson, chat, translate
   api/tts/          TTS-проксі
 components/         LessonView, FlashcardTrainer, WriteTrainer, SituationView, SpeakingPractice, RoleplayChat (AI), OnboardingFlow, ProfileView,
@@ -58,7 +58,7 @@ lib/               логіка без БД: srs.ts (повторення), anal
                    answer.ts (перевірка введення), navigation.ts (вкладки), situations.ts (довідник і зведення ситуацій),
                    placement.ts (оцінка тесту рівня), onboarding.ts, progress.ts, speaking.ts (оцінка мовлення),
                    speech-provider.ts (інтерфейс §79), ai-provider.ts (інтерфейс §78), roleplay.ts (сценарії, інструкції AI, розбір JSON),
-                   format.ts (множина), ui.ts (cn, shuffle), ai-fallback.ts (запасні моделі AI), phrase-match.ts (пошук перекладу в перевіреному контенті) + тести; ai-gemini.ts, ai-usage-server.ts — лише сервер
+                   format.ts (множина), ui.ts (cn, shuffle), ai-fallback.ts (запасні моделі AI), phrase-match.ts (пошук перекладу в перевіреному контенті), mistakes.ts (повторення помилок) + тести; ai-gemini.ts, ai-usage-server.ts — лише сервер
                    learning-repo-supabase.ts і server-context.ts — лише для сервера
 utils/supabase/     client.ts (браузер), server.ts (server actions / server components)
 utils/speech.ts     озвучення (/api/tts); utils/speech-recognition.ts — розпізнавання в браузері

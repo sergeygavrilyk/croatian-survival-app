@@ -12,8 +12,8 @@ import { recordAiUsage } from '@/lib/ai-usage-server';
 import { AIError, type AIProvider, type AIRequest, type AIResult } from '@/lib/ai-provider';
 import { buildModelChain, classifyAiFailure, shouldTryNextModel } from '@/lib/ai-fallback';
 
-/** Скільки чекаємо одну модель, мс */
-const ATTEMPT_TIMEOUT_MS = 15_000;
+/** Скільки чекаємо одну модель, мс (10 с: 2026-10-13 перевантажена модель «висіла» по 15 с, і репліка в рольовій грі йшла 30+ с) */
+const ATTEMPT_TIMEOUT_MS = 10_000;
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 

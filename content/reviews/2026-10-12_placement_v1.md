@@ -6,7 +6,7 @@ Skill `croatian-content-review`. Об'єкт: 24 питання з виборо�
 
 | Перевірено | OK | Виправити | Видалити | Потребує людини |
 |---|---|---|---|---|
-| 24 | 21 | 0 | 0 | 3 (впевненість середня) |
+| 24 | 21 | 0 | 0 | 3 (впевненість середня) → перевірено носієм 2026-10-13: 2 OK, 1 правка |
 
 **Автоматичні перевірки (скрипт):**
 - на A0–B1 по 4 питання, на B2 — 8; на кожне питання 4 різні варіанти;
@@ -41,10 +41,10 @@ Skill `croatian-content-review`. Об'єкт: 24 питання з виборо�
 | 12 | A2 · читання | Uzimajte tablete dva puta dnevno nakon jela. | OK (недоконаний наказовий для регулярного прийому) |
 | 13 | B1 · граматика | Kad bih imao više vremena, ___ … → učio bih | OK |
 | 14 | B1 · граматика | To je kolega ___ sam ti pričao. → o kojem | OK |
-| 15 | B1 · словник / регістр | Bismo li mogli pomaknuti sastanak na sutra? | **Людина:** уживаються і «na sutra», і «za sutra»; обидва природні, але варто підтвердити носієм |
-| 16 | B1 · читання | Unatoč kiši, utakmica je održana prema planu. | **Людина:** правильно і природно (стиль новин); перевірити, чи не надто книжно для B1 |
+| 15 | B1 · словник / регістр | Bismo li mogli pomaknuti sastanak **za** sutra? | **Носій (2026-10-13):** природніше «za sutra» → виправлено (було «na sutra») |
+| 16 | B1 · читання | Unatoč kiši, utakmica je održana prema planu. | **Носій (2026-10-13):** правильно, OK |
 | 17 | B2 · граматика (вид) | Dok sam ___ izvještaj, netko mi je ukrao bicikl. → pisao | OK: «dok» + тривала дія → недоконаний вид; «napisao» тут хибне |
-| 18 | B2 · граматика (нереальна умова) | Da sam to znao ranije, ___ drugačije. → postupio bih | **Людина:** правильно і поширено в розмовній і стандартній мові; книжний варіант — «bio bih postupio». Перевірити, чи носій не вважає його єдиним правильним для минулого |
+| 18 | B2 · граматика (нереальна умова) | Da sam to znao ranije, ___ drugačije. → postupio bih | **Носій (2026-10-13):** «Postupio bih…» — правильно, OK |
 | 19 | B2 · граматика (присвійний займенник) | To je susjeda ___ sin radi u bolnici. → čiji | OK: узгодження з тим, що належить (sin), — типова пастка |
 | 20 | B2 · граматика (сполучник) | ___ je vlak kasnio, propustili smo sastanak. → Budući da | OK. «Kako je vlak kasnio…» теж можливе в причиновому значенні, тому серед варіантів його немає (є лише «kako bi» — мета) |
 | 21 | B2 · словник (фразеологізм) | Ta buka mi ide na živce. | OK |
@@ -52,10 +52,14 @@ Skill `croatian-content-review`. Об'єкт: 24 питання з виборо�
 | 23 | B2 · читання | Iako je stan u centru i ima pogled na more, najamnina je niža nego inače jer vlasnik želi dugoročnog najmoprimca. | OK (najamnina, najmoprimac — хорватська норма) |
 | 24 | B2 · читання (висновок) | Novi zakon trebao je pojednostaviti postupak, no u praksi su se rokovi dodatno produžili. | OK: «trebao je» — «мав (але не)», перевіряє розуміння наміру vs. результату |
 
-## Що вирішує людина
+## Перевірка носієм (2026-10-13)
 
-1. П. 15, 16 і 18 — див. таблицю (впевненість середня, помилок не знайдено).
-2. Опублікувати тест: блок «Опублікувати тест рівня» в `docs/PROJECT_STATE.md`. До публікації онбординг працює без тесту (рівень — за самооцінкою).
+Власник показав носію питання 15, 16, 18:
+- **15** — «Bismo li mogli pomaknuti sastanak **za** sutra.» → у тесті «na sutra» замінено на «za sutra» (правильна відповідь та сама — варіант 3);
+- **16** — «Unatoč kiši, utakmica je održana prema planu» — «that is good»;
+- **18** — «Postupio bih…» — правильно.
+
+Публікація: `supabase/data_fixes/20261013_placement_v1_publish.sql` — правка п. 15 і статус PUBLISHED для тесту й усіх 24 питань (самоперевірка: 24 опубліковано, правильна відповідь п. 15 — «…za sutra?»). Після запуску новий користувач проходить тест в онбордингу; наявний — «Профіль» → «Змінити цілі або пройти тест рівня».
 
 ## Як рахується B2
 

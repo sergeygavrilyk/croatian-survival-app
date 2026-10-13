@@ -12,6 +12,7 @@ import {
   collectErrors,
   getScenario,
   isCefr,
+  isTrivialCorrection,
   parseAssessment,
   parseRoleplayTurn,
   sanitizeUserText,
@@ -165,6 +166,9 @@ export async function sendRoleplayMessage(
       },
       parseRoleplayTurn,
     );
+
+    // Виправлення лише розділових знаків / регістру / діакритик не показуємо і не зберігаємо
+    if (turn.correction && isTrivialCorrection(message, turn.correction.corrected_hr)) turn.correction = null;
 
     const userTurns = conv.user_turns + 1;
     const finished = turn.goal_reached || userTurns >= MAX_USER_TURNS;

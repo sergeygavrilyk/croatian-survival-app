@@ -61,7 +61,7 @@ ITEMS = [
      ['o kojem', 'koji', 'kojeg', 'kojem'],
      '«Pričati o nekome» — розповідати про когось: o kojem (місцевий відмінок).'),
     ('B1', 'vocabulary', 'Як ввічливо попросити колегу перенести зустріч на завтра?', None,
-     ['Bismo li mogli pomaknuti sastanak na sutra?', 'Pomakni sastanak!', 'Sastanak je sutra.', 'Nema sastanka sutra.'],
+     ['Bismo li mogli pomaknuti sastanak za sutra?', 'Pomakni sastanak!', 'Sastanak je sutra.', 'Nema sastanka sutra.'],
      '«Bismo li mogli…?» — чи не могли б ми…? Умовний спосіб робить прохання ввічливим.'),
     ('B1', 'reading', 'Що сталося з матчем?', 'Unatoč kiši, utakmica je održana prema planu.',
      ['Матч відбувся за планом, попри дощ.', 'Матч скасували через дощ.', 'Матч перенесли на завтра.', 'Дощу не було.'],

@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { SITUATIONS } from './situations.ts';
 import {
-  SCENARIOS, getScenario, buildRoleplaySystemPrompt, parseRoleplayTurn, parseAssessment, collectErrors,
+  SCENARIOS, getScenario, buildRoleplaySystemPrompt, parseRoleplayTurn, parseAssessment, collectErrors, isTrivialCorrection,
   sanitizeUserText, isCefr, MAX_MESSAGE_CHARS,
 } from './roleplay.ts';
 
@@ -71,7 +71,27 @@ test('рольова гра: помилки для повторення без �
     ] },
   );
   assert.equal(errs.length, 1);
-  assert.equal(errs[0].corrected_hr, 'Jednu kavu, molim.');
+  assert.equal(errs[0].corrected_hr, 'jednu kavu molim'); // оцінка в кінці має пріоритет
+});
+
+test('рольова гра: суперечливі виправлення однієї репліки — зберігаємо версію з оцінки', () => {
+  const errs = collectErrors(
+    [
+      { original: 'tak dobro', correction: { corrected_hr: 'Tako je dobro.', explanation_ua: 'tako', type: 'vocabulary' } },
+      { original: 'jedna kava molim', correction: { corrected_hr: 'Jedna kava, molim.', explanation_ua: 'кома', type: 'spelling' } },
+    ],
+    { task_completed: true, summary_ua: 'ok', strengths_ua: [], errors: [
+      { original: 'tak dobro', corrected_hr: 'Da, molim.', explanation_ua: '«так» — da', type: 'vocabulary' },
+      { original: 'jedna kava molim', corrected_hr: 'Jednu kavu, molim.', explanation_ua: 'Знахідний відмінок.', type: 'grammar' },
+    ] },
+  );
+  assert.deepEqual(errs.map((e) => e.corrected_hr), ['Da, molim.', 'Jednu kavu, molim.']);
+});
+
+test('рольова гра: розділові знаки, регістр і діакритики — не помилка', () => {
+  assert.equal(isTrivialCorrection('jedna kava molim', 'Jedna kava, molim.'), true);
+  assert.equal(isTrivialCorrection('zelim cevapcice', 'Želim ćevapčiće!'), true);
+  assert.equal(isTrivialCorrection('jedna kava molim', 'Jednu kavu, molim.'), false);
 });
 
 test('рольова гра: текст користувача обрізається і чиститься', () => {

@@ -6,10 +6,11 @@ import { cn } from '@/lib/ui';
 
 const TABS = [
   { href: '/trainer', label: 'Тренажер' },
+  { href: '/mistakes', label: 'Помилки' },
   { href: '/dictionary', label: 'Словник' },
 ] as const;
 
-/** Вкладки розділу «Практика»: тренажер і словник (docs/DESIGN_SYSTEM.md §7.1). */
+/** Вкладки розділу «Практика»: тренажер, помилки з рольової гри, словник (docs/DESIGN_SYSTEM.md §7.1). */
 export default function PracticeTabs({ className }: { className?: string }) {
   const pathname = usePathname() ?? '';
   return (

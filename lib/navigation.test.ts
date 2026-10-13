@@ -8,7 +8,7 @@ test('нижня панель: 5 вкладок у погодженому пор
 });
 
 test('нижня панель показується на екранах вкладок', () => {
-  for (const p of ['/', '/lessons', '/trainer', '/dictionary', '/profile', '/situations', '/situations/health', '/lessons/']) {
+  for (const p of ['/', '/lessons', '/trainer', '/mistakes', '/dictionary', '/profile', '/situations', '/situations/health', '/lessons/']) {
     assert.equal(showsBottomNav(p), true, p);
   }
 });
@@ -23,6 +23,7 @@ test('активна вкладка: словник належить до «Пр
   assert.equal(activeTab('/'), 'today');
   assert.equal(activeTab('/dictionary'), 'practice');
   assert.equal(activeTab('/trainer'), 'practice');
+  assert.equal(activeTab('/mistakes'), 'practice');
   assert.equal(activeTab('/situations/bank'), 'situations');
   assert.equal(activeTab('/lesson/abc'), null);
   assert.equal(activeTab('/lessonsx'), null);

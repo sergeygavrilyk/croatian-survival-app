@@ -68,7 +68,7 @@ select a.id, 14, 'B1', 'grammar', 'Оберіть правильне слово.
 from public.assessments a where a.slug = 'placement-v1'
 on conflict (assessment_id, order_index) do nothing;
 insert into public.assessment_items (assessment_id, order_index, cefr, skill, prompt_ua, prompt_hr, options, correct_index, explanation_ua, status, source)
-select a.id, 15, 'B1', 'vocabulary', 'Як ввічливо попросити колегу перенести зустріч на завтра?', null, '["Nema sastanka sutra.", "Sastanak je sutra.", "Bismo li mogli pomaknuti sastanak na sutra?", "Pomakni sastanak!"]'::jsonb, 2, '«Bismo li mogli…?» — чи не могли б ми…? Умовний спосіб робить прохання ввічливим.', 'NEEDS_REVIEW', 'claude_placement_v1'
+select a.id, 15, 'B1', 'vocabulary', 'Як ввічливо попросити колегу перенести зустріч на завтра?', null, '["Nema sastanka sutra.", "Sastanak je sutra.", "Bismo li mogli pomaknuti sastanak za sutra?", "Pomakni sastanak!"]'::jsonb, 2, '«Bismo li mogli…?» — чи не могли б ми…? Умовний спосіб робить прохання ввічливим.', 'NEEDS_REVIEW', 'claude_placement_v1'
 from public.assessments a where a.slug = 'placement-v1'
 on conflict (assessment_id, order_index) do nothing;
 insert into public.assessment_items (assessment_id, order_index, cefr, skill, prompt_ua, prompt_hr, options, correct_index, explanation_ua, status, source)

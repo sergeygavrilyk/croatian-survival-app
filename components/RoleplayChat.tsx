@@ -269,7 +269,10 @@ export default function RoleplayChat({
             </AiPanel>
           )}
           {result.errorsSaved > 0 && (
-            <p className="text-center text-label font-normal text-ink-muted">Збережено для повторення: {result.errorsSaved}</p>
+            <div className="flex flex-col items-center gap-2 text-center">
+              <p className="text-label font-normal text-ink-muted">Збережено для повторення: {result.errorsSaved}</p>
+              <Button variant="secondary" href="/mistakes">Виправити помилки зараз</Button>
+            </div>
           )}
 
           <div className="flex flex-col gap-2 sm:flex-row">

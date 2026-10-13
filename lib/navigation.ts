@@ -20,7 +20,7 @@ function under(path: string, base: string): boolean {
 export function activeTab(path: string): TabKey | null {
   if (path === '/') return 'today';
   if (under(path, '/lessons')) return 'lessons';
-  if (under(path, '/trainer') || under(path, '/dictionary')) return 'practice';
+  if (under(path, '/trainer') || under(path, '/mistakes') || under(path, '/dictionary')) return 'practice';
   if (under(path, '/situations')) return 'situations';
   if (under(path, '/profile')) return 'profile';
   return null;
@@ -34,5 +34,5 @@ export function showsBottomNav(path: string): boolean {
   const clean = path.length > 1 ? path.replace(/\/+$/, '') : path;
   // Рольова гра — повноекранне заняття, без нижньої панелі
   if (under(clean, '/situations')) return !clean.endsWith('/roleplay');
-  return ['/', '/lessons', '/trainer', '/dictionary', '/profile'].includes(clean);
+  return ['/', '/lessons', '/trainer', '/mistakes', '/dictionary', '/profile'].includes(clean);
 }
