@@ -11,6 +11,8 @@ import IconButton from '@/components/ui/IconButton';
 import ProgressBar from '@/components/ui/ProgressBar';
 import RoleplaySimulator from '@/components/features/RoleplaySimulator';
 import LessonExercise, { type LessonExerciseData } from './LessonExercise';
+import TypicalErrorCard from '@/components/TypicalErrorCard';
+import type { TypicalError } from '@/lib/interference';
 import { speakCroatian } from '@/utils/speech';
 import { track } from '@/lib/analytics-client';
 import { situationInfo } from '@/lib/situations';
@@ -73,6 +75,8 @@ export interface LessonContent {
   dialogues: LessonDialogue[];
   grammar: GrammarTopic[];
   exercises: LessonExerciseData[];
+  /** Типові помилки українців для теми граматики й слів уроку (§19); показуємо на етапі «Граматика» */
+  pitfalls?: TypicalError[];
 }
 
 type Shell = (children: React.ReactNode, footer?: React.ReactNode) => React.ReactNode;
@@ -307,6 +311,9 @@ export default function LessonPlayer({
               </div>
             ))}
           </Card>
+        ))}
+        {(content.pitfalls ?? []).map((e) => (
+          <TypicalErrorCard key={e.code} error={e} />
         ))}
       </>,
       <>

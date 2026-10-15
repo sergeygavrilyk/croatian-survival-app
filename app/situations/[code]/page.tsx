@@ -30,6 +30,8 @@ export default async function SituationPage({ params }: Params) {
       .select('id, title_ua, title_hr, level')
       .eq('situation', code)
       .eq('status', 'PUBLISHED')
+      // спершу простіші (A0 → A1), а в межах рівня — за порядком уроків
+      .order('level', { ascending: true, nullsFirst: false })
       .order('order_index', { ascending: true }),
   ]);
 

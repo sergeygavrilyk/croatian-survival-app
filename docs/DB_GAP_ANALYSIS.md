@@ -33,7 +33,7 @@
 | `app/(main)/lesson/[id]/page.tsx` | таблиця `lesson_progress` | немає | прогрес уроку не зберігається |
 | функція `complete_lesson_and_start_srs` у БД | `topic_progress`, `vocabulary` | немає | будь-який виклик — помилка |
 
-`components/LessonView.tsx` уже використовує `lexeme_id` — правильно.
+`components/LessonView.tsx` уже використовує `lexeme_id` — правильно. (З 2026-10-13 урок показує `components/lesson/LessonPlayer.tsx`; `LessonView` більше не використовується.)
 
 ## Розходження схеми з ТЗ
 
@@ -55,12 +55,12 @@
 | Група | Відсутні таблиці | Коли потрібні |
 |---|---|---|
 | Словник | `lexeme_forms` (= vocabulary_forms), `collocations`, `examples`, `topics` (✅ `phrases` — M6, 2026-10-12) | коли JSONB стане тісним; до A1 |
-| Помилки українців | `linguistic_errors`, ~~`user_errors`~~ ✅ M9 | Interference Engine (§19) |
+| Помилки українців | ~~`linguistic_errors`~~ ✅ M14, ~~`user_errors`~~ ✅ M9 (+ `linguistic_error_id`, M14) | Interference Engine (§19) |
 | Сесії та спроби | `learning_sessions`, `exercise_attempts` | VS-002, аналітика |
 | Сценарії | `scenarios`, `scenario_turns` (`ai_conversations.scenario_id` поки без FK) | VS-004 |
 | Говоріння | ~~`speaking_sessions`, `speaking_attempts`~~ ✅ M8 | VS-003 |
 | Помічник | `assistant_requests` | VS-005, VS-006 |
-| Читання / письмо / медіація | `reading_documents`, `reading_words`, `writing_attempts`, `mediation_tasks`, `mediation_attempts` | після MVP-ядра |
+| Читання / письмо / медіація | ~~`reading_documents`, `reading_words`~~ → `reading_texts` + `reading_progress` ✅ M15 (словничок слів — jsonb `glossary` у тексті, а не окрема таблиця: див. нижче); `writing_attempts`, `mediation_tasks`, `mediation_attempts` | після MVP-ядра |
 | Оцінювання | ~~`assessments`, `assessment_items`, `assessment_attempts`~~ ✅ M7 | placement у MVP (§90) |
 | Операції | `analytics_events`, `ai_usage_events`, `subscriptions`, `notifications`, `sync_operations` | аналітика — з VS-001 (§84); офлайн-синхронізація — MVP |
 
@@ -96,4 +96,10 @@
 8. ✅ **M10 — порядок уроків** (`20261012240000_m10_lesson_order.sql`): `lessons.order_index` (NOT NULL, ≥ 1), `unique (unit_id, order_index)`, тригер ставить новий урок у кінець юніту. Разом із ним — data-fix `20261012_curriculum_a0_v1.sql` (програма A0 + каркас A1–B2).
 9. ✅ **M11 — збережені переклади** (`20261013100000_m11_translation_cache.sql`): `translation_cache` — особистий кеш перекладів «Мені потрібно сказати…» (RLS: лише свої).
 10. ✅ **M12 — повторення помилок** (`20261013120000_m12_user_errors_review.sql`): розклад повторення в `user_errors` (серія правильних, наступна дата, засвоєно).
-11. Далі — таблиці під кожен вертикальний зріз (speaking, assistant_requests, assessments…), коли до нього доходить черга.
+11. **M13 — нові типи вправ** (`20261013140000_m13_exercise_types.sql`): `exercise_type` + `type_answer`, `speaking`; у `multiple_choice` правильна відповідь має бути серед варіантів (`not valid` — наявні рядки перевіряє тест). Разом із ним — data-fix `20261013_curriculum_a0_v2.sql` (розширені уроки A0). Чекає запуску власником.
+12. **M14 — типові помилки українців** (`20261013160000_m14_linguistic_errors.sql`, §119): `linguistic_errors` (код `UKR-HR-NNNN`, 12 категорій ТЗ §19, рівень, неправильно / правильно, пояснення, приклади, прив’язка до теми граматики й слова; статус, версія, RLS як у контенту); `user_errors.linguistic_error_id` + одна помилка каталогу на користувача; `content_reviews` / `content_versions` приймають `linguistic_error`. Разом із нею — data-fix `20261013_interference_v1.sql` (74 помилки). Чекає запуску власником.
+13. **M15 — читання** (`20261014100000_m15_reading.sql`, §123): `reading_texts` (код `RD-A1-NNN`, рівень, вид тексту, модуль, хорватський текст і переклад, словничок `glossary` jsonb — форма → лема, переклад, чи є в уроках; питання `questions` jsonb; кількість слів, частка знайомих; статус, версія, RLS як у контенту) і `reading_progress` (результат користувача, один рядок на текст; RLS лише свої, без видалення); `content_reviews` / `content_versions` приймають `reading_text`. Разом із нею — data-fix `20261014_reading_a1_v1.sql` (40 текстів). Чекає запуску власником.
+    - **Відхилення від §123:** замість `reading_documents` + `reading_words` — `reading_texts` з jsonb-словничком. Причина: тексти короткі (24–57 слів), словничок генерується скриптом і читається цілим разом із текстом (одним запитом, кешується офлайн). Окрема таблиця слів знадобиться, коли тексти стануть довгими (B1+) або для пошуку «де ще трапляється слово» — тоді додамо `reading_words` адитивно.
+14. **M16 — вивіски для читання** (`20261015120000_m16_reading_signs.sql`): до CHECK `reading_texts.text_type` додано `sign` (адитивно). Разом із нею — `20261015_reading_a0_v1.sql` (20 текстів A0) і `20261015_reading_a2_v1_part1/2.sql` (20 текстів A2, DRAFT). Чекає запуску власником.
+15. **M17 — перевірки рівня** (`20261015160000_m17_level_assessments.sql`, §60, §116): без нових таблиць — розширено `assessments` (рівень, модуль, порядок, пороги `pass_ratio` 0.70 / `area_min_ratio` 0.50, хвилини, опис), `assessment_items` (навичка §60 `area`, типи `type_answer` / `sentence_builder` / `speaking`, `audio_hr`, `passage_hr` / `passage_ua`, `answer_text`, урок-джерело `lesson_id`; правило форми відповіді залежить від типу; хорватське — лише латиницею), `assessment_attempts` (`score`, `passed`, `area_scores`). Старі CHECK на варіанти замінено одним (для питань тесту рівня правило те саме — перевірено в робочій базі). Разом — `20261015_assessments_a0_v1.sql` і `_a1_v1.sql` (24 тести, 300 завдань). Чекає запуску власником.
+16. Далі — таблиці під кожен вертикальний зріз (speaking, assistant_requests, assessments…), коли до нього доходить черга.

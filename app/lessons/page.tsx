@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CircleCheck } from 'lucide-react';
+import { ChevronRight, CircleCheck, ClipboardCheck } from 'lucide-react';
+import { ASSESSED_LEVELS, assessmentSlug } from '@/lib/assessment';
 
 interface Module {
   id: string;
@@ -49,7 +50,7 @@ const getTopicIcon = (title: string) => {
 // Кеш списку модулів / уроків у браузері: версія змінюється, коли змінюється програма,
 // а TTL гарантує, що нові уроки з'являться без очищення сховища.
 // v3 (2026-10-13): опубліковано A1; порожній рівень більше не кешуємо.
-const CURRICULUM_CACHE_VERSION = 'v3';
+const CURRICULUM_CACHE_VERSION = 'v4'; // v4 (2026-10-15): уроки A0.1 перебудовано за темою, нова назва уроку 4
 const CURRICULUM_CACHE_TTL_MS = 6 * 60 * 60 * 1000; // 6 годин
 
 function readCache<T>(key: string): T | null {
@@ -274,6 +275,21 @@ export default function LessonsPage() {
       </header>
 
       <main className="px-6 mt-6">
+        {(ASSESSED_LEVELS as readonly string[]).includes(activeLevel) && modules.length > 0 && (
+          <Link
+            href={`/lessons/tests?level=${activeLevel}`}
+            className="mb-6 flex min-h-16 items-center gap-3 rounded-card border border-primary bg-surface p-4 shadow-sm transition-colors hover:bg-primary-soft"
+          >
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary-ink">
+              <ClipboardCheck className="size-5" aria-hidden="true" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block font-heading text-h3 text-ink">Перевірки рівня {activeLevel}</span>
+              <span className="block text-label font-normal text-ink-muted">Після модуля, середина й фінал: розумію, кажу, спілкуюся, переказую</span>
+            </span>
+            <ChevronRight className="size-5 shrink-0 text-ink-subtle" aria-hidden="true" />
+          </Link>
+        )}
         {modules.length === 0 && !loading && (
           <div className="text-center py-10 text-slate-400">
             <p>Модулі для цього рівня ще не створені.</p>
@@ -392,6 +408,17 @@ export default function LessonsPage() {
                                 </div>
                               ))}
                             </div>
+                          )}
+                          {(ASSESSED_LEVELS as readonly string[]).includes(module.level_code) && moduleUnits.length > 0 && (
+                            <Link
+                              href={`/assessment/${assessmentSlug(module.level_code, 'module', module.order_index)}`}
+                              onClick={(e) => e.stopPropagation()}
+                              className="mt-4 flex min-h-12 items-center gap-3 rounded-control border border-primary bg-primary-soft px-4 py-3 text-primary-ink transition-colors hover:bg-surface"
+                            >
+                              <ClipboardCheck className="size-5 shrink-0" aria-hidden="true" />
+                              <span className="min-w-0 flex-1 text-body font-semibold">Перевірка модуля · ~5 хв</span>
+                              <ChevronRight className="size-5 shrink-0" aria-hidden="true" />
+                            </Link>
                           )}
                         </div>
                       </motion.div>

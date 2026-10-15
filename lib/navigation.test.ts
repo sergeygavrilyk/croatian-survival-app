@@ -8,13 +8,13 @@ test('нижня панель: 5 вкладок у погодженому пор
 });
 
 test('нижня панель показується на екранах вкладок', () => {
-  for (const p of ['/', '/lessons', '/trainer', '/mistakes', '/dictionary', '/profile', '/situations', '/situations/health', '/lessons/']) {
+  for (const p of ['/', '/lessons', '/trainer', '/mistakes', '/mistakes/typical', '/reading', '/dictionary', '/profile', '/situations', '/situations/health', '/lessons/', '/lessons/tests']) {
     assert.equal(showsBottomNav(p), true, p);
   }
 });
 
 test('нижня панель схована в уроці, на вході й в адмінці', () => {
-  for (const p of ['/lesson/c0000000-0000-0000-0000-000000000001', '/login', '/admin', '/lessonsx', '/trainerx', '/situations/cafe_restaurant/roleplay', '/onboarding', '/reset-password']) {
+  for (const p of ['/lesson/c0000000-0000-0000-0000-000000000001', '/login', '/admin', '/lessonsx', '/trainerx', '/situations/cafe_restaurant/roleplay', '/onboarding', '/reset-password', '/reading/abc', '/assessment/a0-m01']) {
     assert.equal(showsBottomNav(p), false, p);
   }
 });
@@ -24,9 +24,14 @@ test('активна вкладка: словник належить до «Пр
   assert.equal(activeTab('/dictionary'), 'practice');
   assert.equal(activeTab('/trainer'), 'practice');
   assert.equal(activeTab('/mistakes'), 'practice');
+  assert.equal(activeTab('/mistakes/typical'), 'practice');
+  assert.equal(activeTab('/reading'), 'practice');
+  assert.equal(activeTab('/reading/abc'), 'practice');
   assert.equal(activeTab('/situations/bank'), 'situations');
   assert.equal(activeTab('/lesson/abc'), null);
   assert.equal(activeTab('/lessonsx'), null);
+  assert.equal(activeTab('/lessons/tests'), 'lessons');
+  assert.equal(activeTab('/assessment/a0-m01'), null);
 });
 
 test('ситуації: усі коди з БД мають назву, коди унікальні', () => {

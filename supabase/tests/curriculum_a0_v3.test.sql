@@ -42,8 +42,9 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l where l.level_code
     or (select count(*) from public.lesson_items i where i.lesson_id = l.id and i.item_type = 'lexeme') not between 10 and 12
     or (select count(*) from public.conversations c where c.lesson_id = l.id and c.status = 'PUBLISHED') <> 2
     or not exists (select 1 from public.lesson_items i where i.lesson_id = l.id and i.item_type = 'grammar')
-    or estimated_minutes is distinct from 12)$q$) = 0,
-  'кожен новий урок: 10–12 слів, 2 діалоги, граматика, 12 вправ, 12 хв');
+    or estimated_minutes is distinct from 12)
+  and not exists (select 1 from public.content_reviews r where r.entity_id = l.id and r.notes like '%curriculum_a0_v4%')$q$) = 0,
+  'кожен новий урок: 10–12 слів, 2 діалоги, граматика, 12 вправ, 12 хв (крім перебудованих за темою)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l where l.level_code = 'A0' and l.order_index >= 4
   and (select count(distinct e.exercise_type) from public.lesson_items i join public.exercises e on e.id = i.item_id
        where i.lesson_id = l.id and i.item_type = 'exercise') < 6$q$) = 0,

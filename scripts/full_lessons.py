@@ -117,6 +117,8 @@ class Course:
     extra_module_words: dict = field(default_factory=dict)  # модуль → слова наявних уроків модуля
     words_range: tuple = (10, 12)
     errors: list = field(default_factory=list)
+    # вправи на слова: кількість «що означає», «як хорватською», «напишіть» (для уроків на 20–25 слів — більше)
+    vocab_counts: tuple = (2, 1, 2)
 
     # ------------------------------------------------------------ переклади
     def lemma_of(self, word: str) -> str:
@@ -274,10 +276,10 @@ class Course:
             return None
 
         out: list[dict] = []
-        plan = [('meaning', lambda w: True), ('meaning', lambda w: True),
-                ('choose_hr', lambda w: not self.ambiguous(w)),
-                ('type', lambda w: not self.ambiguous(w) and typable(w)),
-                ('type', lambda w: not self.ambiguous(w) and typable(w))]
+        n_meaning, n_choose, n_type = self.vocab_counts
+        plan = ([('meaning', lambda w: True)] * n_meaning
+                + [('choose_hr', lambda w: not self.ambiguous(w))] * n_choose
+                + [('type', lambda w: not self.ambiguous(w) and typable(w))] * n_type)
         for kind, cond in plan:
             w = pick(cond)
             if w is None:

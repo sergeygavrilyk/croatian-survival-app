@@ -30,7 +30,7 @@ export async function proxy(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
 
   // Список шляхів, які потребують авторизації
-  const protectedPaths = ['/lessons', '/lesson', '/trainer'];
+  const protectedPaths = ['/lessons', '/lesson', '/trainer', '/assessment'];
   const isProtected = protectedPaths.some((path) => request.nextUrl.pathname.startsWith(path));
 
   if (isProtected && !user) {

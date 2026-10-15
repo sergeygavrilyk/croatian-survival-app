@@ -5,6 +5,7 @@ import ScenarioCard from '@/components/ui/ScenarioCard';
 import EmptyState from '@/components/ui/EmptyState';
 import ErrorState from '@/components/ui/ErrorState';
 import Button from '@/components/ui/Button';
+import { SONGS } from '@/lib/songs';
 
 export const metadata = { title: 'Ситуації · Croatian Survival App' };
 
@@ -46,6 +47,10 @@ export default async function SituationsPage() {
           ))}
         </ul>
       )}
+
+      <section className="mx-auto mt-6 max-w-2xl px-5" aria-label="Пісні">
+        <ScenarioCard emoji="🎵" title="Пісні" meta={`${SONGS.length} пісень для свят і фешт`} href="/situations/songs" />
+      </section>
     </div>
   );
 }

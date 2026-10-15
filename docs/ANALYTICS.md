@@ -110,10 +110,17 @@ Track:
 | `conversation_started` | сервер, `startRoleplay` | source = `roleplay`, situation, level |
 | `conversation_completed` | сервер, `finishRoleplay` | source = `roleplay`, situation, level, count (реплік користувача), attempt (помилок збережено), success (завдання виконано) |
 | `placement_completed` | сервер, `submitPlacement` | estimated_level, recommended_start, confidence, count, correct_count, duration_ms, success |
+| `exercise_completed` | сервер, `answerTypicalError` («Типові помилки», кожна відповідь) | exercise_type = `typical_error`, source = `interference`, skill (категорія помилки), success, duration_ms |
+| `review_started` / `review_completed` | «Типові помилки», початок / кінець серії з 8 питань | source = `typical_errors`, count, correct_count, duration_ms |
+| `reading_started` | `/reading/<id>`, текст відкрито | source = `reading`, skill = `reading`, level, count (слів у тексті) |
+| `reading_completed` | сервер, `completeReading` («Перевірити») | source = `reading`, skill = `reading`, level, count (питань), correct_count, success (≥ 2 з 3), duration_ms |
+| `word_saved` | сервер, `saveReadingWord` (слово з тексту → тренажер) | lexeme_id, source = `reading` |
+| `assessment_started` | `/assessment/<slug>`, «Почати» (§60) | level, assessment_kind (`module` / `mid` / `final`), assessment_slug (`a0-m01`…), count (завдань) |
+| `assessment_completed` | сервер, `submitAssessment` | level, module_id, assessment_kind, assessment_slug, score (0…1), count (зараховано завдань, без пропущеного говоріння), correct_count, success (пройдено), duration_ms |
 
 Кожна оцінка картки окремо записується в `srs_reviews` (результат, інтервали, ease, `response_time_ms`) — це і є детальна історія повторень, тому окремої події на кожну картку немає.
 
-Ще не реалізовано: `word_mastered` (потрібні критерії §42: продукування + кілька сесій), читання, «What Do I Say?», підписки — додаються разом з відповідними зрізами. Облік витрат AI — див. нижче.
+Ще не реалізовано: `word_mastered` (потрібні критерії §42: продукування + кілька сесій), «What Do I Say?», підписки — додаються разом з відповідними зрізами. Облік витрат AI — див. нижче.
 
 ## Облік викликів AI (§74) — реалізація (M4b, 2026-10-12)
 

@@ -35,10 +35,11 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l where l.level_code
   and (select count(*) from public.conversations c where c.lesson_id = l.id and c.status = 'PUBLISHED') < 2$q$) = 0,
   'у кожному уроці A0 дві сцени діалогу');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l where l.level_code = 'A0' and l.status = 'PUBLISHED'
-  and (select count(*) from public.lesson_items i where i.lesson_id = l.id and i.item_type = 'lexeme') not between 8 and 12$q$) = 0,
-  'у кожному уроці A0 8–12 слів');
-select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons where level_code = 'A0' and status = 'PUBLISHED'
-  and estimated_minutes is distinct from 12$q$) = 0, 'урок A0 розрахований на 12 хвилин');
+  and (select count(*) from public.lesson_items i where i.lesson_id = l.id and i.item_type = 'lexeme') not between 8 and 12
+  and not exists (select 1 from public.content_reviews r where r.entity_id = l.id and r.notes like '%curriculum_a0_v4%')$q$) = 0,
+  'у кожному уроці A0 8–12 слів (крім перебудованих за темою — curriculum_a0_v4: 20–25)');
+select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l where level_code = 'A0' and status = 'PUBLISHED'
+  and estimated_minutes is distinct from 12 and not exists (select 1 from public.content_reviews r where r.entity_id = l.id and r.notes like '%curriculum_a0_v4%')$q$) = 0, 'урок A0 розрахований на 12 хвилин (перебудований за темою — 15)');
 select pg_temp.ok(pg_temp.n($q$select lesson_id, item_type, item_id from public.lesson_items
   group by 1, 2, 3 having count(*) > 1$q$) = 0, 'жоден елемент не повторюється в уроці');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l where l.level_code = 'A0' and l.status = 'PUBLISHED'

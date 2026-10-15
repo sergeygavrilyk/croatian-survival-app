@@ -6,13 +6,15 @@
  * (lesson_id, lexeme_id, level, success, duration_ms…), решта — у jsonb `properties`.
  */
 
-/** Назви подій з §71. Додавати нові — лише разом з оновленням docs/ANALYTICS.md. */
+/** Назви подій з §71 (+ тести рівня §60). Додавати нові — лише разом з оновленням docs/ANALYTICS.md. */
 export const EVENT_NAMES = [
   'app_open',
   'onboarding_started',
   'onboarding_completed',
   'placement_started',
   'placement_completed',
+  'assessment_started',
+  'assessment_completed',
   'lesson_started',
   'lesson_completed',
   'exercise_started',
@@ -72,6 +74,10 @@ export interface EventProps {
   estimated_level?: string;
   recommended_start?: string;
   confidence?: string;
+  /** Тести рівня (§60): module / mid / final, адреса тесту, частка правильних */
+  assessment_kind?: string;
+  assessment_slug?: string;
+  score?: number;
   device?: string;
   app_version?: string;
 }

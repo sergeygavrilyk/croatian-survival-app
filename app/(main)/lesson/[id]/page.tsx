@@ -10,9 +10,10 @@ import type { LessonExerciseData } from '@/components/lesson/LessonExercise';
 import ErrorState from '@/components/ui/ErrorState';
 import { completeLesson } from '@/app/actions/progress';
 import { track, getSessionId } from '@/lib/analytics-client';
+import { examplesFrom, lessonPitfalls, type TypicalError } from '@/lib/interference';
 
 // Кеш уроку в браузері: версія змінюється, коли змінюється формат даних
-const LESSON_CACHE_VERSION = 'v3';
+const LESSON_CACHE_VERSION = 'v6'; // v6: імена в діалогах A0.1 (Даша); v5: уроки A0 за темою (curriculum_a0_v4); v4: типові помилки (pitfalls)
 const LESSON_CACHE_TTL_MS = 12 * 60 * 60 * 1000; // 12 годин
 
 type CachedLesson = LessonContent & { cachedAt: number };
@@ -154,7 +155,27 @@ export default function LessonPage() {
         );
         const exercises = inOrder(exerciseIds, (exercisesRes.data ?? []) as LessonExerciseData[]);
 
-        const fresh: CachedLesson = { lesson, words, dialogues, grammar, exercises, cachedAt: Date.now() };
+        // Типові помилки українців для теми й слів уроку (§19). Необов'язково: збій не ламає урок.
+        let pitfalls: TypicalError[] = [];
+        if (grammarIds.length || lexemeIds.length) {
+          const filters = [
+            grammarIds.length ? `grammar_topic_id.in.(${grammarIds.join(',')})` : null,
+            lexemeIds.length ? `lexeme_id.in.(${lexemeIds.join(',')})` : null,
+          ].filter(Boolean).join(',');
+          const { data, error } = await supabase
+            .from('linguistic_errors')
+            .select('id, code, category, cefr, title_ua, incorrect_text, correct_text, explanation_ua, examples, grammar_topic_id, lexeme_id')
+            .eq('status', 'PUBLISHED')
+            .or(filters);
+          if (error) console.warn('Типові помилки не завантажились:', error.message);
+          const rows = ((data ?? []) as Array<Omit<TypicalError, 'examples'> & { examples: unknown }>).map((r) => ({
+            ...r,
+            examples: examplesFrom(r.examples),
+          }));
+          pitfalls = lessonPitfalls(rows, grammarIds, lexemeIds, 2);
+        }
+
+        const fresh: CachedLesson = { lesson, words, dialogues, grammar, exercises, pitfalls, cachedAt: Date.now() };
         try {
           localStorage.setItem(cacheKey, JSON.stringify(fresh));
         } catch {

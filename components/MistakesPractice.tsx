@@ -22,6 +22,8 @@ export interface MistakeItem {
   original: string;
   corrected: string;
   explanation: string | null;
+  /** Звідки помилка: roleplay — рольова гра, exercise — вправа «Типові помилки» */
+  source?: string | null;
 }
 
 interface Tile {
@@ -78,8 +80,8 @@ export default function MistakesPractice({
         <EmptyState
           icon={<MessagesSquare className="size-6" aria-hidden="true" />}
           title="Помилок поки немає"
-          text="Тут з’являться помилки з рольової гри з AI — їх можна буде виправити й запам’ятати."
-          action={<Button href="/situations">До ситуацій</Button>}
+          text="Тут з’являться помилки з рольової гри з AI і з вправи «Типові помилки» — їх можна буде виправити й запам’ятати."
+          action={<Button href="/mistakes/typical">Типові помилки</Button>}
         />
       );
     }
@@ -163,7 +165,7 @@ export default function MistakesPractice({
       </div>
 
       <Card className="flex flex-col gap-2">
-        <p className="text-label text-ink-muted">Ви сказали в рольовій грі:</p>
+        <p className="text-label text-ink-muted">{item.source === 'exercise' ? 'Типова помилка:' : 'Ви сказали в рольовій грі:'}</p>
         <Hr as="p" className="text-body-lg text-ink-muted line-through decoration-danger-line">{item.original}</Hr>
         <p className="mt-2 font-heading text-h3">Складіть правильно</p>
       </Card>

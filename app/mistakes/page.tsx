@@ -1,6 +1,8 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/utils/supabase/server';
 import PracticeTabs from '@/components/ui/PracticeTabs';
+import SegmentedLinks from '@/components/ui/SegmentedLinks';
+import { MISTAKES_SEGMENTS } from '@/lib/navigation';
 import ErrorState from '@/components/ui/ErrorState';
 import MistakesPractice, { type MistakeItem } from '@/components/MistakesPractice';
 import { isDue, SESSION_SIZE } from '@/lib/mistakes';
@@ -9,7 +11,7 @@ export const metadata = { title: 'Мої помилки · Croatian Survival App
 export const dynamic = 'force-dynamic';
 
 /**
- * «Практика» → «Помилки»: повторення помилок з рольової гри (user_errors, M9 + M12).
+ * «Практика» → «Помилки»: повторення особистих помилок — з рольової гри й з вправи «Типові помилки» (user_errors, M9 + M12 + M14).
  * Сторінка бере дані, MistakesPractice — інтерактивна вправа.
  */
 export default async function MistakesPage() {
@@ -20,7 +22,7 @@ export default async function MistakesPage() {
   const [openRes, resolvedRes] = await Promise.all([
     supabase
       .from('user_errors')
-      .select('id, original_text, corrected_text, explanation_ua, error_type, situation, next_review_at, resolved_at')
+      .select('id, source, original_text, corrected_text, explanation_ua, error_type, situation, next_review_at, resolved_at')
       .eq('user_id', user.id)
       .is('resolved_at', null)
       .order('created_at', { ascending: true })
@@ -41,6 +43,7 @@ export default async function MistakesPage() {
     original: row.original_text as string,
     corrected: row.corrected_text as string,
     explanation: (row.explanation_ua as string | null) ?? null,
+    source: (row.source as string | null) ?? null,
   }));
 
   return (
@@ -48,6 +51,7 @@ export default async function MistakesPage() {
       <header className="mx-auto max-w-md px-4 pt-[calc(2.5rem+env(safe-area-inset-top))] mb-4">
         <h1 className="font-heading text-h1 mb-2">Практика</h1>
         <PracticeTabs />
+        <SegmentedLinks items={MISTAKES_SEGMENTS} label="Які помилки" className="mt-4" />
       </header>
       <main className="mx-auto max-w-md px-4">
         {failed ? (

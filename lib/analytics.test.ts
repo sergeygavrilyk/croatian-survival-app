@@ -8,7 +8,8 @@ const LESSON = 'c0000000-0000-0000-0000-000000000001';
 const LEXEME = '22222222-2222-2222-2222-222222222222';
 
 test('усі події з §71 дозволені, вигадані — ні', () => {
-  assert.equal(EVENT_NAMES.length, 23);
+  assert.equal(EVENT_NAMES.length, 25);
+  assert.ok(isEventName('assessment_completed'));
   assert.ok(isEventName('lesson_completed'));
   assert.ok(!isEventName('lesson_finished'));
   assert.equal(buildAnalyticsRow('hack_the_db', {}, now), null);
