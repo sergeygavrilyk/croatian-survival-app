@@ -7,6 +7,7 @@
  */
 import { scheduleReview, NEW_CARD, type SrsState, type SrsResult } from './srs.ts';
 import { buildAnalyticsRow, type AnalyticsRow, type EventName, type EventProps } from './analytics.ts';
+import { DEFAULT_TIME_ZONE, learningStreak } from './progress.ts';
 
 export interface ReviewHistoryEntry {
   userId: string;
@@ -26,6 +27,11 @@ export interface LearningRepo {
   /** Додає слова в повторення, якщо їх там ще немає. Повертає кількість доданих. */
   addToReviewIfAbsent(userId: string, lexemeIds: string[], dueAt: Date): Promise<number>;
   logEvent(userId: string, row: AnalyticsRow): Promise<void>;
+  /**
+   * Моменти навчання з `since` (події LEARNING_EVENTS + історія повторень карток) і часовий пояс профілю —
+   * для серії днів 🔥 на святковому екрані після уроку (так само, як на «Сьогодні»).
+   */
+  getLearningActivity(userId: string, since: Date): Promise<{ timestamps: string[]; timeZone: string | null }>;
 }
 
 export type Logger = (message: string, error: unknown) => void;
@@ -147,5 +153,18 @@ export async function completeLesson(repo: LearningRepo, input: CompleteLessonIn
     added_to_review: addedToReview,
   }, now, log);
 
-  return { success: true as const, addedToReview };
+  // Серія днів 🔥 для святкового екрана. Сьогоднішній урок рахуємо завжди (навіть якщо подія не записалась).
+  // Не вдалося прочитати активність — серію не показуємо (null), урок однаково пройдено.
+  const streak = await softly('Помилка читання активності для серії:', null as number | null, async () => {
+    const since = new Date(now.getTime() - STREAK_LOOKBACK_DAYS * 24 * 60 * 60 * 1000);
+    const { timestamps, timeZone } = await repo.getLearningActivity(userId, since);
+    return learningStreak([...timestamps, now.toISOString()], now, timeZone ?? DEFAULT_TIME_ZONE);
+  }, log);
+
+  return { success: true as const, addedToReview, lessonWords: uniqueIds.length, streak };
 }
+
+/** Скільки днів назад дивимось, рахуючи серію (як на «Сьогодні»). */
+export const STREAK_LOOKBACK_DAYS = 120;
+
+export type CompleteLessonResult = Awaited<ReturnType<typeof completeLesson>>;

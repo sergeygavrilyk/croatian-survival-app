@@ -5,12 +5,13 @@
 import { CEFR_ORDER } from './situations.ts';
 import type { Cefr } from './placement.ts';
 
+/** Мети навчання; emoji — знак, як у відповідних «Ситуаціях» (DESIGN_SYSTEM §3.4) */
 export const LEARNING_GOALS = [
-  { key: 'daily_life', label: 'Побут і повсякденне життя', hint: 'магазин, житло, транспорт, лікар' },
-  { key: 'work', label: 'Робота', hint: 'колеги, зустрічі, листування' },
-  { key: 'documents', label: 'Документи й установи', hint: 'MUP, банк, податкова, обрт' },
-  { key: 'social', label: 'Спілкування з людьми', hint: 'сусіди, друзі, діти в школі' },
-  { key: 'travel', label: 'Подорожі', hint: 'дорога, готель, кордон' },
+  { key: 'daily_life', label: 'Побут і повсякденне життя', hint: 'магазин, житло, транспорт, лікар', emoji: '🏠' },
+  { key: 'work', label: 'Робота', hint: 'колеги, зустрічі, листування', emoji: '💼' },
+  { key: 'documents', label: 'Документи й установи', hint: 'MUP, банк, податкова, обрт', emoji: '📄' },
+  { key: 'social', label: 'Спілкування з людьми', hint: 'сусіди, друзі, діти в школі', emoji: '💬' },
+  { key: 'travel', label: 'Подорожі', hint: 'дорога, готель, кордон', emoji: '🧳' },
 ] as const;
 
 export type LearningGoal = (typeof LEARNING_GOALS)[number]['key'];

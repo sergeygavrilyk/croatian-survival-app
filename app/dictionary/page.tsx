@@ -1,34 +1,96 @@
 'use client';
 
 import React, { useEffect, useState, useCallback, useRef } from 'react';
+import { Check, Search, X } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
-import { motion } from 'framer-motion';
-import { speakCroatian } from '@/utils/speech';
 import PracticeTabs from '@/components/ui/PracticeTabs';
 import { dictionarySearchTerm, posLabelUk } from '@/lib/format';
+import { LEVEL_CODES, levelStyle } from '@/lib/levels';
+import { cn } from '@/lib/ui';
+import { WORD_THEME_SELECT, wordThemes, type WordTheme } from '@/lib/word-theme';
+import AudioButton from '@/components/ui/AudioButton';
+import Button from '@/components/ui/Button';
+import EmptyState from '@/components/ui/EmptyState';
+import ErrorState from '@/components/ui/ErrorState';
+import Hr from '@/components/ui/Hr';
+import IconButton from '@/components/ui/IconButton';
+import LevelBadge from '@/components/ui/LevelBadge';
+import Skeleton from '@/components/ui/Skeleton';
+import WordTile from '@/components/ui/WordTile';
 
 const PAGE_SIZE = 30; // Розмір однієї порції слів
+const LEVELS = ['ALL', ...LEVEL_CODES] as const;
+type Level = (typeof LEVELS)[number];
 
+interface Word {
+  id: string;
+  lemma: string;
+  translation: string;
+  pos: string | null;
+  level: string | null;
+}
+
+/**
+ * Словник (розділ «Практика»): пошук по всьому словнику, фільтр за рівнем.
+ * Біля слова — емодзі теми уроку в кольорі рівня, бейдж рівня, частина мови, «Вчу» (DESIGN_SYSTEM §3.4).
+ */
 export default function DictionaryPage() {
   const supabase = createClient();
-  
-  const [words, setWords] = useState<any[]>([]);
+
+  const [words, setWords] = useState<Word[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [loadError, setLoadError] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  // Пошук іде в базі по всьому словнику (раніше — лише серед 30 завантажених слів), із затримкою 300 мс
+  // Пошук іде в базі по всьому словнику, із затримкою 300 мс
   const [term, setTerm] = useState<string | null>(null);
+  const [level, setLevel] = useState<Level>('ALL');
   const requestRef = useRef(0); // відповідь старішого запиту (попередній пошук) не перезаписує новішу
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  // Доповнення до слів (не критичні: без них — літера замість емодзі й без позначки «Вчу»)
+  const [themes, setThemes] = useState<Map<string, WordTheme>>(new Map());
+  const [learning, setLearning] = useState<Set<string>>(new Set());
+  const userIdRef = useRef<string | null | undefined>(undefined);
 
-  // ОПТИМІЗОВАНО: Порційне завантаження з точковими полями
-  const fetchWords = useCallback(async (pageIndex: number, isReset: boolean = false, search: string | null = null) => {
-    if (isReset) {
-      setLoading(true);
-    } else {
-      setLoadingMore(true);
+  /** Тема (емодзі модуля) і «Вчу» для нової порції слів. */
+  const enrich = useCallback(async (ids: string[]) => {
+    if (ids.length === 0) return;
+    try {
+      if (userIdRef.current === undefined) {
+        const { data: { user } } = await supabase.auth.getUser();
+        userIdRef.current = user?.id ?? null;
+      }
+      const userId = userIdRef.current;
+      const [links, progress] = await Promise.all([
+        supabase
+          .from('lesson_items')
+          .select(WORD_THEME_SELECT)
+          .eq('item_type', 'lexeme')
+          .eq('lessons.status', 'PUBLISHED')
+          .in('item_id', ids),
+        userId
+          ? supabase.from('user_progress').select('lexeme_id').eq('user_id', userId).in('lexeme_id', ids)
+          : Promise.resolve({ data: [], error: null }),
+      ]);
+      if (!links.error) {
+        const found = wordThemes(links.data);
+        setThemes(prev => new Map([...prev, ...found]));
+      }
+      if (!progress.error && progress.data) {
+        const mine = (progress.data as { lexeme_id: string }[]).map(p => p.lexeme_id);
+        setLearning(prev => new Set([...prev, ...mine]));
+      }
+    } catch (err) {
+      console.warn('Тема слів / «Вчу» не завантажились:', err);
     }
+  }, [supabase]);
+
+  // Порційне завантаження з точковими полями
+  const fetchWords = useCallback(async (pageIndex: number, isReset: boolean, search: string | null, lvl: Level) => {
+    if (isReset) setLoading(true);
+    else setLoadingMore(true);
+    setLoadError(false);
 
     const requestId = ++requestRef.current;
     const from = pageIndex * PAGE_SIZE;
@@ -37,13 +99,14 @@ export default function DictionaryPage() {
     try {
       let request = supabase
         .from('lexemes')
-        .select('id, lemma, ukrainian_translation, part_of_speech, cefr') // Точкові поля замість *
+        .select('id, lemma, ukrainian_translation, part_of_speech, cefr')
         .eq('status', 'PUBLISHED')
         .not('lemma', 'like', '%:%'); // без реплік діалогів («Konobar: …»)
       if (search) {
         // лема, лема без діакритики (macka → mačka) або переклад
         request = request.or(`lemma.ilike.%${search}%,normalized.ilike.%${search}%,ukrainian_translation.ilike.%${search}%`);
       }
+      if (lvl !== 'ALL') request = request.eq('cefr', lvl);
       const { data, error } = await request
         .order('cefr', { ascending: true, nullsFirst: false }) // спершу A0, потім A1…
         .order('frequency_rank', { ascending: true, nullsFirst: false })
@@ -53,26 +116,29 @@ export default function DictionaryPage() {
       if (error) throw error;
       if (requestId !== requestRef.current) return;
 
-      if (data) {
-        setHasMore(data.length === PAGE_SIZE); // менше за порцію — кінець словника чи результатів
-        // Поля під існуючу розмітку картки слова
-        const mapped = data.map((lex) => ({
-          id: lex.id,
-          hr_text: lex.lemma,
-          ua_translation: lex.ukrainian_translation,
-          phonetic_note: [posLabelUk(lex.part_of_speech), lex.cefr].filter(Boolean).join(' · '),
-        }));
-        setWords(prev => isReset ? mapped : [...prev, ...mapped]);
-      }
+      const mapped: Word[] = (data ?? []).map((lex) => ({
+        id: lex.id,
+        lemma: lex.lemma,
+        translation: lex.ukrainian_translation,
+        pos: posLabelUk(lex.part_of_speech),
+        level: lex.cefr,
+      }));
+      setHasMore(mapped.length === PAGE_SIZE); // менше за порцію — кінець словника чи результатів
+      setWords(prev => (isReset ? mapped : [...prev, ...mapped]));
+      void enrich(mapped.map(w => w.id));
     } catch (err) {
       console.error('Помилка завантаження словника:', err);
+      if (requestId === requestRef.current) {
+        if (isReset) setWords([]); // старі результати іншого пошуку не показуємо
+        setLoadError(true);
+      }
     } finally {
       if (requestId === requestRef.current) {
         setLoading(false);
         setLoadingMore(false);
       }
     }
-  }, [supabase]);
+  }, [supabase, enrich]);
 
   // Затримка: шукаємо, коли користувач перестав друкувати
   useEffect(() => {
@@ -82,127 +148,157 @@ export default function DictionaryPage() {
 
   useEffect(() => {
     setPage(0);
-    fetchWords(0, true, term);
-  }, [fetchWords, term]);
+    fetchWords(0, true, term, level);
+  }, [fetchWords, term, level]);
 
   const loadMore = () => {
     if (loadingMore || !hasMore) return;
     const nextPage = page + 1;
     setPage(nextPage);
-    fetchWords(nextPage, false, term);
+    fetchWords(nextPage, false, term, level);
   };
 
-  const filteredWords = words;
+  const retry = () => (words.length > 0 ? fetchWords(page, false, term, level) : fetchWords(0, true, term, level));
 
   return (
-    <div className="min-h-screen pb-28 font-sans overflow-x-hidden">
-      
-      {/* Шапка з пошуком */}
-      <header className="sticky top-0 z-20 backdrop-blur-2xl bg-white/70 border-b border-slate-200/50 px-6 pt-10 pb-6 shadow-sm">
-        <h1 className="font-heading text-h1 mb-2">Практика</h1>
-        <PracticeTabs className="mb-4" />
-        
-        <div className="relative">
-          <input 
-            type="text" 
-            placeholder="Пошук слова..." 
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-slate-100/80 text-slate-700 font-medium rounded-2xl py-3.5 px-4 pl-12 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 border border-slate-200 transition-all shadow-inner"
-          />
-          <svg className="w-5 h-5 absolute left-4 top-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-          
-          {searchQuery && (
-            <button 
-              onClick={() => setSearchQuery('')}
-              className="absolute right-4 top-4 text-slate-400 hover:text-slate-600"
-            >
-              ✕
-            </button>
-          )}
-        </div>
+    <div className="min-h-screen pb-28">
+      <header className="mx-auto max-w-2xl px-5 pt-[calc(2.5rem+env(safe-area-inset-top))]">
+        <h1 className="font-heading text-h1">Практика</h1>
+        <PracticeTabs className="mt-2" />
       </header>
 
-      {/* Список слів */}
-      <main className="px-6 mt-6">
-        <div className="flex justify-between items-end mb-4 px-1">
-          <h2 className="text-sm font-bold text-slate-400 uppercase tracking-widest">
-            {searchQuery ? 'Результати пошуку' : 'Всі слова'}
+      {/* Пошук і рівень — лишаються вгорі під час гортання */}
+      <div className="sticky top-0 z-20 border-b border-line bg-canvas/95 px-5 pt-4 pb-3">
+        <div className="mx-auto flex max-w-2xl flex-col gap-3">
+          <div className="relative">
+            <label htmlFor="dictionary-search" className="sr-only">
+              Пошук слова
+            </label>
+            <Search className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-ink-subtle" aria-hidden="true" />
+            <input
+              id="dictionary-search"
+              type="search"
+              placeholder="Слово або переклад…"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              autoComplete="off"
+              className="min-h-12 w-full rounded-control border border-line bg-surface pr-12 pl-12 text-body placeholder:text-ink-subtle focus:border-primary [&::-webkit-search-cancel-button]:hidden"
+            />
+            {searchQuery && (
+              <IconButton label="Очистити пошук" onClick={() => setSearchQuery('')} className="absolute top-1/2 right-1 -translate-y-1/2">
+                <X className="size-5" aria-hidden="true" />
+              </IconButton>
+            )}
+          </div>
+
+          <div role="group" aria-label="Рівень слів" className="flex rounded-control bg-surface-muted p-1">
+            {LEVELS.map((lvl) => {
+              const active = level === lvl;
+              return (
+                <button
+                  key={lvl}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => setLevel(lvl)}
+                  className={cn(
+                    'flex min-h-11 flex-1 items-center justify-center rounded-control px-1 text-label transition-colors duration-150',
+                    active
+                      ? lvl === 'ALL' ? 'bg-surface text-ink shadow-sm' : cn(levelStyle(lvl).solid, 'shadow-sm')
+                      : 'text-ink-muted hover:text-ink',
+                  )}
+                >
+                  {lvl === 'ALL' ? 'Усі' : lvl}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      <main className="mx-auto max-w-2xl px-5 pt-4">
+        <div className="mb-3 flex items-baseline justify-between gap-3">
+          <h2 className="font-heading text-h3">
+            {term ? 'Результати пошуку' : level === 'ALL' ? 'Усі слова' : `${level} · ${levelStyle(level).name}`}
           </h2>
-          <span className="text-xs font-bold bg-slate-200 text-slate-500 px-2 py-1 rounded-lg">
-            {filteredWords.length} показано
-          </span>
+          {!loading && words.length > 0 && <p className="text-caption text-ink-subtle">Показано {words.length}</p>}
         </div>
 
         {loading ? (
-          <div className="flex justify-center py-20">
-            <div className="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
-          </div>
-        ) : filteredWords.length > 0 ? (
-          <div className="flex flex-col gap-3">
-            {filteredWords.map((word, index) => (
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: Math.min(index * 0.02, 0.3) }}
-                key={word.id} 
-                className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex justify-between items-center hover:shadow-md transition-shadow"
-              >
-                <div className="pr-3">
-                  <h3 className="font-heading font-bold text-slate-800 text-lg mb-0.5">{word.hr_text}</h3>
-                  <div className="flex items-center gap-2">
-                    <p className="text-slate-500 text-sm font-medium">{word.ua_translation}</p>
-                    {word.phonetic_note && (
-                      <span className="bg-slate-50 border border-slate-100 text-slate-400 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md">
-                        {word.phonetic_note}
-                      </span>
-                    )}
-                  </div>
-                </div>
-                
-                <button 
-                  onClick={() => speakCroatian(word.hr_text)}
-                  className="shrink-0 w-12 h-12 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center hover:bg-indigo-100 transition-colors active:scale-90"
-                >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
-                </button>
-              </motion.div>
+          <div className="grid gap-3 sm:grid-cols-2" aria-busy="true" aria-label="Завантаження словника">
+            {Array.from({ length: 6 }, (_, i) => (
+              <Skeleton key={i} className="h-24" />
             ))}
-
-            {/* Кнопка "Завантажити ще" */}
-            {hasMore && (
-              <button
-                onClick={loadMore}
-                disabled={loadingMore}
-                className="mt-4 w-full bg-indigo-50 text-indigo-600 font-bold py-4 rounded-2xl shadow-sm border border-indigo-100 active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
-              >
-                {loadingMore ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-                    <span>Завантаження...</span>
-                  </>
-                ) : (
-                  <span>Завантажити ще 30 слів ➔</span>
-                )}
-              </button>
-            )}
-
-            {!hasMore && !searchQuery && (
-              <div className="text-center text-xs text-slate-400 mt-6 font-medium">
-                Ви переглянули весь словник 🎉
-              </div>
-            )}
           </div>
+        ) : loadError && words.length === 0 ? (
+          <ErrorState onRetry={retry} />
+        ) : words.length > 0 ? (
+          <>
+            <ul className="grid gap-3 sm:grid-cols-2">
+              {words.map((word) => (
+                <WordRow key={word.id} word={word} theme={themes.get(word.id)} isLearning={learning.has(word.id)} />
+              ))}
+            </ul>
+
+            {loadError && (
+              <p role="alert" className="mt-4 rounded-card border border-danger-line bg-danger-soft px-4 py-3 text-label font-normal text-danger-ink">
+                Не вдалося завантажити ще слова. Перевірте інтернет і натисніть «Показати ще».
+              </p>
+            )}
+
+            {hasMore ? (
+              <Button variant="secondary" block className="mt-4" onClick={loadError ? retry : loadMore} loading={loadingMore}>
+                {loadingMore ? 'Завантаження…' : `Показати ще ${PAGE_SIZE} слів`}
+              </Button>
+            ) : (
+              <p className="mt-6 text-center text-label font-normal text-ink-muted">
+                {term ? 'Це всі слова за вашим пошуком.' : level === 'ALL' ? 'Ви переглянули весь словник 🎉' : `Це всі слова рівня ${level} 🎉`}
+              </p>
+            )}
+          </>
         ) : (
-          <div className="text-center py-20 text-slate-400 bg-white rounded-3xl border border-dashed border-slate-200">
-            <span className="text-4xl mb-3 block">🔍</span>
-            <p className="font-medium">Слів не знайдено</p>
-          </div>
+          <EmptyState
+            icon={<Search className="size-6" aria-hidden="true" />}
+            title="Слів не знайдено"
+            text={
+              level !== 'ALL'
+                ? `На рівні ${level} такого слова немає. Спробуйте «Усі» рівні.`
+                : 'Спробуйте інше написання — можна без хорватських літер (macka → mačka) або українською.'
+            }
+            action={
+              level !== 'ALL' ? (
+                <Button variant="secondary" onClick={() => setLevel('ALL')}>
+                  Шукати на всіх рівнях
+                </Button>
+              ) : undefined
+            }
+          />
         )}
       </main>
-
     </div>
+  );
+}
+
+function WordRow({ word, theme, isLearning }: { word: Word; theme?: WordTheme; isLearning: boolean }) {
+  return (
+    <li className="flex items-center gap-3 rounded-card border border-line bg-surface p-4 shadow-sm">
+      <WordTile lemma={word.lemma} level={word.level} theme={theme} />
+      <div className="min-w-0 flex-1">
+        <Hr as="h3" className="font-heading text-h3 break-words text-ink">
+          {word.lemma}
+        </Hr>
+        <p className="text-body break-words text-ink-muted">{word.translation}</p>
+        <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+          {word.level && <LevelBadge level={word.level} />}
+          {word.pos && <span className="text-caption text-ink-subtle">{word.pos}</span>}
+          {isLearning && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-success-soft px-2 py-0.5 text-caption font-semibold text-success-ink">
+              <Check className="size-3.5" strokeWidth={3} aria-hidden="true" />
+              Вчу
+            </span>
+          )}
+        </div>
+      </div>
+      <AudioButton text={word.lemma} label={`Прослухати: ${word.lemma}`} />
+    </li>
   );
 }

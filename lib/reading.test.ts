@@ -82,7 +82,7 @@ test('підписи: вид тексту, хвилини, знайомі сло
   assert.equal(textTypeLabel('poem'), 'Текст');
   assert.equal(readingMinutes(20), 1);
   assert.equal(readingMinutes(150), 3);
-  assert.equal(knownLabel(0.923), 'знайомих слів 92 %');
+  assert.equal(knownLabel(0.923), 'знайомих слів 92\u00a0%');
   assert.equal(knownLabel(null), null);
 });
 
@@ -123,4 +123,13 @@ test('шапка модуля: без потрійного «Модуль», х�
     { kicker: 'Модуль A1.1', title: 'Повсякденне життя', subtitle: 'Svakodnevni život' });
   assert.deepEqual(moduleCardTitles('Без префікса', null, 'A1', 10),
     { kicker: 'Модуль A1.10', title: 'Без префікса', subtitle: null });
+});
+
+test('textTypeIcon: у кожного типу тексту свій емодзі, невідомий — 📄', async () => {
+  const { TEXT_TYPES, textTypeIcon } = await import('./reading.ts');
+  const icons = TEXT_TYPES.map((t) => textTypeIcon(t));
+  assert.equal(new Set(icons).size, TEXT_TYPES.length);
+  assert.equal(textTypeIcon('sign'), '🏷️');
+  assert.equal(textTypeIcon('poem'), '📄');
+  assert.equal(textTypeIcon(undefined), '📄');
 });

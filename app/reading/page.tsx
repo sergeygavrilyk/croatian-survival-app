@@ -5,6 +5,7 @@ import SegmentedLinks from '@/components/ui/SegmentedLinks';
 import ErrorState from '@/components/ui/ErrorState';
 import ReadingListView, { type ReadingListItem, type ReadingModule } from '@/components/ReadingListView';
 import { pickReadingLevel, READING_LEVELS, type ReadingLevel } from '@/lib/reading';
+import { levelStyle } from '@/lib/levels';
 
 export const metadata = { title: 'Читання · Croatian Survival App' };
 export const dynamic = 'force-dynamic';
@@ -50,15 +51,15 @@ export default async function ReadingPage({ searchParams }: { searchParams: Prom
   for (const p of progressRes.data ?? []) {
     progress[p.text_id as string] = { correct: p.correct_count as number, total: p.question_count as number };
   }
-  const levelTabs = available.map((l) => ({ href: `/reading?level=${l}`, label: l }));
+  const levelTabs = available.map((l) => ({ href: `/reading?level=${l}`, label: l, activeClassName: levelStyle(l).solid }));
 
   return (
     <div className="min-h-screen pb-28">
-      <header className="mx-auto max-w-md px-4 pt-[calc(2.5rem+env(safe-area-inset-top))] mb-4">
-        <h1 className="font-heading text-h1 mb-2">Практика</h1>
-        <PracticeTabs />
+      <header className="mx-auto max-w-2xl px-5 pt-[calc(2.5rem+env(safe-area-inset-top))] pb-4">
+        <h1 className="font-heading text-h1">Практика</h1>
+        <PracticeTabs className="mt-2" />
       </header>
-      <main className="mx-auto max-w-md px-4">
+      <main className="mx-auto max-w-2xl px-5">
         {textsRes.error ? (
           <ErrorState text="Не вдалося завантажити тексти. Перевірте інтернет і оновіть сторінку." />
         ) : (

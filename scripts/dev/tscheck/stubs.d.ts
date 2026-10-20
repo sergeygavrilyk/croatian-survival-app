@@ -6,6 +6,7 @@ declare module 'react' {
   export function useCallback<T>(f: T, d: any[]): T;
   export function useRef<T>(v: T): { current: T };
   export function useId(): string;
+  export function useSyncExternalStore<T>(subscribe: (cb: () => void) => () => void, get: () => T, getServer?: () => T): T;
   export type ReactNode = any; export type FormEvent = any; export type CSSProperties = any;
   const React: any; export default React;
 }
@@ -17,6 +18,7 @@ declare namespace React {
 }
 declare module 'next/navigation' { export function useRouter(): any; export function useParams(): any; export function usePathname(): string; export function redirect(u: string): never; export function notFound(): never; export function useSearchParams(): any; }
 declare module 'next/link' { const Link: any; export default Link; }
+declare module 'next/image' { const Image: any; export default Image; }
 declare module 'next/server' { export const NextResponse: any; export type NextRequest = any; }
 declare module 'next/headers' { export function cookies(): any; }
 declare module '@supabase/ssr' { export function createServerClient(...a: any[]): any; export function createBrowserClient(...a: any[]): any; }

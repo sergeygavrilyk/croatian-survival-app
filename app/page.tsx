@@ -1,12 +1,12 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/utils/supabase/server';
-import { LEARNING_EVENTS, activityWeek, learningStreak } from '@/lib/progress';
+import { DEFAULT_TIME_ZONE, LEARNING_EVENTS, activityWeek, learningStreak } from '@/lib/progress';
 import { displayName, greetingFor, nextLesson, todayLevel, type TodayLesson } from '@/lib/today';
+import { parseMascot } from '@/lib/mascot';
 import TodayView from '@/components/TodayView';
 
 export const metadata = { title: 'Сьогодні · Croatian Survival App' };
 
-const DEFAULT_TIME_ZONE = 'Europe/Zagreb';
 const LESSON_LEVELS = ['A0', 'A1'];
 
 type LessonRow = {
@@ -43,7 +43,7 @@ export default async function TodayPage() {
   const level = todayLevel(!profileError ? profile?.current_level : null, LESSON_LEVELS);
   const since = new Date(now.getTime() - 120 * 24 * 60 * 60 * 1000).toISOString();
 
-  const [dueRes, lessonsRes, doneRes, eventsRes, reviewsRes] = await Promise.all([
+  const [dueRes, lessonsRes, doneRes, eventsRes, reviewsRes, mascotRes] = await Promise.all([
     supabase
       .from('user_progress')
       .select('id', { count: 'exact', head: true })
@@ -71,6 +71,8 @@ export default async function TodayPage() {
       .gte('created_at', since)
       .order('created_at', { ascending: false })
       .limit(5000),
+    // Талісман — окремим запитом: якщо міграції M18 ще немає, решта профілю не страждає
+    supabase.from('profiles').select('mascot').eq('id', user.id).maybeSingle(),
   ]);
 
   const lessons: TodayLesson[] = ((lessonsRes.data ?? []) as LessonRow[]).map((row) => {
@@ -104,6 +106,7 @@ export default async function TodayPage() {
       week={activityWeek(timestamps, now, timeZone)}
       streak={learningStreak(timestamps, now, timeZone)}
       loadFailed={Boolean(lessonsRes.error || dueRes.error)}
+      mascot={mascotRes.error ? null : parseMascot((mascotRes.data as { mascot?: string | null } | null)?.mascot)}
     />
   );
 }

@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation';
 import { BookOpen, CircleCheck, Clock, Dumbbell, Languages, MessagesSquare, Sparkles, Target, X } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
+import SessionDone from '@/components/ui/SessionDone';
+import Mascot, { useStoredMascot } from '@/components/ui/Mascot';
+import StatTile from '@/components/ui/StatTile';
 import Hr from '@/components/ui/Hr';
 import AudioButton from '@/components/ui/AudioButton';
 import IconButton from '@/components/ui/IconButton';
@@ -21,6 +24,8 @@ import {
   type LessonStage, type PracticeOutcome,
 } from '@/lib/lesson-flow';
 import { countUk, pluralUk } from '@/lib/format';
+import { lessonCelebration } from '@/lib/celebration';
+import type { CompleteLessonResult } from '@/lib/learning';
 import { cn } from '@/lib/ui';
 
 export interface LessonWord {
@@ -90,8 +95,11 @@ const STAGE_LABEL: Record<LessonStage, string> = {
   summary: 'Підсумок',
 };
 
+/** Що повертає збереження уроку: нові слова й серія для святкового екрана (або нічого — тоді без плиток). */
+type CompleteResult = Pick<CompleteLessonResult, 'addedToReview' | 'lessonWords' | 'streak'> | void;
+
 /**
- * Урок повністю: вступ → слова → діалоги → граматика → вправи → підсумок (~10–15 хв).
+ * Урок повністю: вступ → слова → діалоги → граматика → вправи → святковий підсумок (~10–15 хв).
  * Порядок і черга вправ — lib/lesson-flow.ts. Збереження прогресу — onComplete (сторінка).
  */
 export default function LessonPlayer({
@@ -99,8 +107,8 @@ export default function LessonPlayer({
   onComplete,
 }: {
   content: LessonContent;
-  /** Зберегти прогрес уроку; кидає помилку, якщо не вдалося */
-  onComplete: () => Promise<void>;
+  /** Зберегти прогрес уроку; кидає помилку, якщо не вдалося. Повертає нові слова й серію днів 🔥 */
+  onComplete: () => Promise<CompleteResult>;
 }) {
   const router = useRouter();
   const { lesson, words, dialogues, grammar } = content;
@@ -368,6 +376,7 @@ export default function LessonPlayer({
       solved={practice.solved.length}
       total={practice.total}
       words={words.length}
+      objectives={lesson.objectives ?? []}
       situation={situation}
       onRestart={restart}
     />
@@ -473,7 +482,11 @@ function DialogueStep({
   );
 }
 
-// ---------------------------------------------------------------- підсумок
+// ---------------------------------------------------------------- святковий підсумок
+/**
+ * Свято після уроку (рішення власника 2026-10-20): 🎉 + конфеті один раз, «+N нових слів», серія днів 🔥,
+ * «Тепер ви вмієте…» (цілі уроку). Тексти — lib/celebration.ts. Прогрес зберігаємо один раз, щойно відкрився підсумок.
+ */
 function SummaryStep({
   shell,
   onComplete,
@@ -481,25 +494,31 @@ function SummaryStep({
   solved,
   total,
   words,
+  objectives,
   situation,
   onRestart,
 }: {
   shell: Shell;
-  onComplete: () => Promise<void>;
+  onComplete: () => Promise<CompleteResult>;
   firstTry: number;
   solved: number;
   total: number;
   words: number;
+  objectives: string[];
   situation: string | null;
   onRestart: () => void;
 }) {
   const [save, setSave] = useState<'saving' | 'saved' | 'error'>('saving');
+  const [result, setResult] = useState<CompleteResult>(undefined);
   const startedRef = useRef(false);
   const completeRef = useRef(onComplete);
 
   const run = () =>
     completeRef.current().then(
-      () => setSave('saved'),
+      (res) => {
+        setResult(res);
+        setSave('saved');
+      },
       () => setSave('error'),
     );
   const retrySave = () => {
@@ -512,36 +531,77 @@ function SummaryStep({
     if (startedRef.current) return;
     startedRef.current = true;
     void completeRef.current().then(
-      () => setSave('saved'),
+      (res) => {
+        setResult(res);
+        setSave('saved');
+      },
       () => setSave('error'),
     );
   }, []);
 
   const info = situation ? situationInfo(situation) : null;
+  const mascot = useStoredMascot();
+  const party = result
+    ? lessonCelebration({ newWords: result.addedToReview, lessonWords: result.lessonWords, streak: result.streak })
+    : null;
 
   return shell(
-    <Card hero className="flex flex-col items-center gap-4 text-center animate-fade-in-up">
-      <div className="flex size-14 items-center justify-center rounded-full bg-success-soft text-success-ink">
-        <CircleCheck className="size-7" aria-hidden="true" />
-      </div>
-      <div>
-        <h1 className="font-heading text-h1">Урок пройдено!</h1>
-        {total > 0 && (
-          <p className="mt-2 text-body text-ink-muted">
-            З першої спроби: {firstTry} з {total}
-            {solved > firstTry ? ` · після повтору ще ${solved - firstTry}` : ''}.
+    <SessionDone
+      correct={firstTry}
+      total={total}
+      emoji="🎉"
+      hero={<Mascot kind={mascot} size={128} pop />}
+      title="Урок пройдено!"
+      headingAs="h1"
+      celebrate
+      barLabel="Правильних з першої спроби"
+      stats={
+        save === 'saved' && party && party.tiles.length > 0 ? (
+          <ul className={cn('grid w-full gap-2', party.tiles.length > 1 ? 'grid-cols-2' : 'grid-cols-1')}>
+            {party.tiles.map((t, i) => (
+              <StatTile key={t.emoji} {...t} index={i} />
+            ))}
+          </ul>
+        ) : null
+      }
+      footer={
+        <>
+          {objectives.length > 0 && (
+            <div className="w-full rounded-card bg-surface-muted px-4 py-3 text-left">
+              <p className="flex items-center gap-2 text-label">
+                <Target className="size-4 text-primary-ink" aria-hidden="true" />
+                Тепер ви вмієте:
+              </p>
+              <ul className="mt-2 flex flex-col gap-1.5">
+                {objectives.map((o) => (
+                  <li key={o} className="flex items-start gap-2 text-body">
+                    <CircleCheck className="mt-0.5 size-4 shrink-0 text-success" aria-hidden="true" />
+                    {o}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          <p className="text-body">
+            {save === 'saving' && 'Зберігаємо прогрес…'}
+            {save === 'saved' &&
+              (party
+                ? [party.streakNote, party.reviewNote].filter(Boolean).join(' ') || 'Прогрес збережено.'
+                : words > 0
+                  ? `Прогрес збережено. ${countUk(words, ['слово', 'слова', 'слів'])} уроку чекають на вас у повторенні завтра.`
+                  : 'Прогрес збережено.')}
+            {save === 'error' && <span className="text-danger-ink">Не вдалося зберегти прогрес — перевірте інтернет.</span>}
           </p>
-        )}
-      </div>
-      <p className="text-body" role="status" aria-live="polite">
-        {save === 'saving' && 'Зберігаємо прогрес…'}
-        {save === 'saved' &&
-          (words > 0
-            ? `Прогрес збережено. ${countUk(words, ['слово', 'слова', 'слів'])} уроку чекають на вас у повторенні завтра.`
-            : 'Прогрес збережено.')}
-        {save === 'error' && <span className="text-danger-ink">Не вдалося зберегти прогрес — перевірте інтернет.</span>}
-      </p>
-    </Card>,
+        </>
+      }
+    >
+      {total > 0 && (
+        <>
+          З першої спроби: {firstTry} з {total}
+          {solved > firstTry ? ` · після повтору ще ${solved - firstTry}` : ''}.
+        </>
+      )}
+    </SessionDone>,
     <>
       {save === 'error' ? (
         <Button block onClick={retrySave}>

@@ -95,6 +95,38 @@ export function situationMeta(s: Pick<SituationSummary, 'phrases' | 'dialogues' 
   return parts.join(' · ');
 }
 
+/** Лише кількість фраз і діалогів: «9 фраз · 1 діалог» (рівні показуємо кольоровими бейджами). */
+export function situationCounts(s: Pick<SituationSummary, 'phrases' | 'dialogues'>): string {
+  const parts: string[] = [];
+  if (s.phrases > 0) parts.push(countUk(s.phrases, ['фраза', 'фрази', 'фраз']));
+  if (s.dialogues > 0) parts.push(countUk(s.dialogues, ['діалог', 'діалоги', 'діалогів']));
+  return parts.join(' · ');
+}
+
+/** Рівні з рядків (фрази, діалоги) — без повторів, від нижчого до вищого; невідомі й порожні пропускаємо. */
+export function sortedLevels(levels: ReadonlyArray<string | null | undefined>): string[] {
+  const order = CEFR_ORDER as readonly string[];
+  return [...new Set(levels.filter((l): l is string => Boolean(l) && order.includes(l as string)))].sort(
+    (a, b) => order.indexOf(a) - order.indexOf(b),
+  );
+}
+
+/** Групи ситуацій на екрані «Ситуації» (радісний стиль 2026-10-20): щодня → дім і здоров’я → дорога → документи й робота. */
+export const SITUATION_GROUPS: ReadonlyArray<{ key: string; label: string; codes: readonly string[] }> = [
+  { key: 'everyday', label: 'Щодня', codes: ['basics', 'shopping', 'cafe_restaurant', 'small_talk'] },
+  { key: 'home', label: 'Дім і здоров’я', codes: ['housing', 'health', 'vet'] },
+  { key: 'road', label: 'Дорога й подорожі', codes: ['transport', 'car_service', 'travel', 'border'] },
+  { key: 'papers', label: 'Документи й робота', codes: ['administration', 'bank', 'work', 'it_work'] },
+];
+
+/** Розкласти ситуації за групами (порядок усередині — як у списку); невідомі коди — в «Інше»; порожні групи не показуємо. */
+export function groupSituations<T extends { code: string }>(items: readonly T[]): Array<{ key: string; label: string; items: T[] }> {
+  const known = new Set(SITUATION_GROUPS.flatMap((g) => g.codes));
+  const groups = SITUATION_GROUPS.map((g) => ({ key: g.key, label: g.label, items: items.filter((s) => g.codes.includes(s.code)) }));
+  groups.push({ key: 'other', label: 'Інше', items: items.filter((s) => !known.has(s.code)) });
+  return groups.filter((g) => g.items.length > 0);
+}
+
 /** Чи схожий рядок на код ситуації (захист адреси /situations/[code]). */
 export function isSituationCode(code: string): boolean {
   return /^[a-z][a-z_]{1,39}$/.test(code);

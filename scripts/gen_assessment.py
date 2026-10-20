@@ -297,6 +297,42 @@ def make_item(kind: str, src: dict, pools: Pools, module: int, rng: random.Rando
     raise ValueError(kind)
 
 
+def fill_test(pools: Pools, used: set, kind_plan: list[tuple[str, int]], mods: list[int], slug: str,
+              seed: str | None = None) -> list[dict]:
+    """Завдання одного тесту з модулів mods. used — джерела, уже взяті іншими тестами рівня (доповнюється).
+    seed — інше зерно випадковості (за замовчуванням slug)."""
+    rng = random.Random(seed or slug)
+    items = []
+    in_test: set = set()  # одна й та сама репліка — не двічі в тесті (навіть у різних завданнях)
+    # спершу рідкісні джерела (репліки з діалогів), потім решта; показуємо — у порядку PLAN
+    scarce = ['relay', 'reply', 'read', 'ua2hr', 'speak', 'build', 'type', 'listen']
+    for kind, count in sorted(kind_plan, key=lambda kc: scarce.index(kc[0])):
+        got = 0
+        # по черзі з модулів, щоб тест покривав увесь діапазон
+        order = mods[:]
+        rng.shuffle(order)
+        tries = 0
+        while got < count and tries < 40:
+            mo = order[(got + tries) % len(order)]
+            pool = [x for x in pools.by_module[mo][kind] if x['key'] not in used and x['key'][1:] not in in_test]
+            tries += 1
+            if not pool:
+                continue
+            src = rng.choice(pool)
+            item = make_item(kind, src, pools, mo, rng)
+            used.add(src['key'])
+            if item is None:
+                continue
+            in_test.add(src['key'][1:])
+            item['module'] = mo
+            items.append(item)
+            got += 1
+        if got < count:
+            raise SystemExit(f'{slug}: замало джерел для «{kind}» ({got} з {count})')
+    display = [k for k, _ in kind_plan]
+    return sorted(items, key=lambda it: display.index(it['kind']))
+
+
 def build_level(level: dict) -> list[dict]:
     pools = Pools(level)
     lv = pools.level
@@ -305,36 +341,7 @@ def build_level(level: dict) -> list[dict]:
     modules = sorted(pools.by_module)
 
     def fill(kind_plan: list[tuple[str, int]], mods: list[int], slug: str) -> list[dict]:
-        rng = random.Random(slug)
-        items = []
-        in_test: set = set()  # одна й та сама репліка — не двічі в тесті (навіть у різних завданнях)
-        # спершу рідкісні джерела (репліки з діалогів), потім решта; показуємо — у порядку PLAN
-        scarce = ['relay', 'reply', 'read', 'ua2hr', 'speak', 'build', 'type', 'listen']
-        for kind, count in sorted(kind_plan, key=lambda kc: scarce.index(kc[0])):
-            got = 0
-            # по черзі з модулів, щоб тест покривав увесь діапазон
-            order = mods[:]
-            rng.shuffle(order)
-            tries = 0
-            while got < count and tries < 40:
-                mo = order[(got + tries) % len(order)]
-                pool = [x for x in pools.by_module[mo][kind] if x['key'] not in used and x['key'][1:] not in in_test]
-                tries += 1
-                if not pool:
-                    continue
-                src = rng.choice(pool)
-                item = make_item(kind, src, pools, mo, rng)
-                used.add(src['key'])
-                if item is None:
-                    continue
-                in_test.add(src['key'][1:])
-                item['module'] = mo
-                items.append(item)
-                got += 1
-            if got < count:
-                raise SystemExit(f'{slug}: замало джерел для «{kind}» ({got} з {count})')
-        display = [k for k, _ in kind_plan]
-        return sorted(items, key=lambda it: display.index(it['kind']))
+        return fill_test(pools, used, kind_plan, mods, slug)
 
     for mo in modules:
         slug = f'{lv.lower()}-m{mo:02d}'

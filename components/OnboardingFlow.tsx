@@ -9,6 +9,10 @@ import Button from '@/components/ui/Button';
 import Hr from '@/components/ui/Hr';
 import ProgressBar from '@/components/ui/ProgressBar';
 import LevelBadge from '@/components/ui/LevelBadge';
+import Confetti from '@/components/ui/Confetti';
+import MascotPicker from '@/components/MascotPicker';
+import { storeMascot, type MascotKind } from '@/lib/mascot';
+import { levelStyle } from '@/lib/levels';
 import { track } from '@/lib/analytics-client';
 import { DAILY_GOALS, LEARNING_GOALS, SELF_LEVELS } from '@/lib/onboarding';
 import type { Confidence, LevelScore, PlacementAnswer } from '@/lib/placement';
@@ -39,7 +43,11 @@ interface PlacementOutcome {
   review: PlacementReviewItem[];
 }
 
-/** Онбординг: мета → щоденна ціль → самооцінка → тест рівня (за бажанням) → результат. */
+/**
+ * Онбординг: мета → щоденна ціль → самооцінка → тест рівня (за бажанням) → результат.
+ * Радісний стиль (DESIGN_SYSTEM §3.4, 2026-10-20): 👋 вітає на першому кроці, знаки цілей як у «Ситуаціях»,
+ * рівні — у своїх кольорах, результат тесту — у кольорі рівня з конфеті.
+ */
 export default function OnboardingFlow({
   initialGoals,
   initialDailyGoal,
@@ -54,6 +62,7 @@ export default function OnboardingFlow({
   const [goals, setGoals] = useState<string[]>(initialGoals);
   const [dailyGoal, setDailyGoal] = useState<number | null>(initialDailyGoal);
   const [selfKey, setSelfKey] = useState<string | null>(null);
+  const [mascot, setMascot] = useState<MascotKind | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -83,8 +92,10 @@ export default function OnboardingFlow({
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       selfLevel: selfKey ?? undefined,
       viaPlacement,
+      mascot,
     });
     if (res.ok) {
+      storeMascot(window.localStorage, mascot);
       router.replace('/');
       router.refresh();
     } else {
@@ -192,6 +203,7 @@ export default function OnboardingFlow({
 
         {step === 'goals' && (
           <>
+            {!isRepeat && <Welcome mascot={mascot} onMascot={setMascot} />}
             <StepTitle title="Для чого вам хорватська?" hint="Можна обрати кілька — підберемо ситуації і слова." />
             <div className="flex flex-col gap-2" role="group" aria-label="Мета навчання">
               {LEARNING_GOALS.map((g) => (
@@ -201,6 +213,7 @@ export default function OnboardingFlow({
                   onClick={() => setGoals((v) => (v.includes(g.key) ? v.filter((x) => x !== g.key) : [...v, g.key]))}
                   label={g.label}
                   hint={g.hint}
+                  emoji={g.emoji}
                   multi
                 />
               ))}
@@ -236,7 +249,13 @@ export default function OnboardingFlow({
             <StepTitle title="Як ви оцінюєте свою хорватську?" hint="Якщо щось уже знаєте — запропонуємо короткий тест." />
             <div className="flex flex-col gap-2" role="radiogroup" aria-label="Самооцінка рівня">
               {SELF_LEVELS.map((s) => (
-                <ChoiceButton key={s.key} selected={selfKey === s.key} onClick={() => setSelfKey(s.key)} label={s.label} />
+                <ChoiceButton
+                  key={s.key}
+                  selected={selfKey === s.key}
+                  onClick={() => setSelfKey(s.key)}
+                  label={s.label}
+                  badge={<LevelBadge level={s.level} />}
+                />
               ))}
             </div>
             <Button
@@ -304,6 +323,33 @@ export default function OnboardingFlow({
 }
 
 // ---------------------------------------------------------------- частини
+/**
+ * Привітання на першому кроці + вибір талісмана (Pjegica, Šime або Točka, рішення власника 2026-10-20).
+ * Вибір необов'язковий: не обрано — показуємо Pjegica; змінити можна в профілі.
+ */
+function Welcome({ mascot, onMascot }: { mascot: MascotKind | null; onMascot: (kind: MascotKind) => void }) {
+  return (
+    <div className="flex animate-fade-in-up flex-col gap-4 rounded-hero border border-level-a0-line bg-level-a0-soft p-5">
+      <div className="flex items-center gap-4">
+        <span className="flex size-14 shrink-0 items-center justify-center rounded-full bg-surface text-4xl leading-none" aria-hidden="true">
+          <span className="inline-block origin-[70%_70%] animate-wave">👋</span>
+        </span>
+        <div className="min-w-0">
+          <p className="font-heading text-h2">
+            <Hr>Dobro došli!</Hr>
+          </p>
+          <p className="text-body text-ink-muted">Ласкаво просимо! Кілька коротких питань — і почнемо вчити хорватську.</p>
+        </div>
+      </div>
+      <div className="flex flex-col gap-2">
+        <p className="text-label">Хто вчитиметься разом з вами?</p>
+        <MascotPicker value={mascot} onChange={onMascot} label="Талісман, який вас супроводжуватиме" />
+        <p className="text-caption text-ink-muted">Змінити можна будь-коли в профілі.</p>
+      </div>
+    </div>
+  );
+}
+
 function StepTitle({ title, hint }: { title: string; hint?: string }) {
   return (
     <div className="animate-fade-in-up">
@@ -318,12 +364,18 @@ function ChoiceButton({
   onClick,
   label,
   hint,
+  emoji,
+  badge,
   multi,
 }: {
   selected: boolean;
   onClick: () => void;
   label: string;
   hint?: string;
+  /** Знак варіанта (мета навчання) */
+  emoji?: string;
+  /** Бейдж справа (рівень) */
+  badge?: React.ReactNode;
   multi?: boolean;
 }) {
   return (
@@ -348,10 +400,22 @@ function ChoiceButton({
       >
         {selected && <Check className="size-4" strokeWidth={3} />}
       </span>
-      <span className="min-w-0">
+      {emoji && (
+        <span
+          aria-hidden="true"
+          className={cn(
+            'flex size-10 shrink-0 items-center justify-center rounded-control text-2xl leading-none',
+            selected ? 'bg-surface' : 'bg-surface-muted',
+          )}
+        >
+          {emoji}
+        </span>
+      )}
+      <span className="min-w-0 flex-1">
         <span className="block text-body font-semibold">{label}</span>
         {hint && <span className="block text-label font-normal text-ink-muted">{hint}</span>}
       </span>
+      {badge && <span className="shrink-0">{badge}</span>}
     </button>
   );
 }
@@ -419,14 +483,21 @@ function PlacementResultView({
 }) {
   const levels = Object.entries(outcome.scoreByLevel);
   const beginner = outcome.recommendedStart === 'A0';
+  const lv = levelStyle(beginner ? 'A0' : outcome.estimated);
   return (
     <div className="flex flex-col gap-4 animate-fade-in-up">
-      <Card hero className="text-center">
-        <p className="text-label text-ink-muted">Оцінка застосунку</p>
-        <p className="mt-2 font-heading text-display">{beginner ? 'Початковий рівень' : outcome.estimated}</p>
-        <p className="mt-2 text-body text-ink-muted">{CONFIDENCE_TEXT[outcome.confidence]}</p>
-        <p className="mt-3 text-caption text-ink-subtle">Це не офіційний сертифікат CEFR.</p>
-      </Card>
+      <Confetti seed="placement" />
+      <div className={cn('flex flex-col items-center rounded-hero border p-6 text-center', lv.soft, lv.line)}>
+        <span className="text-5xl leading-none animate-pop" aria-hidden="true">
+          🎉
+        </span>
+        <p className={cn('mt-3 text-label', lv.ink)}>Оцінка застосунку</p>
+        <p className={cn('mt-1 font-heading text-display', lv.ink)}>{beginner ? 'Початковий рівень' : outcome.estimated}</p>
+        <p className="mt-1 font-heading text-h3">{lv.name}</p>
+        <p className="mt-1 text-body text-ink-muted">{lv.goal}</p>
+        <p className="mt-3 text-body text-ink-muted">{CONFIDENCE_TEXT[outcome.confidence]}</p>
+        <p className="mt-2 text-caption text-ink-subtle">Це не офіційний сертифікат CEFR.</p>
+      </div>
 
       <Card>
         <h3 className="font-heading text-h3">Відповіді за рівнями</h3>
@@ -434,7 +505,7 @@ function PlacementResultView({
           {levels.map(([level, s]) => (
             <li key={level} className="flex items-center gap-3">
               <LevelBadge level={level} className="w-10 justify-center" />
-              <ProgressBar value={s.correct} max={s.total} label={`Правильні відповіді ${level}`} />
+              <ProgressBar value={s.correct} max={s.total} label={`Правильні відповіді ${level}`} barClassName={levelStyle(level).bar} />
               <span className="w-12 shrink-0 text-right text-label">
                 {s.correct}/{s.total}
               </span>
@@ -456,7 +527,7 @@ function PlacementResultView({
               onClick={() => onChooseStart(l)}
               className={cn(
                 'min-h-12 rounded-control border text-label transition-colors duration-150',
-                chosenStart === l ? 'border-primary bg-primary text-white' : 'border-line bg-surface hover:border-primary/40',
+                chosenStart === l ? cn('border-transparent', levelStyle(l).solid) : 'border-line bg-surface hover:border-primary/40',
               )}
             >
               {l}

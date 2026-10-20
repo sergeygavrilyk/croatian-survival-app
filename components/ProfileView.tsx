@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ChevronRight, KeyRound, LogOut, TrendingUp } from 'lucide-react';
+import { BadgeCheck, BookOpen, ChevronRight, KeyRound, Layers, LogOut, Repeat, TrendingUp, type LucideIcon } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
@@ -11,7 +11,13 @@ import EmptyState from '@/components/ui/EmptyState';
 import { DAILY_GOALS, LEARNING_GOALS } from '@/lib/onboarding';
 import { countUk } from '@/lib/format';
 import type { ProgressSummary } from '@/lib/progress';
+import { levelStyle } from '@/lib/levels';
+import { weekCheer } from '@/lib/today';
+import { authErrorUk } from '@/lib/auth';
 import { cn } from '@/lib/ui';
+import MascotPicker from '@/components/MascotPicker';
+import { setMascot as saveMascot } from '@/app/actions/mascot';
+import { DEFAULT_MASCOT, MASCOTS, storeMascot, type MascotKind } from '@/lib/mascot';
 
 interface ProfileData {
   goals: string[];
@@ -31,16 +37,25 @@ const CONFIDENCE_LABEL: Record<string, string> = { high: 'надійна', mediu
 /** Профіль: прогрес, рівень і цілі, акаунт (docs/DESIGN_SYSTEM.md §10). */
 export default function ProfileView({
   email,
+  name,
   summary,
   progressError,
   profile,
   placement,
+  mascot: initialMascot,
+  mascotAvailable,
 }: {
   email: string;
+  /** Ім'я для привітання (displayName: з акаунта або частина email) */
+  name: string;
   summary: ProgressSummary;
   progressError: boolean;
   profile: ProfileData | null;
   placement: PlacementData | null;
+  /** Обраний талісман (null — не обрано) */
+  mascot: MascotKind | null;
+  /** false — у базі ще немає колонки (міграція M18): вибір не показуємо */
+  mascotAvailable: boolean;
 }) {
   const router = useRouter();
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
@@ -57,13 +72,27 @@ export default function ProfileView({
     const { error } = await createClient().auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/reset-password`,
     });
-    setMessage(error ? { ok: false, text: `Не вдалося надіслати лист: ${error.message}` } : { ok: true, text: 'Лист для зміни пароля надіслано на вашу пошту.' });
+    setMessage(error ? { ok: false, text: `Не вдалося надіслати лист. ${authErrorUk(error.message)}` } : { ok: true, text: 'Лист для зміни пароля надіслано на вашу пошту.' });
   };
 
   return (
     <div className="min-h-screen pb-28">
-      <header className="mx-auto max-w-2xl px-5 pt-[calc(2.5rem+env(safe-area-inset-top))] pb-4">
-        <h1 className="font-heading text-h1">Профіль</h1>
+      <header className="mx-auto flex max-w-2xl items-center gap-4 px-5 pt-[calc(2.5rem+env(safe-area-inset-top))] pb-4">
+        <span
+          className={cn(
+            'flex size-16 shrink-0 items-center justify-center rounded-full font-heading text-h1',
+            levelStyle(profile?.currentLevel).solid,
+          )}
+          aria-hidden="true"
+        >
+          {([...name.trim()][0] ?? '?').toUpperCase()}
+        </span>
+        <div className="min-w-0">
+          <h1 className="font-heading text-h1">Профіль</h1>
+          <p className="truncate text-body text-ink-muted">
+            <span lang="hr">Bok</span>, {name}! 👋
+          </p>
+        </div>
       </header>
 
       <main className="mx-auto flex max-w-2xl flex-col gap-6 px-5">
@@ -92,14 +121,27 @@ export default function ProfileView({
           ) : (
             <>
               <div className="grid grid-cols-2 gap-3">
-                <StatTile label="Уроків пройдено" value={summary.lessonsCompleted} />
-                <StatTile label="Слів у повтореннях" value={summary.inLearning} />
+                <StatTile
+                  label="Уроків пройдено"
+                  value={summary.lessonsCompleted}
+                  Icon={BookOpen}
+                  iconClassName={cn(levelStyle(profile?.currentLevel).soft, levelStyle(profile?.currentLevel).ink)}
+                />
+                <StatTile label="Слів у повтореннях" value={summary.inLearning} Icon={Layers} iconClassName="bg-primary-soft text-primary-ink" />
                 <StatTile
                   label="Повторити зараз"
                   value={summary.dueNow}
+                  Icon={Repeat}
+                  iconClassName={summary.dueNow > 0 ? 'bg-primary-soft text-primary-ink' : 'bg-surface-muted text-ink-muted'}
                   action={summary.dueNow > 0 ? { href: '/trainer', label: 'Повторити' } : undefined}
                 />
-                <StatTile label="Засвоєно надовго" value={summary.longTerm} hint="повтор через 3+ тижні" />
+                <StatTile
+                  label="Засвоєно надовго"
+                  value={summary.longTerm}
+                  Icon={BadgeCheck}
+                  iconClassName="bg-success-soft text-success-ink"
+                  hint="повтор через 3+ тижні"
+                />
               </div>
 
               <ActivityChart summary={summary} />
@@ -115,7 +157,14 @@ export default function ProfileView({
           </h2>
           <Card className="flex flex-col gap-4">
             <Row label="Навчаюся з рівня">
-              {profile?.currentLevel ? <LevelBadge level={profile.currentLevel} /> : <span className="text-ink-muted">не обрано</span>}
+              {profile?.currentLevel ? (
+                <span className="flex items-center gap-2">
+                  <span className={cn('text-label', levelStyle(profile.currentLevel).ink)}>{levelStyle(profile.currentLevel).name}</span>
+                  <LevelBadge level={profile.currentLevel} />
+                </span>
+              ) : (
+                <span className="text-ink-muted">не обрано</span>
+              )}
             </Row>
             {placement && (
               <Row label="Тест рівня">
@@ -154,6 +203,9 @@ export default function ProfileView({
             </Button>
           </Card>
         </section>
+
+        {/* ------------------------------------------------ талісман */}
+        {mascotAvailable && <MascotSection initial={initialMascot} />}
 
         {/* ------------------------------------------------ акаунт */}
         <section aria-labelledby="account-title" className="flex flex-col gap-3">
@@ -203,14 +255,21 @@ function StatTile({
   value,
   hint,
   action,
+  Icon,
+  iconClassName,
 }: {
   label: string;
   value: number;
   hint?: string;
   action?: { href: string; label: string };
+  Icon: LucideIcon;
+  iconClassName: string;
 }) {
   return (
     <Card className="flex flex-col gap-1 p-4">
+      <span className={cn('mb-1 flex size-10 items-center justify-center rounded-full', iconClassName)} aria-hidden="true">
+        <Icon className="size-5" />
+      </span>
       <p className="text-label font-normal text-ink-muted">{label}</p>
       <p className="font-heading text-h1 tabular-nums">{value.toLocaleString('uk-UA')}</p>
       {hint && <p className="text-caption text-ink-subtle">{hint}</p>}
@@ -223,6 +282,50 @@ function StatTile({
   );
 }
 
+/** Талісман: Pjegica, Šime або Točka (рішення власника 2026-10-20). Зберігається одразу, копія — у браузері. */
+function MascotSection({ initial }: { initial: MascotKind | null }) {
+  const [value, setValue] = useState<MascotKind | null>(initial);
+  const [saving, setSaving] = useState(false);
+  const [note, setNote] = useState<{ ok: boolean; text: string } | null>(null);
+
+  const choose = async (kind: MascotKind) => {
+    if (kind === value || saving) return;
+    const prev = value;
+    setValue(kind);
+    setSaving(true);
+    setNote(null);
+    const res = await saveMascot(kind);
+    setSaving(false);
+    if (res.ok) {
+      storeMascot(window.localStorage, kind);
+      setNote({ ok: true, text: `Готово! Тепер з вами ${MASCOTS[kind].name}.` });
+    } else {
+      setValue(prev);
+      setNote({ ok: false, text: res.error });
+    }
+  };
+
+  return (
+    <section aria-labelledby="mascot-title" className="flex flex-col gap-3">
+      <h2 id="mascot-title" className="font-heading text-h2">
+        Талісман
+      </h2>
+      <Card className="flex flex-col gap-3">
+        <p className="text-body text-ink-muted">
+          Вітає на «Сьогодні» й радіє разом з вами після уроку.{' '}
+          {value === null && `Поки що — ${MASCOTS[DEFAULT_MASCOT].name}.`}
+        </p>
+        <MascotPicker value={value} onChange={(k) => void choose(k)} disabled={saving} />
+        {note && (
+          <p role={note.ok ? 'status' : 'alert'} className={cn('text-label', note.ok ? 'text-success-ink' : 'text-danger-ink')}>
+            {note.text}
+          </p>
+        )}
+      </Card>
+    </section>
+  );
+}
+
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-center justify-between gap-4">
@@ -232,16 +335,17 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
   );
 }
 
-/** Повторення за 7 днів: одна серія, стовпці ≤ 24 px, підказка при наведенні / фокусі, таблиця для читачів екрана. */
+/** Навчання за 7 днів (уроки, вправи, повторення, читання): одна серія, стовпці ≤ 24 px, підказка при наведенні / фокусі, таблиця для читачів екрана. */
 function ActivityChart({ summary }: { summary: ProgressSummary }) {
   const max = Math.max(1, ...summary.activity.map((d) => d.count));
   const peak = summary.activity.reduce((a, b) => (b.count > a.count ? b : a), summary.activity[0]);
   return (
     <Card>
-      <h3 className="font-heading text-h3">Повторення за 7 днів</h3>
+      <h3 className="font-heading text-h3">Навчання за 7 днів</h3>
       <p className="text-label font-normal text-ink-muted">
-        {countUk(summary.reviews7, ['повторення', 'повторення', 'повторень'])} · активних днів: {summary.activeDays} з 7
+        {countUk(summary.reviews7, ['дія', 'дії', 'дій'])} · активних днів: {summary.activeDays} з 7
       </p>
+      <p className="mt-1 text-body text-ink-muted">{weekCheer(summary.activeDays)}</p>
 
       <ul className="mt-4 grid h-36 grid-cols-7 items-end gap-2 border-b border-line" aria-hidden="true">
         {summary.activity.map((d, i) => {
@@ -257,7 +361,7 @@ function ActivityChart({ summary }: { summary: ProgressSummary }) {
                 {d.label}: {d.count}
               </span>
               <span
-                className={cn('w-full max-w-6 rounded-t-[4px]', d.count > 0 ? 'bg-primary' : 'bg-transparent')}
+                className={cn('w-full max-w-6 rounded-t-[4px]', d.count > 0 ? 'bg-success' : 'bg-transparent')}
                 style={{ height: d.count > 0 ? `${Math.max(6, Math.round((d.count / max) * 100))}%` : 0 }}
               />
             </li>
@@ -273,11 +377,11 @@ function ActivityChart({ summary }: { summary: ProgressSummary }) {
       </ul>
 
       <table className="sr-only">
-        <caption>Кількість повторень за останні 7 днів</caption>
+        <caption>Навчальні дії за останні 7 днів: уроки, вправи, повторення, читання</caption>
         <thead>
           <tr>
             <th scope="col">День</th>
-            <th scope="col">Повторень</th>
+            <th scope="col">Дій</th>
           </tr>
         </thead>
         <tbody>
@@ -307,7 +411,11 @@ function WordsByLevel({ byLevel, total }: { byLevel: ProgressSummary['byLevel'];
           <li key={l.level} className="flex items-center gap-3">
             <LevelBadge level={l.level} className="w-10 justify-center" />
             <span className="flex flex-1 items-center gap-2">
-              <span className="h-3 rounded-r-[4px] bg-primary" style={{ width: `${Math.max(2, (l.count / max) * 85)}%` }} aria-hidden="true" />
+              <span
+                className={cn('h-3 rounded-r-[4px]', levelStyle(l.level).bar)}
+                style={{ width: `${Math.max(2, (l.count / max) * 85)}%` }}
+                aria-hidden="true"
+              />
               <span className="text-label tabular-nums">{l.count}</span>
             </span>
           </li>

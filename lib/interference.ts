@@ -164,3 +164,23 @@ export function examplesFrom(v: unknown): Array<{ hr: string; ua: string }> {
     .filter((x): x is { hr: string; ua: string } => !!x && typeof x === 'object' && typeof (x as { hr?: unknown }).hr === 'string' && typeof (x as { ua?: unknown }).ua === 'string')
     .map(({ hr, ua }) => ({ hr, ua }));
 }
+
+/** Емодзі категорії типових помилок (радісний дизайн, DESIGN_SYSTEM §3.4: емодзі — для категорії, не для дій). Без прапорів. */
+export const CATEGORY_ICON: Record<InterferenceCategory, string> = {
+  cases: '🧩',
+  gender: '👫',
+  aspect: '⏳',
+  word_order: '🔀',
+  prepositions: '📍',
+  false_friends: '🎭',
+  pronunciation: '🗣️',
+  verb_patterns: '🔗',
+  plural: '👥',
+  articles: '🔤',
+  stress: '🎵',
+  collocations: '🤝',
+};
+
+export function categoryIcon(v: string | null | undefined): string {
+  return isCategory(v) ? CATEGORY_ICON[v] : '💡';
+}

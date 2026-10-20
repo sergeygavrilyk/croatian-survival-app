@@ -2,31 +2,46 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { BookOpen, Layers, PenLine, Repeat } from 'lucide-react';
 import FlashcardTrainer, { Flashcard } from '@/components/FlashcardTrainer';
 import WriteTrainer, { WriteCard } from '@/components/WriteTrainer';
 import { createClient } from '@/utils/supabase/client';
 import { rateFlashcard } from '@/app/actions/srs';
 import { track } from '@/lib/analytics-client';
 import { firstExample, type AnswerCheck } from '@/lib/answer';
+import { countUk, posLabelUk } from '@/lib/format';
+import { LEVEL_CODES, levelStyle } from '@/lib/levels';
+import { cn } from '@/lib/ui';
+import { WORD_THEME_SELECT, wordThemes, type WordTheme } from '@/lib/word-theme';
+import Button from '@/components/ui/Button';
+import EmptyState from '@/components/ui/EmptyState';
+import ErrorState from '@/components/ui/ErrorState';
 import PracticeTabs from '@/components/ui/PracticeTabs';
+import Skeleton from '@/components/ui/Skeleton';
 
 // 'ALL' — усі слова, які користувач уже вчить, незалежно від рівня (типово)
-const LEVELS = ['ALL', 'A0', 'A1', 'A2', 'B1'] as const;
+const LEVELS = ['ALL', ...LEVEL_CODES] as const;
 type Level = (typeof LEVELS)[number];
-const levelLabel = (lvl: Level) => (lvl === 'ALL' ? 'Усі' : lvl);
 
 /**
  * «Картки» — впізнати слово (свайп); «Написати» — згадати і ввести слово самому (VS-001).
  * В обох режимах — ЛИШЕ слова, які користувач уже вчить (user_progress):
  * слова пройдених уроків і ті, що він сам додав у словник. Нових слів тренажер не підкидає.
+ * Вигляд — DESIGN_SYSTEM §3.4, §9.1, §9.2: колір рівня й емодзі теми біля слова.
  */
 type Mode = 'recognize' | 'write';
 type SessionKind = 'review' | 'practice' | 'write';
+type Card = Flashcard & WriteCard;
 
 const SESSION_SIZE = 10;
 // v2: типовий рівень став «Усі» (старі збережені налаштування з рівнем A1 ігноруємо)
 const PREFS_KEY = 'cs_trainer_prefs_v2';
-const LEXEME_FIELDS = 'id, lemma, ukrainian_translation, part_of_speech, audio_url, examples';
+const LEXEME_FIELDS = 'id, lemma, ukrainian_translation, part_of_speech, audio_url, examples, cefr';
+
+const MODES: ReadonlyArray<{ value: Mode; label: string; Icon: typeof Layers }> = [
+  { value: 'recognize', label: 'Картки', Icon: Layers },
+  { value: 'write', label: 'Написати', Icon: PenLine },
+];
 
 interface LexemeRow {
   id: string;
@@ -35,27 +50,34 @@ interface LexemeRow {
   part_of_speech: string | null;
   audio_url: string | null;
   examples: unknown;
+  cefr: string | null;
 }
 
-const toCard = (item: LexemeRow): Flashcard & WriteCard => ({
+const toCard = (item: LexemeRow, theme: WordTheme | undefined): Card => ({
   id: item.id,
   hr_text: item.lemma,
   ua_translation: item.ukrainian_translation,
-  phonetic_note: item.part_of_speech ?? '',
+  phonetic_note: posLabelUk(item.part_of_speech) ?? '',
   audio_url: item.audio_url ?? undefined,
   example: firstExample(item.examples),
+  level: item.cefr ?? theme?.level,
+  theme: theme ?? null,
 });
 
 export default function TrainerPage() {
-  const [cards, setCards] = useState<(Flashcard & WriteCard)[]>([]);
+  const [cards, setCards] = useState<Card[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [selectedLevel, setSelectedLevel] = useState<Level>('ALL');
-  // Скільки всього слів користувач уже вчить (для порожнього стану)
+  // Скільки всього слів користувач уже вчить і скільки чекають повторення (усі рівні)
   const [learningCount, setLearningCount] = useState(0);
+  const [dueCount, setDueCount] = useState(0);
   const [mode, setMode] = useState<Mode>('recognize');
   const [saveError, setSaveError] = useState(false);
   // Ключ сесії: новий набір карток → компонент тренажера починає з першої картки
   const [sessionKey, setSessionKey] = useState(0);
+  // «Ще слова» / «Спробувати ще раз» — нове завантаження
+  const [reloadKey, setReloadKey] = useState(0);
   // Режим і рівень запамʼятовуються між відвідуваннями (зручність одного користувача)
   const [prefsReady, setPrefsReady] = useState(false);
 
@@ -95,6 +117,7 @@ export default function TrainerPage() {
 
     async function fetchCards() {
       setLoading(true);
+      setLoadError(false);
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
@@ -140,9 +163,22 @@ export default function TrainerPage() {
         const hasDue = lexemeData.some(r => dueIds.has(r.id));
         const kind: SessionKind = mode === 'write' ? 'write' : hasDue ? 'review' : 'practice';
 
-        if (!cancelled) setLearningCount(progress.length);
+        // 4. Тема слів сесії — емодзі модуля, де слово трапляється в уроках (не критично: без неї — літера)
+        let themes = new Map<string, WordTheme>();
+        if (lexemeData.length > 0) {
+          const { data: links, error: linksError } = await supabase
+            .from('lesson_items')
+            .select(WORD_THEME_SELECT)
+            .eq('item_type', 'lexeme')
+            .eq('lessons.status', 'PUBLISHED')
+            .in('item_id', lexemeData.map(r => r.id));
+          if (linksError) console.warn('Тема слів не завантажилась:', linksError.message);
+          else themes = wordThemes(links);
+        }
 
         if (cancelled) return;
+        setLearningCount(progress.length);
+        setDueCount(dueIds.size);
 
         // Нова сесія: лічильники + подія review_started
         const now = Date.now();
@@ -152,10 +188,11 @@ export default function TrainerPage() {
           track('review_started', { level: selectedLevel, count: lexemeData.length, source: kind });
         }
 
-        setCards(lexemeData.map(toCard));
+        setCards(lexemeData.map(row => toCard(row, themes.get(row.id))));
         setSessionKey(now);
       } catch (err) {
         console.error('Помилка завантаження тренажера:', err);
+        if (!cancelled) setLoadError(true);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -165,7 +202,7 @@ export default function TrainerPage() {
     return () => {
       cancelled = true;
     };
-  }, [supabase, selectedLevel, mode, prefsReady]);
+  }, [supabase, selectedLevel, mode, prefsReady, reloadKey]);
 
   /** Спільне для обох режимів: підсумок сесії + збереження в SRS. */
   const recordAnswer = async (cardId: string, correct: boolean, responseTimeMs: number) => {
@@ -216,98 +253,118 @@ export default function TrainerPage() {
     void recordAnswer(card.id, result.correct, responseTimeMs);
   };
 
-  const emptyText = learningCount === 0
-    ? 'Тут з’являться слова з пройдених уроків і ті, що ви додали в словник.'
-    : `На рівні ${selectedLevel} ви ще не вчите жодного слова. Оберіть «Усі» або інший рівень.`;
+  const reload = () => setReloadKey(k => k + 1);
+  const goToday = () => router.push('/');
 
   return (
     <div className="min-h-screen pb-28">
-      <header className="max-w-md mx-auto px-4 pt-[calc(2.5rem+env(safe-area-inset-top))] mb-4">
-        <h1 className="font-heading text-h1 mb-2">Практика</h1>
-        <PracticeTabs />
+      <header className="mx-auto flex max-w-2xl flex-col gap-4 px-5 pt-[calc(2.5rem+env(safe-area-inset-top))] pb-4">
+        <div>
+          <h1 className="font-heading text-h1">Практика</h1>
+          <PracticeTabs className="mt-2" />
+        </div>
+
+        {/* Режим тренування */}
+        <div role="group" aria-label="Режим тренування" className="grid grid-cols-2 gap-1 rounded-control bg-surface-muted p-1">
+          {MODES.map(({ value, label, Icon }) => {
+            const active = mode === value;
+            return (
+              <button
+                key={value}
+                type="button"
+                aria-pressed={active}
+                onClick={() => setMode(value)}
+                className={cn(
+                  'flex min-h-11 items-center justify-center gap-2 rounded-control px-3 font-heading text-label transition-colors duration-150',
+                  active ? 'bg-surface text-primary-ink shadow-sm' : 'text-ink-muted hover:text-ink',
+                )}
+              >
+                <Icon className="size-5" aria-hidden="true" />
+                {label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Рівень слів — у кольорі рівня (DESIGN_SYSTEM §3.4) */}
+        <div role="group" aria-label="Рівень слів" className="flex rounded-control bg-surface-muted p-1">
+          {LEVELS.map((lvl) => {
+            const active = selectedLevel === lvl;
+            return (
+              <button
+                key={lvl}
+                type="button"
+                aria-pressed={active}
+                onClick={() => setSelectedLevel(lvl)}
+                className={cn(
+                  'flex min-h-11 flex-1 items-center justify-center rounded-control px-1 text-label transition-colors duration-150',
+                  active
+                    ? lvl === 'ALL' ? 'bg-surface text-ink shadow-sm' : cn(levelStyle(lvl).solid, 'shadow-sm')
+                    : 'text-ink-muted hover:text-ink',
+                )}
+              >
+                {lvl === 'ALL' ? 'Усі' : lvl}
+              </button>
+            );
+          })}
+        </div>
+
+        {learningCount > 0 && (
+          <p className="flex items-center gap-2 text-label font-normal text-ink-muted">
+            <Repeat className="size-4 shrink-0 text-primary-ink" aria-hidden="true" />
+            <span>
+              Ви вчите {countUk(learningCount, ['слово', 'слова', 'слів'])}
+              {dueCount > 0 ? ` · ${countUk(dueCount, ['чекає', 'чекають', 'чекають'])} повторення` : ' · усе повторено вчасно 🎉'}
+            </span>
+          </p>
+        )}
+
+        {saveError && (
+          <p role="alert" className="rounded-card border border-danger-line bg-danger-soft px-4 py-3 text-label font-normal text-danger-ink">
+            Не вдалося зберегти відповідь. Перевірте інтернет — наступні відповіді спробуємо зберегти знову.
+          </p>
+        )}
       </header>
 
-      {/* Режим тренування */}
-      <div className="max-w-md mx-auto px-4 mb-2">
-        <div className="grid grid-cols-2 gap-1 p-1 bg-gray-200/70 rounded-2xl" role="tablist" aria-label="Режим тренування">
-          {([['recognize', '👀 Картки'], ['write', '✍️ Написати']] as const).map(([value, label]) => (
-            <button
-              key={value}
-              role="tab"
-              aria-selected={mode === value}
-              onClick={() => setMode(value)}
-              className={`py-2 rounded-xl text-sm font-bold transition-all ${
-                mode === value ? 'bg-white text-blue-700 shadow' : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Панель вибору рівня для тренування */}
-      <div className="max-w-md mx-auto px-4 flex justify-center gap-2 mb-2">
-        {LEVELS.map((lvl) => (
-          <button
-            key={lvl}
-            onClick={() => setSelectedLevel(lvl)}
-            className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all shadow-sm ${
-              selectedLevel === lvl
-                ? 'bg-blue-600 text-white shadow-md'
-                : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-100'
-            }`}
-          >
-            {lvl === 'ALL' ? 'Усі рівні' : `Рівень ${levelLabel(lvl)}`}
-          </button>
-        ))}
-      </div>
-
-      {saveError && (
-        <div className="max-w-md mx-auto px-4 mb-2">
-          <div role="alert" className="px-4 py-2 rounded-xl bg-rose-50 text-rose-700 text-sm font-medium text-center border border-rose-200">
-            Не вдалося зберегти відповідь. Перевірте інтернет — наступні відповіді спробуємо зберегти знову.
+      <main className="mx-auto max-w-2xl">
+        {loading ? (
+          <div className="mx-auto flex max-w-md flex-col gap-4 px-5 pt-2" aria-busy="true" aria-label="Підготовка карток">
+            <Skeleton className="h-2 rounded-full" />
+            <Skeleton className="h-[20rem] rounded-hero" />
+            <Skeleton className="h-12 rounded-control" />
           </div>
-        </div>
-      )}
-
-      {loading ? (
-        <div className="flex justify-center items-center h-64 text-gray-500">
-          Підготовка карток…
-        </div>
-      ) : cards.length === 0 ? (
-        <div className="text-center py-20 px-4">
-          <p className="text-gray-600 font-medium mb-4">{emptyText}</p>
-          <div className="flex flex-col gap-2 max-w-xs mx-auto">
-            <button
-              onClick={() => router.push('/lessons')}
-              className="min-h-11 bg-blue-600 text-white font-bold rounded-xl px-4"
-            >
-              До уроків
-            </button>
-            <button
-              onClick={() => router.push('/dictionary')}
-              className="min-h-11 text-blue-700 font-semibold rounded-xl px-4"
-            >
-              Відкрити словник
-            </button>
-          </div>
-        </div>
-      ) : mode === 'write' ? (
-        <WriteTrainer
-          key={sessionKey}
-          cards={cards}
-          onAnswer={handleWriteAnswer}
-          onFinishSession={() => router.push('/')}
-        />
-      ) : (
-        <FlashcardTrainer
-          key={sessionKey}
-          cards={cards}
-          onFinishSession={() => router.push('/')}
-          onRateCard={handleRateCard}
-        />
-      )}
+        ) : loadError ? (
+          <ErrorState onRetry={reload} />
+        ) : cards.length === 0 ? (
+          <EmptyState
+            icon={<BookOpen className="size-6" aria-hidden="true" />}
+            title={learningCount === 0 ? 'Тут з’являться ваші слова' : `На рівні ${selectedLevel} слів поки немає`}
+            text={
+              learningCount === 0
+                ? 'Пройдіть урок — і його слова прийдуть сюди на повторення. Або додайте слова самі, коли читаєте тексти.'
+                : 'Оберіть «Усі» або інший рівень — там уже є слова, які ви вчите.'
+            }
+            action={
+              learningCount === 0 ? (
+                <div className="flex flex-col gap-2">
+                  <Button href="/lessons">До уроків</Button>
+                  <Button href="/dictionary" variant="tertiary">
+                    Відкрити словник
+                  </Button>
+                </div>
+              ) : (
+                <Button variant="secondary" onClick={() => setSelectedLevel('ALL')}>
+                  Показати всі рівні
+                </Button>
+              )
+            }
+          />
+        ) : mode === 'write' ? (
+          <WriteTrainer key={sessionKey} cards={cards} onAnswer={handleWriteAnswer} onFinishSession={goToday} onRestart={reload} />
+        ) : (
+          <FlashcardTrainer key={sessionKey} cards={cards} onFinishSession={goToday} onRateCard={handleRateCard} onRestart={reload} />
+        )}
+      </main>
     </div>
   );
 }

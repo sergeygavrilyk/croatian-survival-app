@@ -2,7 +2,7 @@ import { CircleCheck, CircleX, Lightbulb } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import Hr from '@/components/ui/Hr';
 import AudioButton from '@/components/ui/AudioButton';
-import { categoryLabel, isSpoken, type TypicalError } from '@/lib/interference';
+import { categoryIcon, categoryLabel, isSpoken, type TypicalError } from '@/lib/interference';
 import { cn } from '@/lib/ui';
 
 /**
@@ -32,7 +32,10 @@ export default function TypicalErrorCard({
         <p className="flex items-center gap-2 text-label text-warning-ink">
           <Lightbulb className="size-4 shrink-0" aria-hidden="true" />
           {heading}
-          <span className="ml-auto rounded-full bg-warning-soft px-2 py-0.5 text-caption">{categoryLabel(error.category)}</span>
+          <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-warning-soft px-2 py-0.5 text-caption">
+            <span aria-hidden="true">{categoryIcon(error.category)}</span>
+            {categoryLabel(error.category)}
+          </span>
         </p>
       )}
       <h3 className="font-heading text-h3">{error.title_ua}</h3>

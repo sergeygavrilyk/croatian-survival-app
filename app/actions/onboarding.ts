@@ -4,6 +4,7 @@ import { createClient } from '@/utils/supabase/server';
 import { trackEvent } from '@/app/actions/analytics';
 import { scorePlacement, type PlacementAnswer, type PlacementResult } from '@/lib/placement';
 import { validateOnboarding, type OnboardingInput } from '@/lib/onboarding';
+import { parseMascot } from '@/lib/mascot';
 
 const PLACEMENT_SLUG = 'placement-v1';
 
@@ -116,7 +117,9 @@ export async function submitPlacement(
 }
 
 /** Зберігає відповіді онбордингу в профіль і позначає онбординг завершеним. */
-export async function completeOnboarding(input: OnboardingInput & { selfLevel?: string; viaPlacement?: boolean }): Promise<{ ok: true } | { ok: false; error: string }> {
+export async function completeOnboarding(
+  input: OnboardingInput & { selfLevel?: string; viaPlacement?: boolean; mascot?: string | null },
+): Promise<{ ok: true } | { ok: false; error: string }> {
   const checked = validateOnboarding(input);
   if (!checked.ok) return checked;
 
@@ -132,6 +135,13 @@ export async function completeOnboarding(input: OnboardingInput & { selfLevel?: 
   if (error) {
     console.error('profiles onboarding:', error.message);
     return { ok: false, error: 'Не вдалося зберегти. Перевірте інтернет і спробуйте ще раз.' };
+  }
+
+  // Талісман — окремим запитом: якщо міграцію M18 ще не застосовано, онбординг однаково завершується
+  const mascot = parseMascot(input.mascot);
+  if (mascot) {
+    const { error: mascotError } = await supabase.from('profiles').update({ mascot }).eq('id', user.id);
+    if (mascotError) console.error('profiles mascot:', mascotError.message);
   }
 
   await trackEvent('onboarding_completed', {

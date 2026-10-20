@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import ReadingView from '@/components/ReadingView';
 import ErrorState from '@/components/ui/ErrorState';
+import Skeleton from '@/components/ui/Skeleton';
 import { completeReading, saveReadingWord } from '@/app/actions/reading';
 import { glossaryIndex, questionsFrom, type ReadingText } from '@/lib/reading';
 
@@ -120,16 +121,23 @@ export default function ReadingTextPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-4" role="status">
-        <div className="size-10 rounded-full border-4 border-primary-soft border-t-primary animate-spin" aria-hidden="true" />
-        <p className="text-body text-ink-muted">Завантаження тексту…</p>
+      <div className="mx-auto flex min-h-screen max-w-2xl flex-col gap-4 px-5 pt-[calc(1rem+env(safe-area-inset-top))]" role="status" aria-label="Завантаження тексту">
+        <Skeleton className="h-11 w-32 rounded-full" />
+        <div className="flex items-start gap-4">
+          <Skeleton className="size-16" />
+          <div className="flex flex-1 flex-col gap-2">
+            <Skeleton className="h-8 w-3/4" />
+            <Skeleton className="h-5 w-1/2" />
+          </div>
+        </div>
+        <Skeleton className="h-64" />
       </div>
     );
   }
 
   if (failed || !text) {
     return (
-      <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-4">
+      <div className="mx-auto flex min-h-screen max-w-2xl flex-col justify-center px-5">
         <ErrorState
           title="Не вдалося відкрити текст"
           text="Перевірте інтернет і спробуйте ще раз. Тексти, які ви вже відкривали, доступні й офлайн."

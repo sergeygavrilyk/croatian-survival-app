@@ -12,11 +12,13 @@ import Button from '@/components/ui/Button';
 import ProgressBar from '@/components/ui/ProgressBar';
 import EmptyState from '@/components/ui/EmptyState';
 import ErrorState from '@/components/ui/ErrorState';
+import SessionDone from '@/components/ui/SessionDone';
 import SpeakingPractice from '@/components/SpeakingPractice';
 import { track } from '@/lib/analytics-client';
 import { countUk } from '@/lib/format';
+import { levelStyle } from '@/lib/levels';
 import { cn, shuffle } from '@/lib/ui';
-import type { SituationInfo } from '@/lib/situations';
+import { situationCounts, sortedLevels, type SituationInfo } from '@/lib/situations';
 
 export interface SituationPhrase {
   id: string;
@@ -35,7 +37,10 @@ export interface SituationDialogue {
 
 type Tab = 'phrases' | 'dialogues';
 
-/** Екран ситуації: фрази (список або «Перевір себе») і діалоги (docs/DESIGN_SYSTEM.md §9.4). */
+/**
+ * Екран ситуації: фрази (список або «Перевір себе») і діалоги (docs/DESIGN_SYSTEM.md §9.4).
+ * Радісний стиль (§3.4, 2026-10-20): угорі — знак ситуації на фоні кольору першого рівня, бейджі рівнів і кількість.
+ */
 export default function SituationView({
   situation,
   phrases,
@@ -53,6 +58,11 @@ export default function SituationView({
   const [tab, setTab] = useState<Tab>(phrases.length > 0 ? 'phrases' : 'dialogues');
   const [practice, setPractice] = useState<'recall' | 'speak' | null>(null);
 
+  const levels = useMemo(
+    () => sortedLevels([...phrases.map((p) => p.cefr), ...dialogues.map((d) => d.level)]),
+    [phrases, dialogues],
+  );
+
   const tabs: Array<{ key: Tab; label: string; count: number }> = [
     { key: 'phrases', label: 'Фрази', count: phrases.length },
     { key: 'dialogues', label: 'Діалоги', count: dialogues.length },
@@ -60,7 +70,7 @@ export default function SituationView({
 
   return (
     <div className="min-h-screen pb-28">
-      <PageHeader title={`${situation.emoji} ${situation.label}`} backHref="/situations">
+      <PageHeader title={situation.label} backHref="/situations">
         <div role="tablist" aria-label="Розділи ситуації" className="grid grid-cols-2 gap-1 rounded-control bg-surface-muted p-1">
           {tabs.map((t) => (
             <button
@@ -86,6 +96,32 @@ export default function SituationView({
 
       <main className="mx-auto max-w-2xl px-5 pt-4">
         {loadError && <ErrorState className="py-6" text="Частину даних не вдалося завантажити. Оновіть сторінку." />}
+
+        {!practice && (
+          <div className="mb-4 flex animate-fade-in-up items-center gap-4">
+            <span
+              aria-hidden="true"
+              className={cn(
+                'flex size-16 shrink-0 items-center justify-center rounded-card text-4xl leading-none',
+                levels[0] ? levelStyle(levels[0]).soft : 'bg-surface-muted',
+              )}
+            >
+              {situation.emoji}
+            </span>
+            <div className="min-w-0">
+              <p className="text-body text-ink-muted">
+                {situationCounts({ phrases: phrases.length, dialogues: dialogues.length })}
+              </p>
+              {levels.length > 0 && (
+                <p className="mt-1 flex flex-wrap gap-1.5">
+                  {levels.map((l) => (
+                    <LevelBadge key={l} level={l} />
+                  ))}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
 
         {roleplay && !practice && (
           <Link
@@ -213,25 +249,27 @@ function PhrasePractice({
   };
 
   if (done) {
+    // Кінець «Перевір себе» — спільний екран кінця сесії (🎉 / 💪 / 🌱, на 🎉 — конфеті)
     return (
-      <Card hero className="animate-fade-in-up text-center">
-        <p className="text-label text-ink-muted">Результат</p>
-        <p className="mt-1 font-heading text-display">
-          {known} з {order.length}
-        </p>
-        <p className="mt-2 text-body text-ink-muted">
-          {known === order.length ? 'Чудово — усі фрази згадали самі.' : 'Фрази, які не згадали, варто пройти ще раз.'}
-        </p>
-        <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-center">
-          <Button onClick={restart}>
-            <RotateCcw className="size-5" aria-hidden="true" />
-            Ще раз
-          </Button>
-          <Button variant="tertiary" onClick={onExit}>
-            До списку фраз
-          </Button>
-        </div>
-      </Card>
+      <SessionDone
+        correct={known}
+        total={order.length}
+        barLabel="Фраз згадали самі"
+        actions={
+          <>
+            <Button onClick={restart} block>
+              <RotateCcw className="size-5" aria-hidden="true" />
+              Ще раз
+            </Button>
+            <Button variant="tertiary" onClick={onExit} block>
+              До списку фраз
+            </Button>
+          </>
+        }
+      >
+        Згадали самі: {known} з {order.length}.{' '}
+        {known === order.length ? 'Усі фрази — без підказок!' : 'Фрази, які не згадали, варто пройти ще раз.'}
+      </SessionDone>
     );
   }
 

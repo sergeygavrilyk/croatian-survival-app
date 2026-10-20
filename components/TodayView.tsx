@@ -16,6 +16,8 @@ import Hr from '@/components/ui/Hr';
 import IconButton from '@/components/ui/IconButton';
 import LevelBadge from '@/components/ui/LevelBadge';
 import ProgressBar from '@/components/ui/ProgressBar';
+import Mascot from '@/components/ui/Mascot';
+import { storeMascot, type MascotKind } from '@/lib/mascot';
 
 type Day = DayActivity & { level: 0 | 1 | 2 | 3 | 4 };
 
@@ -30,6 +32,8 @@ export interface TodayViewProps {
   week: Day[];
   streak: number;
   loadFailed: boolean;
+  /** Талісман з профілю (null — не обрано → Pjegica) */
+  mascot: MascotKind | null;
 }
 
 /** Насиченість клітинки за кількістю занять (зелений — «вчився», docs/DESIGN_SYSTEM.md §3). */
@@ -43,21 +47,26 @@ const LEVEL_CLASSES: Record<Day['level'], string> = {
 
 /** «Сьогодні» (docs/DESIGN_SYSTEM.md §7.1): одна головна дія, повторення, «Що сказати?», активність за тиждень. */
 export default function TodayView(props: TodayViewProps) {
-  const { name, greeting, level, next, lessonsDone, lessonsTotal, dueCount, week, streak, loadFailed } = props;
+  const { name, greeting, level, next, lessonsDone, lessonsTotal, dueCount, week, streak, loadFailed, mascot } = props;
+
+  // Копія вибору талісмана в браузері — для святкового екрана після уроку (працює й офлайн)
+  useEffect(() => {
+    storeMascot(typeof window === 'undefined' ? null : window.localStorage, mascot);
+  }, [mascot]);
 
   return (
     <div className="min-h-screen pb-28">
       <header className="mx-auto flex max-w-2xl items-start justify-between gap-4 px-5 pt-[calc(2.5rem+env(safe-area-inset-top))] pb-4">
-        <div className="min-w-0">
-          <p className="truncate text-label font-normal text-ink-muted">
-            <Hr>Bok</Hr>, {name}!
-          </p>
-          <h1 className="font-heading text-display">
-            <Hr>{greeting}!</Hr>{' '}
-            <span className="inline-block origin-[70%_70%] animate-wave" aria-hidden="true">
-              👋
-            </span>
-          </h1>
+        <div className="flex min-w-0 items-center gap-3">
+          <Mascot kind={mascot} size={72} hello />
+          <div className="min-w-0">
+            <p className="truncate text-label font-normal text-ink-muted">
+              <Hr>Bok</Hr>, {name}!
+            </p>
+            <h1 className="font-heading text-display">
+              <Hr>{greeting}!</Hr>
+            </h1>
+          </div>
         </div>
         <p
           className={cn(

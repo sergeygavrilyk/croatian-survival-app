@@ -39,3 +39,13 @@ test('weekCheer: підбадьорення за днями тижня', () => {
   assert.match(weekCheer(5), /Чудовий/);
   assert.match(weekCheer(7), /Цілий тиждень/);
 });
+
+test('sessionCheer: підбадьорення за часткою правильних, без «провалу»', async () => {
+  const { sessionCheer } = await import('./today.ts');
+  assert.deepEqual(sessionCheer(10, 10), { emoji: '🎉', title: 'Чудово!' });
+  assert.equal(sessionCheer(8, 10).emoji, '🎉');
+  assert.equal(sessionCheer(5, 10).emoji, '💪');
+  assert.equal(sessionCheer(4, 10).emoji, '🌱');
+  assert.equal(sessionCheer(0, 0).emoji, '🌱');
+  assert.equal(sessionCheer(-1, 3).emoji, '🌱');
+});

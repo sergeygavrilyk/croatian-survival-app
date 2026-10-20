@@ -3,7 +3,12 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
+import { MIN_PASSWORD_LENGTH, authErrorUk, newPasswordProblem } from '@/lib/auth';
+import { cn } from '@/lib/ui';
+import AuthShell, { AuthField, AuthMessage } from '@/components/AuthShell';
+import Button, { buttonClasses } from '@/components/ui/Button';
 
+/** Вхід і реєстрація (DESIGN_SYSTEM §3.4, §8): тексти помилок — українською (lib/auth.ts). */
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -12,7 +17,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const router = useRouter();
-  const supabase = createClient();
+  const [supabase] = useState(() => createClient());
 
   // Повернення з недійсного посилання з листа (/auth/confirm → /login?error=link)
   useEffect(() => {
@@ -21,29 +26,41 @@ export default function LoginPage() {
     }
   }, []);
 
+  const switchMode = (signUp: boolean) => {
+    setIsSignUp(signUp);
+    setError(null);
+    setNotice(null);
+  };
+
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setError(null);
-
+    setNotice(null);
+    if (isSignUp) {
+      const problem = newPasswordProblem(password);
+      if (problem) {
+        setError(problem);
+        return;
+      }
+    }
+    setLoading(true);
     try {
       if (isSignUp) {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-        });
+        const { data, error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
-        router.push('/lessons'); 
+        // Якщо в Supabase увімкнено підтвердження пошти, сесії ще немає — спершу лист
+        if (!data.session) {
+          setNotice('Майже готово! Ми надіслали лист — відкрийте посилання з нього, щоб підтвердити пошту.');
+          return;
+        }
+        router.push('/lessons');
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         router.push('/');
       }
-    } catch (err: any) {
-      setError(err.message || 'Сталася помилка під час авторизації');
+    } catch (err) {
+      setError(authErrorUk(err instanceof Error ? err.message : String(err)));
     } finally {
       setLoading(false);
     }
@@ -52,7 +69,7 @@ export default function LoginPage() {
   const handleResetPassword = async () => {
     setNotice(null);
     if (!email) {
-      setError('Введіть ваш email для відновлення пароля');
+      setError('Введіть ваш email — надішлемо на нього лист для нового пароля.');
       return;
     }
     setError(null);
@@ -60,84 +77,74 @@ export default function LoginPage() {
       // Посилання з листа веде на /auth/confirm, а звідти — на сторінку нового пароля
       redirectTo: `${window.location.origin}/auth/confirm?next=/reset-password`,
     });
-    if (error) setError(error.message);
+    if (error) setError(authErrorUk(error.message));
     else setNotice('Лист надіслано. Відкрийте посилання з нього на цьому ж пристрої.');
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center p-4">
-      <div className="max-w-sm w-full bg-white rounded-3xl shadow-lg p-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-blue-600 mb-2">Croatian Survival</h1>
-          <p className="text-gray-500">
-            {isSignUp ? 'Створіть новий акаунт' : 'Увійдіть до свого акаунту'}
-          </p>
-        </div>
-
-        <form onSubmit={handleAuth} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800"
-              placeholder="ваша@пошта.com"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Пароль</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={6}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800"
-              placeholder="Мінімум 6 символів"
-            />
-            {/* Кнопка "Забули пароль" показується тільки при логіні */}
-            {!isSignUp && (
-              <div className="flex justify-end mt-2">
-                <button
-                  type="button"
-                  onClick={handleResetPassword}
-                  className="text-xs text-blue-500 hover:underline"
-                >
-                  Забули пароль?
-                </button>
-              </div>
+    <AuthShell
+      title={isSignUp ? 'Почнімо!' : 'Раді вас бачити!'}
+      subtitle="Хорватська для українців: від першого «Bok!» до розмови з лікарем."
+    >
+      <div role="group" aria-label="Вхід чи реєстрація" className="grid grid-cols-2 gap-1 rounded-control bg-surface-muted p-1">
+        {([
+          [false, 'Вхід'],
+          [true, 'Реєстрація'],
+        ] as const).map(([signUp, label]) => (
+          <button
+            key={label}
+            type="button"
+            aria-pressed={isSignUp === signUp}
+            onClick={() => switchMode(signUp)}
+            className={cn(
+              'flex min-h-11 items-center justify-center rounded-control font-heading text-label transition-colors duration-150',
+              isSignUp === signUp ? 'bg-surface text-primary-ink shadow-sm' : 'text-ink-muted hover:text-ink',
             )}
-          </div>
-
-          {error && <p role="alert" className="text-red-600 text-sm text-center">{error}</p>}
-          {notice && <p role="status" className="text-emerald-700 text-sm text-center">{notice}</p>}
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-md transition-colors disabled:opacity-50 mt-2"
           >
-            {loading ? 'Зачекайте...' : isSignUp ? 'Зареєструватися' : 'Увійти'}
+            {label}
           </button>
-        </form>
-
-        <div className="mt-6 text-center">
-          <button
-            onClick={() => {
-              setIsSignUp(!isSignUp);
-              setError(null);
-            }}
-            className="text-sm text-blue-500 hover:underline"
-          >
-            {isSignUp
-              ? 'Вже є акаунт? Увійдіть'
-              : 'Немає акаунту? Зареєструйтесь'}
-          </button>
-        </div>
+        ))}
       </div>
-    </div>
+
+      <form onSubmit={handleAuth} className="flex flex-col gap-4">
+        <AuthField
+          id="email"
+          label="Email"
+          type="email"
+          autoComplete="email"
+          inputMode="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          placeholder="ваша@пошта.com"
+        />
+
+        <div className="flex flex-col gap-1">
+          <AuthField
+            id="password"
+            label="Пароль"
+            type="password"
+            autoComplete={isSignUp ? 'new-password' : 'current-password'}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            minLength={isSignUp ? MIN_PASSWORD_LENGTH : undefined}
+            hint={isSignUp ? `Щонайменше ${MIN_PASSWORD_LENGTH} символів` : undefined}
+          />
+          {!isSignUp && (
+            <button type="button" onClick={() => void handleResetPassword()} className={buttonClasses('tertiary', 'sm', 'self-end px-2')}>
+              Забули пароль?
+            </button>
+          )}
+        </div>
+
+        {error && <AuthMessage kind="error">{error}</AuthMessage>}
+        {notice && <AuthMessage kind="ok">{notice}</AuthMessage>}
+
+        <Button type="submit" block loading={loading}>
+          {loading ? 'Зачекайте…' : isSignUp ? 'Створити акаунт' : 'Увійти'}
+        </Button>
+      </form>
+    </AuthShell>
   );
 }

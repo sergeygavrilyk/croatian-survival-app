@@ -15,7 +15,7 @@ const silent = () => {};
 type Failing = Partial<Record<keyof LearningRepo, boolean>>;
 
 /** Проста реалізація сховища в пам'яті + можливість «зламати» будь-який метод. */
-function memoryRepo(fail: Failing = {}) {
+function memoryRepo(fail: Failing = {}, activity: string[] = [], timeZone: string | null = 'Europe/Zagreb') {
   const progress = new Map<string, SrsState & { nextReviewDate: Date }>();
   const history: ReviewHistoryEntry[] = [];
   const lessons = new Map<string, string>();
@@ -41,6 +41,11 @@ function memoryRepo(fail: Failing = {}) {
       return added;
     },
     async logEvent(u, row) { guard('logEvent'); events.push({ userId: u, row }); },
+    async getLearningActivity(u, since) {
+      guard('getLearningActivity');
+      const own = events.filter((e) => e.userId === u).map((e) => e.row.occurred_at);
+      return { timestamps: [...activity, ...own].filter((t) => Date.parse(t) >= since.getTime()), timeZone };
+    },
   };
   return { repo, progress, history, lessons, events, key };
 }
@@ -145,6 +150,46 @@ test('VS-002: збій SRS або аналітики не ламає завер�
 });
 
 // ---------------------------------------------------------------- аналітика
+
+// ---------------------------------------------------------------- святковий екран: нові слова й серія 🔥
+
+test('Свято після уроку: новий учень — +2 нові слова з 2, серія 1 день', async () => {
+  const m = memoryRepo();
+  const res = await completeLesson(m.repo, { userId: USER, lessonId: LESSON, now }, silent);
+  assert.equal(res.addedToReview, 2);
+  assert.equal(res.lessonWords, 2);
+  assert.equal(res.streak, 1);
+});
+
+test('Свято після уроку: вчився вчора й позавчора → серія 3 дні; повтор уроку — 0 нових слів, серія та сама', async () => {
+  const m = memoryRepo({}, ['2026-10-11T19:00:00+02:00', '2026-10-10T08:00:00+02:00', '2026-10-01T08:00:00+02:00']);
+  const first = await completeLesson(m.repo, { userId: USER, lessonId: LESSON, now }, silent);
+  assert.equal(first.streak, 3);
+  const again = await completeLesson(m.repo, { userId: USER, lessonId: LESSON, now }, silent);
+  assert.equal(again.addedToReview, 0);
+  assert.equal(again.lessonWords, 2);
+  assert.equal(again.streak, 3);
+});
+
+test('Свято після уроку: пропущений день обриває серію — рахуємо лише від сьогодні', async () => {
+  const m = memoryRepo({}, ['2026-10-10T08:00:00+02:00', '2026-10-09T08:00:00+02:00']);
+  const res = await completeLesson(m.repo, { userId: USER, lessonId: LESSON, now }, silent);
+  assert.equal(res.streak, 1);
+});
+
+test('Свято після уроку: подія не записалась — сьогоднішній урок однаково рахується в серії', async () => {
+  const m = memoryRepo({ logEvent: true }, ['2026-10-11T12:00:00+02:00']);
+  const res = await completeLesson(m.repo, { userId: USER, lessonId: LESSON, now }, silent);
+  assert.equal(res.streak, 2);
+});
+
+test('Свято після уроку: не вдалося прочитати активність → серії немає (null), урок пройдено', async () => {
+  const m = memoryRepo({ getLearningActivity: true });
+  const res = await completeLesson(m.repo, { userId: USER, lessonId: LESSON, now }, silent);
+  assert.equal(res.success, true);
+  assert.equal(res.streak, null);
+  assert.equal(m.lessons.get(m.key(USER, LESSON)), 'completed');
+});
 
 test('trackEvent: валідна подія записується, невалідна — ні, збій бази не кидає помилку', async () => {
   const m = memoryRepo();

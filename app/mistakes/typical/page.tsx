@@ -39,12 +39,12 @@ export default async function TypicalErrorsPage() {
 
   return (
     <div className="min-h-screen pb-28">
-      <header className="mx-auto max-w-md px-4 pt-[calc(2.5rem+env(safe-area-inset-top))] mb-4">
-        <h1 className="font-heading text-h1 mb-2">Практика</h1>
-        <PracticeTabs />
+      <header className="mx-auto max-w-2xl px-5 pt-[calc(2.5rem+env(safe-area-inset-top))] pb-4">
+        <h1 className="font-heading text-h1">Практика</h1>
+        <PracticeTabs className="mt-2" />
         <SegmentedLinks items={MISTAKES_SEGMENTS} label="Які помилки" className="mt-4" />
       </header>
-      <main className="mx-auto max-w-md px-4">
+      <main className="mx-auto max-w-2xl px-5">
         {failed ? (
           <ErrorState text="Не вдалося завантажити типові помилки. Перевірте інтернет і оновіть сторінку." />
         ) : (

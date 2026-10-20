@@ -261,7 +261,7 @@ export function readingMinutes(wordCount: number): number {
 /** Частка знайомих слів → підпис («знайомих 92 %»); null — невідомо. */
 export function knownLabel(ratio: number | null | undefined): string | null {
   if (typeof ratio !== 'number' || !Number.isFinite(ratio)) return null;
-  return `знайомих слів ${Math.round(ratio * 100)} %`;
+  return `знайомих слів ${Math.round(ratio * 100)}\u00a0%`; // нерозривний пробіл: «%» не переноситься на новий рядок
 }
 
 /**
@@ -283,4 +283,25 @@ export function moduleCardTitles(
     title,
     subtitle: hr && !norm(title).includes(norm(hr)) ? hr : null,
   };
+}
+
+/** Емодзі типу тексту для списку й екрана читання (радісний дизайн, DESIGN_SYSTEM §3.4). Без прапорів. */
+export const TEXT_TYPE_ICON: Record<TextType, string> = {
+  message: '📱',
+  chat: '💬',
+  email: '✉️',
+  notice: '📌',
+  ad: '📢',
+  menu: '🍽️',
+  instruction: '📝',
+  form: '📋',
+  story: '📖',
+  article: '🗞️',
+  news: '📰',
+  dialogue: '🗣️',
+  sign: '🏷️',
+};
+
+export function textTypeIcon(t: string | null | undefined): string {
+  return t && (TEXT_TYPES as readonly string[]).includes(t) ? TEXT_TYPE_ICON[t as TextType] : '📄';
 }

@@ -11,6 +11,7 @@ import AiPanel from '@/components/ui/AiPanel';
 import EmptyState from '@/components/ui/EmptyState';
 import FeedbackBanner from '@/components/ui/FeedbackBanner';
 import ProgressBar from '@/components/ui/ProgressBar';
+import SessionDone from '@/components/ui/SessionDone';
 import { rateMistake } from '@/app/actions/mistakes';
 import { track } from '@/lib/analytics-client';
 import { answerTiles, checkSentence, distractorTiles, shuffleTiles, type SentenceVerdict } from '@/lib/mistakes';
@@ -93,7 +94,7 @@ export default function MistakesPractice({
     return (
       <EmptyState
         icon={<CircleCheck className="size-6" aria-hidden="true" />}
-        title="На сьогодні все"
+        title="На сьогодні все 🎉"
         text={[
           waitingCount > 0 ? `Наступне повторення — завтра: ${countUk(waitingCount, ['помилка', 'помилки', 'помилок'])}.` : null,
           resolvedCount > 0 ? `Засвоєно: ${resolvedCount}.` : null,
@@ -106,31 +107,33 @@ export default function MistakesPractice({
   // Підсумок сесії
   if (!item) {
     return (
-      <Card className="flex flex-col gap-4 text-center">
-        <p className="font-heading text-h2">Готово!</p>
-        <p className="text-body text-ink-muted">
-          Правильно: {correctCount} з {items.length}.
-          {masteredNow > 0 && ` Засвоєно сьогодні: ${masteredNow}.`}
-          {' '}Помилки, з якими ще було складно, повернуться пізніше.
-        </p>
-        <div className="flex flex-col gap-2 sm:flex-row">
-          <Button
-            block
-            onClick={() => {
-              // Нові «на сьогодні» помилки (неправильні щойно — теж) підтягне сервер
-              setIndex(0);
-              setPicked([]);
-              setResult(null);
-              setCorrectCount(0);
-              setMasteredNow(0);
-              router.refresh();
-            }}
-          >
-            Ще раз
-          </Button>
-          <Button block variant="secondary" href="/trainer">До тренажера</Button>
-        </div>
-      </Card>
+      <SessionDone
+        correct={correctCount}
+        total={items.length}
+        actions={
+          <>
+            <Button
+              block
+              onClick={() => {
+                // Нові «на сьогодні» помилки (неправильні щойно — теж) підтягне сервер
+                setIndex(0);
+                setPicked([]);
+                setResult(null);
+                setCorrectCount(0);
+                setMasteredNow(0);
+                router.refresh();
+              }}
+            >
+              Ще раз
+            </Button>
+            <Button block variant="secondary" href="/trainer">До тренажера</Button>
+          </>
+        }
+      >
+        Виправили {correctCount} з {items.length}.
+        {masteredNow > 0 && ` Засвоєно сьогодні: ${masteredNow} 🏆.`}
+        {' '}Помилки, з якими ще було складно, повернуться пізніше.
+      </SessionDone>
     );
   }
 
@@ -166,13 +169,18 @@ export default function MistakesPractice({
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-3">
         <ProgressBar value={index} max={items.length} label="Прогрес повторення помилок" className="flex-1" />
-        <span className="text-label text-ink-muted">{index + 1} / {items.length}</span>
+        <span className="font-heading text-label tabular-nums text-ink-muted">{index + 1} / {items.length}</span>
       </div>
 
-      <Card className="flex flex-col gap-2">
-        <p className="text-label text-ink-muted">{item.source === 'exercise' ? 'Типова помилка:' : 'Ви сказали в рольовій грі:'}</p>
+      <Card className="flex flex-col gap-3">
+        <div className="flex items-center gap-3">
+          <span className="flex size-12 shrink-0 items-center justify-center rounded-card bg-danger-soft text-2xl leading-none" aria-hidden="true">
+            {item.source === 'exercise' ? '🧩' : '💬'}
+          </span>
+          <p className="text-label text-ink-muted">{item.source === 'exercise' ? 'Типова помилка:' : 'Ви сказали в рольовій грі:'}</p>
+        </div>
         <Hr as="p" className="text-body-lg text-ink-muted line-through decoration-danger-line">{item.original}</Hr>
-        <p className="mt-2 font-heading text-h3">Складіть правильно</p>
+        <p className="font-heading text-h3">Складіть правильно</p>
       </Card>
 
       {/* Відповідь */}

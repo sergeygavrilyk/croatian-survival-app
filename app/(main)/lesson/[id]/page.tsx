@@ -208,9 +208,10 @@ export default function LessonPage() {
     track('lesson_started', { lesson_id: lessonId, level: content.lesson.level_code ?? undefined });
   }, [content, lessonId]);
 
-  // Завершення уроку: прогрес уроку + слова уроку в повторення (SRS). Помилку показує екран підсумку.
+  // Завершення уроку: прогрес уроку + слова уроку в повторення (SRS). Результат (нові слова, серія 🔥) —
+  // для святкового екрана; помилку показує екран підсумку.
   const handleComplete = useCallback(async () => {
-    await completeLesson(lessonId, {
+    return completeLesson(lessonId, {
       session_id: getSessionId(),
       duration_ms: Date.now() - startedAtRef.current,
       level: content?.lesson.level_code ?? undefined,

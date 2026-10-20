@@ -4,6 +4,7 @@
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { LearningRepo } from './learning.ts';
+import { LEARNING_EVENTS } from './progress.ts';
 import { DEFAULT_EASE } from './srs.ts';
 
 export function createSupabaseLearningRepo(supabase: SupabaseClient): LearningRepo {
@@ -103,6 +104,36 @@ export function createSupabaseLearningRepo(supabase: SupabaseClient): LearningRe
     async logEvent(userId, row) {
       const { error } = await supabase.from('analytics_events').insert({ user_id: userId, ...row });
       if (error) throw new Error(error.message);
+    },
+
+    async getLearningActivity(userId, since) {
+      // Ті самі джерела, що й 🔥 на «Сьогодні» (app/page.tsx): події навчання + історія повторень карток
+      const [events, reviews, profile] = await Promise.all([
+        supabase
+          .from('analytics_events')
+          .select('occurred_at')
+          .eq('user_id', userId)
+          .in('event_name', [...LEARNING_EVENTS])
+          .gte('occurred_at', since.toISOString())
+          .order('occurred_at', { ascending: false })
+          .limit(5000),
+        supabase
+          .from('srs_reviews')
+          .select('created_at')
+          .eq('user_id', userId)
+          .gte('created_at', since.toISOString())
+          .order('created_at', { ascending: false })
+          .limit(5000),
+        supabase.from('profiles').select('timezone').eq('id', userId).maybeSingle(),
+      ]);
+      if (events.error) throw new Error(events.error.message);
+      return {
+        timestamps: [
+          ...(events.data ?? []).map((r: { occurred_at: string }) => r.occurred_at),
+          ...(reviews.error ? [] : (reviews.data ?? []).map((r: { created_at: string }) => r.created_at)),
+        ],
+        timeZone: profile.error ? null : ((profile.data as { timezone?: string | null } | null)?.timezone ?? null),
+      };
     },
   };
 }

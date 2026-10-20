@@ -15,7 +15,8 @@ export default function SegmentedLinks({
   className,
   activeHref,
 }: {
-  items: ReadonlyArray<{ href: string; label: string }>;
+  /** activeClassName — свій вигляд вибраного пункту, напр. колір рівня (levelStyle(level).solid) */
+  items: ReadonlyArray<{ href: string; label: string; activeClassName?: string }>;
   label: string;
   className?: string;
   /** яке посилання активне, якщо шлях у всіх однаковий */
@@ -24,7 +25,7 @@ export default function SegmentedLinks({
   const pathname = (usePathname() ?? '').replace(/\/+$/, '');
   return (
     <nav aria-label={label} className={cn('flex rounded-control bg-surface-muted p-1', className)}>
-      {items.map(({ href, label: text }) => {
+      {items.map(({ href, label: text, activeClassName }) => {
         const active = activeHref !== undefined ? activeHref === href : pathname === href;
         return (
           <Link
@@ -33,7 +34,7 @@ export default function SegmentedLinks({
             aria-current={active ? 'page' : undefined}
             className={cn(
               'flex min-h-11 flex-1 items-center justify-center rounded-control px-3 text-center text-label transition-colors duration-150',
-              active ? 'bg-surface text-ink shadow-sm' : 'text-ink-muted hover:text-ink',
+              active ? cn(activeClassName ?? 'bg-surface text-ink', 'shadow-sm') : 'text-ink-muted hover:text-ink',
             )}
           >
             {text}

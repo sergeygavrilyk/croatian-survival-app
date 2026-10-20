@@ -41,6 +41,9 @@ export interface ProgressSummary {
 export const LONG_TERM_DAYS = 21;
 const WEEKDAYS = ['Нд', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
 
+/** Часовий пояс, якщо в профілі його немає. */
+export const DEFAULT_TIME_ZONE = 'Europe/Zagreb';
+
 /** Дата YYYY-MM-DD у заданому часовому поясі (невідомий пояс → UTC). */
 export function dayKey(date: Date, timeZone?: string | null): string {
   const fmt = (tz: string) =>

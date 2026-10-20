@@ -9,9 +9,11 @@ import Hr from '@/components/ui/Hr';
 import AudioButton from '@/components/ui/AudioButton';
 import IconButton from '@/components/ui/IconButton';
 import LevelBadge from '@/components/ui/LevelBadge';
+import SessionDone from '@/components/ui/SessionDone';
+import { levelStyle } from '@/lib/levels';
 import { track } from '@/lib/analytics-client';
 import {
-  glossaryIndex, isCroatianOption, knownLabel, paragraphs, readingMinutes, scoreAnswers, seededShuffle, speechChunks, textTypeLabel, tokenize,
+  glossaryIndex, isCroatianOption, knownLabel, paragraphs, readingMinutes, scoreAnswers, seededShuffle, speechChunks, textTypeIcon, textTypeLabel, tokenize,
   type GlossaryEntry, type ReadingText,
 } from '@/lib/reading';
 import { cn } from '@/lib/ui';
@@ -111,7 +113,7 @@ export default function ReadingView({
   const selectedState = selected ? saveState[selected.lemma] : undefined;
 
   return (
-    <div className="mx-auto min-h-screen max-w-md px-4 pb-40 pt-[calc(1rem+env(safe-area-inset-top))]">
+    <div className="mx-auto min-h-screen max-w-2xl px-5 pb-40 pt-[calc(1rem+env(safe-area-inset-top))]">
       <div className="mb-4 flex items-center gap-2">
         <IconButton label="Закрити текст" onClick={() => router.push(listHref)}>
           <X className="size-6" aria-hidden="true" />
@@ -120,13 +122,23 @@ export default function ReadingView({
         <span className="text-label text-ink-muted">{textTypeLabel(text.text_type)}</span>
       </div>
 
-      <h1 className="font-heading text-h1">{text.title_ua}</h1>
-      <Hr as="p" className="mb-1 text-body-lg text-ink-muted">
-        {text.title_hr}
-      </Hr>
-      <p className="mb-4 text-caption text-ink-muted">
-        ~{readingMinutes(text.word_count)} хв · {text.word_count} слів{known ? ` · ${known}` : ''}
-      </p>
+      <div className="mb-4 flex items-start gap-4">
+        <span
+          className={cn('flex size-16 shrink-0 items-center justify-center rounded-card text-4xl leading-none', levelStyle(text.cefr).soft)}
+          aria-hidden="true"
+        >
+          {textTypeIcon(text.text_type)}
+        </span>
+        <div className="min-w-0 flex-1">
+          <h1 className="font-heading text-h1 break-words">{text.title_ua}</h1>
+          <Hr as="p" className="mb-1 text-body-lg text-ink-muted">
+            {text.title_hr}
+          </Hr>
+          <p className="text-caption text-ink-muted">
+            ~{readingMinutes(text.word_count)} хв · {text.word_count} слів{known ? ` · ${known}` : ''}
+          </p>
+        </div>
+      </div>
 
       <div className="mb-4 flex gap-2">
         <Button size="sm" variant="secondary" onClick={play} aria-pressed={playing}>
@@ -233,24 +245,26 @@ export default function ReadingView({
             Перевірити
           </Button>
         ) : (
-          <Card className="flex flex-col gap-3 text-center" role="status">
-            <p className="font-heading text-h2">
-              {correct === text.questions.length ? 'Чудово!' : correct > 0 ? 'Непогано!' : 'Спробуйте ще раз'}
-            </p>
-            <p className="text-body text-ink-muted">
+          <SessionDone
+            correct={correct}
+            total={text.questions.length}
+            actions={
+              <>
+                <Button block href={listHref}>
+                  До списку текстів
+                </Button>
+                <Button block variant="secondary" onClick={again}>
+                  Ще раз
+                </Button>
+              </>
+            }
+          >
+            <p>
               Правильно: {correct} з {text.questions.length}.
               {correct < text.questions.length && ' Перечитайте текст — можна відкрити переклад.'}
             </p>
-            {completeError && <p className="text-label text-danger-ink">{completeError}</p>}
-            <div className="flex flex-col gap-2 sm:flex-row">
-              <Button block href={listHref}>
-                До списку текстів
-              </Button>
-              <Button block variant="secondary" onClick={again}>
-                Ще раз
-              </Button>
-            </div>
-          </Card>
+            {completeError && <p className="mt-2 text-label text-danger-ink">{completeError}</p>}
+          </SessionDone>
         )}
       </section>
 
@@ -259,7 +273,7 @@ export default function ReadingView({
         <div
           role="dialog"
           aria-label={`Слово «${selected.form}»`}
-          className="fixed inset-x-0 bottom-0 z-40 mx-auto max-w-md rounded-t-hero border border-line bg-surface p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-md animate-fade-in-up"
+          className="fixed inset-x-0 bottom-0 z-40 mx-auto max-w-2xl rounded-t-hero border border-line bg-surface p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-md animate-fade-in-up"
         >
           <div className="flex items-start gap-2">
             <div className="min-w-0 flex-1">

@@ -72,3 +72,19 @@ export function weekCheer(activeDays: number): string {
   if (activeDays >= 1) return 'Гарний початок! Повертайтеся завтра 🙂';
   return 'Почніть сьогодні — 5 хвилин уже рахуються ✨';
 }
+
+export interface SessionCheer {
+  emoji: '🎉' | '💪' | '🌱';
+  title: string;
+}
+
+/**
+ * Підбадьорення в кінці сесії (тренажер, помилки, типові помилки, читання) за часткою правильних відповідей.
+ * Без «провалу»: навіть 0 з 10 — «Крок за кроком» (DESIGN_SYSTEM §3.4, §9.2 — підтримувальний тон).
+ */
+export function sessionCheer(correct: number, total: number): SessionCheer {
+  const share = total > 0 ? Math.max(0, correct) / total : 0;
+  if (share >= 0.8) return { emoji: '🎉', title: 'Чудово!' };
+  if (share >= 0.5) return { emoji: '💪', title: 'Добре попрацювали!' };
+  return { emoji: '🌱', title: 'Крок за кроком!' };
+}

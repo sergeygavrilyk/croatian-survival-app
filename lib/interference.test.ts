@@ -89,3 +89,13 @@ test('приклади з БД: лише пари hr / ua', () => {
   assert.deepEqual(examplesFrom([{ hr: 'Da.', ua: 'Так.' }, { hr: 1 }, null, 'x']), [{ hr: 'Da.', ua: 'Так.' }]);
   assert.deepEqual(examplesFrom(null), []);
 });
+
+test('categoryIcon: у кожної категорії свій емодзі, невідома — 💡', async () => {
+  const { CATEGORY_ICON, INTERFERENCE_CATEGORIES, categoryIcon } = await import('./interference.ts');
+  const icons = INTERFERENCE_CATEGORIES.map((c) => categoryIcon(c));
+  assert.equal(new Set(icons).size, INTERFERENCE_CATEGORIES.length);
+  assert.equal(Object.keys(CATEGORY_ICON).length, INTERFERENCE_CATEGORIES.length);
+  assert.equal(categoryIcon('cases'), '🧩');
+  assert.equal(categoryIcon('щось'), '💡');
+  assert.equal(categoryIcon(null), '💡');
+});

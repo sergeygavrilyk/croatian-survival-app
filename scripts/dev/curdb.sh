@@ -85,4 +85,5 @@ run $A/data_fixes/20261020_translation_cache_truncated.sql
 run $A/data_fixes/20261015_reading_a2_publish.sql
 run $S/seed_lexemes_fix_20261020.sql
 run $A/data_fixes/20261020_lexemes_a0_problem_words.sql
+run $A/data_fixes/20261020_assessments_a0_v4_level.sql
 echo "Готово. Тести: for t in supabase/tests/*.sql; do psql -h /tmp -p $P -U postgres -q -v ON_ERROR_STOP=1 -f \$t | tail -1; done"

@@ -7,10 +7,11 @@ import Card from '@/components/ui/Card';
 import EmptyState from '@/components/ui/EmptyState';
 import FeedbackBanner from '@/components/ui/FeedbackBanner';
 import ProgressBar from '@/components/ui/ProgressBar';
+import SessionDone from '@/components/ui/SessionDone';
 import TypicalErrorCard from '@/components/TypicalErrorCard';
 import { answerTypicalError } from '@/app/actions/interference';
 import { track } from '@/lib/analytics-client';
-import { categoryLabel, countByCategory, isSpoken, pickQuiz, quizOptions, quizQuestion, type TypicalError } from '@/lib/interference';
+import { categoryIcon, categoryLabel, countByCategory, isSpoken, pickQuiz, quizOptions, quizQuestion, type TypicalError } from '@/lib/interference';
 import { seededRandom } from '@/lib/random';
 import { cn } from '@/lib/ui';
 
@@ -99,7 +100,7 @@ export default function TypicalErrorsQuiz({ items, savedIds, seed }: { items: Ty
   };
 
   const chips = (
-    <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1" role="group" aria-label="Категорія помилок">
+    <div className="-mx-5 flex gap-2 overflow-x-auto px-5 pb-1" role="group" aria-label="Категорія помилок">
       {[{ category: null as string | null, count: items.length }, ...counts].map((c) => {
         const active = c.category === category;
         return (
@@ -109,10 +110,11 @@ export default function TypicalErrorsQuiz({ items, savedIds, seed }: { items: Ty
             aria-pressed={active}
             onClick={() => restart(c.category)}
             className={cn(
-              'min-h-11 shrink-0 rounded-full border px-3 text-label transition-colors duration-150',
+              'flex min-h-11 shrink-0 items-center gap-1.5 rounded-full border px-3 text-label transition-colors duration-150',
               active ? 'border-primary bg-primary-soft text-primary-ink' : 'border-line bg-surface text-ink-muted hover:text-ink',
             )}
           >
+            <span aria-hidden="true">{c.category ? categoryIcon(c.category) : '✨'}</span>
             {c.category ? categoryLabel(c.category) : 'Усі'} · {c.count}
           </button>
         );
@@ -125,21 +127,23 @@ export default function TypicalErrorsQuiz({ items, savedIds, seed }: { items: Ty
     return (
       <div className="flex flex-col gap-4">
         {chips}
-        <Card className="flex flex-col gap-4 text-center">
-          <p className="font-heading text-h2">Готово!</p>
-          <p className="text-body text-ink-muted">
-            Правильно: {correctCount} з {session.length}. Помилки, у яких ви помилились, — у «Моїх помилках»: там їх треба буде скласти
-            правильно.
-          </p>
-          <div className="flex flex-col gap-2 sm:flex-row">
-            <Button block onClick={() => restart()}>
-              Ще раз
-            </Button>
-            <Button block variant="secondary" href="/mistakes">
-              Мої помилки
-            </Button>
-          </div>
-        </Card>
+        <SessionDone
+          correct={correctCount}
+          total={session.length}
+          actions={
+            <>
+              <Button block onClick={() => restart()}>
+                Ще раз
+              </Button>
+              <Button block variant="secondary" href="/mistakes">
+                Мої помилки
+              </Button>
+            </>
+          }
+        >
+          Правильно: {correctCount} з {session.length}.
+          {correctCount < session.length && ' Помилки, у яких ви помилились, — у «Моїх помилках»: там їх треба буде скласти правильно.'}
+        </SessionDone>
       </div>
     );
   }
@@ -151,14 +155,19 @@ export default function TypicalErrorsQuiz({ items, savedIds, seed }: { items: Ty
       {chips}
       <div className="flex items-center gap-3">
         <ProgressBar value={index} max={session.length} label="Прогрес вправи" className="flex-1" />
-        <span className="text-label text-ink-muted">
+        <span className="font-heading text-label tabular-nums text-ink-muted">
           {index + 1} / {session.length}
         </span>
       </div>
 
-      <Card className="flex flex-col gap-1">
-        <p className="text-label text-ink-muted">{categoryLabel(item.category)}</p>
-        <p className="font-heading text-h3">{quizQuestion(item.category)}</p>
+      <Card className="flex items-center gap-3">
+        <span className="flex size-12 shrink-0 items-center justify-center rounded-card bg-warning-soft text-2xl leading-none" aria-hidden="true">
+          {categoryIcon(item.category)}
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="text-label text-ink-muted">{categoryLabel(item.category)}</p>
+          <p className="font-heading text-h3">{quizQuestion(item.category)}</p>
+        </div>
       </Card>
 
       <div className="flex flex-col gap-2" role="group" aria-label="Варіанти відповіді">
