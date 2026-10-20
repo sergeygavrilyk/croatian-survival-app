@@ -55,8 +55,11 @@ select pg_temp.ok(pg_temp.n($q$select x.id from v2_lessons v join public.lesson_
 select pg_temp.ok(pg_temp.n($q$select distinct i.item_id from public.lesson_items i join public.lessons l on l.id = i.lesson_id
   where l.level_code = 'A1' and i.item_type = 'lexeme'
   and i.item_id not in (select i0.item_id from public.lesson_items i0 join public.lessons l0 on l0.id = i0.lesson_id
-                        where l0.level_code = 'A0' and i0.item_type = 'lexeme')$q$) >= 990,
-  'в уроках A1 ≥ 990 слів, яких немає в уроках A0 (план ТЗ ~1000)');
+                        where l0.level_code = 'A0' and i0.item_type = 'lexeme')$q$) >= 590,
+  'в уроках A1 ≥ 590 слів, яких немає в уроках A0 (2026-10-19: частину слів A1 тепер вчать уроки A0 за темою — curriculum_a0_v4; після A0.4 — 891, після A0.6 — 803, після A0.8 — 732, після A0.9 — 688, після A0.10 — 636)');
+select pg_temp.ok(pg_temp.n($q$select distinct i.item_id from public.lesson_items i join public.lessons l on l.id = i.lesson_id
+  where l.level_code in ('A0', 'A1') and i.item_type = 'lexeme'$q$) >= 1450,
+  'в уроках A0 і A1 разом ≥ 1450 різних слів (план ТЗ: A0 ~500 + A1 ~1000)');
 
 -- ---------------------------------------------------------------- словник
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lexemes where source = 'claude_curriculum_a1_v2'

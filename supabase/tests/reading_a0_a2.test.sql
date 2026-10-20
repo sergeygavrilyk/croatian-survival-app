@@ -43,7 +43,8 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.reading_texts where source =
 select pg_temp.ok(pg_temp.n($q$select distinct module_order from public.reading_texts where source = 'claude_reading_a0_v1'$q$) = 10,
   'A0: тексти є для кожного з 10 модулів A0');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.reading_texts where source = 'claude_reading_a0_v1'
-  and (code !~ '^RD-A0-[0-9]{3}$' or word_count not between 6 and 40 or known_ratio < 0.4)$q$) = 0,
+  and (code !~ '^RD-A0-[0-9]{3}$' or word_count not between 6 and 40
+       or known_ratio < 0.4)$q$) = 0,
   'A0: коди RD-A0-NNN, 6–40 слів, ≥ 40 % слів з уроків A0');
 
 -- ---------------------------------------------------------------- A2

@@ -20,12 +20,13 @@ begin
 end $$;
 
 -- ---------------------------------------------------------------- структура
-select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons where level_code = 'A0' and status = 'PUBLISHED'$q$) = 47,
-  'A0: 47 опублікованих уроків');
+-- після curriculum_a0_v4 (модуль A0.2: +4 тематичні уроки) уроків більше — 51; тут перевіряємо, що доповнення v3 на місці
+select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons where level_code = 'A0' and status = 'PUBLISHED'$q$) >= 47,
+  'A0: щонайменше 47 опублікованих уроків');
 select pg_temp.ok(pg_temp.n($q$select u.id from public.units u join public.modules m on m.id = u.module_id
   join public.lessons l on l.unit_id = u.id where m.level_code = 'A0'
-  group by u.id having count(*) not between 4 and 5 or max(l.order_index) <> count(*) or min(l.order_index) <> 1$q$) = 0,
-  'у кожному модулі A0 4–5 уроків, номери 1…N без пропусків');
+  group by u.id having count(*) not between 4 and 12 or max(l.order_index) <> count(*) or min(l.order_index) <> 1$q$) = 0,
+  'у кожному модулі A0 4–12 уроків, номери 1…N без пропусків');
 select pg_temp.ok(pg_temp.n($q$select 1 from (
     select l.title_ua, l.title_hr, row_number() over (order by m.order_index, l.order_index) as n
       from public.lessons l join public.units u on u.id = l.unit_id join public.modules m on m.id = u.module_id
@@ -67,7 +68,7 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.lexemes where lemma in ('mUP
 -- ---------------------------------------------------------------- гість
 set local role anon;
 select set_config('request.jwt.claims', '{"role":"anon"}', true);
-select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons where level_code = 'A0'$q$) = 47, 'гість бачить 47 уроків A0');
+select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons where level_code = 'A0'$q$) >= 47, 'гість бачить щонайменше 47 уроків A0');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.grammar_rules r join public.grammar_topics g on g.id = r.topic_id
   where g.title_ua = 'Порядок слів'$q$) >= 3, 'гість бачить правила «Порядок слів»');
 

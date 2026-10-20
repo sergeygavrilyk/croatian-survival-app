@@ -69,8 +69,12 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.lesson_items i join public.l
     and lower(x.lemma) in ('dobro jutro', 'dobar dan', 'dobra večer', 'laku noć', 'doviđenja', 'vidimo se kasnije', 'do sutra')$q$) = 7,
   'урок 2: привітання протягом дня і прощання');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lexemes where source = 'claude_curriculum_a0_v4' and status = 'PUBLISHED'
-  and normalized !~ '[čćđšž]' and lemma !~ '[Ѐ-ӿ]' and ukrainian_translation ~ '[Ѐ-ӿ]' and jsonb_array_length(examples) = 1$q$) = 27,
-  '27 нових слів і виразів: без кирилиці в лемі, normalized без діакритики, переклад і приклад');
+  and normalized !~ '[čćđšž]' and lemma !~ '[Ѐ-ӿ]' and ukrainian_translation ~ '[Ѐ-ӿ]' and jsonb_array_length(examples) = 1
+  and lower(lemma) in ('zdravo', 'puno hvala', 'ne baš dobro', 'tako-tako', 'a ti', 'a vi', 'i ja', 'ugodan vikend', 'vidimo se kasnije',
+                       'do skorog viđenja', 'pozdrav', 'lijep pozdrav', 'oprosti', 'nisam razumio', 'nisam te čuo', 'sporije', 'glasnije',
+                       'što znači', 'možete li napisati', 'jasno', 'hvala na pomoći', 'i vama', 'slobodno', 'smijem li', 'svakako',
+                       'na zdravlje', 'pristojan')$q$) = 27,
+  '27 нових слів і виразів A0.1: без кирилиці в лемі, normalized без діакритики, переклад і приклад');
 
 -- ---------------------------------------------------------------- стара версія збережена
 select pg_temp.ok(pg_temp.n($q$select 1 from pg_temp.v4() v(lid)
@@ -89,8 +93,10 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.exercises e
 
 -- ---------------------------------------------------------------- видимість
 set local role anon;
-select pg_temp.ok(pg_temp.n($q$select 1 from public.conversations where source = 'claude_curriculum_a0_v4'$q$) = 8,
-  'гість бачить 8 нових діалогів');
+select pg_temp.ok(pg_temp.n($q$select 1 from public.conversations where source = 'claude_curriculum_a0_v4'
+  and lesson_id in ('c0000000-0000-0000-0000-000000000001', 'd8cffb46-8a62-538a-b864-e227a6d8b863',
+                    'a17f2f16-1be9-50f2-8e16-2bebfcced33b', 'e704760a-f743-5762-9c1a-027b10ca030a')$q$) = 8,
+  'гість бачить 8 нових діалогів A0.1');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.conversations where status = 'DEPRECATED'$q$) = 0,
   'гість не бачить застарілих діалогів');
 reset role;

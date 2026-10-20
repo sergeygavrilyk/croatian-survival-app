@@ -18,6 +18,7 @@ import { AREA_LABELS, AREAS, percent, type Area, type ItemResponse } from '@/lib
 import { isUkrainian, tilesFrom } from '@/lib/lesson-flow';
 import { speakCroatian } from '@/utils/speech';
 import { browserSpeech } from '@/utils/speech-recognition';
+import { micAccessHelp } from '@/lib/speech-session';
 import { SpeechError, type ListeningSession, type SpeechErrorCode } from '@/lib/speech-provider';
 import { cn } from '@/lib/ui';
 
@@ -464,7 +465,7 @@ function SpeakItem({ item, onAnswer }: { item: PlayerItem; onAnswer: (r: ItemRes
         )}
         {error && (
           <p role="alert" className="rounded-card border border-warning-line bg-warning-soft p-4 text-body text-warning-ink">
-            {SPEECH_ERROR[error]}
+            {error === 'not-allowed' ? micAccessHelp(typeof navigator === 'undefined' ? '' : navigator.userAgent, 'Або пропустіть завдання.') : SPEECH_ERROR[error]}
           </p>
         )}
         <p className="text-caption text-ink-subtle">Аудіо не записуємо: розпізнає браузер, ми бачимо лише текст.</p>

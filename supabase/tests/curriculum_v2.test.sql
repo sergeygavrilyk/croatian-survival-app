@@ -81,7 +81,8 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.conversations c join public.
   where l.id = 'b095637e-0644-507e-8f3d-d323483dd3e4'$q$) = 2, 'гість бачить обидві сцени уроку A0.10.3');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.exercises e join public.lesson_items i on i.item_id = e.id
   join public.lessons l on l.id = i.lesson_id where l.id = 'b095637e-0644-507e-8f3d-d323483dd3e4'
-  and e.exercise_type in ('speaking', 'type_answer', 'multiple_choice')$q$) = 7, 'гість бачить нові вправи уроку 30');
+  and e.exercise_type in ('speaking', 'type_answer', 'multiple_choice')$q$) = 10,
+  'гість бачить нові вправи уроку A0.10.3 (з 2026-10-20 — «Заповнюємо анкету» за темою: 2 «скажіть», 3 «напишіть», 5 «вибір»)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.content_versions$q$) = 0, 'гість не бачить історію змін контенту');
 
 reset role;

@@ -11,6 +11,8 @@
   python3 scripts/gen_reading.py --v1       →  ще й supabase/data_fixes/20261014_reading_a1_v1.sql (перший пакет, уже застосований)
   python3 scripts/gen_reading.py --unknown  →  слова текстів, яких ще немає в словничку (для наповнення reading_lexicon.py)
   python3 scripts/gen_reading.py --stats    →  частка знайомих слів у кожному тексті
+  python3 -B scripts/gen_reading.py --known-sync m03  →  supabase/data_fixes/20261019_reading_known_a0v4_m03_part1.sql… (m10 — 20261020_…; лише словничок і частка
+                                               знайомих слів уже завантажених текстів — після зміни слів уроків; решту файлів не чіпає)
 
 Дані: scripts/reading_data.py (A1), reading_data_a0.py (A0), reading_data_a2.py (A2), scripts/reading_lexicon.py (форми слів і переклади),
 scripts/reading_lexicon_snapshot.json (слова уроків A0–A1 з перекладами — знімок бази).
@@ -61,6 +63,9 @@ LEVELS = {
                note='Тексти для читання A2 (§6) за запитом власника 2026-10-15 (reading_a2_v1). DRAFT: публікує власник після перевірки.'),
 }
 ALL_TEXTS = [t for cfg in LEVELS.values() for t in cfg['texts']]
+# Тимчасові винятки з мінімуму знайомих слів (поки уроки A0 перебудовуються за темою), код → мінімум.
+# RD-A0-020 «Заборони й попередження» (*pas*) — виняток прибрано 2026-10-19: *pas* знову в уроці «Домашні тварини» (A0.5), 45 %.
+KNOWN_EXCEPTIONS: dict = {}
 
 
 def level_of(code: str) -> str:
@@ -249,7 +254,7 @@ def validate_level(level: str, cfg: dict):
                     errors.append(f'{w}: «{e["form"]}» — {key} має бути українською, до 160 символів')
             if e['lemma'] == e['form'] and e['lemma'] in X.NAMES_LOWER:
                 errors.append(f'{w}: «{e["form"]}» — для назви потрібна початкова форма (NAMES_LEMMA)')
-        if ratio < cfg['min_known']:
+        if ratio < KNOWN_EXCEPTIONS.get(t['code'], cfg['min_known']):
             errors.append(f'{w}: знайомих слів {ratio:.0%} (потрібно ≥ {cfg["min_known"]:.0%})')
 
 
@@ -570,6 +575,92 @@ $sync$;
 """
 
 
+KNOWN_SYNC_OUT = ROOT / 'supabase' / 'data_fixes' / '{}_reading_known_a0v4{}_part{}.sql'  # дата, тег модуля: '' (A0.2), '_m03'…
+KNOWN_SYNC_DATE = {'m10': '20261020'}  # інші модулі — 20261019
+KNOWN_SYNC_NOTE = ('reading_known_a0v4 2026-10-19: словничок і частка знайомих слів перераховано після перебудови уроків A0 '
+                   'за темою (curriculum_a0_v4). Тексти й питання не змінено.')
+KNOWN_SYNC_MAX = 240_000  # байтів даних на частину: SQL Editor не приймає файли понад ~300 КБ
+
+
+def known_sync_data() -> list[dict]:
+    """Усі тексти A0–A2 зі словничком і часткою знайомих слів за поточним знімком. SQL змінює в базі лише ті, що відрізняються.
+    (До A0.6 тут були лише тексти, що відрізнялися від знімка 2026-10-15, — але тоді текст, який попередній пакет змінив,
+    а наступний модуль повернув до початкового стану (RD-A0-020, *pas*), лишався б у базі зі старою часткою.)"""
+    return [{'code': t['code'], 'glossary': g, 'known_ratio': round(r, 3)}
+            for cfg in LEVELS.values() for t in cfg['texts'] for g, r, _ in [glossary(t)]]
+
+
+def build_known_sync() -> list[str]:
+    """Після зміни слів уроків: оновити в уже завантажених текстах (A0, A1, A2) лише словничок (позначка «з уроків»)
+    і частку знайомих слів. Тексти й питання не змінюються. Стара версія — у content_versions; запис — у content_reviews.
+    Змінює лише ті тексти, що відрізняються; повторний запуск нічого не змінює. Кілька частин — через ліміт SQL Editor."""
+    parts: list[list[dict]] = [[]]
+    size = 0
+    for d in known_sync_data():
+        n = len(json.dumps(d, ensure_ascii=False).encode())
+        if parts[-1] and size + n > KNOWN_SYNC_MAX:
+            parts.append([])
+            size = 0
+        parts[-1].append(d)
+        size += n
+    out = []
+    for pi, data in enumerate(parts, 1):
+        payload = json.dumps(data, ensure_ascii=False).replace("'", "''")
+        if '$known$' in payload:
+            raise SystemExit('у даних трапився роздільник $known$')
+        codes = f"{data[0]['code']} … {data[-1]['code']}"
+        out.append(f"""-- =====================================================================
+-- Тексти для читання A0–A2: словничок і частка знайомих слів після уроків A0 за темою · частина {pi} з {len(parts)} · 2026-10-19
+-- Згенеровано: python3 -B scripts/gen_reading.py --known-sync (не редагуйте вручну).
+-- Навіщо: уроки A0 перебудовано за темою (curriculum_a0_v4) — частина слів текстів тепер є в уроках («знайомі»),
+--   деяких слів в уроках більше немає. Дані — за поточним знімком scripts/reading_lexicon_snapshot.json.
+--   * У цій частині — {len(data)} текстів ({codes}). Змінює лише glossary і known_ratio; тексти й питання — ні.
+--   * Стара версія — у content_versions, запис — у content_reviews. Статус текстів не змінюється (A2 лишається DRAFT).
+--   * Одна дія (або все, або нічого). Повторний запуск безпечний («змінено текстів: 0»).
+-- Запуск: Supabase → SQL Editor → вставити ВЕСЬ файл → Run. Частини — у будь-якому порядку.
+-- =====================================================================
+
+do $known$
+declare
+  v_data jsonb := '{payload}'::jsonb;
+  v_changed int;
+  v_same int;
+begin
+  insert into public.content_versions (entity_type, entity_id, version, payload, change_reason)
+  select 'reading_text', r.id, r.version,
+         jsonb_build_object('code', r.code, 'glossary', r.glossary, 'known_ratio', r.known_ratio),
+         {q(KNOWN_SYNC_NOTE)}
+  from public.reading_texts r
+  join jsonb_to_recordset(v_data) as g(code text, glossary jsonb, known_ratio numeric) on g.code = r.code
+  where r.glossary is distinct from g.glossary or r.known_ratio is distinct from g.known_ratio
+  on conflict (entity_type, entity_id, version) do nothing;
+
+  with changed as (
+    update public.reading_texts r
+       set glossary = g.glossary, known_ratio = g.known_ratio, version = r.version + 1
+      from jsonb_to_recordset(v_data) as g(code text, glossary jsonb, known_ratio numeric)
+     where g.code = r.code and (r.glossary is distinct from g.glossary or r.known_ratio is distinct from g.known_ratio)
+    returning r.id, r.status
+  ), logged as (
+    insert into public.content_reviews (entity_type, entity_id, from_status, to_status, verdict, reviewer_kind, findings, notes)
+    select 'reading_text', c.id, c.status, c.status, 'auto_passed', 'script', '[]'::jsonb, {q(KNOWN_SYNC_NOTE)}
+    from changed c
+    returning 1
+  )
+  select count(*) into v_changed from logged;
+
+  select count(*) into v_same
+    from public.reading_texts r
+    join jsonb_to_recordset(v_data) as g(code text, glossary jsonb, known_ratio numeric) on g.code = r.code
+   where r.glossary = g.glossary and r.known_ratio = g.known_ratio;
+  if v_same < {len(data)} then raise exception 'Узгоджено текстів %, очікувалось {len(data)} (чи завантажено тексти A0, A1, A2?)', v_same; end if;
+  raise notice 'Готово: частина {pi} з {len(parts)} — {len(data)} текстів відповідають урокам (змінено зараз: %)', v_changed;
+end
+$known$;
+""")
+    return out
+
+
 A2_PUBLISH_NOTE = 'Рішення власника: тексти для читання A2 (reading_a2_v1) — публікувати як бету. Потрібна перевірка носієм.'
 
 
@@ -628,6 +719,16 @@ if __name__ == '__main__':
         sys.exit(1)
     if '--stats' in sys.argv:
         print(stats())
+        sys.exit(0)
+    if '--known-sync' in sys.argv:
+        # лише цей файл: решта виходів уже застосована в робочій базі
+        # --known-sync [m03]: тег — останній перебудований модуль (без тегу — файли A0.2, уже в базі)
+        i = sys.argv.index('--known-sync')
+        tag = sys.argv[i + 1] if len(sys.argv) > i + 1 and not sys.argv[i + 1].startswith('--') else ''
+        for pi, sql in enumerate(build_known_sync(), 1):
+            out = Path(str(KNOWN_SYNC_OUT).format(KNOWN_SYNC_DATE.get(tag, '20261019'), '_' + tag if tag else '', pi))
+            out.write_text(sql, encoding='utf-8')
+            print(f'OK → {out.relative_to(ROOT)}: {len(sql.encode()) // 1024} КБ')
         sys.exit(0)
     if '--v1' in sys.argv:
         # Перший пакет текстів уже застосовано (2026-10-15) — файл не перезаписуємо без потреби;

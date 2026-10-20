@@ -1,0 +1,15 @@
+insert into public.lexemes (lemma, normalized, language, cefr, ukrainian_translation, status) values ('vrijeme', 'vrijeme', 'hr', 'A1', 'час; погода', 'PUBLISHED') on conflict do nothing;
+insert into public.lexemes (lemma, normalized, language, cefr, ukrainian_translation, status) values ('riječ', 'riječ', 'hr', 'A1', 'слово', 'PUBLISHED') on conflict do nothing;
+insert into public.lexemes (lemma, normalized, language, cefr, ukrainian_translation, status) values ('pismo', 'pismo', 'hr', 'A1', 'лист', 'PUBLISHED') on conflict do nothing;
+insert into public.lexemes (lemma, normalized, language, cefr, ukrainian_translation, status) values ('voljeti', 'voljeti', 'hr', 'A1', 'любити', 'PUBLISHED') on conflict do nothing;
+insert into public.lexemes (lemma, normalized, language, cefr, ukrainian_translation, status) values ('jagoda', 'jagoda', 'hr', 'A1', 'полуниця', 'PUBLISHED') on conflict do nothing;
+insert into public.lexemes (lemma, normalized, language, cefr, ukrainian_translation, status) values ('istina', 'istina', 'hr', 'A1', 'правда', 'PUBLISHED') on conflict do nothing;
+insert into public.lexemes (lemma, normalized, language, cefr, ukrainian_translation, status) values ('težak', 'težak', 'hr', 'A1', 'важкий / складний', 'PUBLISHED') on conflict do nothing;
+insert into public.lexemes (lemma, normalized, language, cefr, ukrainian_translation, status) values ('brak', 'brak', 'hr', 'A1', 'шлюб', 'PUBLISHED') on conflict do nothing;
+insert into public.lexemes (lemma, normalized, language, cefr, ukrainian_translation, status) values ('šutjeti', 'šutjeti', 'hr', 'A1', 'мовчати', 'PUBLISHED') on conflict do nothing;
+insert into public.lexemes (lemma, normalized, language, cefr, ukrainian_translation, status) values ('godina', 'godina', 'hr', 'A1', 'рік', 'PUBLISHED') on conflict do nothing;
+insert into public.lexemes (lemma, normalized, language, cefr, ukrainian_translation, status) values ('trgovina', 'trgovina', 'hr', 'A1', 'магазин', 'PUBLISHED') on conflict do nothing;
+insert into public.lexemes (lemma, normalized, language, cefr, ukrainian_translation, status) values ('stolica', 'stolica', 'hr', 'A1', 'стілець', 'PUBLISHED') on conflict do nothing;
+insert into public.lexemes (lemma, normalized, language, cefr, ukrainian_translation, status) values ('trbuh', 'trbuh', 'hr', 'A1', 'живіт', 'PUBLISHED') on conflict do nothing;
+insert into public.lexemes (lemma, normalized, language, cefr, ukrainian_translation, status) values ('stan', 'stan', 'hr', 'A1', 'квартира', 'PUBLISHED') on conflict do nothing;
+insert into public.lexemes (lemma, normalized, language, cefr, ukrainian_translation, status) values ('težina', 'težina', 'hr', 'A1', 'вага', 'PUBLISHED') on conflict do nothing;

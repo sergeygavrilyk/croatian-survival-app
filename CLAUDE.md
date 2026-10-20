@@ -2,178 +2,76 @@
 
 # Croatia survival — інструкції для Claude
 
-Your ultimate goal is to lead the user from zero to independent use of Croatian in everyday, social, and work environments. Your North Star Metric is the "Successful Learning Session" (Retrieval + Production + Feedback/Review). You optimize for real-life capability ("What can the user do in Croatian now?"), not just XP, screen time, or daily opens.
+Your ultimate goal is to lead the user from zero to independent use of Croatian in everyday, social, and work environments. North Star: the "Successful Learning Session" (Retrieval + Production + Feedback/Review). Optimize for real-life capability, not XP or screen time.
 
-Команда: 1 власник продукту (людина, не програміст) + AI, який виконує ролі аналітика, дизайнера, методиста, розробника і QA. Людина відповідає за бачення, пріоритети, фінальне затвердження і критичні лінгвістичні рішення.
+Команда: власник продукту (людина, не програміст) + AI (аналітик, дизайнер, методист, розробник, QA). Людина — бачення, пріоритети, затвердження, критичні мовні рішення.
 
-## Специфікація
+## Де що читати (лише потрібне під задачу)
 
-ТЗ лежить у `docs/`. Почни з `docs/README.md`: там зміст і показано, який файл читати під яку задачу. Читай лише потрібні файли, а не всі одразу.
-
-- `docs/PROJECT_STATE.md` — поточний стан, технічний борг, **відкриті рішення**, ризики. Читай перед кожною задачею, оновлюй після.
-- `docs/DATABASE.md` §112–132 — нормативна модель даних. Має пріоритет над рештою ТЗ щодо бази.
-- `docs/AI_RULES.md` — правила роботи агента (§80–82, §94, §96, §101).
+- `docs/PROJECT_STATE.md` — **стан, чинні рішення, відкриті питання, борг, план.** Читай перед задачею, оновлюй після; тримай до ~15 КБ.
+- `docs/HISTORY.md` — подробиці виконаних задач; лише коли задача стосується старої роботи. Нові записи — вгору.
+- `docs/README.md` — зміст ТЗ і який файл під яку задачу. `docs/STRUCTURE.md` — де що в коді.
+- `docs/DATABASE.md` §112–132 — нормативна модель даних (пріоритет щодо бази). `docs/AI_RULES.md` — правила агента.
+- `docs/DESIGN_SYSTEM.md` — UI (перед новим екраном). `docs/TESTING.md` — тести й чеклісти. `docs/CONTENT_PIPELINE.md` — контент, статуси, формат SQL-батчів.
+- Skills проєкту: `device-sync-croatia` (доставка на комп'ютер власника), `content-sql-pack` (SQL-пакети контенту), `lesson-topic-rebuild` (уроки за темою), `croatian-lexeme-batch`, `croatian-content-review`.
 
 ## Спілкування з власником
 
-- Відповідай **українською**. Пояснюй простими словами, без зайвого жаргону.
-- Після змін завжди кажи, **як побачити результат**: яку команду запустити, яку сторінку відкрити (`http://localhost:3000/...`).
-- Якщо треба виконати SQL у Supabase — дай **один готовий блок** для SQL Editor і скажи, що він змінить.
-- Власник працює на Windows, проєкт лежить у `D:\New app\croatian-survival-app`. Тестовий урок: `http://localhost:3000/lesson/c0000000-0000-0000-0000-000000000001`.
-- GitHub (`sergeygavrilyk/croatian-survival-app`, публічний) оновлюється лише на прохання власника (останній раз — 2026-10-12). Push робить власник зі свого комп'ютера; не пропонуй його без запиту.
+- **Українською**, простими словами. Після змін — **як побачити результат** (команда, сторінка `http://localhost:3000/...`).
+- SQL для Supabase — готовий файл або блок для SQL Editor і що він змінить.
+- Власник на Windows, проєкт — `D:\New app\croatian-survival-app`. Тестовий урок: `/lesson/c0000000-0000-0000-0000-000000000001`.
+- GitHub (`sergeygavrilyk/croatian-survival-app`, **публічний**): коміт і push — лише на прохання власника, push робить він. Коміти — англійською, Conventional Commits. Ніколи не додавай `.env*`, ключі, дампи даних, email власника.
 
 ## Стек і команди
 
-- **Next.js 16.3** (App Router) + **React 19** + **TypeScript** + **Tailwind CSS 4**. Це нова версія Next: див. `AGENTS.md`. Перед роботою з API Next звіряйся з `node_modules/next/dist/docs/`. Middleware в цій версії — це `proxy.ts`.
-- **Supabase** (Postgres + Auth + Storage + Edge Functions) через `@supabase/ssr` і `@supabase/supabase-js`.
-- **PWA** через `@ducanh2912/next-pwa` (вимкнено в dev).
-- `framer-motion` для анімацій, `@google/generative-ai` (Gemini) для AI-перекладу.
+Next.js 16 (App Router; middleware = `proxy.ts`; звіряйся з `node_modules/next/dist/docs/`) + React 19 + TypeScript + Tailwind CSS 4 + Supabase (`@supabase/ssr`) + PWA (`@ducanh2912/next-pwa`, вимкнено в dev).
 
 ```bash
-npm run dev     # http://localhost:3000 (next dev --webpack)
-npm run build   # production-збірка; запускай перед тим, як сказати «готово»
-npm run lint
-npm run typecheck  # tsc --noEmit
-npm test           # node --test (потрібен Node 22.6+): lib/*.test.ts
+npm run dev        # http://localhost:3000
+npm run build      # перед «готово» (у хмарі недоступно — запускає власник)
+npm run lint && npm run typecheck
+npm test           # node --test, Node 22.6+: lib/*.test.ts
 ```
 
-Тести — див. `docs/TESTING.md`. Коротко:
-- **Unit** — вбудований `node:test`, без залежностей. Логіка сценаріїв живе в `lib/` (`lib/learning.ts` через інтерфейс `LearningRepo`), server actions лише авторизують і викликають її. Нову логіку пиши так само і додавай тест у `lib/*.test.ts` + у скрипт `test` у package.json. Імпорти всередині `lib/` — з розширенням `.ts` (потрібно для `node --test`).
-- **Інтеграційні (БД + RLS)** — `supabase/tests/*.test.sql`, у транзакції з `ROLLBACK`. Кожна нова таблиця з даними користувача → тест на ізоляцію користувачів. Проганяй на локальному Postgres (baseline + міграції) перед тим, як віддати міграцію.
-- **E2E** — поки ручний чекліст у `docs/TESTING.md`.
-- **Аналітика** — кожна нова фіча надсилає події з §71 через `track()` (`lib/analytics-client.ts`) або `trackEvent()` на сервері; опис подій — `docs/ANALYTICS.md` → «Реалізація». Аналітика ніколи не повинна ламати навчання.
-- Інший фреймворк тестів (Vitest, Playwright) — рішення класу PROPOSE.
-
-## Структура
-
-```
-app/
-  page.tsx, lessons/ (+ tests/ — перевірки рівня), assessment/[slug]/ (тест §60), (main)/lesson/[id]/, trainer/, mistakes/ (+ typical/), reading/ (+ [id]), dictionary/, situations/ (+ [code]), onboarding/, profile/, login/, admin/
-  actions/          server actions: srs (оцінка картки), progress (completeLesson), analytics (trackEvent), onboarding (тест рівня, профіль), speaking, roleplay (AI), interference (типові помилки), reading (читання), assessment (перевірки рівня), lesson, chat, translate
-  api/tts/          TTS-проксі
-components/         lesson/LessonPlayer + lesson/LessonExercise (урок), FlashcardTrainer, WriteTrainer, SituationView, SpeakingPractice, RoleplayChat (AI), OnboardingFlow, ProfileView,
-                    TypicalErrorCard + TypicalErrorsQuiz (типові помилки), ReadingListView + ReadingView (читання),
-                    AssessmentListView + AssessmentPlayer + AssessmentResult (перевірки рівня §60),
-                    features/RoleplaySimulator (сценарний діалог в уроці, без AI)
-components/ui/      примітиви дизайн-системи: Button, Card, Hr, AudioButton, FeedbackBanner, BottomNav… (docs/DESIGN_SYSTEM.md §8)
-lib/               логіка без БД: srs.ts (повторення), analytics.ts (події §71), learning.ts (сценарії VS-001/002),
-                   answer.ts (перевірка введення), navigation.ts (вкладки), situations.ts (довідник і зведення ситуацій),
-                   placement.ts (оцінка тесту рівня), onboarding.ts, progress.ts, speaking.ts (оцінка мовлення),
-                   speech-provider.ts (інтерфейс §79), ai-provider.ts (інтерфейс §78), roleplay.ts (сценарії, інструкції AI, розбір JSON),
-                   format.ts (множина), ui.ts (cn, shuffle), ai-fallback.ts (запасні моделі AI), phrase-match.ts (пошук перекладу в перевіреному контенті), mistakes.ts (повторення помилок), lesson-flow.ts (етапи й черга вправ уроку), interference.ts (типові помилки українців), reading.ts (читання: слова тексту, питання, озвучення), assessment.ts (перевірки рівня: оцінка за 4 навичками, пороги) + тести; ai-gemini.ts, ai-usage-server.ts — лише сервер
-                   learning-repo-supabase.ts і server-context.ts — лише для сервера
-utils/supabase/     client.ts (браузер), server.ts (server actions / server components)
-utils/speech.ts     озвучення (/api/tts); utils/speech-recognition.ts — розпізнавання в браузері
-supabase/migrations/ схема БД (baseline 2026-10-12 + наступні міграції)
-supabase/data_fixes/ разові виправлення даних (зокрема пакети програми curriculum_*.sql)
-scripts/            генератори програми: full_lessons.py (спільна логіка повного уроку), gen_curriculum_*.py + *_data.py (дані) + *_snapshot.json (знімок перекладів бази);
-                    gen_interference.py + interference_data.py (типові помилки), gen_reading.py + reading_data*.py (A0, A1, A2) + reading_lexicon.py + reading_grammar.py (тексти для читання, словничок, граматика);
-                    gen_assessment.py + assessment_source_snapshot.json (перевірки рівня A0/A1 з опублікованих уроків)
-supabase/tests/     інтеграційні SQL-тести (RLS, обмеження), з ROLLBACK
-supabase/functions/ Edge Functions (generate-audio)
-proxy.ts            захист маршрутів і оновлення сесії Supabase
-docs/               ТЗ і стан проєкту
-*.py, *.sql, *.csv, *.xlsx у корені   скрипти й дані для наповнення бази (історично)
-```
+- Логіка — у `lib/` (без БД, імпорти з `.ts`), server actions лише авторизують і викликають її; нова логіка → тест у `lib/*.test.ts` + у скрипт `test`.
+- SQL-тести — `supabase/tests/*.test.sql` (транзакція + `ROLLBACK`); нова таблиця з даними користувача → тест ізоляції. Локальна БД і перевірка типів без `node_modules` — `scripts/dev/README.md`.
+- Нова фіча → події §71 через `track()` / `trackEvent()` (`docs/ANALYTICS.md`); аналітика ніколи не ламає навчання.
 
 ## Правила коду (§75)
 
-- **Server Components** отримують дані, **Client Components** відповідають лише за інтерактивність і хуки. Патерн Container/Presentational: `page.tsx` бере дані, `components/*View.tsx` малює UI.
-- Сервер: `createClient()` з `utils/supabase/server.ts` (не копіюй `createServerClient` у кожен action). Браузер: `utils/supabase/client.ts`.
-- **RLS обов'язковий** для кожної нової таблиці. Дані користувача обмежуються через `auth.uid()`. Контент змінюють лише довірені серверні або адмінські операції.
-- `SUPABASE_SERVICE_ROLE_KEY` — тільки на сервері і тільки там, де без нього не обійтися. Ніколи з префіксом `NEXT_PUBLIC_`, ніколи в клієнтському коді.
-- Весь AI — через абстракцію `AIProvider` (§78: інтерфейс `lib/ai-provider.ts`, Gemini — `lib/ai-gemini.ts` → `getAIProvider()`; облік у `ai_usage_events` уже всередині; запасні моделі — `lib/ai-fallback.ts`, змінні `GEMINI_MODEL` / `GEMINI_FALLBACK_MODELS`), все мовлення — через `SpeechProvider` (§79: інтерфейс `lib/speech-provider.ts`, браузерна реалізація `utils/speech-recognition.ts` — Web Speech API, hr-HR). Не додавай нових прямих викликів SDK у server actions і не викликай `SpeechRecognition` напряму з компонентів.
-- Відповідь AI, яку бачить користувач, — лише через перевірку (`parseRoleplayTurn` тощо): строгий JSON, хорватський текст без кирилиці, обрізання довжини. Текст користувача в інструкціях AI — це дані, а не команди. Кожна AI-функція має денний ліміт (§97) і позначку «AI» в інтерфейсі.
-- Аудіо користувача не зберігаємо (§97): лише розпізнаний текст. Оцінку мовлення сервер перераховує сам (`lib/speaking.ts`), клієнтському вердикту не довіряє.
-- Мова інтерфейсу — українська. Ідентифікатори в коді — англійською. Коментарі можна українською.
-- Офлайн (§76): уроки, словник, вправи, SRS і прогрес мають працювати офлайн; AI і розпізнавання мовлення — тільки онлайн.
-
-## UI і дизайн
-
-Правила — у `docs/DESIGN_SYSTEM.md` (джерело правди для UI). Перед новим екраном чи компонентом прочитай його. Коротко:
-
-- **Семантичні токени** з `@theme` у `app/globals.css` (`bg-primary`, `bg-surface`, `text-ink`, `text-ink-muted`, `border-line`, `rounded-card`, `text-word`…), а не сирі `bg-blue-600` / `text-gray-500`. Тема — лише в CSS (Tailwind 4); `tailwind.config.ts` не діє. Нічого не стилізуй поза `@layer` у `globals.css`.
-- Іконки — лише `lucide-react`; емодзі — тільки як знак категорії ситуації (`lib/situations.ts`).
-- Нижня панель — одна (`components/ui/BottomNav.tsx`, правила показу в `lib/navigation.ts`); сторінки-вкладки мають `pb-28`.
-- Екрани збирай з примітивів `components/ui/` (`Button`, `Card`, `LearningCard`, `ScenarioCard`, `Hr`, `AudioButton`, `FeedbackBanner`, `AppShell` / `BottomNav`…). Немає потрібного — додай туди, а не роби одноразовий.
-- Колір має значення: синій — дія, emerald — успіх, amber — «майже» / підказка, rose — помилка, indigo — AI. «Не знаю» — нейтральна кнопка, не червона.
-- Хорватський текст — завжди в `<Hr>` (`lang="hr"`) і з 🔊, де є аудіо. Хорватське — головне на екрані, переклад — менший.
-- Доступність (§98): не блокувати zoom, текст ≥ 12 px (поля ≥ 16 px), зони натиску ≥ 44 px, `aria-label` на кнопках-іконках, стан не лише кольором, `prefers-reduced-motion`.
-- Радіуси: `rounded-control` (кнопки, поля), `rounded-card` (картки), `rounded-hero` (лише навчальна картка й нижній лист). Тіні лише `shadow-sm` / `shadow-md`; без градієнтів, `backdrop-blur`, `scale-95`.
-- Одна головна дія на екран; власна навігація (`←`, `×`), нижня панель — один спільний компонент; у повноекранних заняттях вона схована.
-- Текст від AI — лише в `AiPanel` з міткою; контент — лише `PUBLISHED`. Стани порожньо / завантаження / помилка / офлайн — обов'язкові.
-- Нові екрани — на токенах одразу; старі переводь поступово, коли їх і так змінюєш (UI-003).
+- Server Components беруть дані, Client Components — інтерактив (`page.tsx` → `components/*View.tsx`). Сервер: `createClient()` з `utils/supabase/server.ts`.
+- RLS для кожної нової таблиці (`auth.uid()`); `SUPABASE_SERVICE_ROLE_KEY` — лише на сервері, ніколи `NEXT_PUBLIC_`.
+- AI — лише через `AIProvider` (`lib/ai-provider.ts`, `getAIProvider()`), мовлення — через `SpeechProvider`; кожен виклик AI/TTS/STT → `recordAiUsage()`. Відповідь AI — через перевірку (строгий JSON, хорватське без кирилиці), денний ліміт, мітка «AI». Аудіо користувача не зберігаємо.
+- Офлайн (§76): уроки, словник, вправи, SRS, прогрес; AI і мовлення — онлайн.
+- UI: семантичні токени (`bg-primary`, `text-ink`…), примітиви `components/ui/`, `lucide-react`, хорватське — в `<Hr>` з 🔊, доступність §98. Деталі — `DESIGN_SYSTEM.md`.
+- Інтерфейс українською, ідентифікатори англійською. Нова залежність, таблиця, помітна зміна UX — спершу запропонувати.
+- Файли з CRLF (частина файлів власника) — зберігай закінчення рядків при правці.
 
 ## База даних
 
-- Проєкт Supabase: **«New app for learning»** (ref `mhdgozragkkogvxpjksp`). Інший проєкт в акаунті («sergeygavrilyk's Project») до застосунку не стосується — не чіпай його.
-- **Не вгадуй назви таблиць і колонок.** Реальна схема — `supabase/migrations/20261012000000_baseline.sql` + наступні міграції. Якщо підключений конектор Supabase, звіряйся з живою базою (`list_tables`). Більшість старих SQL-помилок були саме через вгадану схему.
-- **Головна таблиця словника — `lexemes`** (рішення власника 2026-10-12). Таблиці `vocabulary` немає і не буде; у прогресі й SRS — колонка `lexeme_id`. Вимоги ТЗ до `vocabulary` застосовуй до `lexemes`.
-- Розбіжності коду з БД і план міграцій — у `docs/DB_GAP_ANALYSIS.md`.
-- Кожна зміна схеми — окремий файл `supabase/migrations/YYYYMMDDHHMMSS_опис.sql`. Міграції **адитивні й зворотно сумісні** (§128), ідемпотентні (`if not exists`), з RLS-політиками в тому ж файлі. Виправлення даних — у `supabase/data_fixes/`.
-- `id` — справжні UUID (`gen_random_uuid()`), без вигаданих на кшталт `g0000000-…`.
-- Видалення даних, `drop`, зміна існуючих контрактів — **тільки з явного дозволу власника** (§81), і завжди спершу резервна копія (схема `backup`).
-- **Адміни — таблиця `app_admins` і функція `is_admin()`** (M3), а не email. У коді: `supabase.rpc('is_admin')`; у політиках: `(select public.is_admin())`. Адміна додає лише власник у SQL Editor. Email у політиках і коді заборонений (перевіряє тест безпеки).
-- **Статуси контенту** (M2): `status` обов'язковий з CHECK на 7 статусів. Нове слово за замовчуванням `AI_GENERATED`, решта нового контенту — `DRAFT`. Гість і користувач бачать лише `PUBLISHED` (частини — коли опубліковано «батька»), адмін — усе. Запити в застосунку все одно фільтруй `.eq('status', 'PUBLISHED')`: власник — адмін, і без фільтра побачить чернетки. Нова таблиця контенту → `status` з тим самим CHECK + політики «Read published» і адмінські (як у M2/M3).
-- Перевірки контенту пиши в `content_reviews`, знімки старих версій — у `content_versions` (append-only). Видаляти контент через API не можна — лише `DEPRECATED`.
-- **Облік AI:** кожен виклик AI / TTS / STT → `recordAiUsage()` з `lib/ai-usage-server.ts` (таблиця `ai_usage_events`, §74).
-- **Безпека схеми** (перевіряє `supabase/tests/security.test.sql`): кожна SECURITY DEFINER функція — з `set search_path = ''` і `revoke execute ... from public, anon, authenticated`, якщо її не мають викликати через API; розширення — лише в схемі `extensions`; після міграції перевір Security Advisor (конектор Supabase → `get_advisors`).
+- Supabase **«New app for learning»** (ref `mhdgozragkkogvxpjksp`). Проєкт «sergeygavrilyk's Project» — не чіпати.
+- **Не вгадуй таблиці й колонки**: схема — `supabase/migrations/` (baseline + міграції) або `list_tables`. Словник — `lexemes` (`lexeme_id`), таблиці `vocabulary` немає.
+- Зміна схеми — нова адитивна ідемпотентна міграція з RLS; дані — `supabase/data_fixes/`. `id` — справжні UUID.
+- Видалення, `drop`, зміна контрактів — **лише з дозволу власника** і після копії в схему `backup`.
+- Адміни — `app_admins` / `is_admin()`, не email. Статуси контенту (7, CHECK): у застосунку завжди `.eq('status', 'PUBLISHED')`. Старі версії — `content_versions`, перевірки — `content_reviews`, видалення контенту — лише `DEPRECATED`.
+- SECURITY DEFINER — з `set search_path = ''` і `revoke`; після міграції — Security Advisor.
 
 ## Хорватський контент (найвищий ризик продукту)
 
-Помилка в мові шкодить користувачу більше, ніж баг в UI.
+- **Жодних заглушок** і прикладів-шаблонів; краще менше рядків. Кожен приклад — природне правильне речення.
+- **Слова уроку — за темою уроку**, 20–25 слів і виразів, діалоги під тему (рішення 2026-10-15).
+- **Імена в діалогах:** частіше Даша (*Daša*, кличний *Dašo*) / Дар'я (*Darja*).
+- **Авторські тексти** (пісні, вірші, книжки) не копіюємо, крім суспільного надбання (до 1929 р.): лише назва, опис, слова, посилання.
+- Діакритики в `lemma` обов'язкові; `normalized` — без діакритики, малими. Рід / вид — у `forms`. Переклад — справжній, значення через `; `.
+- Лема — слово або сталий вираз; фрази — `phrases`, діалоги — `conversations`. Леми лише латиницею.
+- Непевне — позначити для перевірки, не вигадувати (§81). AI-контент: `AI_GENERATED` → перевірка → `PUBLISHED`; виняток — бета A0/A1 за рішенням власника. Батч не перезаписує опубліковане.
+- Великі батчі — скриптом у файл з перевіркою унікальності, діакритик, заглушок (формат — `docs/CONTENT_PIPELINE.md`).
 
-- **Жодних заглушок.** Ніколи не генеруй рядки на кшталт `osnovni_pojam_240` / «базовий термін 240» чи приклади-шаблони («Važno je X u ovoj situaciji», «X je dio svakodnevnog života»), щоб добити кількість. Краще менше рядків, ніж сміття.
-- Кожен приклад — природне, граматично правильне хорватське речення, де слово вжито в реальному контексті.
-- **Слова уроку — за темою уроку** (рішення власника 2026-10-15), а не всі слова зі сценки; 20–25 слів і виразів на урок, діалоги — під тему.
-- **Імена в діалогах:** частіше — українка **Даша** (*Daša*, кличний відмінок *Dašo*) / **Дар'я** (*Darja*) (побажання власника 2026-10-15).
-- **Пісні й інші авторські тексти:** не копіюємо текст пісень, віршів, книжок (крім творів до 1929 року, як гімн «Lijepa naša domovino»): лише назва, виконавець, опис своїми словами, ключові слова, посилання.
-- Обов'язкові діакритики в `lemma`: č ć đ š ž. `normalized` — нижній регістр без діакритики (`kožna jakna` → `kozna jakna`).
-- Іменники: рід у `forms` (`{"gender": "m|f|n"}`). Дієслова: вид (`{"aspect": "ipfv|pfv"}`).
-- Переклад українською — справжній переклад, а не хорватське слово з приміткою. Кілька значень розділяй `; `.
-- Якщо не впевнений у перекладі чи формі — познач рядок як потребу перевірки, а не вигадуй (§81: не публікувати непевний лінгвістичний контент).
-- AI-контент ніколи не йде одразу в `PUBLISHED` (§64–65): `AI_GENERATED` → перевірка → `APPROVED` → `PUBLISHED`. Батч без поля `status` сам отримує `AI_GENERATED`. Батч **не перезаписує** вже опубліковані рядки (`where` у `on conflict` — лише для не-`PUBLISHED`), а зміни до них проходять ту саму перевірку. Шлях і журнали — `docs/CONTENT_PIPELINE.md` → «Реалізація в БД».
+## Як працювати (§80, §83)
 
-### SQL-батчі лексем (поточний формат)
-
-```sql
-insert into public.lexemes (
-  lemma, normalized, ukrainian_translation, part_of_speech, cefr,
-  frequency_rank, frequency_score, vocabulary_type, forms, examples, ukrainian_interference
-) values
-  ('kutlača', 'kutlaca', 'ополоник', 'noun', 'A1', 5005, 7.5, 'core',
-   '{"gender": "f"}'::jsonb, '["Uzmi kutlaču i nalij juhu."]'::jsonb, null)
-on conflict (lower(lemma)) do update set ...
-where (public.lexemes.cefr = '<рівень батчу>' or public.lexemes.cefr is null)
-  and public.lexemes.status <> 'PUBLISHED';
-```
-
-- `vocabulary_type` — тільки `core`, `function_word`, `formulaic`, `collocation`, `chunk` (CHECK у БД).
-- `lemma` — це **слово або сталий вираз**, а не речення чи репліка діалогу. Корисні фрази й речення («Gdje je blagajna?») — у `phrases` (з `situation`), діалоги — у `conversations` / `conversation_turns` (з `level`, `situation`).
-- Застарілий контент не видаляємо, а ставимо `status = 'DEPRECATED'`; застосунок показує лише `PUBLISHED`.
-- Леми тільки латиницею (хорватська абетка). Кирилиця в лемі — помилка (так з'являлися `stвар`, `пожар -> požar`).
-- **Перед видачею батчу прибери дублікати лем усередині нього**, бо інакше буде помилка `ON CONFLICT … cannot affect row a second time`.
-- Умова `where` захищає леми іншого рівня й уже опубліковані леми від перезапису.
-- Апострофи в тексті екрануй подвоєнням: `з''являтися`.
-- Великі батчі генеруй скриптом у файл (`scripts/` або `content/`), а не текстом у чаті. Перевір скриптом унікальність, діакритики і відсутність заглушок.
-
-## Як працювати над задачею (§80, §83)
-
-1. Прочитай `PROJECT_STATE.md` і потрібні файли з `docs/`.
-2. Подивись наявний код і схему.
-3. Для нетривіальної задачі — короткий план, і чекай «ок», якщо це PROPOSE або HUMAN.
-4. Реалізуй **вертикальним зрізом**: БД + серверна логіка + UI + контент + SRS + аналітика + тести, а не «фронт на 70%».
-5. Перевір: `npm run lint`, `npx tsc --noEmit`, `npm run build`, і руками сценарій у браузері.
-6. Онови `docs/PROJECT_STATE.md` і, якщо змінився контракт, — відповідний файл у `docs/`.
-7. Звіт (§101): що зроблено, як перевірити, обмеження, технічний борг, ризики, **3 рекомендовані наступні задачі**.
-
-### Класи рішень (§82)
-
-- **AUTO** — внутрішня реалізація: роби сам.
-- **PROPOSE** — архітектура, нові залежності, нові таблиці, помітні зміни UX: спочатку запропонуй.
-- **HUMAN** — напрям продукту, монетизація, методика, аудиторія, рівні CEFR, видалення даних: лише власник.
-
-## Git
-
-- Коміт і push — лише на прохання власника. Повідомлення комітів — англійською, у стилі Conventional Commits (`feat:`, `fix:`, `docs:`).
-- Репозиторій на GitHub **публічний**: ніколи не додавай `.env*`, ключі, дампи з даними користувачів.
+1. `PROJECT_STATE.md` + потрібні файли `docs/`, код і схема.
+2. Нетривіальне — короткий план; PROPOSE / HUMAN — чекати «ок». Класи: **AUTO** (реалізація), **PROPOSE** (архітектура, залежності, таблиці, UX), **HUMAN** (продукт, методика, рівні, видалення даних).
+3. Вертикальний зріз: БД + логіка + UI + контент + SRS + аналітика + тести.
+4. Перевірка: тести, типи, збірка (власник), сценарій у браузері.
+5. Оновити `PROJECT_STATE.md` (коротко) і запис у `HISTORY.md`; контракти — у профільному `docs/`.
+6. Звіт: що зроблено, як перевірити, обмеження, 3 наступні задачі.

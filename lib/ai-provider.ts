@@ -18,6 +18,7 @@ export interface AIRequest {
   /** Відповідь — строго JSON */
   json?: boolean;
   temperature?: number;
+  /** Довжина самої відповіді; запас на «роздуми» моделі провайдер додає сам (outputTokenLimit) */
   maxOutputTokens?: number;
 }
 

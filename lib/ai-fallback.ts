@@ -19,6 +19,7 @@ export type AiFailureKind =
   | 'overloaded'        // 503 / 500 / 429 — тимчасово, інша модель може відповісти
   | 'model_unavailable' // 404 / модель вимкнена чи перейменована
   | 'timeout'           // не відповіла вчасно
+  | 'truncated'         // відповідь обірвано на ліміті токенів (finishReason MAX_TOKENS) — показувати її не можна
   | 'fatal';            // ключ, доступ, некоректний запит — інша модель не допоможе
 
 /** Тип збою за текстом помилки SDK. */
@@ -27,6 +28,7 @@ export function classifyAiFailure(message: string): AiFailureKind {
   if (/\b(400|401|403)\b|api key|permission|invalid argument|safety|blocked/.test(m)) return 'fatal';
   if (/\b404\b|not found|no longer (available|supported)|deprecated|is not supported for/.test(m)) return 'model_unavailable';
   if (/timed? ?out|timeout|aborted/.test(m)) return 'timeout';
+  if (/max_tokens|truncated/.test(m)) return 'truncated';
   if (/\b(429|500|502|503|504)\b|high demand|overloaded|unavailable|resource.?exhausted|try again later|internal error/.test(m)) return 'overloaded';
   return 'fatal';
 }
@@ -34,6 +36,24 @@ export function classifyAiFailure(message: string): AiFailureKind {
 /** Чи варто пробувати наступну модель після такого збою. */
 export function shouldTryNextModel(kind: AiFailureKind): boolean {
   return kind !== 'fatal';
+}
+
+/**
+ * Запас токенів на «роздуми» моделі. Моделі Gemini 3.x думають перед відповіддю, і ці токени входять
+ * у maxOutputTokens: 2026-10-17 переклад «Ваша собачка дуже красива» з лімітом 200 обірвався на «Vaš je»
+ * (модель витратила ~195 токенів на роздуми). Тому запит задає довжину самої відповіді, а провайдер додає запас.
+ */
+export const THINKING_HEADROOM_TOKENS = 1024;
+
+/** Скільки токенів просити в моделі: відповідь (типово 600) + запас на роздуми. */
+export function outputTokenLimit(answerTokens?: number | null): number {
+  const answer = answerTokens && answerTokens > 0 ? Math.round(answerTokens) : 600;
+  return answer + THINKING_HEADROOM_TOKENS;
+}
+
+/** Відповідь обірвано на ліміті — така відповідь неповна (половина речення), її не показуємо і не зберігаємо. */
+export function isTruncatedFinish(finishReason?: string | null): boolean {
+  return String(finishReason ?? '').toUpperCase() === 'MAX_TOKENS';
 }
 
 /**

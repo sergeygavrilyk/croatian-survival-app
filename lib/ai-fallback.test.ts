@@ -1,6 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildModelChain, classifyAiFailure, shouldTryNextModel, DEFAULT_PRIMARY_MODEL, MAX_MODELS } from './ai-fallback.ts';
+import {
+  buildModelChain, classifyAiFailure, shouldTryNextModel, outputTokenLimit, isTruncatedFinish, DEFAULT_PRIMARY_MODEL, MAX_MODELS,
+  THINKING_HEADROOM_TOKENS,
+} from './ai-fallback.ts';
 
 test('ланцюжок моделей: типовий — основна + запасні', () => {
   assert.deepEqual(buildModelChain(undefined, undefined), [DEFAULT_PRIMARY_MODEL, 'gemini-3.8-flash', 'gemini-3.5-flash-lite']);
@@ -32,5 +35,22 @@ test('наступну модель пробуємо лише для тимча�
   assert.equal(shouldTryNextModel('overloaded'), true);
   assert.equal(shouldTryNextModel('model_unavailable'), true);
   assert.equal(shouldTryNextModel('timeout'), true);
+  assert.equal(shouldTryNextModel('truncated'), true);
   assert.equal(shouldTryNextModel('fatal'), false);
+});
+
+test('обірвана відповідь (MAX_TOKENS) — збій «truncated», пробуємо наступну модель', () => {
+  assert.equal(isTruncatedFinish('MAX_TOKENS'), true);
+  assert.equal(isTruncatedFinish('max_tokens'), true);
+  assert.equal(isTruncatedFinish('STOP'), false);
+  assert.equal(isTruncatedFinish(undefined), false);
+  assert.equal(classifyAiFailure('truncated: finishReason MAX_TOKENS'), 'truncated');
+  assert.equal(shouldTryNextModel(classifyAiFailure('truncated: finishReason MAX_TOKENS')), true);
+});
+
+test('ліміт токенів: відповідь + запас на роздуми моделі', () => {
+  assert.equal(outputTokenLimit(200), 200 + THINKING_HEADROOM_TOKENS);
+  assert.equal(outputTokenLimit(undefined), 600 + THINKING_HEADROOM_TOKENS);
+  assert.equal(outputTokenLimit(0), 600 + THINKING_HEADROOM_TOKENS);
+  assert.ok(outputTokenLimit(200) >= 1200, 'переклад з лімітом 200 більше не обривається на роздумах');
 });

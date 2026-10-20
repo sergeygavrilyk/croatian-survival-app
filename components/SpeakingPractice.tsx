@@ -8,6 +8,7 @@ import Hr from '@/components/ui/Hr';
 import AudioButton from '@/components/ui/AudioButton';
 import ProgressBar from '@/components/ui/ProgressBar';
 import { browserSpeech } from '@/utils/speech-recognition';
+import { micAccessHelp } from '@/lib/speech-session';
 import { SpeechError, type ListeningSession, type SpeechErrorCode } from '@/lib/speech-provider';
 import { annotateOriginal, evaluateSpeech, type SpeechEvaluation, type SpeechVerdict } from '@/lib/speaking';
 import { finishSpeakingSession, recordSpeakingAttempt, startSpeakingSession } from '@/app/actions/speaking';
@@ -295,7 +296,7 @@ export default function SpeakingPractice({
 
         {error && (
           <p role="alert" className="rounded-card border border-warning-line bg-warning-soft p-4 text-body text-warning-ink">
-            {ERROR_TEXT[error]}
+            {error === 'not-allowed' ? micAccessHelp(typeof navigator === 'undefined' ? '' : navigator.userAgent, 'І спробуйте ще раз.') : ERROR_TEXT[error]}
           </p>
         )}
 

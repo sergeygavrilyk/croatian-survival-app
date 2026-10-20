@@ -13,7 +13,7 @@ import { track, getSessionId } from '@/lib/analytics-client';
 import { examplesFrom, lessonPitfalls, type TypicalError } from '@/lib/interference';
 
 // Кеш уроку в браузері: версія змінюється, коли змінюється формат даних
-const LESSON_CACHE_VERSION = 'v6'; // v6: імена в діалогах A0.1 (Даша); v5: уроки A0 за темою (curriculum_a0_v4); v4: типові помилки (pitfalls)
+const LESSON_CACHE_VERSION = 'v13'; // v13: модуль A0.10 «Survival» за темою (curriculum_a0_v4_m10); v12: модуль A0.9 «Grad» за темою (curriculum_a0_v4_m09); v11: модулі A0.7 «Hrana» і A0.8 «Kupovina» за темою (curriculum_a0_v4_m07, _m08); v10: модулі A0.5 «Obitelj» і A0.6 «Moj dom» за темою (curriculum_a0_v4_m05, _m06); v9: модуль A0.4 «Vrijeme» за темою, погода й свята (curriculum_a0_v4_m04); v8: модуль A0.3 «Brojevi» за темою, номери уроків (curriculum_a0_v4_m03); v7: модуль A0.2 за темою, нові уроки й номери (curriculum_a0_v4_m02); v6: імена в діалогах A0.1 (Даша); v5: уроки A0 за темою (curriculum_a0_v4); v4: типові помилки (pitfalls)
 const LESSON_CACHE_TTL_MS = 12 * 60 * 60 * 1000; // 12 годин
 
 type CachedLesson = LessonContent & { cachedAt: number };

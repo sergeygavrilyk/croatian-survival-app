@@ -137,3 +137,26 @@ This package must be tested on real users.
 - **Розмір SQL:** SQL Editor Supabase не приймає великі запити («Query is too large»; 1 МБ — ні, 366 КБ — так). Тримаємо файл ≤ ~300 КБ: уроки — коротким записом (`Course.lesson_sql(compact=True)` + `HELPERS_SQL`, тимчасові функції `pg_temp`), великий пакет — кількома частинами, кожна в одній транзакції з власною самоперевіркою, наступна частина перевіряє, що попередню запущено.
 - **Доповнення рівня частинами** (`scripts/gen_curriculum_a1_v2.py`, 2026-10-13): `PARTS` у файлі даних ділить нові уроки на файли по 10; кожна частина несе лише свої нові слова й виправлення, сама перенумеровує назви всіх уроків рівня (за модулем і місцем) і перевіряє себе. Нові слова уроків не повторюють слова наявних уроків рівня (генератор зупиняється).
 - **Якщо переклад слова змінять пізніше**, вправи на це слово треба перегенерувати: оновити знімок і запустити генератор. Нові id вправ не з'являться — зміниться лише текст.
+
+# Формат SQL-батчів лексем (перенесено з CLAUDE.md 2026-10-19)
+
+```sql
+insert into public.lexemes (
+  lemma, normalized, ukrainian_translation, part_of_speech, cefr,
+  frequency_rank, frequency_score, vocabulary_type, forms, examples, ukrainian_interference
+) values
+  ('kutlača', 'kutlaca', 'ополоник', 'noun', 'A1', 5005, 7.5, 'core',
+   '{"gender": "f"}'::jsonb, '["Uzmi kutlaču i nalij juhu."]'::jsonb, null)
+on conflict (lower(lemma)) do update set ...
+where (public.lexemes.cefr = '<рівень батчу>' or public.lexemes.cefr is null)
+  and public.lexemes.status <> 'PUBLISHED';
+```
+
+- `vocabulary_type` — тільки `core`, `function_word`, `formulaic`, `collocation`, `chunk` (CHECK у БД).
+- `lemma` — це **слово або сталий вираз**, а не речення чи репліка діалогу. Корисні фрази й речення («Gdje je blagajna?») — у `phrases` (з `situation`), діалоги — у `conversations` / `conversation_turns` (з `level`, `situation`).
+- Застарілий контент не видаляємо, а ставимо `status = 'DEPRECATED'`; застосунок показує лише `PUBLISHED`.
+- Леми тільки латиницею (хорватська абетка). Кирилиця в лемі — помилка (так з'являлися `stвар`, `пожар -> požar`).
+- **Перед видачею батчу прибери дублікати лем усередині нього**, бо інакше буде помилка `ON CONFLICT … cannot affect row a second time`.
+- Умова `where` захищає леми іншого рівня й уже опубліковані леми від перезапису.
+- Апострофи в тексті екрануй подвоєнням: `з''являтися`.
+- Великі батчі генеруй скриптом у файл (`scripts/` або `content/`), а не текстом у чаті. Перевір скриптом унікальність, діакритики і відсутність заглушок.

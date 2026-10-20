@@ -9,7 +9,7 @@ import { completeReading, saveReadingWord } from '@/app/actions/reading';
 import { glossaryIndex, questionsFrom, type ReadingText } from '@/lib/reading';
 
 // Кеш тексту в браузері (офлайн, §76): версія змінюється, коли змінюється формат даних
-const READING_CACHE_VERSION = 'v3'; // v3: оновлені питання A0 (v2: граматичні підказки)
+const READING_CACHE_VERSION = 'v9'; // v9: словничок після модуля A0.10; v8: словничок після модуля A0.9; v7: словничок після модулів A0.7–A0.8; v6: словничок після модулів A0.5–A0.6; v5: словничок після модуля A0.4; v4: словничок і частка знайомих слів після уроків A0 за темою; v3: оновлені питання A0 (v2: граматичні підказки)
 const READING_CACHE_TTL_MS = 12 * 60 * 60 * 1000; // 12 годин
 
 type CachedText = ReadingText & { cachedAt: number };

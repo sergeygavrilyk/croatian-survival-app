@@ -148,25 +148,42 @@ where occurred_at > now() - interval '7 days'
 group by 1, 2, 3 order by calls desc;
 ```
 
-## North Star — чернетка формули (потребує затвердження власником)
+## North Star — формула (затверджено власником 2026-10-20)
 
-Сесія успішна, якщо в ній є **retrieval + production** (`exercise_completed` з success) **і feedback/review** (`lesson_completed` або `review_completed`).
+**Успішна навчальна сесія** (один захід у застосунок, `session_id`) — у ній є **обидві** частини:
+
+1. **Retrieval + production** — хоча б одна **правильна** вправа, де людина **сама створює** відповідь:
+   `exercise_completed` з `success = true` і `exercise_type` ∈ `type_answer` («напишіть»), `type_word` (тренажер «Написати»),
+   `sentence_builder` («складіть»), `listening` («прослухайте і складіть»), `speaking` («скажіть уголос»), `fix_mistake` («виправте помилку»);
+   **або** `speaking_completed` / `conversation_completed` (говоріння, рольова гра).
+2. **Feedback / review** — завершений урок або повторення: `lesson_completed` або `review_completed`.
+
+**Не рахуються** як production: вибір із варіантів (`multiple_choice`, `fill_in_the_blank`, `typical_error`) і **картки без письма**
+(свайпи «Знаю / Не знаю» в тренажері не пишуть `exercise_completed`). Тобто сесія лише з картками — не успішна,
+навіть якщо картки завершено (`review_completed`).
+
+Рішення власника 2026-10-20: «суворіший варіант плюс „картки без письма не рахуються“». Нова вправа, де людина сама пише чи говорить, —
+додати її `exercise_type` у список вище (і сюди, і в SQL).
 
 ```sql
+-- Успішні навчальні сесії за днями (North Star)
 with s as (
   select user_id, session_id, min(occurred_at)::date as day,
-         bool_or(event_name = 'exercise_completed' and success) as practiced,
+         bool_or(event_name = 'exercise_completed' and success
+                 and properties->>'exercise_type' in ('type_answer', 'type_word', 'sentence_builder', 'listening', 'speaking', 'fix_mistake')) as produced,
+         bool_or(event_name in ('speaking_completed', 'conversation_completed')) as spoke,
          bool_or(event_name in ('lesson_completed', 'review_completed')) as reviewed
   from public.analytics_events
   where session_id is not null
   group by user_id, session_id
 )
 select day,
-       count(*) filter (where practiced and reviewed) as successful_sessions,
-       count(*) as all_sessions
+       count(*) filter (where (produced or spoke) and reviewed) as successful_sessions,
+       count(*) as all_sessions,
+       count(distinct user_id) filter (where (produced or spoke) and reviewed) as users_with_success
 from s
 group by day
 order by day desc;
 ```
 
-Сесія в режимі «Написати» вже відповідає формулі (retrieval + production через `exercise_completed` і review через `review_completed`). Відкрите питання: чи рахувати успішною сесію лише зі свайпами (retrieval без production).
+Перший замір (робоча база, 2026-10-12 … 2026-10-20): 26 сесій, успішних — 3 (2 користувачі — тестові).

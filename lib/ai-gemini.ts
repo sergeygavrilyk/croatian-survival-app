@@ -5,12 +5,14 @@
  *   * моделі пробуємо по черзі: GEMINI_MODEL → GEMINI_FALLBACK_MODELS (типові — у lib/ai-fallback.ts);
  *   * до наступної моделі переходимо, якщо поточна перевантажена (503 / 429), вимкнена (404)
  *     або не відповіла вчасно; помилки ключа / доступу не повторюємо;
+ *   * відповідь, обірвану на ліміті токенів (finishReason MAX_TOKENS), не показуємо — пробуємо наступну модель;
+ *     до ліміту відповіді додаємо запас на «роздуми» моделі (outputTokenLimit, 2026-10-20);
  *   * якщо не відповіла жодна — AIError('unavailable'), користувач бачить «спробуйте за хвилину».
  */
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { recordAiUsage } from '@/lib/ai-usage-server';
 import { AIError, type AIProvider, type AIRequest, type AIResult } from '@/lib/ai-provider';
-import { buildModelChain, classifyAiFailure, shouldTryNextModel } from '@/lib/ai-fallback';
+import { buildModelChain, classifyAiFailure, isTruncatedFinish, outputTokenLimit, shouldTryNextModel } from '@/lib/ai-fallback';
 
 /** Скільки чекаємо одну модель, мс (10 с: 2026-10-13 перевантажена модель «висіла» по 15 с, і репліка в рольовій грі йшла 30+ с) */
 const ATTEMPT_TIMEOUT_MS = 10_000;
@@ -31,7 +33,7 @@ async function chatWithModel(genAI: GoogleGenerativeAI, modelName: string, reque
       systemInstruction: request.system,
       generationConfig: {
         temperature: request.temperature ?? 0.7,
-        maxOutputTokens: request.maxOutputTokens ?? 600,
+        maxOutputTokens: outputTokenLimit(request.maxOutputTokens),
         ...(request.json ? { responseMimeType: 'application/json' } : {}),
       },
     },
@@ -43,6 +45,9 @@ async function chatWithModel(genAI: GoogleGenerativeAI, modelName: string, reque
 
   const res = await model.generateContent({ contents });
   const usage = res.response.usageMetadata;
+  // Обірвана відповідь — половина речення («Vaš je»): не повертаємо її, а пробуємо наступну модель
+  const finishReason = res.response.candidates?.[0]?.finishReason;
+  if (isTruncatedFinish(finishReason)) throw new Error(`truncated: finishReason ${finishReason}`);
   return {
     text: res.response.text(),
     model: modelName,
