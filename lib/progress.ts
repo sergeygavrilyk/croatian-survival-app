@@ -1,6 +1,7 @@
 /**
  * Прогрес користувача (екран «Профіль»): чиста логіка без БД.
  * Слова: user_progress; активність: srs_reviews; уроки: lesson_progress.
+ * «Сьогодні»: activityWeek / learningStreak — усе навчання (analytics_events + srs_reviews).
  */
 import { CEFR_ORDER } from './situations.ts';
 
@@ -97,4 +98,66 @@ export function summarizeProgress(input: ProgressInput): ProgressSummary {
     activeDays: activity.filter((d) => d.count > 0).length,
     reviews7: activity.reduce((s, d) => s + d.count, 0),
   };
+}
+
+/**
+ * Активність для «Сьогодні» (баг 2026-10-20): графік «Останні 7 днів» і 🔥 рахували лише картки
+ * (user_progress.last_reviewed_at — лише останнє повторення кожного слова) і дні в UTC.
+ * Тепер — будь-яке навчання: події уроків, вправ, повторень, читання, говоріння (analytics_events)
+ * і історія повторень карток (srs_reviews); дні — у часовому поясі користувача.
+ */
+export const LEARNING_EVENTS = [
+  'lesson_completed', 'exercise_completed', 'review_completed', 'reading_completed', 'speaking_completed', 'conversation_completed',
+] as const;
+
+/** Насиченість клітинки графіка за кількістю дій за день: 0 — нічого, 4 — дуже активно. */
+export function activityLevel(count: number): 0 | 1 | 2 | 3 | 4 {
+  if (count <= 0) return 0;
+  if (count <= 5) return 1;
+  if (count <= 15) return 2;
+  if (count <= 30) return 3;
+  return 4;
+}
+
+/** Останні 7 днів (сьогодні — останній) з кількістю навчальних дій і рівнем насиченості. */
+export function activityWeek(
+  timestamps: ReadonlyArray<string>,
+  now: Date,
+  timeZone?: string | null,
+): Array<DayActivity & { level: 0 | 1 | 2 | 3 | 4 }> {
+  const today = dayKey(now, timeZone);
+  const keys = Array.from({ length: 7 }, (_, i) => shiftKey(today, i - 6));
+  const counts = new Map(keys.map((k) => [k, 0]));
+  for (const ts of timestamps) {
+    const t = Date.parse(ts);
+    if (Number.isNaN(t)) continue;
+    const k = dayKey(new Date(t), timeZone);
+    if (counts.has(k)) counts.set(k, counts.get(k)! + 1);
+  }
+  return keys.map((k) => ({
+    date: k,
+    label: WEEKDAYS[new Date(`${k}T12:00:00Z`).getUTCDay()],
+    count: counts.get(k)!,
+    level: activityLevel(counts.get(k)!),
+  }));
+}
+
+/**
+ * Серія днів поспіль із навчанням (🔥): рахуємо від сьогодні назад; якщо сьогодні ще не вчилися —
+ * серія не згорає, рахуємо від учора.
+ */
+export function learningStreak(timestamps: ReadonlyArray<string>, now: Date, timeZone?: string | null): number {
+  const days = new Set<string>();
+  for (const ts of timestamps) {
+    const t = Date.parse(ts);
+    if (!Number.isNaN(t)) days.add(dayKey(new Date(t), timeZone));
+  }
+  let day = dayKey(now, timeZone);
+  if (!days.has(day)) day = shiftKey(day, -1);
+  let streak = 0;
+  while (days.has(day)) {
+    streak += 1;
+    day = shiftKey(day, -1);
+  }
+  return streak;
 }

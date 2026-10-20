@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import { speakCroatian } from '@/utils/speech';
 import { quickTranslateToCroatian, type TranslationSource } from '@/app/actions/translate';
+import { LEARNING_EVENTS, activityWeek, learningStreak } from '@/lib/progress';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -85,75 +86,34 @@ export default function DashboardPage() {
           .select('*', { count: 'exact', head: true })
           .eq('user_id', user.id);
 
-        // 4. РЕАЛЬНИЙ ГРАФІК АКТИВНОСТІ
-        const today = new Date();
-        const sevenDaysAgo = new Date();
-        sevenDaysAgo.setDate(today.getDate() - 6);
-        sevenDaysAgo.setHours(0, 0, 0, 0);
-
-        const { data: recentProgress } = await supabase
-          .from('user_progress')
-          .select('last_reviewed_at')
-          .eq('user_id', user.id)
-          .gte('last_reviewed_at', sevenDaysAgo.toISOString())
-          .not('last_reviewed_at', 'is', null);
-
-        const countsByDate: Record<string, number> = {};
-        if (recentProgress) {
-          recentProgress.forEach((row) => {
-            const dateStr = new Date(row.last_reviewed_at).toISOString().split('T')[0];
-            countsByDate[dateStr] = (countsByDate[dateStr] || 0) + 1;
-          });
-        }
-
-        const newActivityData = [];
-        const daysOfWeek = ['Нд', 'Пн', 'Вв', 'Ср', 'Чт', 'Пт', 'Сб'];
-
-        for (let i = 6; i >= 0; i--) {
-          const d = new Date();
-          d.setDate(today.getDate() - i);
-          const dateStr = d.toISOString().split('T')[0];
-          const count = countsByDate[dateStr] || 0;
-
-          let level = 0;
-          if (count > 0 && count <= 5) level = 1;
-          else if (count > 5 && count <= 15) level = 2;
-          else if (count > 15 && count <= 30) level = 3;
-          else if (count > 30) level = 4;
-
-          newActivityData.push({ day: daysOfWeek[d.getDay()], level: level });
-        }
-        setActivityData(newActivityData);
-
-        // 5. РЕАЛЬНИЙ STREAK
-        const { data: allDates } = await supabase
-          .from('user_progress')
-          .select('last_reviewed_at')
-          .eq('user_id', user.id)
-          .not('last_reviewed_at', 'is', null);
-
-        let calculatedStreak = 0;
-        if (allDates && allDates.length > 0) {
-          const uniqueDates = new Set(
-            allDates.map(r => new Date(r.last_reviewed_at).toISOString().split('T')[0])
-          );
-          let checkD = new Date();
-          let todayStr = checkD.toISOString().split('T')[0];
-          let tempD = new Date();
-          tempD.setDate(tempD.getDate() - 1);
-          let yesterdayStr = tempD.toISOString().split('T')[0];
-
-          if (uniqueDates.has(todayStr) || uniqueDates.has(yesterdayStr)) {
-             if (!uniqueDates.has(todayStr)) checkD.setDate(checkD.getDate() - 1);
-             while(true) {
-                let s = checkD.toISOString().split('T')[0];
-                if (uniqueDates.has(s)) {
-                   calculatedStreak++;
-                   checkD.setDate(checkD.getDate() - 1);
-                } else break;
-             }
-          }
-        }
+        // 4–5. Активність за 7 днів і 🔥 серія — усе навчання (уроки, вправи, повторення, читання, говоріння),
+        // дні — у часовому поясі користувача (lib/progress.ts; баг 2026-10-20: рахувались лише картки й у UTC)
+        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const since = new Date(Date.now() - 120 * 24 * 60 * 60 * 1000).toISOString();
+        const [eventsRes, reviewsRes] = await Promise.all([
+          supabase
+            .from('analytics_events')
+            .select('occurred_at')
+            .eq('user_id', user.id)
+            .in('event_name', [...LEARNING_EVENTS])
+            .gte('occurred_at', since)
+            .order('occurred_at', { ascending: false })
+            .limit(5000),
+          supabase
+            .from('srs_reviews')
+            .select('created_at')
+            .eq('user_id', user.id)
+            .gte('created_at', since)
+            .order('created_at', { ascending: false })
+            .limit(5000),
+        ]);
+        const timestamps = [
+          ...((eventsRes.data ?? []) as Array<{ occurred_at: string }>).map((r) => r.occurred_at),
+          ...((reviewsRes.data ?? []) as Array<{ created_at: string }>).map((r) => r.created_at),
+        ];
+        const nowDate = new Date();
+        setActivityData(activityWeek(timestamps, nowDate, timeZone).map((d) => ({ day: d.label, level: d.level })));
+        const calculatedStreak = learningStreak(timestamps, nowDate, timeZone);
 
         setStats({
           learnedWords: learnedCount || 0,

@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  glossaryIndex, isCroatianOption, knownLabel, levelIntro, moduleHeading, moduleTitle, paragraphs, pickReadingLevel, questionsFrom, readingMinutes,
+  glossaryIndex, isCroatianOption, knownLabel, levelIntro, moduleCardTitles, moduleHeading, moduleTitle, paragraphs, pickReadingLevel, questionsFrom, readingMinutes,
   scoreAnswers, seededShuffle, speechChunks, textTypeLabel, tokenize,
 } from './reading.ts';
 
@@ -111,4 +111,16 @@ test('варіант відповіді хорватською: літери б�
   assert.equal(isCroatianOption('Дякуємо і до побачення'), false);
   assert.equal(isCroatianOption('1,50 €'), false);
   assert.equal(isCroatianOption('На поверсі біля входу (prizemlje)'), false);
+});
+
+test('шапка модуля: без потрійного «Модуль», хорватська назва — лише якщо нова', () => {
+  assert.deepEqual(moduleCardTitles('Модуль A0.1 — Pozdrav!', 'Modul A0.1 — Pozdrav!', 'A0', 1),
+    { kicker: 'Модуль A0.1', title: 'Pozdrav!', subtitle: null });
+  assert.deepEqual(moduleCardTitles('Модуль A0.2 — Ja sam…', 'Modul A0.2 — Ja sam...', 'A0', 2).subtitle, null);
+  assert.deepEqual(moduleCardTitles('Модуль A0.3 — Brojevi (числа)', 'Modul A0.3 — Brojevi', 'A0', 3),
+    { kicker: 'Модуль A0.3', title: 'Brojevi (числа)', subtitle: null });
+  assert.deepEqual(moduleCardTitles('Модуль A1.1 — Повсякденне життя', 'Modul A1.1 — Svakodnevni život', 'A1', 1),
+    { kicker: 'Модуль A1.1', title: 'Повсякденне життя', subtitle: 'Svakodnevni život' });
+  assert.deepEqual(moduleCardTitles('Без префікса', null, 'A1', 10),
+    { kicker: 'Модуль A1.10', title: 'Без префікса', subtitle: null });
 });

@@ -12,3 +12,29 @@ export function pluralUk(n: number, forms: readonly [string, string, string]): s
 export function countUk(n: number, forms: readonly [string, string, string]): string {
   return `${n} ${pluralUk(n, forms)}`;
 }
+
+/** Частина мови для словника — українською (у базі англійською: noun, verb…). Невідома / «word» → null (не показуємо). */
+const POS_UK: Record<string, string> = {
+  noun: 'іменник', verb: 'дієслово', adjective: 'прикметник', adverb: 'прислівник', pronoun: 'займенник',
+  preposition: 'прийменник', conjunction: 'сполучник', particle: 'частка', interjection: 'вигук',
+  number: 'числівник', numeral: 'числівник', phrase: 'вираз', chunk: 'вираз', formulaic: 'вираз', collocation: 'вираз',
+};
+
+export function posLabelUk(pos: string | null | undefined): string | null {
+  return pos ? POS_UK[pos.trim().toLowerCase()] ?? null : null;
+}
+
+/**
+ * Пошуковий рядок словника для ilike у PostgREST (.or(...)): без символів, що ламають фільтр
+ * (кома, дужки, лапки, %, _, *, \). Апостроф (' ’ ʼ) → «_» (будь-який один символ): «комп'ютер» знайде й «комп’ютер».
+ * Порожній після очищення → null (показуємо весь словник).
+ */
+export function dictionarySearchTerm(query: string): string | null {
+  const term = query
+    .replace(/[,()"%_*\\]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 60)
+    .replace(/['’ʼ]/g, '_');
+  return term.replace(/_/g, '').trim().length > 0 ? term : null;
+}

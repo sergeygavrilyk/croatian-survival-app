@@ -11,6 +11,7 @@ import TypicalErrorCard from '@/components/TypicalErrorCard';
 import { answerTypicalError } from '@/app/actions/interference';
 import { track } from '@/lib/analytics-client';
 import { categoryLabel, countByCategory, isSpoken, pickQuiz, quizOptions, quizQuestion, type TypicalError } from '@/lib/interference';
+import { seededRandom } from '@/lib/random';
 import { cn } from '@/lib/ui';
 
 const SESSION_SIZE = 8;
@@ -20,7 +21,7 @@ const SESSION_SIZE = 8;
  * Після відповіді — картка з поясненням. Неправильна відповідь додає помилку в «Мої помилки»
  * (її там треба буде скласти з плиток), щоб вона повторилась пізніше.
  */
-export default function TypicalErrorsQuiz({ items, savedIds }: { items: TypicalError[]; savedIds: string[] }) {
+export default function TypicalErrorsQuiz({ items, savedIds, seed }: { items: TypicalError[]; savedIds: string[]; seed: string }) {
   const [category, setCategory] = useState<string | null>(null);
   const [round, setRound] = useState(0);
   const [index, setIndex] = useState(0);
@@ -36,12 +37,13 @@ export default function TypicalErrorsQuiz({ items, savedIds }: { items: TypicalE
   // Новий набір — при зміні категорії або «Ще раз» (round); savedNow навмисно не в залежностях,
   // щоб набір не змінювався посеред сесії
   const session = useMemo(
-    () => pickQuiz(items, { category, exclude: savedNow, size: SESSION_SIZE }),
+    // seed від сервера: набір і варіанти однакові на сервері й у браузері (інакше помилка React #418)
+    () => pickQuiz(items, { category, exclude: savedNow, size: SESSION_SIZE, random: seededRandom(`${seed}:${category ?? 'all'}:${round}`) }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [items, category, round],
+    [items, category, round, seed],
   );
   const item = session[index];
-  const options = useMemo(() => (item ? quizOptions(item) : []), [item]);
+  const options = useMemo(() => (item ? quizOptions(item, seededRandom(`${seed}:${item.id}:${round}`)) : []), [item, seed, round]);
 
   if (items.length === 0) {
     return (

@@ -5,6 +5,7 @@ import SegmentedLinks from '@/components/ui/SegmentedLinks';
 import { MISTAKES_SEGMENTS } from '@/lib/navigation';
 import ErrorState from '@/components/ui/ErrorState';
 import MistakesPractice, { type MistakeItem } from '@/components/MistakesPractice';
+import { newSeed } from '@/lib/random';
 import { isDue, SESSION_SIZE } from '@/lib/mistakes';
 
 export const metadata = { title: 'Мої помилки · Croatian Survival App' };
@@ -61,6 +62,7 @@ export default async function MistakesPage() {
             items={items}
             waitingCount={open.length - due.length}
             resolvedCount={resolvedRes.count ?? 0}
+            seed={newSeed()}
           />
         )}
       </main>

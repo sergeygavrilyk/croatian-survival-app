@@ -263,3 +263,24 @@ export function knownLabel(ratio: number | null | undefined): string | null {
   if (typeof ratio !== 'number' || !Number.isFinite(ratio)) return null;
   return `знайомих слів ${Math.round(ratio * 100)} %`;
 }
+
+/**
+ * Шапка картки модуля на «Уроки» (баг 2026-10-20: на телефоні назва «Модуль A0.1 — Pozdrav!» обрізалась,
+ * а «Модуль 1 / Модуль A0.1 — … / Modul A0.1 — …» повторювались тричі).
+ * kicker — «Модуль A0.1», title — назва без префікса, subtitle — хорватська назва, лише якщо вона нова.
+ */
+export function moduleCardTitles(
+  titleUa: string,
+  titleHr: string | null | undefined,
+  level: string,
+  order: number,
+): { kicker: string; title: string; subtitle: string | null } {
+  const title = moduleTitle(titleUa) ?? titleUa;
+  const hr = titleHr ? titleHr.replace(/^Modul\s+[A-Z]\d\.\d+\s*[—–-]\s*/, '').trim() : '';
+  const norm = (s: string) => s.toLowerCase().replace(/…/g, '...').replace(/\s+/g, ' ').trim();
+  return {
+    kicker: `Модуль ${level}.${order}`,
+    title,
+    subtitle: hr && !norm(title).includes(norm(hr)) ? hr : null,
+  };
+}

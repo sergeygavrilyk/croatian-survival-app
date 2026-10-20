@@ -4,6 +4,7 @@ import PracticeTabs from '@/components/ui/PracticeTabs';
 import SegmentedLinks from '@/components/ui/SegmentedLinks';
 import ErrorState from '@/components/ui/ErrorState';
 import TypicalErrorsQuiz from '@/components/TypicalErrorsQuiz';
+import { newSeed } from '@/lib/random';
 import { examplesFrom, upToLevel, type TypicalError } from '@/lib/interference';
 import { MISTAKES_SEGMENTS } from '@/lib/navigation';
 
@@ -51,7 +52,7 @@ export default async function TypicalErrorsPage() {
             <p className="mb-4 text-body text-ink-muted">
               Помилки, які українці часто роблять у хорватській: схожі слова з іншим значенням, відмінки, порядок слів, вимова.
             </p>
-            <TypicalErrorsQuiz items={items} savedIds={savedIds} />
+            <TypicalErrorsQuiz items={items} savedIds={savedIds} seed={newSeed()} />
           </>
         )}
       </main>

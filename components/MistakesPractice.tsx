@@ -14,6 +14,7 @@ import ProgressBar from '@/components/ui/ProgressBar';
 import { rateMistake } from '@/app/actions/mistakes';
 import { track } from '@/lib/analytics-client';
 import { answerTiles, checkSentence, distractorTiles, shuffleTiles, type SentenceVerdict } from '@/lib/mistakes';
+import { seededRandom } from '@/lib/random';
 import { countUk } from '@/lib/format';
 import { cn } from '@/lib/ui';
 
@@ -33,9 +34,10 @@ interface Tile {
 
 type Result = SentenceVerdict | 'gave_up';
 
-function buildTiles(item: MistakeItem): Tile[] {
+/** Плитки перемішуються з seed сторінки — однаково на сервері й у браузері (інакше помилка React #418). */
+function buildTiles(item: MistakeItem, seed: string): Tile[] {
   const words = [...answerTiles(item.corrected), ...distractorTiles(item.original, item.corrected)];
-  return shuffleTiles(words.map((text, i) => ({ key: `${i}:${text}`, text })));
+  return shuffleTiles(words.map((text, i) => ({ key: `${i}:${text}`, text })), seededRandom(`${seed}:${item.id}`));
 }
 
 /**
@@ -46,10 +48,13 @@ export default function MistakesPractice({
   items,
   waitingCount,
   resolvedCount,
+  seed,
 }: {
   items: MistakeItem[];
   waitingCount: number;
   resolvedCount: number;
+  /** Випадковий seed від сервера для перемішування плиток */
+  seed: string;
 }) {
   const router = useRouter();
   const [index, setIndex] = useState(0);
@@ -62,7 +67,7 @@ export default function MistakesPractice({
   const sessionStartRef = useRef(Date.now());
 
   const item = items[index];
-  const tiles = useMemo(() => (item ? buildTiles(item) : []), [item]);
+  const tiles = useMemo(() => (item ? buildTiles(item, seed) : []), [item, seed]);
   const pool = tiles.filter((t) => !picked.some((p) => p.key === t.key));
   const itemsKey = items.map((i) => i.id).join(',');
 

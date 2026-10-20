@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, CircleCheck, ClipboardCheck } from 'lucide-react';
 import { ASSESSED_LEVELS, assessmentSlug } from '@/lib/assessment';
+import { moduleCardTitles } from '@/lib/reading';
 
 interface Module {
   id: string;
@@ -324,11 +325,17 @@ export default function LessonsPage() {
                       {getTopicIcon(module.title_ua)}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className={`text-[10px] font-black uppercase tracking-widest mb-1 ${theme.text}`}>
-                        Модуль {module.order_index}
-                      </div>
-                      <h2 className="font-heading text-lg font-extrabold text-slate-800 leading-tight mb-1 truncate">{module.title_ua}</h2>
-                      {module.title_hr && <h3 lang="hr" className="text-sm font-medium text-slate-400 truncate">{module.title_hr}</h3>}
+                      {(() => {
+                        // «Модуль A0.1» + назва без префікса, переноситься на 2 рядки (раніше обрізалась «…»)
+                        const head = moduleCardTitles(module.title_ua, module.title_hr, module.level_code, module.order_index);
+                        return (
+                          <>
+                            <div className={`text-[10px] font-black uppercase tracking-widest mb-1 ${theme.text}`}>{head.kicker}</div>
+                            <h2 className="font-heading text-lg font-extrabold text-slate-800 leading-tight mb-1 line-clamp-2 break-words">{head.title}</h2>
+                            {head.subtitle && <h3 lang="hr" className="text-sm font-medium text-slate-400 line-clamp-1">{head.subtitle}</h3>}
+                          </>
+                        );
+                      })()}
                       {(() => {
                         const moduleLessons = (units[module.id] || []).flatMap(u => lessons[u.id] || []);
                         if (moduleLessons.length === 0) return null;

@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import { motion } from 'framer-motion';
 import { speakCroatian } from '@/utils/speech';
 import PracticeTabs from '@/components/ui/PracticeTabs';
+import { dictionarySearchTerm, posLabelUk } from '@/lib/format';
 
 const PAGE_SIZE = 30; // Розмір однієї порції слів
 
@@ -15,73 +16,83 @@ export default function DictionaryPage() {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  // Пошук іде в базі по всьому словнику (раніше — лише серед 30 завантажених слів), із затримкою 300 мс
+  const [term, setTerm] = useState<string | null>(null);
+  const requestRef = useRef(0); // відповідь старішого запиту (попередній пошук) не перезаписує новішу
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
 
   // ОПТИМІЗОВАНО: Порційне завантаження з точковими полями
-  const fetchWords = useCallback(async (pageIndex: number, isReset: boolean = false) => {
+  const fetchWords = useCallback(async (pageIndex: number, isReset: boolean = false, search: string | null = null) => {
     if (isReset) {
       setLoading(true);
     } else {
       setLoadingMore(true);
     }
 
+    const requestId = ++requestRef.current;
     const from = pageIndex * PAGE_SIZE;
     const to = from + PAGE_SIZE - 1;
 
     try {
-      const { data, error } = await supabase
+      let request = supabase
         .from('lexemes')
         .select('id, lemma, ukrainian_translation, part_of_speech, cefr') // Точкові поля замість *
         .eq('status', 'PUBLISHED')
-        .not('lemma', 'like', '%:%') // без реплік діалогів («Konobar: …»)
+        .not('lemma', 'like', '%:%'); // без реплік діалогів («Konobar: …»)
+      if (search) {
+        // лема, лема без діакритики (macka → mačka) або переклад
+        request = request.or(`lemma.ilike.%${search}%,normalized.ilike.%${search}%,ukrainian_translation.ilike.%${search}%`);
+      }
+      const { data, error } = await request
+        .order('cefr', { ascending: true, nullsFirst: false }) // спершу A0, потім A1…
         .order('frequency_rank', { ascending: true, nullsFirst: false })
         .order('lemma', { ascending: true })
         .range(from, to); // Пагінація на рівні БД
 
       if (error) throw error;
+      if (requestId !== requestRef.current) return;
 
       if (data) {
-        if (data.length < PAGE_SIZE) {
-          setHasMore(false); // Досягли кінця словника
-        }
+        setHasMore(data.length === PAGE_SIZE); // менше за порцію — кінець словника чи результатів
         // Поля під існуючу розмітку картки слова
         const mapped = data.map((lex) => ({
           id: lex.id,
           hr_text: lex.lemma,
           ua_translation: lex.ukrainian_translation,
-          phonetic_note: [lex.part_of_speech, lex.cefr].filter(Boolean).join(' · '),
+          phonetic_note: [posLabelUk(lex.part_of_speech), lex.cefr].filter(Boolean).join(' · '),
         }));
         setWords(prev => isReset ? mapped : [...prev, ...mapped]);
       }
     } catch (err) {
       console.error('Помилка завантаження словника:', err);
     } finally {
-      setLoading(false);
-      setLoadingMore(false);
+      if (requestId === requestRef.current) {
+        setLoading(false);
+        setLoadingMore(false);
+      }
     }
   }, [supabase]);
 
+  // Затримка: шукаємо, коли користувач перестав друкувати
   useEffect(() => {
-    fetchWords(0, true);
-  }, [fetchWords]);
+    const timer = setTimeout(() => setTerm(dictionarySearchTerm(searchQuery)), 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    setPage(0);
+    fetchWords(0, true, term);
+  }, [fetchWords, term]);
 
   const loadMore = () => {
     if (loadingMore || !hasMore) return;
     const nextPage = page + 1;
     setPage(nextPage);
-    fetchWords(nextPage, false);
+    fetchWords(nextPage, false, term);
   };
 
-  // Фільтрація завантажених слів за пошуком
-  const filteredWords = words.filter(word => {
-    if (!searchQuery) return true;
-    const query = searchQuery.toLowerCase();
-    return (
-      (word.hr_text && word.hr_text.toLowerCase().includes(query)) || 
-      (word.ua_translation && word.ua_translation.toLowerCase().includes(query))
-    );
-  });
+  const filteredWords = words;
 
   return (
     <div className="min-h-screen pb-28 font-sans overflow-x-hidden">
@@ -161,7 +172,7 @@ export default function DictionaryPage() {
             ))}
 
             {/* Кнопка "Завантажити ще" */}
-            {hasMore && !searchQuery && (
+            {hasMore && (
               <button
                 onClick={loadMore}
                 disabled={loadingMore}
