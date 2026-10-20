@@ -50,6 +50,29 @@
   --color-ai-line: var(--color-indigo-100);
   --color-ai-ink: var(--color-indigo-700);
 
+  /* Рівні CEFR — свій колір кожному (рішення власника 2026-10-20, DESIGN_SYSTEM §3.4).
+     Суцільний колір — з білим текстом (контраст ≥ 4.5:1). */
+  --color-level-a0: var(--color-rose-600);
+  --color-level-a0-soft: var(--color-rose-50);
+  --color-level-a0-line: var(--color-rose-200);
+  --color-level-a0-ink: var(--color-rose-700);
+  --color-level-a1: var(--color-indigo-600);
+  --color-level-a1-soft: var(--color-indigo-50);
+  --color-level-a1-line: var(--color-indigo-200);
+  --color-level-a1-ink: var(--color-indigo-700);
+  --color-level-a2: var(--color-teal-700);
+  --color-level-a2-soft: var(--color-teal-50);
+  --color-level-a2-line: var(--color-teal-200);
+  --color-level-a2-ink: var(--color-teal-800);
+  --color-level-b1: var(--color-orange-700);
+  --color-level-b1-soft: var(--color-orange-50);
+  --color-level-b1-line: var(--color-orange-200);
+  --color-level-b1-ink: var(--color-orange-800);
+  --color-level-b2: var(--color-purple-600);
+  --color-level-b2-soft: var(--color-purple-50);
+  --color-level-b2-line: var(--color-purple-200);
+  --color-level-b2-ink: var(--color-purple-700);
+
   /* Форми */
   --radius-control: 0.75rem;
   --radius-card: 1rem;
