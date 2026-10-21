@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { annotateOriginal, evaluateSpeech, foldDiacritics, speechTokens } from './speaking.ts';
+import { annotateOriginal, evaluateSpeech, foldDiacritics, isUnderstood, speakingSource, speechTokens } from './speaking.ts';
 
 test('мовлення: точний збіг (регістр і розділові знаки не важать) → «чудово»', () => {
   const r = evaluateSpeech('Dobar dan, trebam pomoć.', ['dobar dan trebam pomoć']);
@@ -65,4 +65,20 @@ test('мовлення: позначки накладаються на ориг�
     { text: '—', status: null },
     { text: 'pomoć!', status: 'missed' },
   ]);
+});
+
+test('заняття говорінням: джерело — урок, ситуація або вільне', () => {
+  const lesson = 'c0000000-0000-0000-0000-000000000001';
+  assert.equal(speakingSource({ lessonId: lesson }), 'lesson');
+  assert.equal(speakingSource({ lessonId: lesson, situation: 'basics' }), 'lesson');
+  assert.equal(speakingSource({ situation: 'basics' }), 'situation');
+  assert.equal(speakingSource({ lessonId: 'not-a-uuid', situation: 'basics' }), 'situation');
+  assert.equal(speakingSource({}), 'free');
+});
+
+test('зараховано лише «чудово» і «зрозуміло»', () => {
+  assert.equal(isUnderstood('great'), true);
+  assert.equal(isUnderstood('understandable'), true);
+  assert.equal(isUnderstood('almost'), false);
+  assert.equal(isUnderstood('no_speech'), false);
 });

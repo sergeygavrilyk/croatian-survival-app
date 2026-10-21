@@ -13,11 +13,13 @@ import AudioButton from '@/components/ui/AudioButton';
 import IconButton from '@/components/ui/IconButton';
 import ProgressBar from '@/components/ui/ProgressBar';
 import RoleplaySimulator from '@/components/features/RoleplaySimulator';
-import LessonExercise, { type LessonExerciseData } from './LessonExercise';
+import LessonExercise, { type LessonExerciseData, type LessonSpeechAttempt } from './LessonExercise';
 import TypicalErrorCard from '@/components/TypicalErrorCard';
 import type { TypicalError } from '@/lib/interference';
 import { speakCroatian } from '@/utils/speech';
 import { track } from '@/lib/analytics-client';
+import { finishSpeakingSession, recordSpeakingAttempt, startSpeakingSession } from '@/app/actions/speaking';
+import { evaluateSpeech, isUnderstood } from '@/lib/speaking';
 import { situationInfo } from '@/lib/situations';
 import {
   answerCurrent, estimateMinutes, isRetry, lessonStages, orderExercises, practiceDone, startPractice,
@@ -124,6 +126,47 @@ export default function LessonPlayer({
   const [practice, setPractice] = useState(() => startPractice(exercises.map((e) => e.id)));
   const [round, setRound] = useState(0); // щоб скинути стан вправи, коли та сама повертається
   const exerciseStartRef = useRef(Date.now());
+  // «Скажіть уголос» → speaking_sessions (source = 'lesson') / speaking_attempts. Заняття створюємо
+  // при першій спробі, закриваємо на підсумку. Збій збереження не заважає уроку.
+  const speechRef = useRef({
+    session: null as Promise<string | null> | null,
+    startedAt: 0,
+    attempts: 0,
+    phrases: new Set<string>(),
+    understood: new Set<string>(),
+    finished: false,
+  });
+  const recordSpeech = (exerciseId: string) => (attempt: LessonSpeechAttempt) => {
+    const s = speechRef.current;
+    if (!s.session) {
+      s.startedAt = Date.now();
+      s.session = startSpeakingSession({ lessonId: lesson.id, mode: 'produce' }).catch(() => null);
+    }
+    s.attempts += 1;
+    s.phrases.add(exerciseId);
+    if (isUnderstood(evaluateSpeech(attempt.targetText, attempt.transcripts).verdict)) s.understood.add(exerciseId);
+    void s.session
+      .then((sessionId) => recordSpeakingAttempt({ sessionId, phraseId: null, ...attempt }))
+      .catch(() => {});
+  };
+  const finishSpeech = () => {
+    const s = speechRef.current;
+    if (!s.session || s.finished) return;
+    s.finished = true;
+    void s.session
+      .then((sessionId) =>
+        finishSpeakingSession({
+          sessionId,
+          lessonId: lesson.id,
+          mode: 'produce',
+          phrases: s.phrases.size,
+          understood: s.understood.size,
+          attempts: s.attempts,
+          durationMs: Date.now() - s.startedAt,
+        }),
+      )
+      .catch(() => {});
+  };
 
   const stageIndex = stages.indexOf(stage);
   const goTo = (s: LessonStage) => {
@@ -354,7 +397,10 @@ export default function LessonPlayer({
       const after = answerCurrent(practice, outcome);
       setPractice(after);
       setRound((r) => r + 1);
-      if (after.queue.length === 0) goTo('summary');
+      if (after.queue.length === 0) {
+        finishSpeech();
+        goTo('summary');
+      }
       else window.scrollTo({ top: 0 });
     };
     return shell(
@@ -362,7 +408,13 @@ export default function LessonPlayer({
         <p className="text-caption text-ink-muted">
           Вправа {Math.min(practiceDone(practice) + 1, practice.total)} з {practice.total}
         </p>
-        <LessonExercise key={`${current.id}:${round}`} exercise={current} retry={retry} onNext={onNext} />
+        <LessonExercise
+          key={`${current.id}:${round}`}
+          exercise={current}
+          retry={retry}
+          onNext={onNext}
+          onSpeechAttempt={current.exercise_type === 'speaking' ? recordSpeech(current.id) : undefined}
+        />
       </>,
     );
   }

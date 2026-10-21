@@ -33,6 +33,9 @@ export interface TodayLesson {
   order_index: number;
   unit_order: number;
   module_order: number;
+  /** Модуль уроку — для пропозиції перевірки модуля */
+  module_id?: string | null;
+  module_title?: string | null;
 }
 
 export interface NextLesson {
@@ -87,4 +90,80 @@ export function sessionCheer(correct: number, total: number): SessionCheer {
   if (share >= 0.8) return { emoji: '🎉', title: 'Чудово!' };
   if (share >= 0.5) return { emoji: '💪', title: 'Добре попрацювали!' };
   return { emoji: '🌱', title: 'Крок за кроком!' };
+}
+
+// ---------------------------------------------------------------- пропозиція перевірки (§60)
+
+export interface TodayAssessment {
+  id: string;
+  slug: string;
+  /** module / mid / final */
+  kind: string;
+  /** Для перевірки модуля — її модуль */
+  module_id: string | null;
+  estimated_minutes: number | null;
+}
+
+export interface AssessmentSuggestion {
+  slug: string;
+  kind: 'module' | 'mid' | 'final';
+  /** Номер модуля (для перевірки модуля) або найбільший номер пройденого модуля (середина / фінал) */
+  moduleOrder: number;
+  moduleTitle: string | null;
+  minutes: number | null;
+}
+
+/** Середина рівня — після модулів 1–5 (як у «Перевірках рівня»: «Модулі 1–5»). */
+const MID_LAST_MODULE = 5;
+
+/**
+ * Яку перевірку запропонувати на «Сьогодні» (до 2026-10-21 — лише після всього рівня).
+ * Модуль вважається пройденим, коли пройдено всі його опубліковані уроки. Пропонуємо лише перевірку,
+ * яку ще жодного разу не починали (після невдалої спроби не нагадуємо — тест не блокує уроки, рішення власника),
+ * найсвіжішу: фінал → середина → модуль з найбільшим номером.
+ */
+export function suggestAssessment(
+  lessons: ReadonlyArray<TodayLesson>,
+  completed: ReadonlySet<string>,
+  tests: ReadonlyArray<TodayAssessment>,
+  attempted: ReadonlySet<string>,
+): AssessmentSuggestion | null {
+  const modules = new Map<string, { order: number; title: string | null; total: number; done: number }>();
+  for (const l of lessons) {
+    if (!l.module_id) continue;
+    const m = modules.get(l.module_id) ?? { order: l.module_order, title: l.module_title ?? null, total: 0, done: 0 };
+    m.total += 1;
+    if (completed.has(l.id)) m.done += 1;
+    modules.set(l.module_id, m);
+  }
+  const all = [...modules.values()];
+  if (all.length === 0) return null;
+  const isDone = (m: { total: number; done: number }) => m.total > 0 && m.done === m.total;
+  const doneOrders = all.filter(isDone).map((m) => m.order);
+  if (doneOrders.length === 0) return null;
+  const lastDone = Math.max(...doneOrders);
+
+  const candidates: Array<AssessmentSuggestion & { rank: number }> = [];
+  for (const t of tests) {
+    if (attempted.has(t.id)) continue;
+    if (t.kind === 'module' && t.module_id) {
+      const m = modules.get(t.module_id);
+      if (m && isDone(m)) {
+        candidates.push({ slug: t.slug, kind: 'module', moduleOrder: m.order, moduleTitle: m.title, minutes: t.estimated_minutes, rank: m.order });
+      }
+    } else if (t.kind === 'mid') {
+      const firstHalf = all.filter((m) => m.order <= MID_LAST_MODULE);
+      if (firstHalf.length > 0 && firstHalf.every(isDone)) {
+        candidates.push({ slug: t.slug, kind: 'mid', moduleOrder: lastDone, moduleTitle: null, minutes: t.estimated_minutes, rank: MID_LAST_MODULE + 0.5 });
+      }
+    } else if (t.kind === 'final') {
+      if (all.every(isDone)) {
+        candidates.push({ slug: t.slug, kind: 'final', moduleOrder: lastDone, moduleTitle: null, minutes: t.estimated_minutes, rank: 1000 });
+      }
+    }
+  }
+  if (candidates.length === 0) return null;
+  candidates.sort((a, b) => b.rank - a.rank);
+  const best = candidates[0];
+  return { slug: best.slug, kind: best.kind, moduleOrder: best.moduleOrder, moduleTitle: best.moduleTitle, minutes: best.minutes };
 }

@@ -162,3 +162,24 @@ export function annotateOriginal(
       return { text: piece, status };
     });
 }
+
+// ---------------------------------------------------------------- заняття говорінням (speaking_sessions)
+
+export type SpeakingSource = 'situation' | 'lesson' | 'free';
+
+const SESSION_UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * Звідки заняття говорінням (speaking_sessions.source): урок (є коректний lesson_id) → ситуація → вільне.
+ * «Скажіть уголос» в уроці пишемо як source = 'lesson' (до 2026-10-21 не писалося зовсім).
+ */
+export function speakingSource(input: { lessonId?: string | null; situation?: string | null }): SpeakingSource {
+  if (input.lessonId && SESSION_UUID_RE.test(input.lessonId)) return 'lesson';
+  if (input.situation) return 'situation';
+  return 'free';
+}
+
+/** Фразу зарахували: «чудово» або «зрозуміло» (так само, як в уроці й «Ситуаціях»). */
+export function isUnderstood(verdict: SpeechVerdict): boolean {
+  return verdict === 'great' || verdict === 'understandable';
+}

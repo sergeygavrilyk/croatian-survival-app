@@ -105,8 +105,8 @@ Track:
 | `onboarding_started` | `/onboarding`, відкриття | source (`first` / `repeat`) |
 | `onboarding_completed` | сервер, `completeOnboarding` | goals, daily_goal_minutes, level (рівень старту), self_level, source (`placement` / `self`) |
 | `placement_started` | початок тесту рівня | count (питань), self_level |
-| `speaking_started` | сервер, `startSpeakingSession` (вибрано режим) | source (`situation`), situation, exercise_type (`repeat` / `produce`) |
-| `speaking_completed` | сервер, `finishSpeakingSession` (кінець заняття) | situation, exercise_type, count (фраз), correct_count (зрозуміли), attempt (спроб), duration_ms, success |
+| `speaking_started` | сервер, `startSpeakingSession` (вибрано режим; в уроці — перша спроба «Скажіть уголос») | source (`situation` / `lesson`), situation, lesson_id, exercise_type (`repeat` / `produce`) |
+| `speaking_completed` | сервер, `finishSpeakingSession` (кінець заняття; в уроці — на підсумку, якщо були спроби) | source (`situation` / `lesson`), situation, lesson_id, exercise_type, count (фраз), correct_count (зрозуміли), attempt (спроб), duration_ms, success |
 | `conversation_started` | сервер, `startRoleplay` | source = `roleplay`, situation, level |
 | `conversation_completed` | сервер, `finishRoleplay` | source = `roleplay`, situation, level, count (реплік користувача), attempt (помилок збережено), success (завдання виконано) |
 | `placement_completed` | сервер, `submitPlacement` | estimated_level, recommended_start, confidence, count, correct_count, duration_ms, success |

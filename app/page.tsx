@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/utils/supabase/server';
 import { DEFAULT_TIME_ZONE, LEARNING_EVENTS, activityWeek, learningStreak } from '@/lib/progress';
-import { displayName, greetingFor, nextLesson, todayLevel, type TodayLesson } from '@/lib/today';
+import { displayName, greetingFor, nextLesson, suggestAssessment, todayLevel, type TodayAssessment, type TodayLesson } from '@/lib/today';
 import { parseMascot } from '@/lib/mascot';
 import TodayView from '@/components/TodayView';
 
@@ -9,13 +9,13 @@ export const metadata = { title: 'Сьогодні · Croatian Survival App' };
 
 const LESSON_LEVELS = ['A0', 'A1'];
 
+type ModuleRef = { id: string; order_index: number | null; title_ua: string | null };
+type UnitRef = { order_index: number | null; modules: ModuleRef | ModuleRef[] | null };
 type LessonRow = {
   id: string;
   title_ua: string;
   order_index: number | null;
-  units: { order_index: number | null; modules: { order_index: number | null } | { order_index: number | null }[] | null }
-    | { order_index: number | null; modules: { order_index: number | null } | { order_index: number | null }[] | null }[]
-    | null;
+  units: UnitRef | UnitRef[] | null;
 };
 
 const one = <T,>(v: T | T[] | null | undefined): T | null => (Array.isArray(v) ? v[0] ?? null : v ?? null);
@@ -43,7 +43,7 @@ export default async function TodayPage() {
   const level = todayLevel(!profileError ? profile?.current_level : null, LESSON_LEVELS);
   const since = new Date(now.getTime() - 120 * 24 * 60 * 60 * 1000).toISOString();
 
-  const [dueRes, lessonsRes, doneRes, eventsRes, reviewsRes, mascotRes] = await Promise.all([
+  const [dueRes, lessonsRes, doneRes, eventsRes, reviewsRes, mascotRes, testsRes, attemptsRes] = await Promise.all([
     supabase
       .from('user_progress')
       .select('id', { count: 'exact', head: true })
@@ -51,7 +51,7 @@ export default async function TodayPage() {
       .lte('next_review_date', now.toISOString()),
     supabase
       .from('lessons')
-      .select('id, title_ua, order_index, units!inner(order_index, modules!inner(order_index))')
+      .select('id, title_ua, order_index, units!inner(order_index, modules!inner(id, order_index, title_ua))')
       .eq('level_code', level)
       .eq('status', 'PUBLISHED'),
     supabase.from('lesson_progress').select('lesson_id').eq('user_id', user.id).eq('status', 'completed'),
@@ -73,6 +73,15 @@ export default async function TodayPage() {
       .limit(5000),
     // Талісман — окремим запитом: якщо міграції M18 ще немає, решта профілю не страждає
     supabase.from('profiles').select('mascot').eq('id', user.id).maybeSingle(),
+    // Перевірки рівня (§60) — щоб запропонувати перевірку щойно пройденого модуля
+    supabase
+      .from('assessments')
+      .select('id, slug, kind, module_id, estimated_minutes')
+      .eq('cefr', level)
+      .in('kind', ['module', 'mid', 'final'])
+      .eq('status', 'PUBLISHED')
+      .limit(50),
+    supabase.from('assessment_attempts').select('assessment_id').eq('user_id', user.id).limit(1000),
   ]);
 
   const lessons: TodayLesson[] = ((lessonsRes.data ?? []) as LessonRow[]).map((row) => {
@@ -84,10 +93,22 @@ export default async function TodayPage() {
       order_index: row.order_index ?? 0,
       unit_order: unit?.order_index ?? 0,
       module_order: mod?.order_index ?? 0,
+      module_id: mod?.id ?? null,
+      module_title: mod?.title_ua ?? null,
     };
   });
   const completed = new Set(((doneRes.data ?? []) as Array<{ lesson_id: string }>).map((r) => r.lesson_id));
   const next = nextLesson(lessons, completed);
+  // Збій запиту перевірок не ламає «Сьогодні» — просто без пропозиції
+  const suggestion =
+    testsRes.error || attemptsRes.error
+      ? null
+      : suggestAssessment(
+          lessons,
+          completed,
+          (testsRes.data ?? []) as TodayAssessment[],
+          new Set(((attemptsRes.data ?? []) as Array<{ assessment_id: string }>).map((r) => r.assessment_id)),
+        );
 
   const timestamps = [
     ...((eventsRes.data ?? []) as Array<{ occurred_at: string }>).map((r) => r.occurred_at),
@@ -106,6 +127,7 @@ export default async function TodayPage() {
       week={activityWeek(timestamps, now, timeZone)}
       streak={learningStreak(timestamps, now, timeZone)}
       loadFailed={Boolean(lessonsRes.error || dueRes.error)}
+      assessment={suggestion}
       mascot={mascotRes.error ? null : parseMascot((mascotRes.data as { mascot?: string | null } | null)?.mascot)}
     />
   );

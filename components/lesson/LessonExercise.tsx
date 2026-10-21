@@ -24,6 +24,16 @@ export interface LessonExerciseData {
   options: unknown;
 }
 
+/** Спроба «Скажіть уголос» — LessonPlayer зберігає її в speaking_attempts (до 2026-10-21 не зберігалася). */
+export interface LessonSpeechAttempt {
+  targetText: string;
+  transcripts: string[];
+  /** repeat — фразу було видно (підказка або після спроби), produce — говорили з пам'яті */
+  mode: 'repeat' | 'produce';
+  retryNumber: number;
+  durationMs: number;
+}
+
 interface Result {
   outcome: PracticeOutcome;
   /** Для FeedbackBanner; у «скажіть уголос» — власний відгук */
@@ -66,11 +76,14 @@ export default function LessonExercise({
   exercise,
   retry,
   onNext,
+  onSpeechAttempt,
 }: {
   exercise: LessonExerciseData;
   /** Повтор після помилки */
   retry: boolean;
   onNext: (outcome: PracticeOutcome, verdict?: string) => void;
+  /** Зберегти спробу «Скажіть уголос» (не чекаємо відповіді — навчання не гальмує) */
+  onSpeechAttempt?: (attempt: LessonSpeechAttempt) => void;
 }) {
   const [result, setResult] = useState<Result | null>(null);
   const type = exercise.exercise_type;
@@ -103,7 +116,7 @@ export default function LessonExercise({
       {(type === 'sentence_builder' || type === 'listening') && (
         <TilesExercise exercise={exercise} listening={type === 'listening'} locked={result !== null} onAnswer={finish} />
       )}
-      {type === 'speaking' && <SpeakingExercise answer={answer} onAnswer={finish} />}
+      {type === 'speaking' && <SpeakingExercise answer={answer} onAnswer={finish} onAttempt={onSpeechAttempt} />}
 
       {result && (
         <div className="flex flex-col gap-3">
@@ -328,7 +341,15 @@ function TilesExercise({
 }
 
 // ---------------------------------------------------------------- скажіть уголос
-function SpeakingExercise({ answer, onAnswer }: { answer: string; onAnswer: (r: Result) => void }) {
+function SpeakingExercise({
+  answer,
+  onAnswer,
+  onAttempt,
+}: {
+  answer: string;
+  onAnswer: (r: Result) => void;
+  onAttempt?: (attempt: LessonSpeechAttempt) => void;
+}) {
   const supported = useMemo(() => browserSpeech.isSupported(), []);
   const [hint, setHint] = useState(false);
   const [listening, setListening] = useState(false);
@@ -337,6 +358,7 @@ function SpeakingExercise({ answer, onAnswer }: { answer: string; onAnswer: (r: 
   const [error, setError] = useState<SpeechErrorCode | null>(supported ? null : 'unsupported');
   const [done, setDone] = useState(false);
   const sessionRef = useRef<ListeningSession | null>(null);
+  const triesRef = useRef(0);
 
   useEffect(() => () => sessionRef.current?.abort(), []);
 
@@ -345,6 +367,8 @@ function SpeakingExercise({ answer, onAnswer }: { answer: string; onAnswer: (r: 
       setError('network');
       return;
     }
+    // фразу видно (підказка або після першої спроби) — це повторення, інакше — з пам'яті
+    const mode: LessonSpeechAttempt['mode'] = hint || evaluation !== null ? 'repeat' : 'produce';
     setError(null);
     setEvaluation(null);
     setInterim('');
@@ -352,9 +376,11 @@ function SpeakingExercise({ answer, onAnswer }: { answer: string; onAnswer: (r: 
     const session = browserSpeech.transcribe({ lang: 'hr-HR', maxAlternatives: 3, onInterim: setInterim });
     sessionRef.current = session;
     try {
-      const { transcripts } = await session.result;
+      const { transcripts, durationMs } = await session.result;
       const ev = evaluateSpeech(answer, transcripts);
       setEvaluation(ev);
+      onAttempt?.({ targetText: answer, transcripts, mode, retryNumber: triesRef.current, durationMs });
+      triesRef.current += 1;
       if (SPEECH_UI[ev.verdict].ok) {
         setDone(true);
         onAnswer({ outcome: 'correct', verdict: ev.verdict });

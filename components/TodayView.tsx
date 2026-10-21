@@ -5,7 +5,7 @@ import { ArrowRight, BadgeCheck, Flame, MessageCircle, Repeat, Send, X } from 'l
 import { quickTranslateToCroatian, type TranslationSource } from '@/app/actions/translate';
 import { countUk } from '@/lib/format';
 import { levelStyle, moduleIcon } from '@/lib/levels';
-import { weekCheer } from '@/lib/today';
+import { weekCheer, type AssessmentSuggestion } from '@/lib/today';
 import { cn } from '@/lib/ui';
 import type { DayActivity } from '@/lib/progress';
 import AiPanel from '@/components/ui/AiPanel';
@@ -34,6 +34,8 @@ export interface TodayViewProps {
   loadFailed: boolean;
   /** Талісман з профілю (null — не обрано → Pjegica) */
   mascot: MascotKind | null;
+  /** Перевірка щойно пройденого модуля / середини / рівня (§60), яку ще не проходили */
+  assessment: AssessmentSuggestion | null;
 }
 
 /** Насиченість клітинки за кількістю занять (зелений — «вчився», docs/DESIGN_SYSTEM.md §3). */
@@ -47,7 +49,7 @@ const LEVEL_CLASSES: Record<Day['level'], string> = {
 
 /** «Сьогодні» (docs/DESIGN_SYSTEM.md §7.1): одна головна дія, повторення, «Що сказати?», активність за тиждень. */
 export default function TodayView(props: TodayViewProps) {
-  const { name, greeting, level, next, lessonsDone, lessonsTotal, dueCount, week, streak, loadFailed, mascot } = props;
+  const { name, greeting, level, next, lessonsDone, lessonsTotal, dueCount, week, streak, loadFailed, mascot, assessment } = props;
 
   // Копія вибору талісмана в браузері — для святкового екрана після уроку (працює й офлайн)
   useEffect(() => {
@@ -89,6 +91,8 @@ export default function TodayView(props: TodayViewProps) {
         )}
 
         <ContinueCard level={level} next={next} done={lessonsDone} total={lessonsTotal} />
+        {/* коли всі уроки пройдено, «Перевірити рівень» уже в головній картці */}
+        {assessment && next && <AssessmentCard level={level} suggestion={assessment} />}
         <ReviewCard dueCount={dueCount} />
         <QuickTranslateCard />
         <WeekCard week={week} />
@@ -154,6 +158,39 @@ function ContinueCard({ level, next, done, total }: { level: string; next: Today
           </Button>
         </>
       )}
+    </Card>
+  );
+}
+
+// ---------------------------------------------------------------- перевірка модуля (§60)
+function AssessmentCard({ level, suggestion }: { level: string; suggestion: AssessmentSuggestion }) {
+  const lv = levelStyle(level);
+  const title =
+    suggestion.kind === 'module'
+      ? `Модуль ${level}.${suggestion.moduleOrder} пройдено!`
+      : suggestion.kind === 'mid'
+        ? `Половину ${level} пройдено!`
+        : `Рівень ${level} пройдено!`;
+  const what =
+    suggestion.kind === 'module' ? 'Перевірте себе: що вже вмієте з цього модуля' : 'Перевірте себе: що вже вмієте на цьому рівні';
+  return (
+    <Card className="flex flex-col gap-3">
+      <div className="flex items-start gap-4">
+        <span className={cn('flex size-11 shrink-0 items-center justify-center rounded-full', lv.soft, lv.ink)} aria-hidden="true">
+          <BadgeCheck className="size-5" />
+        </span>
+        <div className="min-w-0 flex-1">
+          <h2 className="font-heading text-h3 break-words">{title} 🎯</h2>
+          <p className="text-body text-ink-muted">
+            {what}
+            {suggestion.minutes ? ` · ~${suggestion.minutes} хв` : ''}. Тест не блокує уроки.
+          </p>
+        </div>
+      </div>
+      <Button href={`/assessment/${suggestion.slug}`} variant="secondary" block>
+        Пройти перевірку
+        <ArrowRight className="size-5" aria-hidden="true" />
+      </Button>
     </Card>
   );
 }

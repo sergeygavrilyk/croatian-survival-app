@@ -2,7 +2,7 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { trackEvent } from '@/app/actions/analytics';
-import { evaluateSpeech, type SpeechEvaluation } from '@/lib/speaking';
+import { evaluateSpeech, speakingSource, type SpeechEvaluation } from '@/lib/speaking';
 import { isSituationCode } from '@/lib/situations';
 
 type Mode = 'repeat' | 'produce';
@@ -10,25 +10,40 @@ const isMode = (m: unknown): m is Mode => m === 'repeat' || m === 'produce';
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const PROVIDER_RE = /^[a-z0-9_.-]{2,40}$/;
 
-/** Починає заняття говорінням (speaking_sessions). Повертає id або null — тоді просто не зберігаємо. */
-export async function startSpeakingSession(input: { situation?: string; mode: Mode; provider?: string }): Promise<string | null> {
+/**
+ * Починає заняття говорінням (speaking_sessions). Повертає id або null — тоді просто не зберігаємо.
+ * lessonId — «Скажіть уголос» в уроці (source = 'lesson', 2026-10-21).
+ */
+export async function startSpeakingSession(input: {
+  situation?: string;
+  lessonId?: string;
+  mode: Mode;
+  provider?: string;
+}): Promise<string | null> {
   try {
     if (!isMode(input.mode)) return null;
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return null;
     const situation = input.situation && isSituationCode(input.situation) ? input.situation : null;
+    const lessonId = input.lessonId && UUID_RE.test(input.lessonId) ? input.lessonId : null;
+    const source = speakingSource({ lessonId, situation });
     const provider = input.provider && PROVIDER_RE.test(input.provider) ? input.provider : 'web_speech';
     const { data, error } = await supabase
       .from('speaking_sessions')
-      .insert({ user_id: user.id, source: situation ? 'situation' : 'free', situation, mode: input.mode, provider })
+      .insert({ user_id: user.id, source, situation, lesson_id: lessonId, mode: input.mode, provider })
       .select('id')
       .single();
     if (error) {
       console.error('speaking_sessions:', error.message);
       return null;
     }
-    await trackEvent('speaking_started', { source: situation ? 'situation' : 'free', situation: situation ?? undefined, exercise_type: input.mode });
+    await trackEvent('speaking_started', {
+      source,
+      situation: situation ?? undefined,
+      lesson_id: lessonId ?? undefined,
+      exercise_type: input.mode,
+    });
     return data.id as string;
   } catch (err) {
     console.error('startSpeakingSession:', err);
@@ -90,6 +105,7 @@ export async function recordSpeakingAttempt(input: {
 export async function finishSpeakingSession(input: {
   sessionId: string | null;
   situation?: string;
+  lessonId?: string;
   mode: Mode;
   phrases: number;
   understood: number;
@@ -108,9 +124,12 @@ export async function finishSpeakingSession(input: {
         .eq('id', input.sessionId)
         .eq('user_id', user.id);
     }
+    const situation = input.situation && isSituationCode(input.situation) ? input.situation : undefined;
+    const lessonId = input.lessonId && UUID_RE.test(input.lessonId) ? input.lessonId : undefined;
     await trackEvent('speaking_completed', {
-      source: input.situation ? 'situation' : 'free',
-      situation: input.situation && isSituationCode(input.situation) ? input.situation : undefined,
+      source: speakingSource({ lessonId, situation }),
+      situation,
+      lesson_id: lessonId,
       exercise_type: isMode(input.mode) ? input.mode : undefined,
       count: Math.max(0, Math.trunc(input.phrases) || 0),
       correct_count: Math.max(0, Math.trunc(input.understood) || 0),
