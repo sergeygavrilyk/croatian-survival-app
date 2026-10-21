@@ -21,7 +21,19 @@ npm run dev
 NEXT_PUBLIC_SUPABASE_URL=...
 NEXT_PUBLIC_SUPABASE_ANON_KEY=...
 GEMINI_API_KEY=...
+# лише для E2E з тестовим акаунтом (npm run e2e), необов'язково:
+E2E_EMAIL=...
+E2E_PASSWORD=...
 ```
+
+## Перевірки
+
+```bash
+npm run lint && npm test && npm run build && npm run typecheck
+npm run e2e        # Playwright: збірка + сервер на :3100 + усі сценарії (docs/TESTING.md §3)
+```
+
+Те саме (крім E2E з входом) запускає CI на GitHub після кожного push — `.github/workflows/ci.yml`.
 
 ## Стек
 

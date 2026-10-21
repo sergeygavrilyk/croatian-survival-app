@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { useRouter } from 'next/navigation';
 import { CircleCheck, CircleAlert, Languages, Lightbulb, Mic, RotateCcw, Send, Sparkles, Square, Volume2, VolumeX } from 'lucide-react';
 import PageHeader from '@/components/ui/PageHeader';
@@ -33,6 +33,8 @@ type Stage = 'intro' | 'chat' | 'summary';
  * Рольова гра з AI (VS-004, §52, §87): сценарій → AI починає → відповідь текстом або голосом →
  * AI відповідає й виправляє важливе → підсумок → помилки зберігаються для повторення.
  */
+const noSubscribe = () => () => {};
+
 export default function RoleplayChat({
   situation,
   scenario,
@@ -65,8 +67,7 @@ export default function RoleplayChat({
   const listeningRef = useRef<ListeningSession | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
   // Підтримку мікрофона перевіряємо лише в браузері (інакше сервер і клієнт намалюють різне)
-  const [micSupported, setMicSupported] = useState(false);
-  useEffect(() => setMicSupported(browserSpeech.isSupported()), []);
+  const micSupported = useSyncExternalStore(noSubscribe, () => browserSpeech.isSupported(), () => false);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });

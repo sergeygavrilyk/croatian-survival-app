@@ -86,79 +86,107 @@ export default function DictionaryPage() {
     }
   }, [supabase]);
 
-  // Порційне завантаження з точковими полями
-  const fetchWords = useCallback(async (pageIndex: number, isReset: boolean, search: string | null, lvl: Level) => {
+  /** Початок завантаження: індикатори й номер сторінки. Викликають обробники (зміна пошуку / рівня, «Ще»),
+   *  а не ефект — щоб не було синхронного setState в ефекті (react-hooks/set-state-in-effect). */
+  const beginLoad = useCallback((pageIndex: number, isReset: boolean) => {
     if (isReset) setLoading(true);
     else setLoadingMore(true);
     setLoadError(false);
+    setPage(pageIndex);
+  }, []);
 
-    const requestId = ++requestRef.current;
+  /** Запит однієї порції слів (лише читання з бази, стан не змінює). Помилка бази — виняток. */
+  const queryWords = useCallback(async (pageIndex: number, search: string | null, lvl: Level): Promise<Word[]> => {
     const from = pageIndex * PAGE_SIZE;
     const to = from + PAGE_SIZE - 1;
+    let request = supabase
+      .from('lexemes')
+      .select('id, lemma, ukrainian_translation, part_of_speech, cefr')
+      .eq('status', 'PUBLISHED')
+      .not('lemma', 'like', '%:%'); // без реплік діалогів («Konobar: …»)
+    if (search) {
+      // лема, лема без діакритики (macka → mačka) або переклад
+      request = request.or(`lemma.ilike.%${search}%,normalized.ilike.%${search}%,ukrainian_translation.ilike.%${search}%`);
+    }
+    if (lvl !== 'ALL') request = request.eq('cefr', lvl);
+    const { data, error } = await request
+      .order('cefr', { ascending: true, nullsFirst: false }) // спершу A0, потім A1…
+      .order('frequency_rank', { ascending: true, nullsFirst: false })
+      .order('lemma', { ascending: true })
+      .range(from, to); // Пагінація на рівні БД
+    if (error) throw error;
+    return (data ?? []).map((lex) => ({
+      id: lex.id,
+      lemma: lex.lemma,
+      translation: lex.ukrainian_translation,
+      pos: posLabelUk(lex.part_of_speech),
+      level: lex.cefr,
+    }));
+  }, [supabase]);
 
-    try {
-      let request = supabase
-        .from('lexemes')
-        .select('id, lemma, ukrainian_translation, part_of_speech, cefr')
-        .eq('status', 'PUBLISHED')
-        .not('lemma', 'like', '%:%'); // без реплік діалогів («Konobar: …»)
-      if (search) {
-        // лема, лема без діакритики (macka → mačka) або переклад
-        request = request.or(`lemma.ilike.%${search}%,normalized.ilike.%${search}%,ukrainian_translation.ilike.%${search}%`);
-      }
-      if (lvl !== 'ALL') request = request.eq('cefr', lvl);
-      const { data, error } = await request
-        .order('cefr', { ascending: true, nullsFirst: false }) // спершу A0, потім A1…
-        .order('frequency_rank', { ascending: true, nullsFirst: false })
-        .order('lemma', { ascending: true })
-        .range(from, to); // Пагінація на рівні БД
-
-      if (error) throw error;
-      if (requestId !== requestRef.current) return;
-
-      const mapped: Word[] = (data ?? []).map((lex) => ({
-        id: lex.id,
-        lemma: lex.lemma,
-        translation: lex.ukrainian_translation,
-        pos: posLabelUk(lex.part_of_speech),
-        level: lex.cefr,
-      }));
+  /** Відповідь бази → стан. Відповідь старішого запиту (попередній пошук) ігноруємо. */
+  const applyPage = useCallback((requestId: number, isReset: boolean, result: { words: Word[] } | { error: unknown }) => {
+    if (requestId !== requestRef.current) return;
+    if ('error' in result) {
+      console.error('Помилка завантаження словника:', result.error);
+      if (isReset) setWords([]); // старі результати іншого пошуку не показуємо
+      setLoadError(true);
+    } else {
+      const mapped = result.words;
       setHasMore(mapped.length === PAGE_SIZE); // менше за порцію — кінець словника чи результатів
       setWords(prev => (isReset ? mapped : [...prev, ...mapped]));
       void enrich(mapped.map(w => w.id));
-    } catch (err) {
-      console.error('Помилка завантаження словника:', err);
-      if (requestId === requestRef.current) {
-        if (isReset) setWords([]); // старі результати іншого пошуку не показуємо
-        setLoadError(true);
-      }
-    } finally {
-      if (requestId === requestRef.current) {
-        setLoading(false);
-        setLoadingMore(false);
-      }
     }
-  }, [supabase, enrich]);
+    setLoading(false);
+    setLoadingMore(false);
+  }, [enrich]);
+
+  /** Порція слів для обробників («Ще», «Спробувати ще раз»): індикатор → запит → стан у колбеці. */
+  const loadPage = (pageIndex: number, isReset: boolean) => {
+    beginLoad(pageIndex, isReset);
+    const requestId = ++requestRef.current;
+    queryWords(pageIndex, term, level).then(
+      (found) => applyPage(requestId, isReset, { words: found }),
+      (error: unknown) => applyPage(requestId, isReset, { error }),
+    );
+  };
 
   // Затримка: шукаємо, коли користувач перестав друкувати
   useEffect(() => {
-    const timer = setTimeout(() => setTerm(dictionarySearchTerm(searchQuery)), 300);
+    const timer = setTimeout(() => {
+      const next = dictionarySearchTerm(searchQuery);
+      if (next === term) return;
+      beginLoad(0, true);
+      setTerm(next);
+    }, 300);
     return () => clearTimeout(timer);
-  }, [searchQuery]);
+  }, [searchQuery, term, beginLoad]);
 
+  // Новий пошук або рівень → перша порція. Індикатор уже ввімкнено в обробнику (на старті loading = true),
+  // стан змінюємо лише в колбеці відповіді — як радить React для синхронізації із зовнішньою системою.
   useEffect(() => {
-    setPage(0);
-    fetchWords(0, true, term, level);
-  }, [fetchWords, term, level]);
+    const requestId = ++requestRef.current;
+    queryWords(0, term, level).then(
+      (found) => applyPage(requestId, true, { words: found }),
+      (error: unknown) => applyPage(requestId, true, { error }),
+    );
+  }, [queryWords, applyPage, term, level]);
+
+  const selectLevel = (lvl: Level) => {
+    if (lvl === level) return;
+    beginLoad(0, true);
+    setLevel(lvl);
+  };
 
   const loadMore = () => {
     if (loadingMore || !hasMore) return;
-    const nextPage = page + 1;
-    setPage(nextPage);
-    fetchWords(nextPage, false, term, level);
+    loadPage(page + 1, false);
   };
 
-  const retry = () => (words.length > 0 ? fetchWords(page, false, term, level) : fetchWords(0, true, term, level));
+  const retry = () => {
+    if (words.length > 0) loadPage(page, false);
+    else loadPage(0, true);
+  };
 
   return (
     <div className="min-h-screen pb-28">
@@ -199,7 +227,7 @@ export default function DictionaryPage() {
                   key={lvl}
                   type="button"
                   aria-pressed={active}
-                  onClick={() => setLevel(lvl)}
+                  onClick={() => selectLevel(lvl)}
                   className={cn(
                     'flex min-h-11 flex-1 items-center justify-center rounded-control px-1 text-label transition-colors duration-150',
                     active
@@ -266,7 +294,7 @@ export default function DictionaryPage() {
             }
             action={
               level !== 'ALL' ? (
-                <Button variant="secondary" onClick={() => setLevel('ALL')}>
+                <Button variant="secondary" onClick={() => selectLevel('ALL')}>
                   Шукати на всіх рівнях
                 </Button>
               ) : undefined

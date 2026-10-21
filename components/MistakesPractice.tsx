@@ -64,8 +64,8 @@ export default function MistakesPractice({
   const [correctCount, setCorrectCount] = useState(0);
   const [masteredNow, setMasteredNow] = useState(0);
   const [saveFailed, setSaveFailed] = useState(false);
-  const shownAtRef = useRef(Date.now());
-  const sessionStartRef = useRef(Date.now());
+  const shownAtRef = useRef(0); // ставимо в ефекті нижче, коли сесія почалася
+  const sessionStartRef = useRef(0);
 
   const item = items[index];
   const tiles = useMemo(() => (item ? buildTiles(item, seed) : []), [item, seed]);

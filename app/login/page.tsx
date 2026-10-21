@@ -1,12 +1,15 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import { MIN_PASSWORD_LENGTH, authErrorUk, newPasswordProblem } from '@/lib/auth';
 import { cn } from '@/lib/ui';
 import AuthShell, { AuthField, AuthMessage } from '@/components/AuthShell';
 import Button, { buttonClasses } from '@/components/ui/Button';
+
+const LINK_ERROR = 'Посилання з листа недійсне або застаріле. Надішліть новий лист і відкрийте його на цьому ж пристрої.';
+const noSubscribe = () => () => {};
 
 /** Вхід і реєстрація (DESIGN_SYSTEM §3.4, §8): тексти помилок — українською (lib/auth.ts). */
 export default function LoginPage() {
@@ -19,21 +22,26 @@ export default function LoginPage() {
   const router = useRouter();
   const [supabase] = useState(() => createClient());
 
-  // Повернення з недійсного посилання з листа (/auth/confirm → /login?error=link)
-  useEffect(() => {
-    if (new URLSearchParams(window.location.search).get('error') === 'link') {
-      setError('Посилання з листа недійсне або застаріле. Надішліть новий лист і відкрийте його на цьому ж пристрої.');
-    }
-  }, []);
+  // Повернення з недійсного посилання з листа (/auth/confirm → /login?error=link). Адресу читаємо
+  // лише в браузері (на сервері — false), повідомлення ховаємо після першої дії користувача.
+  const fromBadLink = useSyncExternalStore(
+    noSubscribe,
+    () => new URLSearchParams(window.location.search).get('error') === 'link',
+    () => false,
+  );
+  const [linkErrorSeen, setLinkErrorSeen] = useState(false);
+  const shownError = error ?? (fromBadLink && !linkErrorSeen ? LINK_ERROR : null);
 
   const switchMode = (signUp: boolean) => {
     setIsSignUp(signUp);
+    setLinkErrorSeen(true);
     setError(null);
     setNotice(null);
   };
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLinkErrorSeen(true);
     setError(null);
     setNotice(null);
     if (isSignUp) {
@@ -67,6 +75,7 @@ export default function LoginPage() {
   };
 
   const handleResetPassword = async () => {
+    setLinkErrorSeen(true);
     setNotice(null);
     if (!email) {
       setError('Введіть ваш email — надішлемо на нього лист для нового пароля.');
@@ -138,7 +147,7 @@ export default function LoginPage() {
           )}
         </div>
 
-        {error && <AuthMessage kind="error">{error}</AuthMessage>}
+        {shownError && <AuthMessage kind="error">{shownError}</AuthMessage>}
         {notice && <AuthMessage kind="ok">{notice}</AuthMessage>}
 
         <Button type="submit" block loading={loading}>

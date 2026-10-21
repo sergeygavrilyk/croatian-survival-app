@@ -77,9 +77,11 @@ export default function SpeakingPractice({
   const [error, setError] = useState<SpeechErrorCode | null>(null);
 
   const sessionId = useRef<string | null>(null);
-  const startedAt = useRef(Date.now());
+  const startedAt = useRef(0); // ставимо в begin()
   const listeningRef = useRef<ListeningSession | null>(null);
   const stats = useRef({ attempts: 0, understood: new Set<string>(), firstTry: 0 });
+  // Підсумок для екрана «Результат» (ref не читаємо під час рендеру)
+  const [summary, setSummary] = useState({ understood: 0, firstTry: 0 });
 
   const done = mode !== null && index >= order.length;
   const current = order[index];
@@ -146,6 +148,7 @@ export default function SpeakingPractice({
     const nextIndex = index + 1;
     setIndex(nextIndex);
     if (nextIndex >= order.length && mode) {
+      setSummary({ understood: stats.current.understood.size, firstTry: stats.current.firstTry });
       void finishSpeakingSession({
         sessionId: sessionId.current,
         situation,
@@ -228,10 +231,10 @@ export default function SpeakingPractice({
       <Card hero className="animate-fade-in-up text-center">
         <p className="text-label text-ink-muted">Результат</p>
         <p className="mt-1 font-heading text-display">
-          {stats.current.understood.size} з {order.length}
+          {summary.understood} з {order.length}
         </p>
         <p className="mt-2 text-body text-ink-muted">
-          фраз вас зрозуміють{stats.current.firstTry > 0 ? `, ${stats.current.firstTry} — з першої спроби` : ''}.
+          фраз вас зрозуміють{summary.firstTry > 0 ? `, ${summary.firstTry} — з першої спроби` : ''}.
         </p>
         <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-center">
           <Button onClick={restart}>

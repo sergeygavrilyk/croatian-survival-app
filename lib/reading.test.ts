@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  glossaryIndex, isCroatianOption, knownLabel, levelIntro, moduleCardTitles, moduleHeading, moduleTitle, paragraphs, pickReadingLevel, questionsFrom, readingMinutes,
+  glossaryIndex, isCroatianOption, isReadingText, readingTextFrom, knownLabel, levelIntro, moduleCardTitles, moduleHeading, moduleTitle, paragraphs, pickReadingLevel, questionsFrom, readingMinutes,
   scoreAnswers, seededShuffle, speechChunks, textTypeLabel, tokenize,
 } from './reading.ts';
 
@@ -132,4 +132,29 @@ test('textTypeIcon: у кожного типу тексту свій емодз�
   assert.equal(textTypeIcon('sign'), '🏷️');
   assert.equal(textTypeIcon('poem'), '📄');
   assert.equal(textTypeIcon(undefined), '📄');
+});
+
+test('readingTextFrom: рядок бази → текст; хибний словничок і питання відкидаємо', () => {
+  const t = readingTextFrom({
+    id: 't1', code: 'A0-M01-01', cefr: 'A0', text_type: 'message', situation: null, module_order: 1,
+    title_ua: 'Привіт', title_hr: 'Bok', body_hr: 'Bok, Dašo!', body_ua: null,
+    glossary: [{ form: 'Bok', lemma: 'bok', ua: 'привіт', lesson: true }, { form: 1 }],
+    questions: [{ question_ua: 'Хто?', options: ['Daša', 'Darja'], answer: 'Daša' }, { question_ua: 'Що?', options: ['a'], answer: 'b' }],
+    word_count: 2, known_ratio: '0.95',
+  });
+  assert.equal(t.body_ua, '');
+  assert.equal(t.module_order, 1);
+  assert.deepEqual(t.glossary, [{ form: 'bok', lemma: 'bok', ua: 'привіт', lesson: true }]);
+  assert.equal(t.questions.length, 1);
+  assert.equal(t.known_ratio, 0.95);
+  assert.equal(readingTextFrom({ id: 't2', known_ratio: null }).known_ratio, null);
+  assert.equal(readingTextFrom({ id: 't3', known_ratio: 'abc' }).known_ratio, null);
+});
+
+test('isReadingText: свіжий текст — так; старий кеш і сміття — ні', () => {
+  const t = readingTextFrom({ id: 't1', cefr: 'A0', title_hr: 'Bok', body_hr: 'Bok!' });
+  assert.equal(isReadingText(t), true);
+  assert.equal(isReadingText({ ...t, cachedAt: 1 }), true);
+  assert.equal(isReadingText({ id: 't1', cefr: 'A0', title_hr: 'Bok', body_hr: 'Bok!', glossary: {} }), false);
+  assert.equal(isReadingText(null), false);
 });

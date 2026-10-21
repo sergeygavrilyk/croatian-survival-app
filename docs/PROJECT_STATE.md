@@ -19,8 +19,8 @@ content:                      # перевірено в робочій базі 
   reading: {A0: 20, A1: 40, A2: 20 PUBLISHED}   # A2 — бета з 2026-10-20
   assessments: {placement: 1, A0: 12, A1: 12}   # §60: модуль / середина / фінал, 300 завдань; A0 — усі 12 під уроки за темою після SQL 20261020_assessments_a0_v4_level
   songs: 7                    # «Ситуації» → «Пісні», статичний каталог lib/songs.ts
-tests: {unit: 201, sql_files: 30, failing: 0}   # npm test; supabase/tests/*.test.sql — усі «ALL TESTS PASSED» (локально 2026-10-20)
-last_updated: 2026-10-21 (звук, мікрофон Safari; «Скажіть уголос» в уроці → speaking_attempts; «Сьогодні» пропонує перевірку модуля; історія — docs/HISTORY.md)
+tests: {unit: 232, sql_files: 30, failing: 0}   # npm test (2026-10-21); supabase/tests/*.test.sql — усі «ALL TESTS PASSED» (локально 2026-10-20)
+last_updated: 2026-10-21 (CI на GitHub, E2E Playwright, lint на ESLint CLI; урок, текст і «Уроки» — дані з сервера; історія — docs/HISTORY.md)
 ```
 
 ## Чинні рішення власника (коротко)
@@ -56,7 +56,7 @@ last_updated: 2026-10-21 (звук, мікрофон Safari; «Скажіть у
 ## План: уроки за темою (curriculum_a0_v4)
 
 A0.1–A0.10 — у базі (деталі — `docs/HISTORY.md`). Файли: `scripts/curriculum_a0_v4_data.py`, `scripts/gen_curriculum_a0_v4.py [модуль] [--review]` (нові уроки, порядок, перенумерація A0), `scripts/curriculum_a0_v4_snapshot.json`, тести `curriculum_a0_v4*.test.sql`.
-Після кожного модуля: перевірки модулів — `gen_assessment_a0_v4.py <модуль>`, читання — оновити `reading_lexicon_snapshot.json` і `gen_reading.py --known-sync m0N`, кеш уроків (`LESSON_CACHE_VERSION`, `CURRICULUM_CACHE_VERSION`); середина й фінал рівня — `gen_assessment_a0_v4.py level` (для A0 зроблено 2026-10-20).
+Після кожного модуля: перевірки модулів — `gen_assessment_a0_v4.py <модуль>`, читання — оновити `reading_lexicon_snapshot.json` і `gen_reading.py --known-sync m0N` (кеш уроків міняти більше не треба — з 2026-10-21 дані з сервера); середина й фінал рівня — `gen_assessment_a0_v4.py level` (для A0 зроблено 2026-10-20).
 
 | Етап | Що | Нові тематичні уроки (за списком власника) |
 |---|---|---|
@@ -74,11 +74,10 @@ A0.1–A0.10 — у базі (деталі — `docs/HISTORY.md`). Файли: `
 ## Технічний борг і ризики
 
 - **Запуск для інших людей** — список у `docs/SCALING.md`: AI для ЄС, власний SMTP, видалення акаунта, політика конфіденційності й згода на AI, резервні копії, регіон Vercel, ліміт на переклад, офіційний TTS.
-- **Перевірки:** немає E2E (Playwright — PROPOSE), lint / typecheck не в CI; збірку (`npm run build`) запускає власник.
+- **Перевірки (2026-10-21):** CI на GitHub (lint, unit, збірка, типи, smoke E2E, SQL-тести), E2E Playwright з тестовим акаунтом — лише локально (`npm run e2e`). `npm run e2e` — 12 / 12 (з офлайном уроку й тексту, 2026-10-21); lint — 44 → 3 → 2 → 0 (останні 2 виправлено, чекає повторного запуску); чекаємо першого CI; PWA-файли ще в git — `git rm --cached` (TESTING §4).
 - **Код:**
-  - сторінки уроку й тексту — client components з власним запитом і кешем (§75); `getLessonData` дублює логіку; `chat.ts` / `lesson.ts` мають власну копію серверного клієнта;
-  - кеш уроків оновлюється ручною зміною версії (`LESSON_CACHE_VERSION`, `CURRICULUM_CACHE_VERSION`) — автоматизувати;
-  - `RoleplaySimulator` — старий стиль і прямий `SpeechRecognition`; `LessonView.tsx` не використовується;
+  - офлайн уроку, тексту й «Уроків» з 2026-10-21 — PWA-кеш сторінки (+ копія уроку / тексту в localStorage); перевірити на телефоні у збірці;
+  - `RoleplaySimulator` — старий стиль і прямий `SpeechRecognition` (2026-10-21 — лише типи замість `any`);
   - UI-003: радісний стиль ще не на адмінці, рольовій грі (`RoleplayChat`), етапах уроку до підсумку (`LessonPlayer`) і перевірках рівня (решта — ✅ 2026-10-20);
   - у «Словнику» немає кнопки «Додати в повторення» (слова додаються з уроків і з читання) — запропонувати власнику;
   - новий пароль — мінімум 10 (`MIN_PASSWORD_LENGTH` у `lib/auth.ts`); якщо в Supabase Auth інше значення — змінити там одне число;
@@ -91,7 +90,7 @@ A0.1–A0.10 — у базі (деталі — `docs/HISTORY.md`). Файли: `
   - перевірки рівня: «Складіть» приймає один порядок слів; відповіді видно через API; `skill_progress` не заповнюється;
   - типові помилки: вимова — підказки кирилицею; мало помилок «артиклі» і «вид дієслова».
 - **Озвучення** — неофіційний Google Translate TTS (паузи в довгих текстах).
-- **Репозиторій:** великі файли даних у корені (`megahr.xlsx`, `insert_all_megahr.sql`, CSV) — перенести; PWA-файли (`public/sw.js`, `public/workbox-*.js`) — у `.gitignore`.
+- **Репозиторій:** великі файли даних у корені (`megahr.xlsx`, `insert_all_megahr.sql`, CSV) — перенести; PWA-файли — у `.gitignore` (2026-10-21), лишилося прибрати їх з git (`git rm --cached`).
 - **Безпека:** захист від злитих паролів — лише тариф Pro (прийнятий ризик; мін. довжина пароля ≥ 10).
 
 ## Рекомендовані наступні 3 задачі

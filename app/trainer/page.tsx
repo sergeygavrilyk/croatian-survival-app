@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { useRouter } from 'next/navigation';
 import { BookOpen, Layers, PenLine, Repeat } from 'lucide-react';
 import FlashcardTrainer, { Flashcard } from '@/components/FlashcardTrainer';
@@ -38,6 +38,27 @@ const SESSION_SIZE = 10;
 const PREFS_KEY = 'cs_trainer_prefs_v2';
 const LEXEME_FIELDS = 'id, lemma, ukrainian_translation, part_of_speech, audio_url, examples, cefr';
 
+const noSubscribe = () => () => {};
+function readPrefsRaw(): string | null {
+  try {
+    return localStorage.getItem(PREFS_KEY);
+  } catch {
+    return null; // немає доступу до сховища — типові значення
+  }
+}
+/** Збережені режим і рівень; хибне чи старе значення — null (тоді типове). */
+function parsePrefs(raw: string | null | undefined): { mode: Mode | null; level: Level | null } {
+  try {
+    const saved = JSON.parse(raw ?? '{}') as { mode?: unknown; level?: unknown };
+    return {
+      mode: saved.mode === 'recognize' || saved.mode === 'write' ? saved.mode : null,
+      level: (LEVELS as readonly unknown[]).includes(saved.level) ? (saved.level as Level) : null,
+    };
+  } catch {
+    return { mode: null, level: null };
+  }
+}
+
 const MODES: ReadonlyArray<{ value: Mode; label: string; Icon: typeof Layers }> = [
   { value: 'recognize', label: 'Картки', Icon: Layers },
   { value: 'write', label: 'Написати', Icon: PenLine },
@@ -68,18 +89,23 @@ export default function TrainerPage() {
   const [cards, setCards] = useState<Card[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
-  const [selectedLevel, setSelectedLevel] = useState<Level>('ALL');
+  const [levelChoice, setSelectedLevel] = useState<Level | null>(null);
   // Скільки всього слів користувач уже вчить і скільки чекають повторення (усі рівні)
   const [learningCount, setLearningCount] = useState(0);
   const [dueCount, setDueCount] = useState(0);
-  const [mode, setMode] = useState<Mode>('recognize');
+  const [modeChoice, setMode] = useState<Mode | null>(null);
   const [saveError, setSaveError] = useState(false);
   // Ключ сесії: новий набір карток → компонент тренажера починає з першої картки
   const [sessionKey, setSessionKey] = useState(0);
   // «Ще слова» / «Спробувати ще раз» — нове завантаження
   const [reloadKey, setReloadKey] = useState(0);
-  // Режим і рівень запамʼятовуються між відвідуваннями (зручність одного користувача)
-  const [prefsReady, setPrefsReady] = useState(false);
+  // Режим і рівень запамʼятовуються між відвідуваннями (зручність одного користувача).
+  // Збережене читаємо лише в браузері (на сервері й під час гідратації — undefined, «ще не готово»).
+  const prefsRaw = useSyncExternalStore(noSubscribe, readPrefsRaw, () => undefined);
+  const prefsReady = prefsRaw !== undefined;
+  const savedPrefs = useMemo(() => parsePrefs(prefsRaw), [prefsRaw]);
+  const mode: Mode = modeChoice ?? savedPrefs.mode ?? 'recognize';
+  const selectedLevel: Level = levelChoice ?? savedPrefs.level ?? 'ALL';
 
   // Аналітика сесії тренажера
   const sessionRef = useRef({ startedAt: 0, rated: 0, correct: 0, kind: 'review' as SessionKind });
@@ -87,18 +113,6 @@ export default function TrainerPage() {
 
   const supabase = createClient();
   const router = useRouter();
-
-  // Відновлюємо останній режим і рівень
-  useEffect(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem(PREFS_KEY) ?? '{}');
-      if (saved.mode === 'recognize' || saved.mode === 'write') setMode(saved.mode);
-      if ((LEVELS as readonly string[]).includes(saved.level)) setSelectedLevel(saved.level);
-    } catch {
-      // немає доступу до сховища — працюємо з типовими значеннями
-    }
-    setPrefsReady(true);
-  }, []);
 
   useEffect(() => {
     if (!prefsReady) return;

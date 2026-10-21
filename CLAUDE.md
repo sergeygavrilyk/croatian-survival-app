@@ -28,11 +28,13 @@ Next.js 16 (App Router; middleware = `proxy.ts`; звіряйся з `node_modul
 
 ```bash
 npm run dev        # http://localhost:3000
-npm run build      # перед «готово» (у хмарі недоступно — запускає власник)
+npm run build      # перед «готово» (у хмарі недоступно — запускає власник або CI)
 npm run lint && npm run typecheck
 npm test           # node --test, Node 22.6+: lib/*.test.ts
+npm run e2e        # Playwright (e2e/): збірка + :3100; з входом — лише в власника (E2E_EMAIL/E2E_PASSWORD у .env.local)
 ```
 
+- CI (`.github/workflows/ci.yml`) після кожного push: lint, unit, збірка, типи, smoke E2E, SQL-тести (`scripts/dev/sqltests.sh`). Нова сторінка / сценарій → E2E у `e2e/` (без входу — `smoke.spec.ts`).
 - Логіка — у `lib/` (без БД, імпорти з `.ts`), server actions лише авторизують і викликають її; нова логіка → тест у `lib/*.test.ts` + у скрипт `test`.
 - SQL-тести — `supabase/tests/*.test.sql` (транзакція + `ROLLBACK`); нова таблиця з даними користувача → тест ізоляції. Локальна БД і перевірка типів без `node_modules` — `scripts/dev/README.md`.
 - Нова фіча → події §71 через `track()` / `trackEvent()` (`docs/ANALYTICS.md`); аналітика ніколи не ламає навчання.

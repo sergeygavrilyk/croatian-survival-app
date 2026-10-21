@@ -50,7 +50,7 @@ export default function ReadingView({
   const [completeError, setCompleteError] = useState<string | null>(null);
   const [playing, setPlaying] = useState(false);
   const stopRef = useRef(false);
-  const startedAtRef = useRef(Date.now());
+  const startedAtRef = useRef(0); // ставимо в ефекті нижче
 
   useEffect(() => {
     startedAtRef.current = Date.now();

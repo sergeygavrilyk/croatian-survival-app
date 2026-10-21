@@ -39,3 +39,18 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# PWA: next-pwa генерує під час збірки (раніше були в git — прибрати: git rm --cached public/sw.js public/workbox-*.js public/swe-worker-*.js)
+/public/sw.js
+/public/sw.js.map
+/public/workbox-*.js
+/public/workbox-*.js.map
+/public/swe-worker-*.js
+/public/fallback-*.js
+
+# Playwright (E2E): звіти й сесія тестового акаунта
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/e2e/.auth/

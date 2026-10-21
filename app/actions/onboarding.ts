@@ -112,7 +112,8 @@ export async function submitPlacement(
     };
   });
 
-  const { answers: _omit, ...summary } = result;
+  // Відповіді не повертаємо в браузер — лише підсумок і розбір
+  const summary: Omit<typeof result, 'answers'> & { answers?: never } = { ...result, answers: undefined };
   return { ok: true, result: summary, review };
 }
 

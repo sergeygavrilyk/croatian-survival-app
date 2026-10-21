@@ -1,18 +1,12 @@
 'use server'
 
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { createClient } from '@/utils/supabase/server';
 
 /**
  * Створює нову сесію розмови з AI
  */
 export async function startConversation(mode: string = 'roleplay', scenarioId?: string) {
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { cookies: { getAll: () => cookieStore.getAll(), setAll: () => {} } }
-  );
+  const supabase = await createClient();
 
   const { data: { user }, error: authError } = await supabase.auth.getUser();
   if (authError || !user) throw new Error('Не авторизовано');
@@ -40,12 +34,7 @@ export async function startConversation(mode: string = 'roleplay', scenarioId?: 
  * Зберігає окреме повідомлення у поточну сесію
  */
 export async function saveChatMessage(conversationId: string, role: 'user' | 'assistant' | 'system', content: string) {
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { cookies: { getAll: () => cookieStore.getAll(), setAll: () => {} } }
-  );
+  const supabase = await createClient();
 
   const { error } = await supabase
     .from('ai_messages')

@@ -4,6 +4,7 @@ import { LEARNING_EVENTS, summarizeProgress, type ProgressCard } from '@/lib/pro
 import ProfileView from '@/components/ProfileView';
 import { displayName } from '@/lib/today';
 import { parseMascot } from '@/lib/mascot';
+import { daysAgoIso } from '@/lib/clock';
 
 export const metadata = { title: 'Профіль · Croatian Survival App' };
 
@@ -13,7 +14,7 @@ export default async function ProfilePage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect('/login');
 
-  const since = new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString();
+  const since = daysAgoIso(8);
   const [profileRes, cardsRes, reviewsRes, lessonsRes, attemptRes, eventsRes, mascotRes] = await Promise.all([
     supabase
       .from('profiles')

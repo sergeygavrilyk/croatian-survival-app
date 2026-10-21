@@ -305,3 +305,43 @@ export const TEXT_TYPE_ICON: Record<TextType, string> = {
 export function textTypeIcon(t: string | null | undefined): string {
   return t && (TEXT_TYPES as readonly string[]).includes(t) ? TEXT_TYPE_ICON[t as TextType] : '📄';
 }
+
+/** Колонки reading_texts для екрана тексту (сторінка app/reading/[id]/page.tsx). */
+export const READING_TEXT_COLUMNS =
+  'id, code, cefr, text_type, situation, module_order, title_ua, title_hr, body_hr, body_ua, glossary, questions, word_count, known_ratio';
+
+/** Рядок reading_texts → текст для ReadingView: словничок і питання — лише коректні записи. */
+export function readingTextFrom(row: Record<string, unknown>): ReadingText {
+  const str = (v: unknown, fallback = '') => (typeof v === 'string' ? v : fallback);
+  const ratio = row.known_ratio === null || row.known_ratio === undefined ? null : Number(row.known_ratio);
+  return {
+    id: str(row.id),
+    code: str(row.code),
+    cefr: str(row.cefr),
+    text_type: str(row.text_type),
+    situation: typeof row.situation === 'string' ? row.situation : null,
+    module_order: typeof row.module_order === 'number' ? row.module_order : null,
+    title_ua: str(row.title_ua),
+    title_hr: str(row.title_hr),
+    body_hr: str(row.body_hr),
+    body_ua: str(row.body_ua),
+    glossary: [...glossaryIndex(row.glossary).values()],
+    questions: questionsFrom(row.questions),
+    word_count: typeof row.word_count === 'number' ? row.word_count : 0,
+    known_ratio: ratio === null || Number.isNaN(ratio) ? null : ratio,
+  };
+}
+
+/** Чи схожа офлайн-копія на текст для читання (копію іншого формату відкидаємо). */
+export function isReadingText(v: unknown): v is ReadingText {
+  if (!v || typeof v !== 'object') return false;
+  const t = v as Partial<Record<keyof ReadingText, unknown>>;
+  return (
+    typeof t.id === 'string' &&
+    typeof t.cefr === 'string' &&
+    typeof t.title_hr === 'string' &&
+    typeof t.body_hr === 'string' &&
+    Array.isArray(t.glossary) &&
+    Array.isArray(t.questions)
+  );
+}

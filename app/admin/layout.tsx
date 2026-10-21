@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/utils/supabase/server';
 
@@ -17,7 +18,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <div className="min-h-screen bg-slate-50 font-sans">
       <nav className="bg-slate-900 text-white p-4 shadow-md flex justify-between items-center">
         <h1 className="font-bold tracking-widest uppercase">🇭🇷 Croatian Survival CMS</h1>
-        <a href="/" className="text-slate-400 hover:text-white text-sm">Повернутися в додаток</a>
+        <Link href="/" className="text-slate-400 hover:text-white text-sm">Повернутися в додаток</Link>
       </nav>
       {children}
     </div>

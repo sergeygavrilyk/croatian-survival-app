@@ -51,7 +51,7 @@ export default function WriteTrainer({ cards, onAnswer, onFinishSession, onResta
   const [gaveUp, setGaveUp] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
-  const shownAtRef = useRef(Date.now());
+  const shownAtRef = useRef(0); // ставимо в ефекті нижче, коли картку показано
 
   const card = cards[index];
   const masked = useMemo(
@@ -59,11 +59,8 @@ export default function WriteTrainer({ cards, onAnswer, onFinishSession, onResta
     [card]
   );
 
-  // Нова картка: чисте поле, фокус, старт таймера
+  // Нова картка: фокус і старт таймера (поле очищає next())
   useEffect(() => {
-    setValue('');
-    setResult(null);
-    setGaveUp(false);
     shownAtRef.current = Date.now();
     inputRef.current?.focus();
   }, [index]);
@@ -100,7 +97,12 @@ export default function WriteTrainer({ cards, onAnswer, onFinishSession, onResta
     onAnswer(card, res, Date.now() - shownAtRef.current);
   };
 
-  const next = () => setIndex((i) => i + 1);
+  const next = () => {
+    setValue('');
+    setResult(null);
+    setGaveUp(false);
+    setIndex((i) => i + 1);
+  };
   const ok = result?.correct;
   const feedbackKind = gaveUp ? 'gave_up' : result && result.verdict !== 'empty' ? result.verdict : null;
 

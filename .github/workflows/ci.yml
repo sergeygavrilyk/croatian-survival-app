@@ -1,0 +1,73 @@
+# Автоматичні перевірки після кожного push і pull request (docs/TESTING.md §4).
+# Секретів не потрібно: збірка й тести без входу працюють з підставними адресами Supabase,
+# SQL-тести — на чистій локальній Postgres у GitHub (scripts/dev/curdb.sh), без доступу до робочої бази.
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  # Підставні значення: справжня база в CI не потрібна (і не використовується)
+  NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-placeholder-anon-key
+  NEXT_TELEMETRY_DISABLED: '1'
+
+jobs:
+  app:
+    name: Lint, типи, unit-тести, збірка, E2E без входу
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Unit-тести
+        run: npm test
+      # Збірка створює next-env.d.ts і .next/types — тому типи перевіряємо після неї
+      - name: Збірка
+        run: npm run build
+      - name: Типи
+        run: npm run typecheck
+      - name: Браузер для E2E
+        run: npx playwright install --with-deps chromium
+      - name: E2E без входу (smoke)
+        run: npm run e2e:smoke
+      - name: Звіт E2E (якщо впало)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+
+  sql:
+    name: SQL-тести (локальна Postgres)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: PostgreSQL 16
+        run: |
+          if [ ! -x /usr/lib/postgresql/16/bin/initdb ]; then
+            sudo apt-get update -q && sudo apt-get install -y -q postgresql-16
+          fi
+      - name: Локальна база (міграції + пакети контенту)
+        run: sudo bash scripts/dev/curdb.sh
+      - name: SQL-тести
+        run: bash scripts/dev/sqltests.sh

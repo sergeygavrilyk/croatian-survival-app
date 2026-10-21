@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { ChevronRight, Eye, EyeOff, ListChecks, Mic, RotateCcw, Sparkles } from 'lucide-react';
 import PageHeader from '@/components/ui/PageHeader';
@@ -219,7 +219,10 @@ function PhrasePractice({
   const [index, setIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [known, setKnown] = useState(0);
-  const shownAt = useRef(Date.now());
+  const shownAt = useRef(0);
+  useEffect(() => {
+    shownAt.current = Date.now(); // перша фраза показана
+  }, []);
 
   const done = index >= order.length;
   const current = order[index];

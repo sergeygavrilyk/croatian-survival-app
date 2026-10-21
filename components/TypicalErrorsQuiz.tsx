@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { BookCheck } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
@@ -12,6 +12,7 @@ import TypicalErrorCard from '@/components/TypicalErrorCard';
 import { answerTypicalError } from '@/app/actions/interference';
 import { track } from '@/lib/analytics-client';
 import { categoryIcon, categoryLabel, countByCategory, isSpoken, pickQuiz, quizOptions, quizQuestion, type TypicalError } from '@/lib/interference';
+import { nowMs } from '@/lib/clock';
 import { seededRandom } from '@/lib/random';
 import { cn } from '@/lib/ui';
 
@@ -30,9 +31,12 @@ export default function TypicalErrorsQuiz({ items, savedIds, seed }: { items: Ty
   const [correctCount, setCorrectCount] = useState(0);
   const [saved, setSaved] = useState<'saved' | 'failed' | null>(null);
   const [savedNow, setSavedNow] = useState<Set<string>>(() => new Set(savedIds));
-  const shownAtRef = useRef(Date.now());
-  const sessionStartRef = useRef(Date.now());
+  const shownAtRef = useRef(0);
+  const sessionStartRef = useRef(0); // ставимо при першій відповіді
   const startedRef = useRef(false);
+  useEffect(() => {
+    shownAtRef.current = Date.now(); // перше питання показане
+  }, []);
 
   const counts = useMemo(() => countByCategory(items), [items]);
   // Новий набір — при зміні категорії або «Ще раз» (round); savedNow навмисно не в залежностях,
@@ -70,12 +74,12 @@ export default function TypicalErrorsQuiz({ items, savedIds, seed }: { items: Ty
     if (!item || choice !== null) return;
     if (!startedRef.current) {
       startedRef.current = true;
-      sessionStartRef.current = Date.now();
+      sessionStartRef.current = nowMs();
       track('review_started', { count: session.length, source: 'typical_errors' });
     }
     setChoice(correct);
     if (correct) setCorrectCount((c) => c + 1);
-    const res = await answerTypicalError(item.id, correct, Date.now() - shownAtRef.current);
+    const res = await answerTypicalError(item.id, correct, nowMs() - shownAtRef.current);
     if (!res.ok) setSaved('failed');
     else if (res.savedToMistakes) {
       setSaved('saved');

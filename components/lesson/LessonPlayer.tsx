@@ -13,9 +13,9 @@ import AudioButton from '@/components/ui/AudioButton';
 import IconButton from '@/components/ui/IconButton';
 import ProgressBar from '@/components/ui/ProgressBar';
 import RoleplaySimulator from '@/components/features/RoleplaySimulator';
-import LessonExercise, { type LessonExerciseData, type LessonSpeechAttempt } from './LessonExercise';
+import LessonExercise, { type LessonSpeechAttempt } from './LessonExercise';
 import TypicalErrorCard from '@/components/TypicalErrorCard';
-import type { TypicalError } from '@/lib/interference';
+import type { LessonContent, LessonDialogue } from '@/lib/lesson-content';
 import { speakCroatian } from '@/utils/speech';
 import { track } from '@/lib/analytics-client';
 import { finishSpeakingSession, recordSpeakingAttempt, startSpeakingSession } from '@/app/actions/speaking';
@@ -28,63 +28,11 @@ import {
 import { countUk, pluralUk } from '@/lib/format';
 import { lessonCelebration } from '@/lib/celebration';
 import type { CompleteLessonResult } from '@/lib/learning';
+import { lessonsHref } from '@/lib/curriculum';
+import { nowMs } from '@/lib/clock';
 import { cn } from '@/lib/ui';
 
-export interface LessonWord {
-  id: string;
-  hr_text: string;
-  ua_translation: string;
-}
-
-export interface DialogueLine {
-  id: string;
-  speaker_name: string;
-  hr_text: string;
-  ua_translation: string;
-}
-
-export interface LessonDialogue {
-  id: string;
-  title_ua: string | null;
-  title_hr: string | null;
-  situation: string | null;
-  lines: DialogueLine[];
-}
-
-export interface GrammarRule {
-  id: string;
-  title_ua: string;
-  explanation_ua: string;
-  pattern_hr?: string | null;
-  examples: Array<{ hr: string; ua: string }>;
-}
-
-export interface GrammarTopic {
-  id: string;
-  title_ua: string;
-  title_hr?: string | null;
-  description?: string | null;
-  rules: GrammarRule[];
-}
-
-export interface LessonInfo {
-  id: string;
-  title_ua: string;
-  title_hr: string | null;
-  level_code: string | null;
-  objectives: string[] | null;
-  estimated_minutes: number | null;
-}
-
-export interface LessonContent {
-  lesson: LessonInfo;
-  words: LessonWord[];
-  dialogues: LessonDialogue[];
-  grammar: GrammarTopic[];
-  exercises: LessonExerciseData[];
-  /** Типові помилки українців для теми граматики й слів уроку (§19); показуємо на етапі «Граматика» */
-  pitfalls?: TypicalError[];
-}
+// Типи вмісту уроку й збирання з бази — lib/lesson-content.ts
 
 type Shell = (children: React.ReactNode, footer?: React.ReactNode) => React.ReactNode;
 
@@ -125,7 +73,10 @@ export default function LessonPlayer({
   const [scene, setScene] = useState(0);
   const [practice, setPractice] = useState(() => startPractice(exercises.map((e) => e.id)));
   const [round, setRound] = useState(0); // щоб скинути стан вправи, коли та сама повертається
-  const exerciseStartRef = useRef(Date.now());
+  const exerciseStartRef = useRef(0); // ставимо на початку вправ (ефект нижче) і після кожної вправи
+  useEffect(() => {
+    if (stage === 'practice') exerciseStartRef.current = Date.now();
+  }, [stage]);
   // «Скажіть уголос» → speaking_sessions (source = 'lesson') / speaking_attempts. Заняття створюємо
   // при першій спробі, закриваємо на підсумку. Збій збереження не заважає уроку.
   const speechRef = useRef({
@@ -136,10 +87,10 @@ export default function LessonPlayer({
     understood: new Set<string>(),
     finished: false,
   });
-  const recordSpeech = (exerciseId: string) => (attempt: LessonSpeechAttempt) => {
+  const recordSpeech = (exerciseId: string, attempt: LessonSpeechAttempt) => {
     const s = speechRef.current;
     if (!s.session) {
-      s.startedAt = Date.now();
+      s.startedAt = nowMs();
       s.session = startSpeakingSession({ lessonId: lesson.id, mode: 'produce' }).catch(() => null);
     }
     s.attempts += 1;
@@ -162,7 +113,7 @@ export default function LessonPlayer({
           phrases: s.phrases.size,
           understood: s.understood.size,
           attempts: s.attempts,
-          durationMs: Date.now() - s.startedAt,
+          durationMs: nowMs() - s.startedAt,
         }),
       )
       .catch(() => {});
@@ -199,7 +150,7 @@ export default function LessonPlayer({
   const header = (
     <header className="sticky top-0 z-10 border-b border-line bg-canvas/95 pt-[env(safe-area-inset-top)]">
       <div className="mx-auto flex max-w-md items-center gap-2 px-2 py-2">
-        <IconButton label="Закрити урок" onClick={() => router.push('/lessons')}>
+        <IconButton label="Закрити урок" onClick={() => router.push(lessonsHref(lesson.level_code))}>
           <X className="size-5" aria-hidden="true" />
         </IconButton>
         <ProgressBar value={progressValue} max={stages.length - 1} label="Прогрес уроку" className="flex-1" />
@@ -390,10 +341,10 @@ export default function LessonPlayer({
         exercise_type: current.exercise_type,
         success: outcome === 'correct',
         attempt: retry ? 2 : 1,
-        duration_ms: Date.now() - exerciseStartRef.current,
+        duration_ms: nowMs() - exerciseStartRef.current,
         ...(verdict ? { verdict } : {}),
       });
-      exerciseStartRef.current = Date.now();
+      exerciseStartRef.current = nowMs();
       const after = answerCurrent(practice, outcome);
       setPractice(after);
       setRound((r) => r + 1);
@@ -413,7 +364,7 @@ export default function LessonPlayer({
           exercise={current}
           retry={retry}
           onNext={onNext}
-          onSpeechAttempt={current.exercise_type === 'speaking' ? recordSpeech(current.id) : undefined}
+          onSpeechAttempt={current.exercise_type === 'speaking' ? (attempt) => recordSpeech(current.id, attempt) : undefined}
         />
       </>,
     );
@@ -430,6 +381,7 @@ export default function LessonPlayer({
       words={words.length}
       objectives={lesson.objectives ?? []}
       situation={situation}
+      backHref={lessonsHref(lesson.level_code)}
       onRestart={restart}
     />
   );
@@ -548,6 +500,7 @@ function SummaryStep({
   words,
   objectives,
   situation,
+  backHref,
   onRestart,
 }: {
   shell: Shell;
@@ -558,6 +511,8 @@ function SummaryStep({
   words: number;
   objectives: string[];
   situation: string | null;
+  /** «До уроків» — до списку рівня цього уроку */
+  backHref: string;
   onRestart: () => void;
 }) {
   const [save, setSave] = useState<'saving' | 'saved' | 'error'>('saving');
@@ -660,7 +615,7 @@ function SummaryStep({
           Зберегти ще раз
         </Button>
       ) : (
-        <Button block href="/lessons">
+        <Button block href={backHref}>
           До уроків
         </Button>
       )}

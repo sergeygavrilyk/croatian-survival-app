@@ -18,6 +18,22 @@ interface RoleplaySimulatorProps {
   onExit: () => void;
 }
 
+// Мінімальні типи Web Speech API, які тут потрібні (TODO борг: перейти на SpeechProvider, як RoleplayChat)
+interface RecognitionResultEvent {
+  resultIndex: number;
+  results: ArrayLike<ArrayLike<{ transcript: string }>>;
+}
+interface Recognition {
+  lang: string;
+  interimResults: boolean;
+  maxAlternatives: number;
+  onresult: ((event: RecognitionResultEvent) => void) | null;
+  onend: (() => void) | null;
+  start(): void;
+  stop(): void;
+}
+type RecognitionCtor = new () => Recognition;
+
 export default function RoleplaySimulator({ lines, uniqueSpeakers, onExit }: RoleplaySimulatorProps) {
   const [mode, setMode] = useState<'setup' | 'active'>('setup');
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
@@ -29,7 +45,7 @@ export default function RoleplaySimulator({ lines, uniqueSpeakers, onExit }: Rol
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [speechFeedback, setSpeechFeedback] = useState<'idle' | 'success' | 'error'>('idle');
-  const recognitionRef = useRef<any>(null);
+  const recognitionRef = useRef<Recognition | null>(null);
 
   const startRoleplay = async (role: string) => {
     setSelectedRole(role);
@@ -67,7 +83,8 @@ export default function RoleplaySimulator({ lines, uniqueSpeakers, onExit }: Rol
   const normalizeText = (text: string) => text.toLowerCase().replace(/[.,!?;:"'«»]/g, '').trim();
 
   const startListening = (expectedText: string) => {
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const speechWindow = window as unknown as { SpeechRecognition?: RecognitionCtor; webkitSpeechRecognition?: RecognitionCtor };
+    const SpeechRecognition = speechWindow.SpeechRecognition ?? speechWindow.webkitSpeechRecognition;
     if (!SpeechRecognition) {
       alert("На жаль, ваш браузер не підтримує розпізнавання голосу. Використовуйте Chrome або Safari.");
       return;
@@ -83,7 +100,7 @@ export default function RoleplaySimulator({ lines, uniqueSpeakers, onExit }: Rol
     recognition.maxAlternatives = 1;
     recognitionRef.current = recognition;
 
-    recognition.onresult = (event: any) => {
+    recognition.onresult = (event) => {
       const current = event.resultIndex;
       setTranscript(event.results[current][0].transcript);
     };

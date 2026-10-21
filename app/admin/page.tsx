@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
 import { normalizeCroatian } from '@/lib/srs';
@@ -12,8 +12,24 @@ const PARTS_OF_SPEECH: [string, string][] = [
   ['particle', 'Частка'], ['numeral', 'Числівник'], ['phrase', 'Вираз / фраза'],
 ];
 
+interface AdminWord {
+  id: string;
+  lemma: string;
+  ukrainian_translation: string | null;
+  part_of_speech: string | null;
+  cefr: string | null;
+  forms: { inflections?: string[] } | null;
+  examples: unknown[] | null;
+  status: string | null;
+}
+interface LevelRow { code: string; title_ua: string | null }
+interface ModuleRow { id: string; title_ua: string; order_index: number }
+interface UnitRow { id: string; title_ua: string }
+interface LessonRow { id: string; title_ua: string; status: string }
+
 export default function AdminDashboard() {
-  const supabase = createClient();
+  // Один клієнт на весь час роботи сторінки (інакше useCallback нижче змінювався б щоразу)
+  const [supabase] = useState(() => createClient());
   const router = useRouter();
 
   // Стейт для перемикання вкладок
@@ -22,7 +38,7 @@ export default function AdminDashboard() {
   // ==========================================
   // СТЕЙТИ ТА ЛОГІКА ДЛЯ СЛОВНИКА (Ваш оригінальний код)
   // ==========================================
-  const [words, setWords] = useState<any[]>([]);
+  const [words, setWords] = useState<AdminWord[]>([]);
   const [loadingWords, setLoadingWords] = useState(false);
   const [newWord, setNewWord] = useState({
     hr_text: '',
@@ -33,21 +49,18 @@ export default function AdminDashboard() {
     details_examples: ''
   });
 
-  useEffect(() => {
-    if (activeTab === 'vocabulary') fetchWords();
-  }, [activeTab]);
-
-  const fetchWords = async () => {
-    setLoadingWords(true);
+  // Стан змінюємо лише після відповіді бази; «завантаження…» вмикає обробник вкладки (openTab)
+  const fetchWords = useCallback(async () => {
     const { data } = await supabase
       .from('lexemes')
       .select('id, lemma, ukrainian_translation, part_of_speech, cefr, forms, examples, status')
       .order('created_at', { ascending: false })
       .limit(50);
-      
-    if (data) setWords(data);
+
+    if (data) setWords(data as AdminWord[]);
     setLoadingWords(false);
-  };
+  }, [supabase]);
+
 
   const handleAddWord = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -96,10 +109,10 @@ export default function AdminDashboard() {
   // ==========================================
   // СТЕЙТИ ТА ЛОГІКА ДЛЯ CURRICULUM CMS (Новий код)
   // ==========================================
-  const [levels, setLevels] = useState<any[]>([]);
-  const [modules, setModules] = useState<any[]>([]);
-  const [units, setUnits] = useState<any[]>([]);
-  const [lessons, setLessons] = useState<any[]>([]);
+  const [levels, setLevels] = useState<LevelRow[]>([]);
+  const [modules, setModules] = useState<ModuleRow[]>([]);
+  const [units, setUnits] = useState<UnitRow[]>([]);
+  const [lessons, setLessons] = useState<LessonRow[]>([]);
 
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
   const [selectedModule, setSelectedModule] = useState<string | null>(null);
@@ -109,30 +122,54 @@ export default function AdminDashboard() {
   const [isAdding, setIsAdding] = useState<'module' | 'unit' | 'lesson' | null>(null);
   const [newItemTitle, setNewItemTitle] = useState('');
 
-  useEffect(() => {
-    if (activeTab === 'curriculum') fetchLevels();
-  }, [activeTab]);
-
-  const fetchLevels = async () => {
-    setLoadingCurriculum(true);
+  const fetchLevels = useCallback(async () => {
     const { data } = await supabase.from('levels').select('*').order('order_index');
-    if (data) setLevels(data);
+    if (data) setLevels(data as LevelRow[]);
     setLoadingCurriculum(false);
+  }, [supabase]);
+
+  // Початкова вкладка — «Структура»: рівні одразу (loadingCurriculum уже true). Стан — лише в колбеці
+  // відповіді (react-hooks/set-state-in-effect); перемикання вкладок завантажує в обробнику openTab.
+  useEffect(() => {
+    let cancelled = false;
+    supabase
+      .from('levels')
+      .select('*')
+      .order('order_index')
+      .then(({ data }) => {
+        if (cancelled) return;
+        if (data) setLevels(data as LevelRow[]);
+        setLoadingCurriculum(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [supabase]);
+
+  const openTab = (tab: 'vocabulary' | 'curriculum') => {
+    setActiveTab(tab);
+    if (tab === 'vocabulary') {
+      setLoadingWords(true);
+      void fetchWords();
+    } else {
+      setLoadingCurriculum(true);
+      void fetchLevels();
+    }
   };
 
   const fetchModules = async (levelCode: string) => {
     const { data } = await supabase.from('modules').select('*').eq('level_code', levelCode).order('order_index');
-    if (data) setModules(data);
+    if (data) setModules(data as ModuleRow[]);
   };
 
   const fetchUnits = async (moduleId: string) => {
     const { data } = await supabase.from('units').select('*').eq('module_id', moduleId).order('order_index');
-    if (data) setUnits(data);
+    if (data) setUnits(data as UnitRow[]);
   };
 
   const fetchLessons = async (unitId: string) => {
     const { data } = await supabase.from('lessons').select('*').eq('unit_id', unitId).order('order_index').order('created_at');
-    if (data) setLessons(data);
+    if (data) setLessons(data as LessonRow[]);
   };
 
   const handleLevelSelect = (code: string) => {
@@ -207,13 +244,13 @@ export default function AdminDashboard() {
         {/* Навігація вкладок */}
         <div className="flex bg-white p-1 rounded-xl shadow-sm border border-slate-200 w-fit">
           <button 
-            onClick={() => setActiveTab('curriculum')} 
+            onClick={() => openTab('curriculum')} 
             className={`px-6 py-2 rounded-lg font-medium text-sm transition-all ${activeTab === 'curriculum' ? 'bg-blue-600 text-white shadow' : 'text-slate-600 hover:bg-slate-50'}`}
           >
             Структура (Уроки)
           </button>
           <button 
-            onClick={() => setActiveTab('vocabulary')} 
+            onClick={() => openTab('vocabulary')} 
             className={`px-6 py-2 rounded-lg font-medium text-sm transition-all ${activeTab === 'vocabulary' ? 'bg-blue-600 text-white shadow' : 'text-slate-600 hover:bg-slate-50'}`}
           >
             Словник (Слова)
@@ -408,8 +445,8 @@ export default function AdminDashboard() {
                       <div className="mt-2 text-xs flex flex-wrap gap-2">
                         {word.cefr && <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded">{word.cefr}</span>}
                         {word.part_of_speech && <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded">{word.part_of_speech}</span>}
-                        {word.forms?.inflections?.length > 0 && <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded">Форми: {word.forms.inflections.length}</span>}
-                        {word.examples?.length > 0 && <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded">Приклади: {word.examples.length}</span>}
+                        {(word.forms?.inflections?.length ?? 0) > 0 && <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded">Форми: {word.forms?.inflections?.length}</span>}
+                        {(word.examples?.length ?? 0) > 0 && <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded">Приклади: {word.examples?.length}</span>}
                         {word.status && word.status !== 'PUBLISHED' && <span className="bg-amber-50 text-amber-700 px-2 py-1 rounded">{word.status}</span>}
                       </div>
                     </div>

@@ -31,7 +31,7 @@ export async function GET(request: Request) {
         'Cache-Control': 'public, max-age=31536000, immutable',
       },
     });
-  } catch (error) {
+  } catch {
     return new NextResponse('Internal Server Error', { status: 500 });
   }
 }
