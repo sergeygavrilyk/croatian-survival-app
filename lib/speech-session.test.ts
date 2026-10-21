@@ -54,6 +54,7 @@ test('підказка про мікрофон: service-not-allowed у Safari �
   const ios = micAccessHelp(IPHONE_SAFARI, 'І спробуйте ще раз.', false, 'service-not-allowed');
   assert.match(ios, /хоча мікрофон дозволено/);
   assert.match(ios, /Екранний час/);
+  assert.match(ios, /«Розпізнавання мовлення» → Safari/);
   assert.match(ios, /І спробуйте ще раз\. \(код: service-not-allowed\)$/);
   assert.match(micAccessHelp(MAC_SAFARI, '', false, 'service-not-allowed'), /Системні параметри/);
   // not-allowed на iPhone — дозвіл саме для сайту через «аА»
