@@ -40,3 +40,24 @@ test('підказка про мікрофон: iPhone — параметри Sa
   assert.match(micAccessHelp(WIN_CHROME), /значок біля адреси/);
   assert.match(micAccessHelp(WIN_CHROME, 'Або пропустіть вправу.'), /адреси сторінки\)\. Або пропустіть вправу\.$/);
 });
+
+test('підказка про мікрофон: застосунок з іконки (PWA) на iPhone / Mac — відкрити у вкладці Safari', () => {
+  assert.match(micAccessHelp(IPHONE_SAFARI, '', true), /з іконки на екрані «Додому».*у самому Safari/);
+  assert.match(micAccessHelp(IPHONE_CHROME, '', true), /у самому Safari/);
+  assert.match(micAccessHelp(MAC_SAFARI, 'Або пропустіть вправу.', true), /з Dock.*Або пропустіть вправу\.$/);
+  // на Android / Windows режим застосунку мікрофону не заважає — звичайна підказка
+  assert.match(micAccessHelp(WIN_CHROME, '', true), /значок біля адреси/);
+  assert.doesNotMatch(micAccessHelp(IPHONE_SAFARI, '', false), /з іконки/);
+});
+
+test('підказка про мікрофон: service-not-allowed у Safari — диктування й «Екранний час», код у кінці', () => {
+  const ios = micAccessHelp(IPHONE_SAFARI, 'І спробуйте ще раз.', false, 'service-not-allowed');
+  assert.match(ios, /хоча мікрофон дозволено/);
+  assert.match(ios, /Екранний час/);
+  assert.match(ios, /І спробуйте ще раз\. \(код: service-not-allowed\)$/);
+  assert.match(micAccessHelp(MAC_SAFARI, '', false, 'service-not-allowed'), /Системні параметри/);
+  // not-allowed на iPhone — дозвіл саме для сайту через «аА»
+  assert.match(micAccessHelp(IPHONE_SAFARI, '', false, 'not-allowed'), /«аА».*\(код: not-allowed\)$/);
+  // у Chrome на комп'ютері — звичайна підказка, але з кодом
+  assert.match(micAccessHelp(WIN_CHROME, '', false, 'service-not-allowed'), /значок біля адреси.*\(код: service-not-allowed\)$/);
+});

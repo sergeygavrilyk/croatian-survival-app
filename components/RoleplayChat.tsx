@@ -11,8 +11,7 @@ import Hr from '@/components/ui/Hr';
 import AudioButton from '@/components/ui/AudioButton';
 import LevelBadge from '@/components/ui/LevelBadge';
 import AiPanel from '@/components/ui/AiPanel';
-import { browserSpeech } from '@/utils/speech-recognition';
-import { micAccessHelp } from '@/lib/speech-session';
+import { browserSpeech, micHelpHere } from '@/utils/speech-recognition';
 import { speakCroatian } from '@/utils/speech';
 import { SpeechError, type ListeningSession } from '@/lib/speech-provider';
 import { MAX_USER_TURNS, MAX_MESSAGE_CHARS, type Correction, type RoleplayAssessment, type RoleplayScenario } from '@/lib/roleplay';
@@ -156,7 +155,7 @@ export default function RoleplayChat({
       if (transcripts[0]) setInput(transcripts[0].slice(0, MAX_MESSAGE_CHARS));
     } catch (err) {
       const code = err instanceof SpeechError ? err.code : 'other';
-      if (code === 'not-allowed') setError(micAccessHelp(navigator.userAgent, 'Або напишіть текстом.'));
+      if (code === 'not-allowed') setError(micHelpHere('Або напишіть текстом.'));
       else if (code !== 'aborted') setError('Не вдалося розпізнати мовлення. Спробуйте ще раз або напишіть текстом.');
     } finally {
       setListening(false);

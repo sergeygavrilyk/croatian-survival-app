@@ -33,6 +33,8 @@ export const EVENT_NAMES = [
   'what_did_i_hear_used',
   'subscription_started',
   'subscription_cancelled',
+  // службова: як браузер відпрацював розпізнавання мовлення (діагностика Safari, 2026-10-21); не навчальна подія
+  'speech_diagnostic',
 ] as const;
 
 export type EventName = (typeof EVENT_NAMES)[number];
@@ -78,6 +80,9 @@ export interface EventProps {
   assessment_kind?: string;
   assessment_slug?: string;
   score?: number;
+  /** speech_diagnostic: послідовність подій розпізнавання («st@0 au@120 … end@4100») і платформа */
+  speech_trace?: string;
+  speech_platform?: string;
   device?: string;
   app_version?: string;
 }

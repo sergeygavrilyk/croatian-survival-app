@@ -17,6 +17,7 @@ import {
   type GlossaryEntry, type ReadingText,
 } from '@/lib/reading';
 import { cn } from '@/lib/ui';
+import { playCroatian, stopCroatianAudio } from '@/utils/speech';
 
 type Result = { ok: true } | { ok: false; error: string };
 
@@ -48,7 +49,6 @@ export default function ReadingView({
   const [saveState, setSaveState] = useState<Record<string, 'saving' | 'saved' | string>>({});
   const [completeError, setCompleteError] = useState<string | null>(null);
   const [playing, setPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const stopRef = useRef(false);
   const startedAtRef = useRef(Date.now());
 
@@ -57,7 +57,7 @@ export default function ReadingView({
     track('reading_started', { source: 'reading', level: text.cefr, count: text.word_count, skill: 'reading' });
     return () => {
       stopRef.current = true;
-      audioRef.current?.pause();
+      stopCroatianAudio();
     };
   }, [text.id, text.cefr, text.word_count]);
 
@@ -65,7 +65,7 @@ export default function ReadingView({
   const play = () => {
     if (playing) {
       stopRef.current = true;
-      audioRef.current?.pause();
+      stopCroatianAudio();
       setPlaying(false);
       return;
     }
@@ -77,11 +77,16 @@ export default function ReadingView({
         setPlaying(false);
         return;
       }
-      const audio = new Audio(`/api/tts?text=${encodeURIComponent(chunks[i])}`);
-      audioRef.current = audio;
-      audio.onended = () => next(i + 1);
-      audio.onerror = () => setPlaying(false);
-      audio.play().catch(() => setPlaying(false));
+      // один звук на весь застосунок: 🔊 біля слова або новий ▶ зупиняє читання тексту
+      playCroatian(chunks[i], {
+        raw: true,
+        onEnded: () => next(i + 1),
+        onError: () => setPlaying(false),
+        onStop: () => {
+          stopRef.current = true;
+          setPlaying(false);
+        },
+      });
     };
     next(0);
   };

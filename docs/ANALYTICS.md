@@ -117,6 +117,7 @@ Track:
 | `word_saved` | сервер, `saveReadingWord` (слово з тексту → тренажер) | lexeme_id, source = `reading` |
 | `assessment_started` | `/assessment/<slug>`, «Почати» (§60) | level, assessment_kind (`module` / `mid` / `final`), assessment_slug (`a0-m01`…), count (завдань) |
 | `assessment_completed` | сервер, `submitAssessment` | level, module_id, assessment_kind, assessment_slug, score (0…1), count (зараховано завдань, без пропущеного говоріння), correct_count, success (пройдено), duration_ms |
+| `speech_diagnostic` | службова, `utils/speech-recognition.ts`: кінець кожного розпізнавання на iPhone / Mac Safari і кожне невдале деінде (2026-10-21) | success (почули текст), verdict (`ok` / `empty` / `aborted` / `error:<код>` / `start-failed`), count (подій result), duration_ms, speech_platform, speech_trace (події браузера з мс: `st` start, `au` audiostart, `so` soundstart, `sp` speechstart, `r`/`rF` result, `end`, `stop`, `grace`; на початку `tts-on/was/no` і `pwa/tab`). Без тексту й аудіо. Не навчальна подія — у серію днів не входить |
 
 Кожна оцінка картки окремо записується в `srs_reviews` (результат, інтервали, ease, `response_time_ms`) — це і є детальна історія повторень, тому окремої події на кожну картку немає.
 

@@ -8,8 +8,7 @@ import Hr from '@/components/ui/Hr';
 import AudioButton from '@/components/ui/AudioButton';
 import FeedbackBanner, { type FeedbackKind } from '@/components/ui/FeedbackBanner';
 import { speakCroatian } from '@/utils/speech';
-import { browserSpeech } from '@/utils/speech-recognition';
-import { micAccessHelp } from '@/lib/speech-session';
+import { browserSpeech, micHelpHere } from '@/utils/speech-recognition';
 import { SpeechError, type ListeningSession, type SpeechErrorCode } from '@/lib/speech-provider';
 import { evaluateSpeech, type SpeechEvaluation, type SpeechVerdict } from '@/lib/speaking';
 import { checkTypedAnswer } from '@/lib/answer';
@@ -420,7 +419,7 @@ function SpeakingExercise({ answer, onAnswer }: { answer: string; onAnswer: (r: 
 
       {error && (
         <p role="alert" className="rounded-card border border-warning-line bg-warning-soft p-4 text-body text-warning-ink">
-          {error === 'not-allowed' ? micAccessHelp(typeof navigator === 'undefined' ? '' : navigator.userAgent, 'Або пропустіть вправу.') : SPEECH_ERROR[error]}
+          {error === 'not-allowed' ? micHelpHere('Або пропустіть вправу.') : SPEECH_ERROR[error]}
         </p>
       )}
 
