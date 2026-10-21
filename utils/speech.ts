@@ -18,16 +18,22 @@ export interface PlayHandlers {
 }
 
 let current: { audio: HTMLAudioElement; handlers: PlayHandlers } | null = null;
+/** Чи грав на цій сторінці хоч один звук (для діагностики мікрофона в Safari) */
+let playedAny = false;
+
+export function hasPlayedAudio(): boolean {
+  return playedAny;
+}
 
 /** Прибрати маркер ролі в діалогах («Daša: …») */
 function cleanText(text: string): string {
   return text.replace(/^[A-Za-zА-Яа-яЄ-юІ-іҐ-ґ\s]+:\s*/, '').trim();
 }
 
-/** Зупинити звук, що грає зараз (якщо є). */
-export function stopCroatianAudio(): void {
+/** Зупинити звук, що грає зараз (якщо є). Повертає true, якщо щось грало. */
+export function stopCroatianAudio(): boolean {
   const playing = current;
-  if (!playing) return;
+  if (!playing) return false;
   current = null;
   const { audio, handlers } = playing;
   audio.onended = null;
@@ -41,6 +47,7 @@ export function stopCroatianAudio(): void {
     /* уже зупинено */
   }
   handlers.onStop?.();
+  return true;
 }
 
 /** Відтворити хорватський текст; попередній звук зупиняється. */
@@ -51,6 +58,7 @@ export function playCroatian(text: string, handlers: PlayHandlers = {}): void {
 
   stopCroatianAudio();
 
+  playedAny = true;
   const audio = new Audio(`/api/tts?text=${encodeURIComponent(clean)}`);
   const entry = { audio, handlers };
   current = entry;
