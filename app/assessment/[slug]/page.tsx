@@ -64,6 +64,7 @@ export default async function AssessmentPage({ params }: Params) {
       cefr={assessment.cefr as string}
       title={title}
       subtitle={moduleData?.title_ua ?? null}
+      moduleOrder={moduleData?.order_index ?? null}
       description={(assessment.description_ua as string | null) ?? null}
       minutes={(assessment.estimated_minutes as number | null) ?? null}
       passRatio={Number(assessment.pass_ratio)}

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { BookOpen, CircleCheck, Clock, Dumbbell, Languages, MessagesSquare, Sparkles, Target, X } from 'lucide-react';
+import { CircleCheck, Clock, Languages, Mic, Sparkles, Target, X } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import SessionDone from '@/components/ui/SessionDone';
@@ -12,6 +12,7 @@ import Hr from '@/components/ui/Hr';
 import AudioButton from '@/components/ui/AudioButton';
 import IconButton from '@/components/ui/IconButton';
 import ProgressBar from '@/components/ui/ProgressBar';
+import LevelBadge from '@/components/ui/LevelBadge';
 import RoleplaySimulator from '@/components/features/RoleplaySimulator';
 import LessonExercise, { type LessonSpeechAttempt } from './LessonExercise';
 import TypicalErrorCard from '@/components/TypicalErrorCard';
@@ -21,12 +22,14 @@ import { track } from '@/lib/analytics-client';
 import { finishSpeakingSession, recordSpeakingAttempt, startSpeakingSession } from '@/app/actions/speaking';
 import { evaluateSpeech, isUnderstood } from '@/lib/speaking';
 import { situationInfo } from '@/lib/situations';
+import { wordInitial } from '@/lib/word-theme';
 import {
   answerCurrent, estimateMinutes, isRetry, lessonStages, orderExercises, practiceDone, startPractice,
   type LessonStage, type PracticeOutcome,
 } from '@/lib/lesson-flow';
 import { countUk, pluralUk } from '@/lib/format';
-import { lessonCelebration } from '@/lib/celebration';
+import { answerStreakNote, lessonCelebration } from '@/lib/celebration';
+import { levelStyle, moduleIcon, type LevelStyle } from '@/lib/levels';
 import type { CompleteLessonResult } from '@/lib/learning';
 import { lessonsHref } from '@/lib/curriculum';
 import { nowMs } from '@/lib/clock';
@@ -43,6 +46,16 @@ const STAGE_LABEL: Record<LessonStage, string> = {
   grammar: 'Граматика',
   practice: 'Вправи',
   summary: 'Підсумок',
+};
+
+/** Емодзі етапів (DESIGN_SYSTEM §3.4: емодзі — категорія, не кнопка). */
+const STAGE_EMOJI: Record<LessonStage, string> = {
+  intro: '👋',
+  words: '📚',
+  dialogue: '💬',
+  grammar: '🧩',
+  practice: '🏋️',
+  summary: '🎉',
 };
 
 /** Що повертає збереження уроку: нові слова й серія для святкового екрана (або нічого — тоді без плиток). */
@@ -69,7 +82,12 @@ export default function LessonPlayer({
     [words.length, dialogues.length, grammar.length, exercises.length],
   );
 
+  // Радісний стиль (DESIGN_SYSTEM §3.4): колір рівня уроку й емодзі теми модуля на всіх етапах
+  const lv = levelStyle(lesson.level_code);
+  const icon = lesson.module ? moduleIcon(lesson.level_code, lesson.module.order, lesson.module.title) : '📚';
+
   const [stage, setStage] = useState<LessonStage>('intro');
+  const [streak, setStreak] = useState(0); // правильні поспіль у вправах — «🔥 3 поспіль!»
   const [scene, setScene] = useState(0);
   const [practice, setPractice] = useState(() => startPractice(exercises.map((e) => e.id)));
   const [round, setRound] = useState(0); // щоб скинути стан вправи, коли та сама повертається
@@ -136,6 +154,7 @@ export default function LessonPlayer({
     setPractice(startPractice(exercises.map((e) => e.id)));
     setScene(0);
     setRound((r) => r + 1);
+    setStreak(0);
     goTo('intro');
   };
 
@@ -153,8 +172,10 @@ export default function LessonPlayer({
         <IconButton label="Закрити урок" onClick={() => router.push(lessonsHref(lesson.level_code))}>
           <X className="size-5" aria-hidden="true" />
         </IconButton>
-        <ProgressBar value={progressValue} max={stages.length - 1} label="Прогрес уроку" className="flex-1" />
-        <span className="w-20 shrink-0 text-right text-caption text-ink-muted">{STAGE_LABEL[stage]}</span>
+        <ProgressBar value={progressValue} max={stages.length - 1} label="Прогрес уроку" className="flex-1" barClassName={lv.bar} />
+        <span className={cn('w-24 shrink-0 text-right text-caption', lv.ink)}>
+          <span aria-hidden="true">{STAGE_EMOJI[stage]}</span> {STAGE_LABEL[stage]}
+        </span>
       </div>
     </header>
   );
@@ -176,10 +197,28 @@ export default function LessonPlayer({
     const turns = dialogues.reduce((n, d) => n + d.lines.length, 0);
     return shell(
       <Card hero className="flex flex-col gap-4 animate-fade-in-up">
-        <p className="flex items-center gap-2 text-label text-ink-muted">
-          {lesson.level_code && <span className="rounded-full bg-primary-soft px-2 py-0.5 text-primary-ink">{lesson.level_code}</span>}
-          <Clock className="size-4" aria-hidden="true" />~{minutes} хв
-        </p>
+        <div className="flex items-center gap-3">
+          <span
+            aria-hidden="true"
+            className={cn('flex size-14 shrink-0 items-center justify-center rounded-card text-3xl leading-none', lv.soft)}
+          >
+            {icon}
+          </span>
+          <div className="flex min-w-0 flex-col gap-1">
+            <p className="flex flex-wrap items-center gap-2 text-label text-ink-muted">
+              {lesson.level_code && <LevelBadge level={lesson.level_code} />}
+              <span className="flex items-center gap-1">
+                <Clock className="size-4" aria-hidden="true" />~{minutes} хв
+              </span>
+            </p>
+            {lesson.module && (
+              <p className={cn('text-label break-words', lv.ink)}>
+                Модуль {lesson.level_code}.{lesson.module.order}
+                {lesson.module.title ? ` · ${lesson.module.title}` : ''}
+              </p>
+            )}
+          </div>
+        </div>
         <div>
           <h1 className="font-heading text-h1">{lesson.title_ua}</h1>
           {lesson.title_hr && (
@@ -191,7 +230,7 @@ export default function LessonPlayer({
         {lesson.objectives && lesson.objectives.length > 0 && (
           <div>
             <p className="flex items-center gap-2 text-label">
-              <Target className="size-4 text-primary-ink" aria-hidden="true" />
+              <Target className={cn('size-4', lv.ink)} aria-hidden="true" />
               Після уроку ви зможете:
             </p>
             <ul className="mt-2 flex flex-col gap-1.5">
@@ -205,9 +244,9 @@ export default function LessonPlayer({
           </div>
         )}
         <ul className="grid grid-cols-3 gap-2 text-center">
-          <Stat icon={<BookOpen className="size-5" aria-hidden="true" />} value={words.length} label={pluralUk(words.length, ['слово', 'слова', 'слів'])} />
-          <Stat icon={<MessagesSquare className="size-5" aria-hidden="true" />} value={turns} label={pluralUk(turns, ['репліка', 'репліки', 'реплік'])} />
-          <Stat icon={<Dumbbell className="size-5" aria-hidden="true" />} value={exercises.length} label={pluralUk(exercises.length, ['вправа', 'вправи', 'вправ'])} />
+          <Stat lv={lv} emoji="📚" value={words.length} label={pluralUk(words.length, ['слово', 'слова', 'слів'])} />
+          <Stat lv={lv} emoji="💬" value={turns} label={pluralUk(turns, ['репліка', 'репліки', 'реплік'])} />
+          <Stat lv={lv} emoji="🏋️" value={exercises.length} label={pluralUk(exercises.length, ['вправа', 'вправи', 'вправ'])} />
         </ul>
       </Card>,
       <Button block onClick={next}>
@@ -220,14 +259,19 @@ export default function LessonPlayer({
   if (stage === 'words') {
     return shell(
       <>
-        <div>
-          <h2 className="font-heading text-h2">Слова уроку</h2>
-          <p className="mt-1 text-body text-ink-muted">Послухайте кожне слово й повторіть уголос. Після уроку вони потраплять у повторення.</p>
-        </div>
-        <ul className="flex flex-col gap-2">
-          {words.map((w) => (
+        <StageHeading lv={lv} emoji={icon} title="Слова уроку" note={countUk(words.length, ['слово', 'слова', 'слів'])}>
+          Послухайте кожне слово й повторіть уголос. Після уроку вони потраплять у повторення.
+        </StageHeading>
+        <ol className="flex flex-col gap-2">
+          {words.map((w, i) => (
             <li key={w.id}>
-              <Card className="flex items-center gap-3 py-3 pl-4 pr-2">
+              <Card className="flex items-center gap-3 py-3 pl-3 pr-2">
+                <span
+                  aria-hidden="true"
+                  className={cn('flex size-8 shrink-0 items-center justify-center rounded-full font-heading text-label tabular-nums', lv.soft, lv.ink)}
+                >
+                  {i + 1}
+                </span>
                 <div className="min-w-0 flex-1">
                   <Hr as="p" className="font-heading text-h3 break-words">
                     {w.hr_text}
@@ -238,7 +282,7 @@ export default function LessonPlayer({
               </Card>
             </li>
           ))}
-        </ul>
+        </ol>
       </>,
       <>
         <Button block onClick={next}>
@@ -259,6 +303,7 @@ export default function LessonPlayer({
         key={d.id}
         shell={shell}
         dialogue={d}
+        lv={lv}
         index={scene}
         total={dialogues.length}
         onNext={() => {
@@ -279,19 +324,26 @@ export default function LessonPlayer({
   if (stage === 'grammar') {
     return shell(
       <>
-        <h2 className="font-heading text-h2">Граматика</h2>
+        <StageHeading lv={lv} emoji="🧩" title="Граматика">
+          Коротко про те, як це працює, — з прикладами, які можна послухати.
+        </StageHeading>
         {grammar.map((topic) => (
-          <Card key={topic.id} className="flex flex-col gap-4">
+          <Card key={topic.id} className={cn('flex flex-col gap-4 border-t-4', lv.line)}>
             <div>
               <h3 className="font-heading text-h3">{topic.title_ua}</h3>
+              {topic.title_hr && (
+                <Hr as="p" className={cn('text-label', lv.ink)}>
+                  {topic.title_hr}
+                </Hr>
+              )}
               {topic.description && <p className="mt-1 text-body text-ink-muted">{topic.description}</p>}
             </div>
             {topic.rules.map((rule) => (
               <div key={rule.id} className="flex flex-col gap-2 border-t border-line pt-4">
-                <p className="text-label text-primary-ink">{rule.title_ua}</p>
+                <p className={cn('text-label', lv.ink)}>{rule.title_ua}</p>
                 <p className="text-body">{rule.explanation_ua}</p>
                 {rule.pattern_hr && (
-                  <Hr as="p" className="rounded-control bg-surface-muted px-3 py-2 text-center font-heading text-body">
+                  <Hr as="p" className={cn('rounded-control px-3 py-2 text-center font-heading text-body', lv.soft)}>
                     {rule.pattern_hr}
                   </Hr>
                 )}
@@ -345,6 +397,7 @@ export default function LessonPlayer({
         ...(verdict ? { verdict } : {}),
       });
       exerciseStartRef.current = nowMs();
+      setStreak((n) => (outcome === 'correct' ? n + 1 : 0));
       const after = answerCurrent(practice, outcome);
       setPractice(after);
       setRound((r) => r + 1);
@@ -356,9 +409,16 @@ export default function LessonPlayer({
     };
     return shell(
       <>
-        <p className="text-caption text-ink-muted">
-          Вправа {Math.min(practiceDone(practice) + 1, practice.total)} з {practice.total}
-        </p>
+        <div className="flex min-h-7 items-center justify-between gap-2">
+          <p className={cn('rounded-full px-2.5 py-0.5 text-caption font-semibold', lv.soft, lv.ink)}>
+            <span aria-hidden="true">🏋️</span> Вправа {Math.min(practiceDone(practice) + 1, practice.total)} з {practice.total}
+          </p>
+          {answerStreakNote(streak) && (
+            <p key={streak} className="animate-pop rounded-full bg-warning-soft px-2.5 py-0.5 text-caption font-semibold text-warning-ink" aria-live="polite">
+              {answerStreakNote(streak)}
+            </p>
+          )}
+        </div>
         <LessonExercise
           key={`${current.id}:${round}`}
           exercise={current}
@@ -387,13 +447,46 @@ export default function LessonPlayer({
   );
 }
 
-function Stat({ icon, value, label }: { icon: React.ReactNode; value: number; label: string }) {
+function Stat({ lv, emoji, value, label }: { lv: LevelStyle; emoji: string; value: number; label: string }) {
   return (
-    <li className="flex flex-col items-center gap-1 rounded-control bg-surface-muted px-2 py-3">
-      <span className="text-primary-ink">{icon}</span>
-      <span className="font-heading text-h3">{value}</span>
+    <li className={cn('flex flex-col items-center gap-0.5 rounded-card px-2 py-3', lv.soft)}>
+      <span className="text-2xl leading-none" aria-hidden="true">
+        {emoji}
+      </span>
+      <span className={cn('font-heading text-h3 tabular-nums', lv.ink)}>{value}</span>
       <span className="text-caption text-ink-muted">{label}</span>
     </li>
+  );
+}
+
+/** Заголовок етапу уроку: емодзі на світлому фоні кольору рівня, назва, підпис. */
+function StageHeading({
+  lv,
+  emoji,
+  title,
+  note,
+  children,
+}: {
+  lv: LevelStyle;
+  emoji: string;
+  title: string;
+  /** Дрібний підпис праворуч від назви, напр. «22 слова» або «Діалог 1 з 2» */
+  note?: string;
+  children?: React.ReactNode;
+}) {
+  return (
+    <div className="flex items-start gap-3 animate-fade-in-up">
+      <span aria-hidden="true" className={cn('flex size-12 shrink-0 items-center justify-center rounded-card text-2xl leading-none', lv.soft)}>
+        {emoji}
+      </span>
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-baseline gap-x-2">
+          <h2 className="font-heading text-h2">{title}</h2>
+          {note && <span className={cn('text-label', lv.ink)}>{note}</span>}
+        </div>
+        {children && <p className="mt-1 text-body text-ink-muted">{children}</p>}
+      </div>
+    </div>
   );
 }
 
@@ -401,6 +494,7 @@ function Stat({ icon, value, label }: { icon: React.ReactNode; value: number; la
 function DialogueStep({
   shell,
   dialogue,
+  lv,
   index,
   total,
   onNext,
@@ -408,6 +502,7 @@ function DialogueStep({
 }: {
   shell: Shell;
   dialogue: LessonDialogue;
+  lv: LevelStyle;
   index: number;
   total: number;
   onNext: () => void;
@@ -416,23 +511,37 @@ function DialogueStep({
   const [showTranslation, setShowTranslation] = useState(true);
   const [acting, setActing] = useState(false);
   const speakers = useMemo(() => Array.from(new Set(dialogue.lines.map((l) => l.speaker_name))), [dialogue.lines]);
+  const situation = dialogue.situation ? situationInfo(dialogue.situation) : null;
 
   if (acting) {
-    return <RoleplaySimulator lines={dialogue.lines} uniqueSpeakers={speakers} onExit={() => setActing(false)} />;
+    return (
+      <RoleplaySimulator
+        lines={dialogue.lines}
+        uniqueSpeakers={speakers}
+        title={dialogue.title_ua ?? 'Діалог'}
+        level={lv}
+        onExit={() => setActing(false)}
+      />
+    );
   }
 
   return shell(
     <>
-      <div>
-        <p className="text-label text-ink-muted">
-          Діалог {index + 1} з {total}
-        </p>
-        <h2 className="mt-1 font-heading text-h2">{dialogue.title_ua ?? 'Діалог'}</h2>
-        {dialogue.title_hr && (
-          <Hr as="p" className="text-body text-ink-muted">
-            {dialogue.title_hr}
-          </Hr>
-        )}
+      <div className="flex items-start gap-3 animate-fade-in-up">
+        <span aria-hidden="true" className={cn('flex size-12 shrink-0 items-center justify-center rounded-card text-2xl leading-none', lv.soft)}>
+          {situation?.emoji ?? '💬'}
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className={cn('text-label', lv.ink)}>
+            Діалог {index + 1} з {total}
+          </p>
+          <h2 className="font-heading text-h2">{dialogue.title_ua ?? 'Діалог'}</h2>
+          {dialogue.title_hr && (
+            <Hr as="p" className="text-body text-ink-muted">
+              {dialogue.title_hr}
+            </Hr>
+          )}
+        </div>
       </div>
       <div className="flex items-center justify-between gap-2">
         <p className="text-caption text-ink-subtle">Натисніть репліку, щоб послухати</p>
@@ -451,13 +560,24 @@ function DialogueStep({
           const right = speakers.indexOf(line.speaker_name) % 2 === 1;
           return (
             <li key={line.id} className={cn('flex flex-col', right ? 'items-end' : 'items-start')}>
-              <Hr className="mb-1 px-1 text-caption text-ink-subtle">{line.speaker_name}</Hr>
+              <span className={cn('mb-1 flex items-center gap-1.5 px-1', right && 'flex-row-reverse')}>
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    'flex size-6 items-center justify-center rounded-full font-heading text-caption',
+                    right ? 'bg-primary-soft text-primary-ink' : cn(lv.soft, lv.ink),
+                  )}
+                >
+                  {wordInitial(line.speaker_name)}
+                </span>
+                <Hr className="text-caption text-ink-muted">{line.speaker_name}</Hr>
+              </span>
               <button
                 type="button"
                 onClick={() => speakCroatian(line.hr_text)}
                 className={cn(
                   'max-w-[88%] rounded-card px-4 py-3 text-left shadow-sm transition-colors duration-150 active:scale-[0.98]',
-                  right ? 'bg-primary-soft text-ink' : 'border border-line bg-surface text-ink',
+                  right ? 'rounded-tr-sm bg-primary-soft text-ink' : cn('rounded-tl-sm border bg-surface text-ink', lv.line),
                 )}
               >
                 <Hr as="p" className="text-body-lg font-semibold break-words">
@@ -479,6 +599,7 @@ function DialogueStep({
           Назад
         </Button>
         <Button variant="secondary" onClick={() => setActing(true)}>
+          <Mic className="size-4" aria-hidden="true" />
           Відіграти роль
         </Button>
       </div>
@@ -576,7 +697,7 @@ function SummaryStep({
           {objectives.length > 0 && (
             <div className="w-full rounded-card bg-surface-muted px-4 py-3 text-left">
               <p className="flex items-center gap-2 text-label">
-                <Target className="size-4 text-primary-ink" aria-hidden="true" />
+                <Target className="size-4 text-success-ink" aria-hidden="true" />
                 Тепер ви вмієте:
               </p>
               <ul className="mt-2 flex flex-col gap-1.5">
@@ -631,3 +752,4 @@ function SummaryStep({
     </>,
   );
 }
+

@@ -153,6 +153,9 @@ where (public.lexemes.cefr = '<рівень батчу>' or public.lexemes.cefr 
 ```
 
 - `vocabulary_type` — тільки `core`, `function_word`, `formulaic`, `collocation`, `chunk` (CHECK у БД).
+- **Граматичні поля (з 2026-10-21):** `part_of_speech` — лише `noun`, `verb`, `adjective`, `adverb`, `pronoun`, `preposition`, `conjunction`, `particle`, `interjection`, `number` (і порядкові), `phrase` (кілька слів); не `word` / `chunk` / `formulaic` — це `vocabulary_type`. Іменник — `forms.gender`: `m` / `f` / `n` / `m_pl` / `f_pl` / `n_pl`; дієслово — `forms.aspect`: `ipfv` / `pfv` / `biasp`. `normalized` = `normalizeCroatian(lemma)` (č ć → c, đ → d, š → s, ž → z). Перевіряє тест `supabase/tests/lexemes_grammar_fields.test.sql`.
+- **Приклади (з 2026-10-21):** `examples` — масив хорватських речень (з великої літери, у кінці . ! ?, 8–110 символів), у кожному — саме це слово; **без кирилиці й українського перекладу в дужках** («Vidimo se! (Побачимось)» — заборонено, переклад — лише в `ukrainian_translation`). Тест — `supabase/tests/lexemes_examples.test.sql`.
+- **Перевірка батчу слів:** будь-який генератор / батч лексем перед видачею проганяє `scripts/lexeme_checks.py` (`check_batch()` або `python3 -B scripts/lexeme_checks.py batch.json`): частина мови, рід, вид, `normalized`, переклад, приклади, дублікати. Помилки зупиняють батч, попередження — у звіт для носія.
 - `lemma` — це **слово або сталий вираз**, а не речення чи репліка діалогу. Корисні фрази й речення («Gdje je blagajna?») — у `phrases` (з `situation`), діалоги — у `conversations` / `conversation_turns` (з `level`, `situation`).
 - Застарілий контент не видаляємо, а ставимо `status = 'DEPRECATED'`; застосунок показує лише `PUBLISHED`.
 - Леми тільки латиницею (хорватська абетка). Кирилиця в лемі — помилка (так з'являлися `stвар`, `пожар -> požar`).

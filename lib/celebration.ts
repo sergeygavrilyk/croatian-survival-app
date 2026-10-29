@@ -125,3 +125,46 @@ export function confettiPieces(seed: string, count = 48): ConfettiPiece[] {
     };
   });
 }
+
+// ---------------------------------------------------------------- рольова гра, перевірка рівня, вправи уроку
+
+/** Підбадьорення на підсумку: емодзі, заголовок і чи кидати конфеті (лише на 🎉, DESIGN_SYSTEM §6). */
+export interface Cheer {
+  emoji: string;
+  title: string;
+  celebrate: boolean;
+}
+
+/** Підсумок рольової гри з AI: 🎉 завдання виконано (конфеті), 💪 розмова була, 🌱 ще нічого не сказали. */
+export function roleplayCheer(goalReached: boolean, userTurns: number): Cheer {
+  if (goalReached) return { emoji: '🎉', title: 'Завдання виконано!', celebrate: true };
+  if (userTurns > 0) return { emoji: '💪', title: 'Гарна розмова!', celebrate: false };
+  return { emoji: '🌱', title: 'Почнімо ще раз!', celebrate: false };
+}
+
+/** Плитки підсумку рольової гри: скільки реплік сказали й скільки фраз пішло на повторення. */
+export function roleplayTiles(input: { userTurns: number; errorsSaved: number }): StatTileData[] {
+  const turns = Math.max(0, Math.trunc(input.userTurns));
+  const saved = Math.max(0, Math.trunc(input.errorsSaved));
+  const tiles: StatTileData[] = [];
+  if (turns > 0) {
+    tiles.push({ emoji: '💬', value: `${turns}`, label: pluralUk(turns, ['ваша репліка', 'ваші репліки', 'ваших реплік']), tone: 'success' });
+  }
+  if (saved > 0) {
+    tiles.push({ emoji: '🔁', value: `${saved}`, label: pluralUk(saved, ['фраза на повторення', 'фрази на повторення', 'фраз на повторення']), tone: 'warning' });
+  }
+  return tiles;
+}
+
+/** Результат перевірки рівня (score — частка 0…1): 🎉 пройдено (конфеті), 💪 від 50 %, 🌱 інакше — без «провалу» й червоного. */
+export function assessmentCheer(passed: boolean, score: number): Cheer {
+  if (passed) return { emoji: '🎉', title: 'Пройдено!', celebrate: true };
+  if (score >= 0.5) return { emoji: '💪', title: 'Майже! Ще трохи практики', celebrate: false };
+  return { emoji: '🌱', title: 'Крок за кроком!', celebrate: false };
+}
+
+/** Правильні поспіль у вправах уроку: з третьої — «🔥 3 поспіль!»; після помилки просто зникає (без тиску). */
+export function answerStreakNote(streak: number): string | null {
+  const n = Math.trunc(streak);
+  return n >= 3 ? `🔥 ${n} поспіль!` : null;
+}

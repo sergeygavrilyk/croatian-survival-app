@@ -83,6 +83,8 @@ export interface EventProps {
   /** speech_diagnostic: послідовність подій розпізнавання («st@0 au@120 … end@4100») і платформа */
   speech_trace?: string;
   speech_platform?: string;
+  /** «Граматика рівня»: тема, яку тренують (lib/grammar.ts) */
+  grammar_topic_id?: string;
   device?: string;
   app_version?: string;
 }

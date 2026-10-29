@@ -395,7 +395,7 @@ function ChoiceButton({
         className={cn(
           'flex size-6 shrink-0 items-center justify-center border-2',
           multi ? 'rounded-md' : 'rounded-full',
-          selected ? 'border-primary bg-primary text-white' : 'border-slate-300',
+          selected ? 'border-primary bg-primary text-white' : 'border-line-strong',
         )}
       >
         {selected && <Check className="size-4" strokeWidth={3} />}

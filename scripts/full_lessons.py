@@ -128,7 +128,8 @@ class Course:
         """Переклад для вправи: без крапки в кінці; з малої літери, якщо слово не власна назва."""
         t = self.lex[word.lower()][1].strip().rstrip('.')
         if self.lemma_of(word)[:1].islower():
-            t = ' / '.join(seg[:1].lower() + seg[1:] for seg in t.split(' / '))
+            # абревіатуру (ДТП, SMS) не чіпаємо
+            t = ' / '.join(seg if seg[1:2].isupper() else seg[:1].lower() + seg[1:] for seg in t.split(' / '))
         return t
 
     # ------------------------------------------------------------ перевірки

@@ -11,7 +11,8 @@
   python3 scripts/gen_reading.py --v1       →  ще й supabase/data_fixes/20261014_reading_a1_v1.sql (перший пакет, уже застосований)
   python3 scripts/gen_reading.py --unknown  →  слова текстів, яких ще немає в словничку (для наповнення reading_lexicon.py)
   python3 scripts/gen_reading.py --stats    →  частка знайомих слів у кожному тексті
-  python3 -B scripts/gen_reading.py --known-sync m03  →  supabase/data_fixes/20261019_reading_known_a0v4_m03_part1.sql… (m10 — 20261020_…; лише словничок і частка
+  python3 -B scripts/gen_reading.py --known-sync m03  →  (A1 v3: --known-sync a1v3_m01 → 20261026_reading_known_a1v3_m01_part1.sql…)
+                                                supabase/data_fixes/20261019_reading_known_a0v4_m03_part1.sql… (m10 — 20261020_…; лише словничок і частка
                                                знайомих слів уже завантажених текстів — після зміни слів уроків; решту файлів не чіпає)
 
 Дані: scripts/reading_data.py (A1), reading_data_a0.py (A0), reading_data_a2.py (A2), scripts/reading_lexicon.py (форми слів і переклади),
@@ -576,7 +577,7 @@ $sync$;
 
 
 KNOWN_SYNC_OUT = ROOT / 'supabase' / 'data_fixes' / '{}_reading_known_a0v4{}_part{}.sql'  # дата, тег модуля: '' (A0.2), '_m03'…
-KNOWN_SYNC_DATE = {'m10': '20261020'}  # інші модулі — 20261019
+KNOWN_SYNC_DATE = {'m10': '20261020', 'a1v3_m01': '20261026', 'a1v3_m02': '20261026', 'a1v3_m03': '20261026', 'a1v3_m04': '20261026', 'a1v3_m05': '20261026', 'a1v3_m06': '20261026', 'a1v3_m07': '20261026', 'a1v3_m08': '20261026', 'a1v3_m09': '20261026', 'a1v3_m10': '20261026', 'a1v3_m11': '20261026', 'a1v3_m12': '20261026', 'a1v3_m13': '20261026'}  # інші модулі A0 — 20261019
 KNOWN_SYNC_NOTE = ('reading_known_a0v4 2026-10-19: словничок і частка знайомих слів перераховано після перебудови уроків A0 '
                    'за темою (curriculum_a0_v4). Тексти й питання не змінено.')
 KNOWN_SYNC_MAX = 240_000  # байтів даних на частину: SQL Editor не приймає файли понад ~300 КБ
@@ -725,8 +726,18 @@ if __name__ == '__main__':
         # --known-sync [m03]: тег — останній перебудований модуль (без тегу — файли A0.2, уже в базі)
         i = sys.argv.index('--known-sync')
         tag = sys.argv[i + 1] if len(sys.argv) > i + 1 and not sys.argv[i + 1].startswith('--') else ''
+        if tag.startswith('a1v3'):  # програма A1 v3 (2026-10-26): --known-sync a1v3_m01 …
+            globals()['KNOWN_SYNC_NOTE'] = (f'reading_known_{tag}: словничок і частка знайомих слів перераховано після перебудови уроків A1 '
+                               'за програмою v3 (curriculum_a1_v3). Тексти й питання не змінено.')
         for pi, sql in enumerate(build_known_sync(), 1):
-            out = Path(str(KNOWN_SYNC_OUT).format(KNOWN_SYNC_DATE.get(tag, '20261019'), '_' + tag if tag else '', pi))
+            if tag.startswith('a1v3'):
+                sql = (sql.replace('після уроків A0 за темою', f'після уроків A1 за програмою v3 ({tag})')
+                          .replace('уроки A0 перебудовано за темою (curriculum_a0_v4)', 'уроки A1 перебудовано за програмою v3 (curriculum_a1_v3)')
+                          .replace(' · 2026-10-19\n', f" · {KNOWN_SYNC_DATE.get(tag, '20261026')[:4]}-{KNOWN_SYNC_DATE.get(tag, '20261026')[4:6]}-{KNOWN_SYNC_DATE.get(tag, '20261026')[6:]}\n", 1)
+                          .replace(f'--known-sync (не', f'--known-sync {tag} (не'))
+                out = ROOT / 'supabase' / 'data_fixes' / f"{KNOWN_SYNC_DATE.get(tag, '20261026')}_reading_known_{tag}_part{pi}.sql"
+            else:
+                out = Path(str(KNOWN_SYNC_OUT).format(KNOWN_SYNC_DATE.get(tag, '20261019'), '_' + tag if tag else '', pi))
             out.write_text(sql, encoding='utf-8')
             print(f'OK → {out.relative_to(ROOT)}: {len(sql.encode()) // 1024} КБ')
         sys.exit(0)

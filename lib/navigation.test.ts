@@ -8,13 +8,13 @@ test('нижня панель: 5 вкладок у погодженому пор
 });
 
 test('нижня панель показується на екранах вкладок', () => {
-  for (const p of ['/', '/lessons', '/trainer', '/mistakes', '/mistakes/typical', '/reading', '/dictionary', '/profile', '/situations', '/situations/health', '/lessons/', '/lessons/tests']) {
+  for (const p of ['/', '/lessons', '/trainer', '/mistakes', '/mistakes/typical', '/reading', '/dictionary', '/profile', '/situations', '/situations/health', '/lessons/', '/lessons/tests', '/lessons/grammar']) {
     assert.equal(showsBottomNav(p), true, p);
   }
 });
 
 test('нижня панель схована в уроці, на вході й в адмінці', () => {
-  for (const p of ['/lesson/c0000000-0000-0000-0000-000000000001', '/login', '/admin', '/lessonsx', '/trainerx', '/situations/cafe_restaurant/roleplay', '/onboarding', '/reset-password', '/reading/abc', '/assessment/a0-m01']) {
+  for (const p of ['/lesson/c0000000-0000-0000-0000-000000000001', '/login', '/admin', '/lessonsx', '/trainerx', '/situations/cafe_restaurant/roleplay', '/onboarding', '/reset-password', '/reading/abc', '/assessment/a0-m01', '/lessons/grammar/review', '/lessons/grammar/c0000000-0000-0000-0000-000000000001']) {
     assert.equal(showsBottomNav(p), false, p);
   }
 });
@@ -31,6 +31,7 @@ test('активна вкладка: словник належить до «Пр
   assert.equal(activeTab('/lesson/abc'), null);
   assert.equal(activeTab('/lessonsx'), null);
   assert.equal(activeTab('/lessons/tests'), 'lessons');
+  assert.equal(activeTab('/lessons/grammar/review'), 'lessons');
   assert.equal(activeTab('/assessment/a0-m01'), null);
 });
 

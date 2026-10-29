@@ -84,7 +84,7 @@ export default function SituationView({
                 setPractice(null);
               }}
               className={cn(
-                'min-h-10 rounded-[0.6rem] text-label transition-colors duration-150 disabled:opacity-40',
+                'min-h-10 rounded-control text-label transition-colors duration-150 disabled:opacity-40',
                 tab === t.key ? 'bg-surface text-primary-ink shadow-sm' : 'text-ink-muted hover:text-ink',
               )}
             >

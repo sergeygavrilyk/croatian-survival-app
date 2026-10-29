@@ -19,6 +19,7 @@
   --color-surface: var(--color-white);
   --color-surface-muted: var(--color-slate-100);
   --color-line: var(--color-slate-200);
+  --color-line-strong: var(--color-slate-300);  /* рамка порожнього прапорця / радіо */
   --color-ink: var(--color-slate-900);
   --color-ink-muted: var(--color-slate-600);
   --color-ink-subtle: var(--color-slate-500);
@@ -28,10 +29,12 @@
   --color-primary-hover: var(--color-blue-700);
   --color-primary-pressed: var(--color-blue-800);
   --color-primary-soft: var(--color-blue-50);
+  --color-primary-soft-hover: var(--color-blue-100);
   --color-primary-ink: var(--color-blue-700);
 
   /* Зворотний зв'язок */
   --color-success: var(--color-emerald-600);
+  --color-success-hover: var(--color-emerald-700);
   --color-success-soft: var(--color-emerald-50);
   --color-success-line: var(--color-emerald-200);
   --color-success-ink: var(--color-emerald-700);
@@ -40,6 +43,7 @@
   --color-warning-line: var(--color-amber-200);
   --color-warning-ink: var(--color-amber-800);
   --color-danger: var(--color-rose-600);
+  --color-danger-hover: var(--color-rose-700);
   --color-danger-soft: var(--color-rose-50);
   --color-danger-line: var(--color-rose-200);
   --color-danger-ink: var(--color-rose-700);

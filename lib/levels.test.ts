@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { LEVEL_CODES, LEVEL_STYLES, levelStyle, moduleIcon } from './levels.ts';
+import { LEVEL_CODES, LEVEL_STYLES, assessmentIcon, levelStyle, moduleIcon } from './levels.ts';
 
 test('кожен рівень має свій колір', () => {
   const solids = LEVEL_CODES.map((l) => LEVEL_STYLES[l].solid);
@@ -23,11 +23,14 @@ test('moduleIcon: за рівнем і номером', () => {
   assert.equal(moduleIcon('A0', 7), '🍽️');
   assert.equal(moduleIcon('A0', 10), '🆘');
   assert.equal(moduleIcon('a1', 4), '🚌');
+  assert.equal(moduleIcon('A1', 7), '💻');
+  assert.equal(moduleIcon('A1', 8), '🩺');
+  assert.equal(moduleIcon('A1', 13), '🏆');
   assert.equal(moduleIcon('B2', 12), '🏆');
 });
 
 test('moduleIcon: новий модуль — за назвою, інакше 📚', () => {
-  assert.equal(moduleIcon('A1', 11, 'Модуль A1.11 — Далмація і Задар'), '⛵');
+  assert.equal(moduleIcon('A1', 14, 'Модуль A1.14 — Далмація і Задар'), '⛵');
   assert.equal(moduleIcon('A2', 15, 'Modul A2.15 — Hrana i restorani'), '🍽️');
   assert.equal(moduleIcon('C1', 1, 'Щось нове'), '📚');
   assert.equal(moduleIcon(null, null), '📚');
@@ -35,9 +38,15 @@ test('moduleIcon: новий модуль — за назвою, інакше �
 
 test('moduleIcon: без прапорів (у Windows показуються літерами)', () => {
   for (const level of LEVEL_CODES) {
-    for (let order = 1; order <= 12; order++) {
+    for (let order = 1; order <= 13; order++) {
       const icon = moduleIcon(level, order);
       assert.ok(![...icon].some((ch) => { const c = ch.codePointAt(0)!; return c >= 0x1f1e6 && c <= 0x1f1ff; }), `${level}.${order}`);
     }
   }
+});
+
+test('assessmentIcon: модуль — емодзі модуля, середина — 🚩, фінал — 🏆', () => {
+  assert.equal(assessmentIcon('module', 'A0', 7), moduleIcon('A0', 7));
+  assert.equal(assessmentIcon('mid', 'A1', null), '🚩');
+  assert.equal(assessmentIcon('final', 'A0'), '🏆');
 });

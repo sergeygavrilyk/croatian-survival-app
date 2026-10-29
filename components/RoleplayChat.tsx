@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { useRouter } from 'next/navigation';
-import { CircleCheck, CircleAlert, Languages, Lightbulb, Mic, RotateCcw, Send, Sparkles, Square, Volume2, VolumeX } from 'lucide-react';
+import { Languages, Lightbulb, Mic, RotateCcw, Send, Sparkles, Square, Target, Volume2, VolumeX } from 'lucide-react';
 import PageHeader from '@/components/ui/PageHeader';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
@@ -11,6 +11,11 @@ import Hr from '@/components/ui/Hr';
 import AudioButton from '@/components/ui/AudioButton';
 import LevelBadge from '@/components/ui/LevelBadge';
 import AiPanel from '@/components/ui/AiPanel';
+import ProgressBar from '@/components/ui/ProgressBar';
+import SessionDone from '@/components/ui/SessionDone';
+import StatTile from '@/components/ui/StatTile';
+import { levelStyle } from '@/lib/levels';
+import { roleplayCheer, roleplayTiles } from '@/lib/celebration';
 import { browserSpeech, micHelpHere } from '@/utils/speech-recognition';
 import { speakCroatian } from '@/utils/speech';
 import { SpeechError, type ListeningSession } from '@/lib/speech-provider';
@@ -47,6 +52,8 @@ export default function RoleplayChat({
   phrases: Array<{ id: string; text_hr: string; ukrainian_translation: string }>;
 }) {
   const router = useRouter();
+  // Радісний стиль (DESIGN_SYSTEM §3.4): колір рівня й знак ситуації
+  const lv = levelStyle(level);
   const [stage, setStage] = useState<Stage>('intro');
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -192,23 +199,46 @@ export default function RoleplayChat({
       <div className="min-h-screen pb-10">
         {header}
         <main className="mx-auto flex max-w-2xl flex-col gap-4 px-5 pt-6">
-          <Card hero className="flex flex-col gap-3 animate-fade-in-up">
-            <div className="flex items-center justify-between gap-3">
-              <p className="text-label text-ink-muted">{situation.emoji} Ваш співрозмовник</p>
-              <LevelBadge level={level} />
+          <Card hero className="flex flex-col gap-4 animate-fade-in-up">
+            <div className="flex items-center gap-3">
+              <span
+                aria-hidden="true"
+                className={cn('flex size-14 shrink-0 items-center justify-center rounded-card text-3xl leading-none', lv.soft)}
+              >
+                {situation.emoji}
+              </span>
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <p className="text-label text-ink-muted">Ваш співрозмовник</p>
+                  <LevelBadge level={level} />
+                  <span className="inline-flex items-center gap-1 rounded-full bg-ai-soft px-2.5 py-0.5 text-caption font-semibold text-ai-ink">
+                    <Sparkles className="size-3.5" aria-hidden="true" />
+                    AI
+                  </span>
+                </div>
+                <p className="font-heading text-h2 break-words">
+                  <Hr className="capitalize">{scenario.aiRoleHr}</Hr> <span className="text-ink-muted">· {scenario.aiRoleUa}</span>
+                </p>
+              </div>
             </div>
-            <p className="font-heading text-h2">
-              <Hr className="capitalize">{scenario.aiRoleHr}</Hr> <span className="text-ink-muted">· {scenario.aiRoleUa}</span>
-            </p>
             <p className="text-body text-ink-muted">{scenario.settingUa}</p>
-            <div className="rounded-card bg-primary-soft p-4">
-              <p className="text-label text-primary-ink">Ваше завдання</p>
+            <div className={cn('rounded-card border p-4', lv.soft, lv.line)}>
+              <p className={cn('flex items-center gap-2 text-label', lv.ink)}>
+                <Target className="size-4" aria-hidden="true" />
+                Ваше завдання
+              </p>
               <p className="mt-1 text-body-lg">{scenario.goalUa}</p>
             </div>
-            <ul className="flex flex-col gap-1 text-label font-normal text-ink-muted">
-              <li>• Відповідайте хорватською — текстом або голосом 🎙.</li>
-              <li>• AI виправлятиме лише важливе: зміст, зрозумілість, граматику.</li>
-              <li>• До {MAX_USER_TURNS} ваших реплік, потім — підсумок і помилки для повторення.</li>
+            <ul className="flex flex-col gap-2 text-label font-normal text-ink-muted">
+              <li className="flex gap-2">
+                <span aria-hidden="true">🎙️</span>Відповідайте хорватською — текстом або голосом.
+              </li>
+              <li className="flex gap-2">
+                <span aria-hidden="true">✨</span>AI виправлятиме лише важливе: зміст, зрозумілість, граматику.
+              </li>
+              <li className="flex gap-2">
+                <span aria-hidden="true">🏁</span>До {MAX_USER_TURNS} ваших реплік, потім — підсумок і помилки для повторення.
+              </li>
             </ul>
           </Card>
           {error && <ErrorBox text={error} />}
@@ -225,22 +255,44 @@ export default function RoleplayChat({
   // ---------------------------------------------------------------- підсумок
   if (stage === 'summary' && result) {
     const a = result.assessment;
-    const done = result.goalReached;
+    const cheer = roleplayCheer(result.goalReached, userTurns);
+    const tiles = roleplayTiles({ userTurns, errorsSaved: result.errorsSaved });
     return (
       <div className="min-h-screen pb-10">
         {header}
-        <main className="mx-auto flex max-w-2xl flex-col gap-4 px-5 pt-6 animate-fade-in-up">
-          <Card hero className={cn('flex flex-col gap-2 border', done ? 'border-success-line bg-success-soft' : 'border-warning-line bg-warning-soft')}>
-            <p className={cn('flex items-center gap-2 font-heading text-h2', done ? 'text-success-ink' : 'text-warning-ink')}>
-              {done ? <CircleCheck className="size-6" aria-hidden="true" /> : <CircleAlert className="size-6" aria-hidden="true" />}
-              {done ? 'Завдання виконано' : 'Завдання ще не виконано'}
-            </p>
-            <p className="text-body text-ink">{a?.summary_ua ?? (userTurns === 0 ? 'Ви ще нічого не сказали — спробуйте ще раз.' : 'Розмову збережено.')}</p>
-          </Card>
+        <main className="mx-auto flex max-w-2xl flex-col gap-4 px-5 pt-6">
+          <SessionDone
+            correct={0}
+            total={0}
+            emoji={cheer.emoji}
+            title={cheer.title}
+            celebrate={cheer.celebrate}
+            stats={
+              tiles.length > 0 ? (
+                <ul className={cn('grid w-full gap-2', tiles.length > 1 ? 'grid-cols-2' : 'grid-cols-1')}>
+                  {tiles.map((t, i) => (
+                    <StatTile key={t.emoji} {...t} index={i} />
+                  ))}
+                </ul>
+              ) : null
+            }
+            footer={
+              !result.goalReached && userTurns > 0 ? (
+                <p className={cn('w-full rounded-card px-4 py-3 text-left text-label font-normal', lv.soft)}>
+                  <span className={cn('font-semibold', lv.ink)}>Завдання: </span>
+                  {scenario.goalUa} — спробуйте ще раз, вийде!
+                </p>
+              ) : null
+            }
+          >
+            {a?.summary_ua ?? (userTurns === 0 ? 'Ви ще нічого не сказали — спробуйте ще раз.' : 'Розмову збережено.')}
+          </SessionDone>
 
           {a && a.strengths_ua.length > 0 && (
-            <Card>
-              <h2 className="font-heading text-h3">Що вийшло добре</h2>
+            <Card className="border-success-line bg-success-soft animate-fade-in-up">
+              <h2 className="font-heading text-h3 text-success-ink">
+                <span aria-hidden="true">🌟</span> Що вийшло добре
+              </h2>
               <ul className="mt-2 flex flex-col gap-1 text-body">
                 {a.strengths_ua.map((s, i) => (
                   <li key={i}>✓ {s}</li>
@@ -271,7 +323,7 @@ export default function RoleplayChat({
           )}
           {result.errorsSaved > 0 && (
             <div className="flex flex-col items-center gap-2 text-center">
-              <p className="text-label font-normal text-ink-muted">Збережено для повторення: {result.errorsSaved}</p>
+              <p className="text-label font-normal text-ink-muted">Фрази з виправленнями чекають у «Помилках».</p>
               <Button variant="secondary" href="/mistakes">Виправити помилки зараз</Button>
             </div>
           )}
@@ -297,8 +349,8 @@ export default function RoleplayChat({
 
       <div className="mx-auto w-full max-w-2xl px-5 pt-3">
         <div className="flex items-center justify-between gap-2 text-label font-normal text-ink-muted">
-          <span>
-            Репліка {Math.min(userTurns + 1, MAX_USER_TURNS)} з {MAX_USER_TURNS}
+          <span className={cn('rounded-full px-2.5 py-0.5 text-caption font-semibold', lv.soft, lv.ink)}>
+            <span aria-hidden="true">💬</span> Репліка {Math.min(userTurns + 1, MAX_USER_TURNS)} з {MAX_USER_TURNS}
           </span>
           <button
             type="button"
@@ -310,17 +362,23 @@ export default function RoleplayChat({
             {showTranslations ? 'Сховати переклад' : 'Показати переклад'}
           </button>
         </div>
-        <p className="text-caption text-ink-subtle">Завдання: {scenario.goalUa}</p>
+        <ProgressBar value={userTurns} max={MAX_USER_TURNS} label="Ваші репліки" barClassName={lv.bar} className="mt-1" />
+        <p className="mt-2 text-caption text-ink-subtle">
+          <span aria-hidden="true">🎯</span> Завдання: {scenario.goalUa}
+        </p>
       </div>
 
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-3 px-5 py-4" aria-live="polite">
         {messages.map((m) =>
           m.role === 'assistant' ? (
             <div key={m.id} className="flex flex-col items-start animate-fade-in-up">
-              <span className="mb-1 px-1 text-caption text-ink-subtle">
+              <span className="mb-1 flex items-center gap-1.5 px-1 text-caption text-ink-subtle">
+                <span aria-hidden="true" className={cn('flex size-6 items-center justify-center rounded-full text-sm leading-none', lv.soft)}>
+                  {situation.emoji}
+                </span>
                 <Hr className="capitalize">{scenario.aiRoleHr}</Hr> · AI
               </span>
-              <div className="flex max-w-[90%] items-start gap-2 rounded-card bg-surface-muted px-4 py-3">
+              <div className={cn('flex max-w-[90%] items-start gap-2 rounded-card rounded-tl-sm border bg-surface px-4 py-3 shadow-sm', lv.line)}>
                 <div className="min-w-0">
                   <Hr as="p" className="text-body-lg break-words">
                     {m.text}
@@ -333,7 +391,7 @@ export default function RoleplayChat({
           ) : (
             <div key={m.id} className="flex flex-col items-end">
               <span className="mb-1 px-1 text-caption text-ink-subtle">Ви</span>
-              <div className="max-w-[90%] rounded-card bg-primary-soft px-4 py-3">
+              <div className="max-w-[90%] rounded-card rounded-tr-sm bg-primary-soft px-4 py-3 shadow-sm">
                 <Hr as="p" className="text-body-lg break-words">
                   {m.text}
                 </Hr>
@@ -357,7 +415,7 @@ export default function RoleplayChat({
           ),
         )}
         {busy && (
-          <div className="flex items-center gap-1 self-start rounded-card bg-surface-muted px-4 py-3" role="status" aria-label="AI відповідає">
+          <div className={cn('flex items-center gap-1 self-start rounded-card border bg-surface px-4 py-3', lv.line)} role="status" aria-label="AI відповідає">
             <span className="size-2 animate-pulse rounded-full bg-ink-subtle" />
             <span className="size-2 animate-pulse rounded-full bg-ink-subtle [animation-delay:150ms]" />
             <span className="size-2 animate-pulse rounded-full bg-ink-subtle [animation-delay:300ms]" />
@@ -366,6 +424,7 @@ export default function RoleplayChat({
         {finished && !busy && (
           <Card className="flex flex-col gap-3 border-success-line bg-success-soft text-center">
             <p className="font-heading text-h3 text-success-ink">
+              <span aria-hidden="true">{userTurns >= MAX_USER_TURNS ? '🏁' : '🎯'}</span>{' '}
               {userTurns >= MAX_USER_TURNS ? 'Розмову завершено' : 'Схоже, завдання виконано!'}
             </p>
             <Button onClick={() => void finish()}>Подивитися підсумок</Button>

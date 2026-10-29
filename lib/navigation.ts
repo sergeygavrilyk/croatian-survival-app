@@ -34,7 +34,7 @@ export function showsBottomNav(path: string): boolean {
   const clean = path.length > 1 ? path.replace(/\/+$/, '') : path;
   // Рольова гра — повноекранне заняття, без нижньої панелі
   if (under(clean, '/situations')) return !clean.endsWith('/roleplay');
-  return ['/', '/lessons', '/lessons/tests', '/trainer', '/mistakes', '/mistakes/typical', '/reading', '/dictionary', '/profile'].includes(clean);
+  return ['/', '/lessons', '/lessons/tests', '/lessons/grammar', '/trainer', '/mistakes', '/mistakes/typical', '/reading', '/dictionary', '/profile'].includes(clean);
 }
 
 /** «Практика» → «Помилки»: особисті помилки й каталог типових помилок українців (§19). */

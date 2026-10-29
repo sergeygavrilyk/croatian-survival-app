@@ -184,3 +184,18 @@ export function songBySlug(slug: unknown): Song | null {
 export function listenUrl(song: Pick<Song, 'listen_query'>): string {
   return `https://www.youtube.com/results?search_query=${encodeURIComponent(song.listen_query)}`;
 }
+
+/** Емодзі пісні за приводом (DESIGN_SYSTEM §3.4: емодзі — тема, не кнопка). Без прапорів — у Windows вони показуються літерами. */
+const SONG_ICONS: Record<string, string> = {
+  'sretan-rodendan': '🎂',
+  'lijepa-nasa-domovino': '🏟️',
+  'veceras-je-nasa-festa': '🎉',
+  kalelarga: '🌇',
+  'zadar-je-u-srcu-mome': '❤️',
+  'croatio-iz-duse-te-ljubim': '🎤',
+  'da-te-mogu-pismom-zvati': '💌',
+};
+
+export function songIcon(slug: string): string {
+  return SONG_ICONS[slug] ?? '🎵';
+}

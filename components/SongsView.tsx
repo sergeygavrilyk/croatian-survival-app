@@ -1,12 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronDown, ExternalLink, Music } from 'lucide-react';
+import { ChevronDown, ExternalLink } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import Hr from '@/components/ui/Hr';
 import AudioButton from '@/components/ui/AudioButton';
 import PageHeader from '@/components/ui/PageHeader';
-import { listenUrl, type Song } from '@/lib/songs';
+import { listenUrl, songIcon, type Song } from '@/lib/songs';
 import { cn } from '@/lib/ui';
 
 /**
@@ -33,8 +33,8 @@ export default function SongsView({ songs }: { songs: readonly Song[] }) {
                 aria-expanded={expanded}
                 className="flex min-h-11 items-start gap-3 text-left"
               >
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary-ink">
-                  <Music className="size-5" aria-hidden="true" />
+                <span aria-hidden="true" className="flex size-12 shrink-0 items-center justify-center rounded-card bg-warning-soft text-2xl leading-none">
+                  {songIcon(s.slug)}
                 </span>
                 <span className="min-w-0 flex-1">
                   <Hr as="span" className="block font-heading text-h3 break-words">{s.title}</Hr>
@@ -50,7 +50,9 @@ export default function SongsView({ songs }: { songs: readonly Song[] }) {
                   <p className="text-caption text-ink-subtle">{s.origin}</p>
 
                   <div>
-                    <h3 className="mb-1 text-label text-ink-muted">Слова</h3>
+                    <h3 className="mb-1 text-label text-ink-muted">
+                      <span aria-hidden="true">📚</span> Слова
+                    </h3>
                     <ul className="flex flex-col divide-y divide-line">
                       {s.words.map((w) => (
                         <li key={w.hr} className="flex items-center gap-2 py-1.5">
@@ -65,7 +67,9 @@ export default function SongsView({ songs }: { songs: readonly Song[] }) {
                   {s.lyrics && (
                     <div className="rounded-card border border-line bg-surface-muted p-3">
                       <div className="mb-1 flex items-center justify-between gap-2">
-                        <h3 className="text-label text-ink-muted">Текст</h3>
+                        <h3 className="text-label text-ink-muted">
+                          <span aria-hidden="true">🎶</span> Текст
+                        </h3>
                         <AudioButton text={s.lyrics.map((l) => l.hr).join(' ')} label="Прослухати текст" />
                       </div>
                       <ol className="flex flex-col gap-1.5">

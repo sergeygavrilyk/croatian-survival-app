@@ -6,10 +6,10 @@ type Size = 'md' | 'sm';
 
 const VARIANTS: Record<Variant, string> = {
   primary: 'bg-primary text-white hover:bg-primary-hover active:bg-primary-pressed',
-  secondary: 'bg-primary-soft text-primary-ink hover:bg-blue-100',
+  secondary: 'bg-primary-soft text-primary-ink hover:bg-primary-soft-hover',
   tertiary: 'text-ink-muted hover:bg-surface-muted hover:text-ink',
-  success: 'bg-success text-white hover:bg-emerald-700',
-  danger: 'bg-danger text-white hover:bg-rose-700',
+  success: 'bg-success text-white hover:bg-success-hover',
+  danger: 'bg-danger text-white hover:bg-danger-hover',
 };
 
 const SIZES: Record<Size, string> = {

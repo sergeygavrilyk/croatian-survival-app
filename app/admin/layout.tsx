@@ -15,10 +15,14 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans">
-      <nav className="bg-slate-900 text-white p-4 shadow-md flex justify-between items-center">
-        <h1 className="font-bold tracking-widest uppercase">🇭🇷 Croatian Survival CMS</h1>
-        <Link href="/" className="text-slate-400 hover:text-white text-sm">Повернутися в додаток</Link>
+    <div className="min-h-screen bg-canvas font-sans">
+      <nav className="flex items-center justify-between gap-3 border-b border-line bg-surface px-4 py-3 shadow-sm sm:px-6">
+        <p className="font-heading text-h3">
+          <span aria-hidden="true">🛠️</span> Croatian Survival CMS
+        </p>
+        <Link href="/" className="flex min-h-11 items-center rounded-control px-3 text-label text-primary-ink hover:bg-primary-soft">
+          Повернутися в додаток
+        </Link>
       </nav>
       {children}
     </div>

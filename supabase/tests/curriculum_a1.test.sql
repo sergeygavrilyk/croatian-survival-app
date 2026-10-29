@@ -21,8 +21,8 @@ begin
 end $$;
 
 -- ---------------------------------------------------------------- структура
-select pg_temp.ok(pg_temp.n($q$select 1 from public.modules where level_code = 'A1' and status = 'PUBLISHED'$q$) = 10,
-  'A1: 10 опублікованих модулів');
+select pg_temp.ok(pg_temp.n($q$select 1 from public.modules where level_code = 'A1' and status = 'PUBLISHED'$q$) = 13,
+  'A1: 13 опублікованих модулів (програма A1 v3, 2026-10-26)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.modules m where m.level_code = 'A1'
   and (select count(*) from public.units u where u.module_id = m.id and u.status = 'PUBLISHED') <> 1$q$) = 0,
   'у кожному модулі A1 один опублікований юніт');
@@ -31,8 +31,8 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l join public.units 
   'A1: щонайменше 49 опублікованих уроків');
 select pg_temp.ok(pg_temp.n($q$select u.id from public.units u join public.modules m on m.id = u.module_id
   join public.lessons l on l.unit_id = u.id where m.level_code = 'A1'
-  group by u.id having count(*) not between 3 and 9 or max(l.order_index) <> count(*) or min(l.order_index) <> 1$q$) = 0,
-  'у кожному юніті A1 3–9 уроків, номери 1…N без пропусків');
+  group by u.id having count(*) not between 3 and 11 or max(l.order_index) > 11$q$) = 0,
+  'у кожному юніті A1 3–11 уроків на місцях 1…11 (програма A1 v3: місця нових уроків заповнюються модуль за модулем)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.grammar_topics g where g.cefr = 'A1'
   and (g.status <> 'PUBLISHED' or (select count(*) from public.grammar_rules r where r.topic_id = g.id) < 2)$q$) = 0,
   'усі 13 тем граматики A1 опубліковано, у кожній ≥ 2 правила');
@@ -42,11 +42,12 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.grammar_rules r join public.
 
 -- ---------------------------------------------------------------- урок
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l where l.level_code = 'A1' and l.status = 'PUBLISHED'
-  and (select count(*) from public.lesson_items i where i.lesson_id = l.id and i.item_type = 'lexeme') not between 10 and 14$q$) = 0,
-  'у кожному уроці A1 10–14 слів');
+  and (select count(*) from public.lesson_items i where i.lesson_id = l.id and i.item_type = 'lexeme') not between 10 and 25$q$) = 0,
+  'у кожному уроці A1 10–25 слів (A1 v3: до 25 — скільки потрібно темі)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l where l.level_code = 'A1' and l.status = 'PUBLISHED'
-  and (select count(*) from public.lesson_items i where i.lesson_id = l.id and i.item_type = 'exercise') <> 12$q$) = 0,
-  'у кожному уроці A1 12 вправ');
+  and (select count(*) from public.lesson_items i where i.lesson_id = l.id and i.item_type = 'exercise')
+      <> case when exists (select 1 from public.conversations c where c.lesson_id = l.id and c.source = 'claude_curriculum_a1_v3') then 15 else 12 end$q$) = 0,
+  'у кожному уроці A1 12 вправ (перебудований за A1 v3 — 15)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l where l.level_code = 'A1' and l.status = 'PUBLISHED'
   and (select count(*) from public.conversations c where c.lesson_id = l.id and c.status = 'PUBLISHED') <> 2$q$) = 0,
   'у кожному уроці A1 два діалоги');
@@ -59,8 +60,8 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l where l.level_code
        where i.lesson_id = l.id and i.item_type = 'exercise') < 6$q$) = 0,
   'у кожному уроці A1 усі 6 типів вправ');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons where level_code = 'A1' and status = 'PUBLISHED'
-  and (estimated_minutes is distinct from 12 or jsonb_array_length(objectives) < 2)$q$) = 0,
-  'урок A1: 12 хвилин і мета уроку');
+  and (estimated_minutes not in (12, 15) or jsonb_array_length(objectives) < 2)$q$) = 0,
+  'урок A1: 12 хвилин (A1 v3 — 15) і мета уроку');
 select pg_temp.ok(pg_temp.n($q$select lesson_id, item_type, item_id from public.lesson_items i
   join public.lessons l on l.id = i.lesson_id where l.level_code = 'A1' group by 1, 2, 3 having count(*) > 1$q$) = 0,
   'жоден елемент не повторюється в уроці A1');

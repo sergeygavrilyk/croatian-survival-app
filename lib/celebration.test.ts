@@ -1,7 +1,9 @@
 // Святковий екран після уроку (lib/celebration.ts). Запуск: npm test
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { CONFETTI_COLORS, confettiPieces, lessonCelebration, streakNote } from './celebration.ts';
+import {
+  CONFETTI_COLORS, answerStreakNote, assessmentCheer, confettiPieces, lessonCelebration, roleplayCheer, roleplayTiles, streakNote,
+} from './celebration.ts';
 
 test('Свято: нові слова й серія → дві плитки «+N нових слів» і «🔥 N днів поспіль»', () => {
   const c = lessonCelebration({ newWords: 22, lessonWords: 22, streak: 5 });
@@ -56,4 +58,37 @@ test('Конфеті: однаковий seed — однаковий набір;
   }
   assert.equal(confettiPieces('x', 999).length, 150);
   assert.equal(confettiPieces('x', -5).length, 0);
+});
+
+test('Рольова гра: 🎉 з конфеті лише коли завдання виконано; 💪 — розмова була; 🌱 — нічого не сказали', () => {
+  assert.deepEqual(roleplayCheer(true, 4), { emoji: '🎉', title: 'Завдання виконано!', celebrate: true });
+  assert.equal(roleplayCheer(false, 3).emoji, '💪');
+  assert.equal(roleplayCheer(false, 3).celebrate, false);
+  assert.equal(roleplayCheer(false, 0).emoji, '🌱');
+});
+
+test('Рольова гра: плитки реплік і фраз на повторення, українські форми', () => {
+  assert.deepEqual(roleplayTiles({ userTurns: 5, errorsSaved: 2 }).map((t) => [t.emoji, t.value, t.label, t.tone]), [
+    ['💬', '5', 'ваших реплік', 'success'],
+    ['🔁', '2', 'фрази на повторення', 'warning'],
+  ]);
+  assert.equal(roleplayTiles({ userTurns: 1, errorsSaved: 0 })[0].label, 'ваша репліка');
+  assert.deepEqual(roleplayTiles({ userTurns: 0, errorsSaved: 0 }), []);
+});
+
+test('Перевірка рівня: пройдено — 🎉 і конфеті; ні — 💪 / 🌱 без «провалу»', () => {
+  assert.deepEqual(assessmentCheer(true, 0.9), { emoji: '🎉', title: 'Пройдено!', celebrate: true });
+  assert.equal(assessmentCheer(false, 0.65).emoji, '💪');
+  assert.equal(assessmentCheer(false, 0.2).emoji, '🌱');
+  for (const c of [assessmentCheer(false, 0.65), assessmentCheer(false, 0.2)]) {
+    assert.equal(c.celebrate, false);
+    assert.doesNotMatch(c.title, /провал|не склали|погано/i);
+  }
+});
+
+test('Вправи уроку: серія правильних поспіль — з третьої', () => {
+  assert.equal(answerStreakNote(0), null);
+  assert.equal(answerStreakNote(2), null);
+  assert.equal(answerStreakNote(3), '🔥 3 поспіль!');
+  assert.equal(answerStreakNote(7), '🔥 7 поспіль!');
 });

@@ -10,12 +10,14 @@ import PageHeader from '@/components/ui/PageHeader';
 import ProgressBar from '@/components/ui/ProgressBar';
 import ErrorState from '@/components/ui/ErrorState';
 import EmptyState from '@/components/ui/EmptyState';
+import LevelBadge from '@/components/ui/LevelBadge';
 import AssessmentResult from '@/components/AssessmentResult';
 import { AREA_ICONS } from '@/components/assessment-icons';
 import { submitAssessment, type AssessmentResultView } from '@/app/actions/assessment';
 import { track } from '@/lib/analytics-client';
 import { AREA_LABELS, AREAS, percent, type Area, type ItemResponse } from '@/lib/assessment';
 import { isUkrainian, tilesFrom } from '@/lib/lesson-flow';
+import { assessmentIcon, levelStyle } from '@/lib/levels';
 import { speakCroatian } from '@/utils/speech';
 import { browserSpeech, micHelpHere } from '@/utils/speech-recognition';
 import { SpeechError, type ListeningSession, type SpeechErrorCode } from '@/lib/speech-provider';
@@ -43,6 +45,16 @@ const SKILL_TITLE: Record<string, string> = {
   speaking: 'Скажіть уголос',
 };
 
+/** Емодзі завдання — категорія поруч із назвою (DESIGN_SYSTEM §3.4), не кнопка. */
+const SKILL_EMOJI: Record<string, string> = {
+  listening: '🎧',
+  reading: '📖',
+  interaction: '💬',
+  mediation: '🤝',
+  writing: '✍️',
+  speaking: '🎙️',
+};
+
 type Phase = 'intro' | 'items' | 'submitting' | 'error' | 'result';
 
 /**
@@ -55,6 +67,8 @@ export default function AssessmentPlayer(props: {
   cefr: string;
   title: string;
   subtitle: string | null;
+  /** Номер модуля (перевірка модуля) — для емодзі теми */
+  moduleOrder?: number | null;
   description: string | null;
   minutes: number | null;
   passRatio: number;
@@ -64,6 +78,9 @@ export default function AssessmentPlayer(props: {
 }) {
   const { slug, kind, cefr, title, subtitle, description, minutes, passRatio, areaMinRatio, items, loadError } = props;
   const backHref = `/lessons/tests?level=${cefr}`;
+  // Радісний стиль (DESIGN_SYSTEM §3.4): колір рівня й знак перевірки (емодзі модуля, 🚩 середина, 🏆 фінал)
+  const lv = levelStyle(cefr);
+  const icon = assessmentIcon(kind, cefr, props.moduleOrder);
   const [phase, setPhase] = useState<Phase>('intro');
   const [index, setIndex] = useState(0);
   const [responses, setResponses] = useState<Record<string, ItemResponse>>({});
@@ -129,33 +146,62 @@ export default function AssessmentPlayer(props: {
       <div className="min-h-screen">
         <PageHeader title={title} backHref={backHref} closeMode />
         <main className="mx-auto flex max-w-md flex-col gap-4 px-4 py-6">
-          <Card className="flex flex-col gap-3">
-            <p className="text-label text-ink-muted">{cefr}{subtitle ? ` · ${subtitle}` : ''}</p>
-            <h2 className="font-heading text-h2">{title}</h2>
+          <Card hero className="flex flex-col gap-4 animate-fade-in-up">
+            <div className="flex items-center gap-3">
+              <span
+                aria-hidden="true"
+                className={cn('flex size-14 shrink-0 items-center justify-center rounded-card text-3xl leading-none', lv.soft)}
+              >
+                {icon}
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="flex flex-wrap items-center gap-2">
+                  <LevelBadge level={cefr} />
+                  {subtitle && <span className={cn('text-label break-words', lv.ink)}>{subtitle}</span>}
+                </p>
+                <h2 className="font-heading text-h2 break-words">{title}</h2>
+              </div>
+            </div>
             {description && <p className="text-body text-ink-muted">{description}</p>}
             <ul className="flex flex-col gap-2" aria-label="Що перевіряємо">
               {AREAS.map((a) => {
                 const Icon = AREA_ICONS[a];
                 return (
                   <li key={a} className="flex items-center gap-3">
-                    <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary-ink">
+                    <span className={cn('flex size-10 shrink-0 items-center justify-center rounded-full', lv.soft, lv.ink)}>
                       <Icon className="size-5" aria-hidden="true" />
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block text-body font-semibold">{AREA_LABELS[a].title}</span>
                       <span className="block text-caption text-ink-subtle">{AREA_LABELS[a].hint}</span>
                     </span>
-                    <span className="text-label text-ink-muted">{counts[a]}</span>
+                    <span className={cn('text-label tabular-nums', lv.ink)}>{counts[a]}</span>
                   </li>
                 );
               })}
             </ul>
           </Card>
-          <ul className="flex flex-col gap-1 px-1 text-body text-ink-muted">
-            <li>• {items.length} завдань{minutes ? `, ~${minutes} хв` : ''}. Правильні відповіді — наприкінці.</li>
-            <li>• Пройдено, якщо ≥ {percent(passRatio)} % загалом і ≥ {percent(areaMinRatio)} % у кожній навичці.</li>
-            <li>• Немає мікрофона — завдання «вголос» можна пропустити.</li>
-            <li>• Уроки тест не блокує. Результат — оцінка застосунку, не офіційний сертифікат.</li>
+          <ul className="flex flex-col gap-2 px-1 text-body text-ink-muted">
+            <li className="flex gap-2">
+              <span aria-hidden="true">⏱️</span>
+              <span>
+                {items.length} завдань{minutes ? `, ~${minutes} хв` : ''}. Правильні відповіді — наприкінці.
+              </span>
+            </li>
+            <li className="flex gap-2">
+              <span aria-hidden="true">🎯</span>
+              <span>
+                Пройдено, якщо ≥ {percent(passRatio)} % загалом і ≥ {percent(areaMinRatio)} % у кожній навичці.
+              </span>
+            </li>
+            <li className="flex gap-2">
+              <span aria-hidden="true">🎙️</span>
+              <span>Немає мікрофона — завдання «вголос» можна пропустити.</span>
+            </li>
+            <li className="flex gap-2">
+              <span aria-hidden="true">🌱</span>
+              <span>Уроки тест не блокує. Результат — оцінка застосунку, не офіційний сертифікат.</span>
+            </li>
           </ul>
           <Button block onClick={start}>Почати</Button>
         </main>
@@ -181,7 +227,7 @@ export default function AssessmentPlayer(props: {
   }
 
   if (phase === 'result' && result) {
-    return <AssessmentResult result={result} title={title} backHref={backHref} onRetry={start} />;
+    return <AssessmentResult result={result} title={title} icon={icon} backHref={backHref} onRetry={start} />;
   }
 
   const item = items[index];
@@ -190,14 +236,21 @@ export default function AssessmentPlayer(props: {
     <div className="min-h-screen pb-10">
       <PageHeader title={title} backHref={backHref} closeMode>
         <div className="flex items-center gap-3">
-          <ProgressBar value={index} max={items.length} label="Прогрес тесту" className="flex-1" />
-          <span className="text-caption text-ink-subtle">{index + 1} / {items.length}</span>
+          <ProgressBar value={index} max={items.length} label="Прогрес тесту" className="flex-1" barClassName={lv.bar} />
+          <span className={cn('text-caption tabular-nums', lv.ink)}>
+            {index + 1} / {items.length}
+          </span>
         </div>
       </PageHeader>
       <main className="mx-auto flex max-w-md flex-col gap-4 px-4 py-6">
-        <p className="flex items-center gap-2 text-label text-ink-muted">
-          <Icon className="size-4" aria-hidden="true" />
-          {AREA_LABELS[item.area].title} · {SKILL_TITLE[item.skill] ?? 'Завдання'}
+        <p className="flex flex-wrap items-center gap-2 text-label text-ink-muted">
+          <span className={cn('inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-caption font-semibold', lv.soft, lv.ink)}>
+            <Icon className="size-3.5" aria-hidden="true" />
+            {AREA_LABELS[item.area].title}
+          </span>
+          <span>
+            <span aria-hidden="true">{SKILL_EMOJI[item.skill] ?? '📝'}</span> {SKILL_TITLE[item.skill] ?? 'Завдання'}
+          </span>
         </p>
         <ItemView key={`${run}:${item.id}`} item={item} onAnswer={answer} />
       </main>

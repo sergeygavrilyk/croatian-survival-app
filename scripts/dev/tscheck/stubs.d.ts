@@ -7,6 +7,7 @@ declare module 'react' {
   export function useRef<T>(v: T): { current: T };
   export function useId(): string;
   export function useTransition(): [boolean, (f: () => void) => void];
+  export const Fragment: any;
   export function useSyncExternalStore<T>(subscribe: (cb: () => void) => () => void, get: () => T, getServer?: () => T): T;
   export type ReactNode = any; export type FormEvent = any; export type CSSProperties = any;
   const React: any; export default React;

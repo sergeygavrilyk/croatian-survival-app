@@ -1,5 +1,5 @@
 {
-"_note": "Слова уроків A0–A1 (лема як у базі, переклад, найнижчий рівень уроку), знімок робочої бази 2026-10-15; 2026-10-19 — оновлено під уроки A0 за темою (curriculum_a0_v4, модулі A0.1–A0.10; 2026-10-20 — A0.10): нові слова уроків додано, рівні перераховано; рівень null — слова вже немає в уроках (воно лишається у словнику застосунку, але не рахується знайомим). Потрібен gen_reading.py: словничок тексту й частка знайомих слів. Даних користувачів немає.",
+"_note": "Слова уроків A0–A1 (лема як у базі, переклад, найнижчий рівень уроку), знімок робочої бази 2026-10-15; 2026-10-19 — оновлено під уроки A0 за темою (curriculum_a0_v4, модулі A0.1–A0.10; 2026-10-20 — A0.10): нові слова уроків додано, рівні перераховано; рівень null — слова вже немає в уроках (воно лишається у словнику застосунку, але не рахується знайомим). Потрібен gen_reading.py: словничок тексту й частка знайомих слів. Даних користувачів немає. 2026-10-26 — оновлено під програму A1 v3 (модулі A1.1–A1.13: нові слова уроків додано, рівні перераховано; сполучники ali, ili, jer — A1: їх вивчають у темі «Сполучники»; dokaz, prijevod — A1: вони у виразах уроку 104 dokaz o smještaju, ovjereni prijevod).",
 "lexemes": {
 "a ti": [
 "a ti",
@@ -11,20 +11,45 @@
 "а ви? (ввічливо)",
 "A0"
 ],
+"adapter": [
+"adapter",
+"адаптер, перехідник",
+"A1"
+],
 "adresa": [
 "adresa",
 "адреса",
 "A0"
+],
+"adresa e-pošte": [
+"adresa e-pošte",
+"адреса електронної пошти",
+"A1"
+],
+"adresa za dostavu": [
+"adresa za dostavu",
+"адреса доставки",
+"A1"
 ],
 "advent": [
 "advent",
 "адвент (час перед Різдвом)",
 "A1"
 ],
+"adventski vijenac": [
+"adventski vijenac",
+"адвентовий вінок",
+"A1"
+],
 "afrika": [
 "Afrika",
 "Африка",
 "A0"
+],
+"agencija za nekretnine": [
+"agencija za nekretnine",
+"агентство нерухомості",
+"A1"
 ],
 "akcija": [
 "akcija",
@@ -34,6 +59,11 @@
 "akumulator": [
 "akumulator",
 "акумулятор",
+"A1"
+],
+"akvarij": [
+"akvarij",
+"акваріум",
 "A1"
 ],
 "alat": [
@@ -70,6 +100,26 @@
 "Amerika",
 "Америка",
 "A0"
+],
+"anestezija": [
+"anestezija",
+"анестезія",
+"A1"
+],
+"antibiotik": [
+"antibiotik",
+"антибіотик",
+"A1"
+],
+"aparat za gašenje": [
+"aparat za gašenje",
+"вогнегасник",
+"A1"
+],
+"aparat za kavu": [
+"aparat za kavu",
+"кавовий автомат, кавоварка",
+"A1"
 ],
 "apartman": [
 "apartman",
@@ -126,6 +176,11 @@
 "Азія",
 "A0"
 ],
+"ažuriranje": [
+"ažuriranje",
+"оновлення",
+"A1"
+],
 "badnjak": [
 "Badnjak",
 "Святвечір (24 грудня)",
@@ -140,6 +195,16 @@
 "baka",
 "бабуся",
 "A0"
+],
+"bakalar": [
+"bakalar",
+"бакалар (сушена тріска)",
+"A1"
+],
+"balet": [
+"balet",
+"балет",
+"A1"
 ],
 "balkon": [
 "balkon",
@@ -164,12 +229,17 @@
 "bankovni račun": [
 "bankovni račun",
 "банківський рахунок",
-"A1"
+null
 ],
 "barem": [
 "barem",
 "принаймні",
 "A0"
+],
+"barokni": [
+"barokni",
+"бароковий",
+"A1"
 ],
 "baterija": [
 "baterija",
@@ -185,6 +255,11 @@
 "bazen",
 "басейн",
 "A0"
+],
+"baš": [
+"baš",
+"саме / якраз / власне",
+"A1"
 ],
 "beba": [
 "beba",
@@ -211,6 +286,11 @@
 "безконтактно (про оплату карткою)",
 "A0"
 ],
+"besplatna dostava": [
+"besplatna dostava",
+"безкоштовна доставка",
+"A1"
+],
 "besplatno": [
 "besplatno",
 "безкоштовно",
@@ -221,6 +301,16 @@
 "беванда (вино зі звичайною водою; Далмація)",
 "A0"
 ],
+"bez glutena": [
+"bez glutena",
+"без глютену",
+"A1"
+],
+"bez recepta": [
+"bez recepta",
+"без рецепта",
+"A1"
+],
 "bez šećera": [
 "bez šećera",
 "без цукру",
@@ -230,6 +320,11 @@
 "bezalkoholno piće",
 "безалкогольний напій",
 "A0"
+],
+"bezolovni benzin": [
+"bezolovni benzin",
+"неетилований бензин",
+"A1"
 ],
 "bež": [
 "bež",
@@ -245,6 +340,11 @@
 "bicikl",
 "велосипед",
 "A0"
+],
+"biciklist": [
+"biciklist",
+"велосипедист",
+"A1"
 ],
 "biciklistička staza": [
 "biciklistička staza",
@@ -266,15 +366,40 @@
 "біле вино",
 "A0"
 ],
+"bijesan": [
+"bijesan",
+"розлючений",
+"A1"
+],
 "biljeg": [
 "biljeg",
 "гербова марка (збір)",
+"A1"
+],
+"bilježnica": [
+"bilježnica",
+"зошит",
+"A1"
+],
+"bilo tko": [
+"bilo tko",
+"будь-хто",
+"A1"
+],
+"bilo što": [
+"bilo što",
+"будь-що",
 "A1"
 ],
 "biti": [
 "biti",
 "бути",
 "A0"
+],
+"bivši": [
+"bivši",
+"колишній",
+"A1"
 ],
 "blagajna": [
 "blagajna",
@@ -291,6 +416,16 @@
 "свято",
 "A0"
 ],
+"blagovaonica": [
+"blagovaonica",
+"їдальня (кімната)",
+"A1"
+],
+"blagovaonski stol": [
+"blagovaonski stol",
+"обідній стіл",
+"A1"
+],
 "blitva": [
 "blitva",
 "мангольд",
@@ -301,10 +436,20 @@
 "близнюки",
 "A0"
 ],
+"blizina": [
+"blizina",
+"близькість (u blizini — поруч)",
+"A1"
+],
 "blizu": [
 "blizu",
 "поруч / близько",
 "A0"
+],
+"bljutav": [
+"bljutav",
+"прісний, несмачний (без смаку)",
+"A1"
 ],
 "blokiran": [
 "blokiran",
@@ -330,6 +475,16 @@
 "boja",
 "колір",
 "A0"
+],
+"bojice": [
+"bojice",
+"кольорові олівці",
+"A1"
+],
+"bojiti jaja": [
+"bojiti jaja",
+"фарбувати яйця",
+"A1"
 ],
 "bojler": [
 "bojler",
@@ -406,10 +561,30 @@
 "Боснія і Герцеговина",
 "A0"
 ],
+"bočica": [
+"bočica",
+"пляшечка (для малюка)",
+"A1"
+],
 "božić": [
 "Božić",
 "Різдво",
 "A0"
+],
+"božićna kuglica": [
+"božićna kuglica",
+"ялинкова кулька",
+"A1"
+],
+"božićnica": [
+"božićnica",
+"різдвяна премія",
+"A1"
+],
+"božićno drvce": [
+"božićno drvce",
+"різдвяна ялинка",
+"A1"
 ],
 "brada": [
 "brada",
@@ -420,6 +595,11 @@
 "brak",
 "шлюб",
 "A0"
+],
+"brancin": [
+"brancin",
+"сібас, морський окунь",
+"A1"
 ],
 "brat": [
 "brat",
@@ -441,14 +621,44 @@
 "сімейний стан",
 "A0"
 ],
+"brašno": [
+"brašno",
+"борошно",
+"A1"
+],
+"brdo": [
+"brdo",
+"пагорб",
+"A1"
+],
 "breskva": [
 "breskva",
 "персик",
 "A0"
 ],
+"brijati se": [
+"brijati se",
+"голитися",
+"A1"
+],
 "brinuti se": [
 "brinuti se",
 "турбуватися",
+"A1"
+],
+"brisati prašinu": [
+"brisati prašinu",
+"витирати пил",
+"A1"
+],
+"brisač": [
+"brisač",
+"склоочисник, «двірник»",
+"A1"
+],
+"britvica": [
+"britvica",
+"бритва (станок)",
 "A1"
 ],
 "brkovi": [
@@ -491,6 +701,11 @@
 "цифра",
 "A0"
 ],
+"broš": [
+"broš",
+"брошка",
+"A1"
+],
 "brtva": [
 "brtva",
 "прокладка (у крані)",
@@ -511,6 +726,16 @@
 "швидкий",
 "A0"
 ],
+"brza pošta": [
+"brza pošta",
+"експрес-пошта",
+"A1"
+],
+"brzi vlak": [
+"brzi vlak",
+"швидкий поїзд",
+"A1"
+],
 "brzina": [
 "brzina",
 "швидкість",
@@ -521,6 +746,11 @@
 "швидко",
 "A0"
 ],
+"bubreg": [
+"bubreg",
+"нирка",
+"A1"
+],
 "budilica": [
 "budilica",
 "будильник",
@@ -529,6 +759,16 @@
 "buditi se": [
 "buditi se",
 "прокидатися",
+"A1"
+],
+"budućnost": [
+"budućnost",
+"майбутнє",
+"A1"
+],
+"buha": [
+"buha",
+"блоха",
 "A1"
 ],
 "buka": [
@@ -561,6 +801,21 @@
 "дриль",
 "A1"
 ],
+"bušiti": [
+"bušiti",
+"свердлити",
+"A1"
+],
+"carina": [
+"carina",
+"митниця; мито",
+"A1"
+],
+"celer": [
+"celer",
+"селера",
+"A1"
+],
 "cent": [
 "cent",
 "цент",
@@ -570,6 +825,16 @@
 "centar",
 "центр",
 "A0"
+],
+"centralno grijanje": [
+"centralno grijanje",
+"центральне опалення",
+"A1"
+],
+"certifikat": [
+"certifikat",
+"сертифікат",
+"A1"
 ],
 "cesta": [
 "cesta",
@@ -586,10 +851,20 @@
 "цілий",
 "A0"
 ],
+"cijelo vrijeme": [
+"cijelo vrijeme",
+"весь час",
+"A1"
+],
 "cijena": [
 "cijena",
 "ціна",
 "A0"
+],
+"cijena vožnje": [
+"cijena vožnje",
+"вартість поїздки",
+"A1"
 ],
 "cijepiti": [
 "cijepiti",
@@ -599,6 +874,11 @@
 "cijepljenje": [
 "cijepljenje",
 "щеплення",
+"A1"
+],
+"cilj": [
+"cilj",
+"ціль",
 "A1"
 ],
 "cimerica": [
@@ -616,6 +896,16 @@
 "торгуватися (про ціну)",
 "A0"
 ],
+"cjepivo": [
+"cjepivo",
+"вакцина",
+"A1"
+],
+"crijeva": [
+"crijeva",
+"кишківник",
+"A1"
+],
 "crkva": [
 "crkva",
 "церква",
@@ -625,6 +915,11 @@
 "crn",
 "чорний",
 "A0"
+],
+"crni rižot": [
+"crni rižot",
+"чорне різото (з чорнилом каракатиці)",
+"A1"
 ],
 "crno vino": [
 "crno vino",
@@ -651,9 +946,19 @@
 "дівчина (романтично)",
 "A0"
 ],
+"curi mi nos": [
+"curi mi nos",
+"у мене нежить (тече з носа)",
+"A1"
+],
 "curiti": [
 "curiti",
 "текти; протікати",
+"A1"
+],
+"cvjetnica": [
+"Cvjetnica",
+"Квітна (Вербна) неділя",
 "A1"
 ],
 "da": [
@@ -681,30 +986,75 @@
 "пульт (від телевізора)",
 "A0"
 ],
+"dalmacija": [
+"Dalmacija",
+"Далмація",
+"A1"
+],
+"dalmatinski": [
+"dalmatinski",
+"далматинський",
+"A1"
+],
+"dame i gospodo": [
+"dame i gospodo",
+"пані та панове",
+"A1"
+],
 "dan": [
 "dan",
 "день",
 "A0"
+],
+"dan antifašističke borbe": [
+"Dan antifašističke borbe",
+"День антифашистської боротьби (22 червня)",
+"A1"
 ],
 "dan državnosti": [
 "Dan državnosti",
 "День державності (30 травня)",
 "A0"
 ],
+"dan pobjede": [
+"Dan pobjede",
+"День перемоги й вдячності батьківщині (5 серпня)",
+"A1"
+],
+"dan sjećanja": [
+"Dan sjećanja",
+"День пам’яті жертв Вітчизняної війни, Вуковара й Шкабрні (18 листопада)",
+"A1"
+],
 "danas": [
 "danas",
 "сьогодні",
 "A0"
+],
+"dar": [
+"dar",
+"подарунок",
+"A1"
 ],
 "darivati": [
 "darivati",
 "дарувати; обдаровувати",
 "A1"
 ],
+"daska za rezanje": [
+"daska za rezanje",
+"обробна дошка",
+"A1"
+],
 "dati": [
 "dati",
 "дати",
 "A0"
+],
+"dati otkaz": [
+"dati otkaz",
+"звільнитися / подати на звільнення",
+"A1"
 ],
 "datoteka": [
 "datoteka",
@@ -725,6 +1075,11 @@
 "debeo",
 "товстий",
 "A0"
+],
+"debitna kartica": [
+"debitna kartica",
+"дебетова картка",
+"A1"
 ],
 "debljati se": [
 "debljati se",
@@ -755,6 +1110,11 @@
 "deseti",
 "десятий",
 "A0"
+],
+"desni": [
+"desni",
+"ясна",
+"A1"
 ],
 "desno": [
 "desno",
@@ -791,10 +1151,30 @@
 "дев’ятсот",
 "A0"
 ],
+"devizni račun": [
+"devizni račun",
+"валютний рахунок",
+"A1"
+],
+"dezodorans": [
+"dezodorans",
+"дезодорант",
+"A1"
+],
 "dečko": [
 "dečko",
 "хлопець (романтично)",
 "A0"
+],
+"digitalni": [
+"digitalni",
+"цифровий",
+"A1"
+],
+"dijagnoza": [
+"dijagnoza",
+"діагноз",
+"A1"
 ],
 "dijeliti": [
 "dijeliti",
@@ -816,15 +1196,35 @@
 "дим",
 "A1"
 ],
+"dinja": [
+"dinja",
+"диня",
+"A1"
+],
 "diploma": [
 "diploma",
 "диплом",
+"A1"
+],
+"direktni let": [
+"direktni let",
+"прямий рейс",
 "A1"
 ],
 "disati": [
 "disati",
 "дихати",
 "A0"
+],
+"divlja svinja": [
+"divlja svinja",
+"дикий кабан",
+"A1"
+],
+"divlji": [
+"divlji",
+"дикий",
+"A1"
 ],
 "dizalo": [
 "dizalo",
@@ -871,6 +1271,11 @@
 "шерсть",
 "A0"
 ],
+"dnevna karta": [
+"dnevna karta",
+"денний квиток",
+"A1"
+],
 "dnevni boravak": [
 "dnevni boravak",
 "вітальня",
@@ -879,6 +1284,11 @@
 "dnevni meni": [
 "dnevni meni",
 "денне меню",
+"A1"
+],
+"dnevni sastanak": [
+"dnevni sastanak",
+"щоденна нарада; дейлі (стендап)",
 "A1"
 ],
 "dnevno": [
@@ -919,7 +1329,7 @@
 "dobiti": [
 "dobiti",
 "отримати / здобути",
-"A1"
+null
 ],
 "dobra večer": [
 "dobra večer",
@@ -941,9 +1351,29 @@
 "Доброго ранку.",
 "A0"
 ],
+"dobro raspoložen": [
+"dobro raspoložen",
+"у гарному настрої",
+"A1"
+],
+"dobrodošlica": [
+"dobrodošlica",
+"привітання з приїздом, гостинний прийом",
+"A1"
+],
 "dodati": [
 "dodati",
 "додати",
+"A1"
+],
+"dodati u košaricu": [
+"dodati u košaricu",
+"додати в кошик",
+"A1"
+],
+"dodirnuti": [
+"dodirnuti",
+"торкнутися",
 "A1"
 ],
 "dogovor": [
@@ -971,6 +1401,21 @@
 "доказ; підтвердження",
 "A1"
 ],
+"dokaz o smještaju": [
+"dokaz o smještaju",
+"підтвердження житла",
+"A1"
+],
+"dokaz o sredstvima": [
+"dokaz o sredstvima",
+"підтвердження коштів (на утримання)",
+"A1"
+],
+"doktor": [
+"doktor",
+"лікар",
+"A1"
+],
 "dokument": [
 "dokument",
 "документ",
@@ -986,6 +1431,11 @@
 "приходити",
 "A1"
 ],
+"dolina": [
+"dolina",
+"долина",
+"A1"
+],
 "dolje": [
 "dolje",
 "внизу",
@@ -996,15 +1446,30 @@
 "поліклініка",
 "A0"
 ],
+"domar": [
+"domar",
+"двірник-завгосп (у будинку, школі)",
+"A1"
+],
 "domaći": [
 "domaći",
 "домашній",
 "A0"
 ],
+"domaćica": [
+"domaćica",
+"господиня",
+"A1"
+],
 "domaćin": [
 "domaćin",
 "господар",
 "A0"
+],
+"domjenak": [
+"domjenak",
+"невелика вечірка, прийом (на роботі)",
+"A1"
 ],
 "domovina": [
 "domovina",
@@ -1016,9 +1481,34 @@
 "принести",
 "A0"
 ],
+"doprinosi": [
+"doprinosi",
+"соціальні внески",
+"A1"
+],
+"dopuna": [
+"dopuna",
+"доповнення (документів)",
+"A1"
+],
+"dopunsko osiguranje": [
+"dopunsko osiguranje",
+"додаткове медичне страхування",
+"A1"
+],
+"dopust": [
+"dopust",
+"відпустка (додаткова, за обставинами)",
+"A1"
+],
 "dopušteno": [
 "dopušteno",
 "дозволено",
+"A1"
+],
+"dopušteno prekoračenje": [
+"dopušteno prekoračenje",
+"дозволений овердрафт",
 "A1"
 ],
 "doručak": [
@@ -1036,10 +1526,20 @@
 "нудний",
 "A1"
 ],
+"dosadno": [
+"dosadno",
+"нудно",
+"A1"
+],
 "dosadno mi je": [
 "dosadno mi je",
 "мені нудно",
 "A0"
+],
+"doseliti se": [
+"doseliti se",
+"переселитися, переїхати (на проживання)",
+"A1"
 ],
 "dosta": [
 "dosta",
@@ -1051,9 +1551,24 @@
 "доставка",
 "A1"
 ],
+"dostava hrane": [
+"dostava hrane",
+"доставка їжі",
+"A1"
+],
 "dostaviti": [
 "dostaviti",
 "доставити",
+"A1"
+],
+"dostavljač": [
+"dostavljač",
+"кур’єр доставки, доставник",
+"A1"
+],
+"dovesti": [
+"dovesti",
+"привести",
 "A1"
 ],
 "doviđenja": [
@@ -1066,6 +1581,16 @@
 "достатньо",
 "A0"
 ],
+"doza": [
+"doza",
+"доза",
+"A1"
+],
+"doznaka": [
+"doznaka",
+"лікарняний лист (від лікаря)",
+"A1"
+],
 "dozvola": [
 "dozvola",
 "дозвіл / ліцензія",
@@ -1076,6 +1601,11 @@
 "прийти",
 "A0"
 ],
+"doček nove godine": [
+"doček Nove godine",
+"зустріч Нового року",
+"A1"
+],
 "drag": [
 "drag",
 "дорогий; милий, приємний",
@@ -1085,6 +1615,11 @@
 "drago mi je",
 "дуже приємно",
 "A0"
+],
+"dresirati": [
+"dresirati",
+"дресирувати",
+"A1"
 ],
 "drijemati": [
 "drijemati",
@@ -1100,6 +1635,16 @@
 "drugi",
 "другий",
 "A0"
+],
+"drugi razred": [
+"drugi razred",
+"другий клас (у поїзді)",
+"A1"
+],
+"društvene igre": [
+"društvene igre",
+"настільні ігри",
+"A1"
 ],
 "društvene mreže": [
 "društvene mreže",
@@ -1131,6 +1676,21 @@
 "громадянство",
 "A0"
 ],
+"državni praznik": [
+"državni praznik",
+"державне свято",
+"A1"
+],
+"duboki tanjur": [
+"duboki tanjur",
+"глибока тарілка",
+"A1"
+],
+"duda": [
+"duda",
+"соска (пустушка)",
+"A1"
+],
 "dug": [
 "dug",
 "довгий",
@@ -1139,6 +1699,21 @@
 "dugo": [
 "dugo",
 "довго",
+null
+],
+"duljina": [
+"duljina",
+"довжина",
+"A1"
+],
+"dupin": [
+"dupin",
+"дельфін",
+"A1"
+],
+"dućan": [
+"dućan",
+"магазин (розмовно)",
 "A1"
 ],
 "dva": [
@@ -1189,7 +1764,7 @@
 "dvorište": [
 "dvorište",
 "подвір'я",
-null
+"A1"
 ],
 "dvosoban stan": [
 "dvosoban stan",
@@ -1206,10 +1781,25 @@ null
 "светр",
 "A0"
 ],
+"džep": [
+"džep",
+"кишеня",
+"A1"
+],
 "džeparoš": [
 "džeparoš",
 "кишеньковий злодій",
 "A0"
+],
+"e-građani": [
+"e-Građani",
+"е-Громадяни (державний портал Хорватії)",
+"A1"
+],
+"e-naručivanje": [
+"e-naručivanje",
+"онлайн-запис (до лікаря, в установу)",
+"A1"
 ],
 "e-pošta": [
 "e-pošta",
@@ -1219,6 +1809,16 @@ null
 "ekran": [
 "ekran",
 "екран; дисплей",
+"A1"
+],
+"ekran na dodir": [
+"ekran na dodir",
+"сенсорний екран",
+"A1"
+],
+"elegantan": [
+"elegantan",
+"елегантний",
 "A1"
 ],
 "električar": [
@@ -1231,10 +1831,20 @@ null
 "електричний",
 "A1"
 ],
+"elektronički potpis": [
+"elektronički potpis",
+"електронний підпис",
+"A1"
+],
 "engleski": [
 "engleski",
 "англійська (мова)",
 "A0"
+],
+"etiketa": [
+"etiketa",
+"етикетка, бирка",
+"A1"
 ],
 "euro": [
 "euro",
@@ -1261,6 +1871,11 @@ null
 "факультет / університет",
 "A1"
 ],
+"fen": [
+"fen",
+"фен",
+"A1"
+],
 "festival": [
 "festival",
 "фестиваль",
@@ -1281,15 +1896,30 @@ null
 "фільтр",
 "A1"
 ],
+"fjaka": [
+"fjaka",
+"фяка (стан ліні через спеку)",
+"A1"
+],
 "flaster": [
 "flaster",
 "пластир",
+"A1"
+],
+"flomasteri": [
+"flomasteri",
+"фломастери",
 "A1"
 ],
 "fontana": [
 "fontana",
 "фонтан",
 "A0"
+],
+"forum": [
+"forum",
+"форум (давня площа)",
+"A1"
 ],
 "fotelja": [
 "fotelja",
@@ -1305,6 +1935,11 @@ null
 "fotografirati",
 "фотографувати",
 "A0"
+],
+"fotokopirni aparat": [
+"fotokopirni aparat",
+"копіювальний апарат, ксерокс",
+"A1"
 ],
 "francuska": [
 "Francuska",
@@ -1326,9 +1961,19 @@ null
 "перукарка",
 "A1"
 ],
+"futrola": [
+"futrola",
+"чохол",
+"A1"
+],
 "gablec": [
 "gablec",
 "гарячий обід на роботі (загреб.)",
+"A1"
+],
+"galeb": [
+"galeb",
+"чайка",
 "A1"
 ],
 "galerija": [
@@ -1341,10 +1986,20 @@ null
 "гараж",
 "A0"
 ],
+"garažno mjesto": [
+"garažno mjesto",
+"гаражне місце",
+"A1"
+],
 "garsonijera": [
 "garsonijera",
 "квартира-студія; однокімнатна квартира",
 "A0"
+],
+"gasiti": [
+"gasiti",
+"гасити (вогонь)",
+"A1"
 ],
 "gazirani sok": [
 "gazirani sok",
@@ -1361,10 +2016,20 @@ null
 "де ви живете",
 "A0"
 ],
+"gel za tuširanje": [
+"gel za tuširanje",
+"гель для душу",
+"A1"
+],
 "gemišt": [
 "gemišt",
 "гемішт (біле вино з газованою мінеральною водою)",
 "A0"
+],
+"gimnazija": [
+"gimnazija",
+"гімназія (загальноосвітня середня школа)",
+"A1"
 ],
 "gips": [
 "gips",
@@ -1391,10 +2056,20 @@ null
 "голосно",
 "A1"
 ],
+"glasnoća": [
+"glasnoća",
+"гучність",
+"A1"
+],
 "glava": [
 "glava",
 "голова",
 "A0"
+],
+"glavica": [
+"glavica",
+"головка (салату, капусти, часнику)",
+"A1"
 ],
 "glavni grad": [
 "glavni grad",
@@ -1409,7 +2084,7 @@ null
 "glazba": [
 "glazba",
 "музика",
-"A1"
+null
 ],
 "glačalo": [
 "glačalo",
@@ -1419,11 +2094,21 @@ null
 "gledati": [
 "gledati",
 "дивитися",
+null
+],
+"gledati u oči": [
+"gledati u oči",
+"дивитися в очі",
 "A1"
 ],
 "glumac": [
 "glumac",
 "актор",
+"A1"
+],
+"gluten": [
+"gluten",
+"глютен",
 "A1"
 ],
 "godina": [
@@ -1476,6 +2161,11 @@ null
 "вгорі",
 "A0"
 ],
+"gorivo": [
+"gorivo",
+"паливо",
+"A1"
+],
 "gorjeti": [
 "gorjeti",
 "горіти",
@@ -1501,6 +2191,11 @@ null
 "гість / відвідувач",
 "A0"
 ],
+"gostoljubiv": [
+"gostoljubiv",
+"гостинний",
+"A1"
+],
 "gotov": [
 "gotov",
 "готовий (завершений)",
@@ -1515,6 +2210,16 @@ null
 "gotovo",
 "майже; практично",
 "A0"
+],
+"gotovo jelo": [
+"gotovo jelo",
+"готова страва",
+"A1"
+],
+"gotovo nikad": [
+"gotovo nikad",
+"майже ніколи",
+"A1"
 ],
 "govedina": [
 "govedina",
@@ -1531,6 +2236,11 @@ null
 "говорити",
 "A0"
 ],
+"govorna pošta": [
+"govorna pošta",
+"голосова пошта",
+"A1"
+],
 "grad": [
 "grad",
 "місто",
@@ -1544,6 +2254,11 @@ null
 "gradivo": [
 "gradivo",
 "навчальний матеріал",
+"A1"
+],
+"gradska vrata": [
+"gradska vrata",
+"міські ворота",
 "A1"
 ],
 "grah": [
@@ -1571,15 +2286,35 @@ null
 "горошок",
 "A1"
 ],
+"grebati": [
+"grebati",
+"дряпати",
+"A1"
+],
+"grijalica": [
+"grijalica",
+"обігрівач",
+"A1"
+],
 "grijanje": [
 "grijanje",
 "опалення",
 "A0"
 ],
+"griješiti": [
+"griješiti",
+"помилятися",
+"A1"
+],
 "gripa": [
 "gripa",
 "грип",
 "A0"
+],
+"grliti": [
+"grliti",
+"обіймати",
+"A1"
 ],
 "grlo": [
 "grlo",
@@ -1590,6 +2325,26 @@ null
 "grmljavina",
 "гроза / грім",
 "A0"
+],
+"groblje": [
+"groblje",
+"кладовище",
+"A1"
+],
+"grozan": [
+"grozan",
+"жахливий",
+"A1"
+],
+"grozd": [
+"grozd",
+"гроно (винограду)",
+"A1"
+],
+"groznica": [
+"groznica",
+"гарячка",
+"A1"
 ],
 "grožđe": [
 "grožđe",
@@ -1606,19 +2361,54 @@ null
 "шина",
 "A1"
 ],
+"gumb": [
+"gumb",
+"ґудзик; кнопка",
+"A1"
+],
+"gumica": [
+"gumica",
+"гумка (для стирання)",
+"A1"
+],
+"gurati se": [
+"gurati se",
+"штовхатися",
+"A1"
+],
+"gust": [
+"gust",
+"густий",
+"A1"
+],
 "gužva": [
 "gužva",
 "затор; тиснява",
 "A0"
+],
+"haker": [
+"haker",
+"хакер",
+"A1"
 ],
 "haljina": [
 "haljina",
 "сукня",
 "A0"
 ],
+"himna": [
+"himna",
+"гімн",
+"A1"
+],
 "hitan": [
 "hitan",
 "терміновий",
+"A1"
+],
+"hitan slučaj": [
+"hitan slučaj",
+"невідкладний випадок",
 "A1"
 ],
 "hitna": [
@@ -1630,6 +2420,11 @@ null
 "hitna pomoć",
 "швидка допомога",
 "A0"
+],
+"hitna služba": [
+"hitna služba",
+"екстрена служба",
+"A1"
 ],
 "hitni prijem": [
 "hitni prijem",
@@ -1686,6 +2481,11 @@ null
 "коридор",
 "A0"
 ],
+"honorarni posao": [
+"honorarni posao",
+"підробіток, робота за договором",
+"A1"
+],
 "hostel": [
 "hostel",
 "хостел",
@@ -1700,6 +2500,11 @@ null
 "hrana",
 "їжа",
 "A0"
+],
+"hrana za pse": [
+"hrana za pse",
+"корм для собак",
+"A1"
 ],
 "hraniti": [
 "hraniti",
@@ -1730,6 +2535,11 @@ null
 "hrvatski",
 "хорватська (мова)",
 "A0"
+],
+"hrvatski jezik": [
+"hrvatski jezik",
+"хорватська мова (предмет)",
+"A1"
 ],
 "hrčak": [
 "hrčak",
@@ -1811,6 +2621,11 @@ null
 "іграшка",
 "A0"
 ],
+"ikad": [
+"ikad",
+"коли-небудь",
+"A1"
+],
 "ili": [
 "ili",
 "або",
@@ -1821,19 +2636,49 @@ null
 "мати",
 "A0"
 ],
+"imati vremena": [
+"imati vremena",
+"мати час",
+"A1"
+],
 "ime": [
 "ime",
 "ім'я",
 "A0"
+],
+"imendan": [
+"imendan",
+"іменини",
+"A1"
+],
+"inače": [
+"inače",
+"інакше; в інших випадках",
+"A1"
+],
+"infekcija": [
+"infekcija",
+"інфекція",
+"A1"
 ],
 "injekcija": [
 "injekcija",
 "укол",
 "A1"
 ],
+"instalirati": [
+"instalirati",
+"встановити (програму), інсталювати",
+"A1"
+],
 "integralni": [
 "integralni",
 "цільнозерновий",
+"A1"
+],
+"intenzivni tečaj": [
+"intenzivni tečaj",
+"інтенсивний курс",
 "A1"
 ],
 "internet": [
@@ -1846,10 +2691,25 @@ null
 "інтернет-магазин",
 "A1"
 ],
+"internetsko bankarstvo": [
+"internetsko bankarstvo",
+"інтернет-банкінг",
+"A1"
+],
 "inženjer": [
 "inženjer",
 "інженер",
 "A0"
+],
+"ipak": [
+"ipak",
+"все-таки, все одно",
+"A1"
+],
+"iscrpljen": [
+"iscrpljen",
+"виснажений",
+"A1"
 ],
 "iseliti se": [
 "iseliti se",
@@ -1865,6 +2725,11 @@ null
 "iskustvo",
 "досвід",
 "A0"
+],
+"ispeći": [
+"ispeći",
+"спекти; засмажити",
+"A1"
 ],
 "ispisati": [
 "ispisati",
@@ -1906,10 +2771,20 @@ null
 "перед",
 "A0"
 ],
+"ispričati se": [
+"ispričati se",
+"вибачитися",
+"A1"
+],
 "ispričavam se": [
 "ispričavam se",
 "перепрошую",
 "A0"
+],
+"ispuh": [
+"ispuh",
+"вихлопна труба, вихлоп",
+"A1"
 ],
 "ispuniti": [
 "ispuniti",
@@ -1921,6 +2796,16 @@ null
 "закінчитися; спливти",
 "A0"
 ],
+"isti": [
+"isti",
+"той самий; однаковий",
+"A1"
+],
+"istina": [
+"istina",
+"правда",
+"A1"
+],
 "istjecati": [
 "istjecati",
 "спливати (про термін дії)",
@@ -1930,6 +2815,11 @@ null
 "istok",
 "схід",
 "A0"
+],
+"istra": [
+"Istra",
+"Істрія",
+"A1"
 ],
 "italija": [
 "Italija",
@@ -1946,15 +2836,30 @@ null
 "за / позаду",
 "A0"
 ],
+"izazov": [
+"izazov",
+"виклик",
+"A1"
+],
 "izaći": [
 "izaći",
 "вийти / піти кудись (погуляти)",
 "A0"
 ],
+"izbor": [
+"izbor",
+"вибір",
+"A1"
+],
 "izgledati": [
 "izgledati",
 "виглядати",
 "A0"
+],
+"izgraditi": [
+"izgraditi",
+"побудувати",
+"A1"
 ],
 "izgubio sam se": [
 "izgubio sam se",
@@ -1965,6 +2870,11 @@ null
 "izgubiti",
 "загубити; втратити; програти",
 "A0"
+],
+"izgubljena prtljaga": [
+"izgubljena prtljaga",
+"загублений багаж",
+"A1"
 ],
 "izlaz": [
 "izlaz",
@@ -1981,9 +2891,29 @@ null
 "вихід на посадку",
 "A1"
 ],
+"izlaziti": [
+"izlaziti",
+"виходити",
+"A1"
+],
 "izlet": [
 "izlet",
 "поїздка; екскурсія",
+"A1"
+],
+"izletnik": [
+"izletnik",
+"турист (на прогулянці, у поході)",
+"A1"
+],
+"izležavati se": [
+"izležavati se",
+"ніжитися, вилежуватися",
+"A1"
+],
+"izliječiti": [
+"izliječiti",
+"вилікувати",
 "A1"
 ],
 "izložba": [
@@ -1996,6 +2926,11 @@ null
 "між",
 "A0"
 ],
+"izmiješati": [
+"izmiješati",
+"змішати",
+"A1"
+],
 "iznad": [
 "iznad",
 "над",
@@ -2006,10 +2941,25 @@ null
 "орендувати / здати в оренду",
 "A0"
 ],
+"iznajmljivanje": [
+"iznajmljivanje",
+"прокат, оренда",
+"A1"
+],
+"iznenaditi": [
+"iznenaditi",
+"здивувати",
+"A1"
+],
 "iznenađen": [
 "iznenađen",
 "здивований",
 "A0"
+],
+"iznenađenje": [
+"iznenađenje",
+"сюрприз",
+"A1"
 ],
 "iznos": [
 "iznos",
@@ -2021,9 +2971,19 @@ null
 "виносити",
 "A1"
 ],
+"izolacija": [
+"izolacija",
+"утеплення, ізоляція",
+"A1"
+],
 "izravan": [
 "izravan",
 "прямий (без пересадок)",
+"A1"
+],
+"izuti se": [
+"izuti se",
+"роззутися",
 "A1"
 ],
 "izvaditi": [
@@ -2031,10 +2991,30 @@ null
 "видалити (зуб); вийняти",
 "A1"
 ],
+"izvesti psa": [
+"izvesti psa",
+"вивести собаку (на прогулянку)",
+"A1"
+],
+"izvještaj": [
+"izvještaj",
+"звіт",
+"A1"
+],
+"izvod": [
+"izvod",
+"виписка",
+"A1"
+],
 "izvolite": [
 "izvolite",
 "прошу (вам)",
 "A0"
+],
+"izvor": [
+"izvor",
+"джерело",
+"A1"
 ],
 "izvrstan": [
 "izvrstan",
@@ -2045,6 +3025,11 @@ null
 "ići",
 "іти, їхати",
 "A0"
+],
+"ići na kavu": [
+"ići na kavu",
+"піти на каву (зустрітися з кимось)",
+"A1"
 ],
 "ja": [
 "ja",
@@ -2066,6 +3051,11 @@ null
 "яйце",
 "A0"
 ],
+"jaje na oko": [
+"jaje na oko",
+"глазунья",
+"A1"
+],
 "jakna": [
 "jakna",
 "куртка",
@@ -2081,6 +3071,11 @@ null
 "баранина (ягнятина)",
 "A1"
 ],
+"jaslice": [
+"jaslice",
+"вертеп (різдвяна сцена з яслами)",
+"A1"
+],
 "jasno": [
 "jasno",
 "зрозуміло; ясно",
@@ -2090,6 +3085,21 @@ null
 "jastuk",
 "подушка",
 "A0"
+],
+"jastučnica": [
+"jastučnica",
+"наволочка",
+"A1"
+],
+"javan": [
+"javan",
+"публічний",
+"A1"
+],
+"javiti": [
+"javiti",
+"повідомити",
+"A1"
 ],
 "javiti se": [
 "javiti se",
@@ -2146,10 +3156,20 @@ null
 "однотонний",
 "A0"
 ],
+"jednokratna karta": [
+"jednokratna karta",
+"одноразовий квиток",
+"A1"
+],
 "jednokrevetna soba": [
 "jednokrevetna soba",
 "одномісний номер",
 "A0"
+],
+"jednom": [
+"jednom",
+"один раз; колись",
+"A1"
 ],
 "jednosmjerna karta": [
 "jednosmjerna karta",
@@ -2176,6 +3196,11 @@ null
 "дешево",
 "A0"
 ],
+"jelen": [
+"jelen",
+"олень",
+"A1"
+],
 "jelo": [
 "jelo",
 "страва",
@@ -2200,6 +3225,11 @@ null
 "jesti",
 "їсти",
 "A0"
+],
+"jetra": [
+"jetra",
+"печінка",
+"A1"
 ],
 "jezero": [
 "jezero",
@@ -2226,6 +3256,11 @@ null
 "ще один",
 "A0"
 ],
+"još ne": [
+"još ne",
+"ще не; ще ні",
+"A1"
+],
 "još nešto": [
 "još nešto",
 "ще щось?",
@@ -2246,6 +3281,11 @@ null
 "суп / юшка",
 "A0"
 ],
+"jutarnja smjena": [
+"jutarnja smjena",
+"ранкова зміна (у школі)",
+"A1"
+],
 "jutro": [
 "jutro",
 "ранок",
@@ -2260,6 +3300,11 @@ null
 "jučer",
 "вчора",
 "A0"
+],
+"kabanica": [
+"kabanica",
+"дощовик (плащ від дощу)",
+"A1"
 ],
 "kabel": [
 "kabel",
@@ -2371,6 +3416,26 @@ null
 "калькулятор",
 "A0"
 ],
+"kamata": [
+"kamata",
+"відсоток (банківський)",
+"A1"
+],
+"kamatna stopa": [
+"kamatna stopa",
+"процентна ставка",
+"A1"
+],
+"kamen": [
+"kamen",
+"камінь",
+"A1"
+],
+"kameni": [
+"kameni",
+"кам’яний",
+"A1"
+],
 "kamera": [
 "kamera",
 "камера",
@@ -2380,6 +3445,21 @@ null
 "kamo",
 "куди",
 "A0"
+],
+"kamp": [
+"kamp",
+"кемпінг",
+"A1"
+],
+"kampirati": [
+"kampirati",
+"жити в кемпінгу, кемпінгувати",
+"A1"
+],
+"kanjon": [
+"kanjon",
+"каньйон",
+"A1"
 ],
 "kanta za smeće": [
 "kanta za smeće",
@@ -2401,10 +3481,25 @@ null
 "краплі",
 "A1"
 ],
+"kapsula": [
+"kapsula",
+"капсула",
+"A1"
+],
+"kapuljača": [
+"kapuljača",
+"капюшон",
+"A1"
+],
 "kaput": [
 "kaput",
 "пальто",
 "A0"
+],
+"karijes": [
+"karijes",
+"карієс",
+"A1"
 ],
 "karta": [
 "karta",
@@ -2431,6 +3526,11 @@ null
 "карткою чи готівкою",
 "A0"
 ],
+"kartonska kutija": [
+"kartonska kutija",
+"картонна коробка",
+"A1"
+],
 "kasnije": [
 "kasnije",
 "пізніше",
@@ -2451,10 +3551,20 @@ null
 "поверх",
 "A0"
 ],
+"katamaran": [
+"katamaran",
+"катамаран",
+"A1"
+],
 "katedrala": [
 "katedrala",
 "собор",
 "A0"
+],
+"katkad": [
+"katkad",
+"інколи",
+"A1"
 ],
 "kaucija": [
 "kaucija",
@@ -2476,6 +3586,11 @@ null
 "Кава з собою.",
 "A1"
 ],
+"kavez": [
+"kavez",
+"клітка",
+"A1"
+],
 "kazalište": [
 "kazalište",
 "театр",
@@ -2485,6 +3600,11 @@ null
 "kazna",
 "штраф / покарання",
 "A0"
+],
+"kazna za parkiranje": [
+"kazna za parkiranje",
+"штраф за паркування",
+"A1"
 ],
 "kašalj": [
 "kašalj",
@@ -2506,9 +3626,24 @@ null
 "печиво",
 "A1"
 ],
+"kemijska": [
+"kemijska",
+"кулькова ручка",
+"A1"
+],
+"kifla": [
+"kifla",
+"рогалик",
+"A1"
+],
 "kihati": [
 "kihati",
 "чхати",
+"A1"
+],
+"kikiriki": [
+"kikiriki",
+"арахіс",
 "A1"
 ],
 "kila": [
@@ -2531,10 +3666,25 @@ null
 "кінотеатр",
 "A0"
 ],
+"kiosk": [
+"kiosk",
+"кіоск",
+"A1"
+],
+"kip": [
+"kip",
+"статуя, пам’ятник (скульптура)",
+"A1"
+],
 "kiseo": [
 "kiseo",
 "кислий",
 "A0"
+],
+"kist": [
+"kist",
+"пензель",
+"A1"
 ],
 "kiša": [
 "kiša",
@@ -2546,9 +3696,34 @@ null
 "парасоля",
 "A0"
 ],
+"kišovit": [
+"kišovit",
+"дощовий",
+"A1"
+],
+"klamerica": [
+"klamerica",
+"степлер",
+"A1"
+],
+"klapa": [
+"klapa",
+"клапа (далматинський чоловічий спів)",
+"A1"
+],
 "klijent": [
 "klijent",
 "клієнт",
+"A1"
+],
+"kliješta": [
+"kliješta",
+"плоскогубці, кліщі",
+"A1"
+],
+"kliknuti": [
+"kliknuti",
+"клікнути, клацнути (мишкою)",
 "A1"
 ],
 "klima": [
@@ -2560,6 +3735,11 @@ null
 "ključ",
 "ключ",
 "A0"
+],
+"klupa": [
+"klupa",
+"лава; лавка",
+"A1"
 ],
 "knjiga": [
 "knjiga",
@@ -2576,6 +3756,16 @@ null
 "сосиска; ковбаска",
 "A0"
 ],
+"kocke": [
+"kocke",
+"кубики (іграшка)",
+"A1"
+],
+"kockica za juhu": [
+"kockica za juhu",
+"бульйонний кубик",
+"A1"
+],
 "kod mene": [
 "kod mene",
 "у мене (вдома)",
@@ -2585,6 +3775,16 @@ null
 "kod nas",
 "у нас (удома; у нашій країні)",
 "A0"
+],
+"kod za popust": [
+"kod za popust",
+"промокод, код знижки",
+"A1"
+],
+"kod za potvrdu": [
+"kod za potvrdu",
+"код підтвердження",
+"A1"
 ],
 "kofer": [
 "kofer",
@@ -2611,6 +3811,11 @@ null
 "тістечко / пиріг",
 "A0"
 ],
+"kolaž papir": [
+"kolaž papir",
+"кольоровий папір (для аплікацій)",
+"A1"
+],
 "kolega": [
 "kolega",
 "колега (чоловік)",
@@ -2620,6 +3825,16 @@ null
 "kolegica",
 "колега (жінка)",
 "A0"
+],
+"kolesterol": [
+"kolesterol",
+"холестерин",
+"A1"
+],
+"kolica": [
+"kolica",
+"візок (у супермаркеті)",
+"A1"
 ],
 "koliko": [
 "koliko",
@@ -2686,6 +3901,11 @@ null
 "колона (машин); затор",
 "A1"
 ],
+"kolosijek": [
+"kolosijek",
+"колія",
+"A1"
+],
 "kolovoz": [
 "kolovoz",
 "серпень",
@@ -2706,14 +3926,34 @@ null
 "коментар",
 "A1"
 ],
+"komentirati": [
+"komentirati",
+"коментувати",
+"A1"
+],
 "komoda": [
 "komoda",
 "комод",
 "A1"
 ],
+"komunikativan": [
+"komunikativan",
+"комунікабельний",
+"A1"
+],
+"konac za zube": [
+"konac za zube",
+"зубна нитка",
+"A1"
+],
 "koncert": [
 "koncert",
 "концерт",
+"A1"
+],
+"kondukter": [
+"kondukter",
+"кондуктор",
 "A1"
 ],
 "konoba": [
@@ -2731,14 +3971,29 @@ null
 "офіціантка",
 "A0"
 ],
+"kontejner": [
+"kontejner",
+"контейнер",
+"A1"
+],
 "kontinent": [
 "kontinent",
 "континент",
 "A0"
 ],
+"kontinentalni": [
+"kontinentalni",
+"континентальний",
+"A1"
+],
 "kontrola": [
 "kontrola",
 "контрольний огляд; контроль",
+"A1"
+],
+"kontrola sigurnosti": [
+"kontrola sigurnosti",
+"контроль безпеки",
 "A1"
 ],
 "kontrolor": [
@@ -2751,6 +4006,11 @@ null
 "контролер",
 "A1"
 ],
+"konzerva": [
+"konzerva",
+"консерва, бляшанка",
+"A1"
+],
 "kopija": [
 "kopija",
 "копія",
@@ -2761,9 +4021,29 @@ null
 "копіювати",
 "A1"
 ],
+"korak po korak": [
+"korak po korak",
+"крок за кроком",
+"A1"
+],
 "korisnik": [
 "korisnik",
 "користувач",
+"A1"
+],
+"korisnički račun": [
+"korisnički račun",
+"обліковий запис, акаунт",
+"A1"
+],
+"korisničko ime": [
+"korisničko ime",
+"ім'я користувача",
+"A1"
+],
+"korizma": [
+"korizma",
+"Великий піст",
 "A1"
 ],
 "kornjača": [
@@ -2784,6 +4064,11 @@ null
 "kotač": [
 "kotač",
 "колесо",
+"A1"
+],
+"kotlet": [
+"kotlet",
+"котлета на кістці, відбивна",
 "A1"
 ],
 "kovanica": [
@@ -2851,6 +4136,16 @@ null
 "наприкінці (тижня, місяця)",
 "A0"
 ],
+"krajem tjedna": [
+"krajem tjedna",
+"наприкінці тижня",
+"A1"
+],
+"kralježnica": [
+"kralježnica",
+"хребет",
+"A1"
+],
 "krastavac": [
 "krastavac",
 "огірок",
@@ -2860,6 +4155,16 @@ null
 "kratak",
 "короткий",
 "A0"
+],
+"kratke hlače": [
+"kratke hlače",
+"шорти",
+"A1"
+],
+"kratki spoj": [
+"kratki spoj",
+"коротке замикання",
+"A1"
 ],
 "krađa": [
 "krađa",
@@ -2871,14 +4176,29 @@ null
 "кредит",
 "A0"
 ],
+"kreditna kartica": [
+"kreditna kartica",
+"кредитна картка",
+"A1"
+],
 "krema": [
 "krema",
 "крем",
 "A1"
 ],
+"krema za sunčanje": [
+"krema za sunčanje",
+"сонцезахисний крем",
+"A1"
+],
 "kremšnita": [
 "kremšnita",
 "кремшніта (тістечко з кремом)",
+"A1"
+],
+"krenuti": [
+"krenuti",
+"рушити / вирушити",
 "A1"
 ],
 "kretanje": [
@@ -2894,7 +4214,7 @@ null
 "kriv": [
 "kriv",
 "неправильний / винний",
-"A1"
+null
 ],
 "krivi broj": [
 "krivi broj",
@@ -2906,6 +4226,26 @@ null
 "круасан",
 "A0"
 ],
+"kroj": [
+"kroj",
+"крій, фасон",
+"A1"
+],
+"krojačica": [
+"krojačica",
+"кравчиня",
+"A1"
+],
+"kroničan": [
+"kroničan",
+"хронічний",
+"A1"
+],
+"krpa": [
+"krpa",
+"ганчірка",
+"A1"
+],
 "kruh": [
 "kruh",
 "хліб",
@@ -2915,6 +4255,11 @@ null
 "krumpir",
 "картопля",
 "A0"
+],
+"krunica": [
+"krunica",
+"коронка (зубна)",
+"A1"
 ],
 "kruška": [
 "kruška",
@@ -2936,6 +4281,11 @@ null
 "кровоточити",
 "A1"
 ],
+"kuda": [
+"kuda",
+"куди, якою дорогою",
+"A1"
+],
 "kuglica": [
 "kuglica",
 "кулька (морозива)",
@@ -2945,6 +4295,11 @@ null
 "kuhan",
 "варений",
 "A0"
+],
+"kuhano jaje": [
+"kuhano jaje",
+"варене яйце",
+"A1"
 ],
 "kuhar": [
 "kuhar",
@@ -2956,6 +4311,11 @@ null
 "варити / готувати їжу",
 "A1"
 ],
+"kuhača": [
+"kuhača",
+"кухонна ложка, лопатка",
+"A1"
+],
 "kuhinja": [
 "kuhinja",
 "кухня",
@@ -2965,6 +4325,11 @@ null
 "kula",
 "фортечна вежа",
 "A0"
+],
+"kulen": [
+"kulen",
+"кулен (гостра славонська ковбаса)",
+"A1"
 ],
 "kum": [
 "kum",
@@ -2981,6 +4346,11 @@ null
 "покупець",
 "A0"
 ],
+"kupalište": [
+"kupalište",
+"місце для купання, міський пляж",
+"A1"
+],
 "kupaonica": [
 "kupaonica",
 "ванна кімната",
@@ -2994,6 +4364,21 @@ null
 "kupati se": [
 "kupati se",
 "купатися",
+"A1"
+],
+"kupaći kostim": [
+"kupaći kostim",
+"купальник",
+"A1"
+],
+"kupe": [
+"kupe",
+"купе",
+"A1"
+],
+"kupina": [
+"kupina",
+"ожина",
 "A1"
 ],
 "kupiti": [
@@ -3020,6 +4405,16 @@ null
 "kutija",
 "коробка",
 "A0"
+],
+"kutija za ručak": [
+"kutija za ručak",
+"ланч-бокс, контейнер для обіду",
+"A1"
+],
+"kutija za užinu": [
+"kutija za užinu",
+"ланч-бокс",
+"A1"
 ],
 "kuća": [
 "kuća",
@@ -3051,6 +4446,16 @@ null
 "квадратний метр (розмовно); квадрат",
 "A0"
 ],
+"kvaliteta": [
+"kvaliteta",
+"якість",
+"A1"
+],
+"kvalitetan": [
+"kvalitetan",
+"якісний",
+"A1"
+],
 "kvar": [
 "kvar",
 "несправність / поломка",
@@ -3070,6 +4475,11 @@ null
 "kći",
 "дочка",
 "A0"
+],
+"labav": [
+"labav",
+"вільний, завеликий (про одяг); хиткий",
+"A1"
 ],
 "laboratorij": [
 "laboratorij",
@@ -3091,10 +4501,20 @@ null
 "гавкати",
 "A0"
 ],
+"lak za nokte": [
+"lak za nokte",
+"лак для нігтів",
+"A1"
+],
 "lakat": [
 "lakat",
 "лікоть",
 "A0"
+],
+"laktoza": [
+"laktoza",
+"лактоза",
+"A1"
 ],
 "laku noć": [
 "laku noć",
@@ -3106,9 +4526,24 @@ null
 "лампа",
 "A0"
 ],
+"lampica": [
+"lampica",
+"індикатор (на приладовій панелі)",
+"A1"
+],
+"lampice": [
+"lampice",
+"гірлянда, вогники",
+"A1"
+],
 "lanac": [
 "lanac",
 "ланцюг",
+"A1"
+],
+"lančić": [
+"lančić",
+"ланцюжок",
 "A1"
 ],
 "laptop": [
@@ -3136,6 +4571,16 @@ null
 "спина",
 "A0"
 ],
+"ležaljka": [
+"ležaljka",
+"шезлонг",
+"A1"
+],
+"ležeran": [
+"ležeran",
+"невимушений, повсякденний (про одяг, стиль)",
+"A1"
+],
 "lice": [
 "lice",
 "обличчя",
@@ -3155,6 +4600,11 @@ null
 "lignje",
 "кальмари",
 "A0"
+],
+"lijegati": [
+"lijegati",
+"лягати (спати)",
+"A1"
 ],
 "lijek": [
 "lijek",
@@ -3186,6 +4636,11 @@ null
 "наліво / ліворуч",
 "A0"
 ],
+"liječenje": [
+"liječenje",
+"лікування",
+"A1"
+],
 "liječnica": [
 "liječnica",
 "лікарка",
@@ -3195,6 +4650,21 @@ null
 "liječnik",
 "лікар",
 "A0"
+],
+"liječnička potvrda": [
+"liječnička potvrda",
+"медична довідка",
+"A1"
+],
+"liječnički nalaz": [
+"liječnički nalaz",
+"медичний висновок",
+"A1"
+],
+"lika": [
+"Lika",
+"Ліка (гірський край)",
+"A1"
 ],
 "limenka": [
 "limenka",
@@ -3226,6 +4696,16 @@ null
 "червень",
 "A0"
 ],
+"lisica": [
+"lisica",
+"лисиця",
+"A1"
+],
+"lista čekanja": [
+"lista čekanja",
+"список очікування",
+"A1"
+],
 "listopad": [
 "listopad",
 "жовтень",
@@ -3251,10 +4731,30 @@ null
 "провізор / фармацевт",
 "A0"
 ],
+"ljepilo": [
+"ljepilo",
+"клей",
+"A1"
+],
+"ljepljiva traka": [
+"ljepljiva traka",
+"скотч, клейка стрічка",
+"A1"
+],
+"ljestve": [
+"ljestve",
+"драбина",
+"A1"
+],
 "ljeti": [
 "ljeti",
 "улітку",
 "A0"
+],
+"ljetni": [
+"ljetni",
+"літній",
+"A1"
 ],
 "ljeto": [
 "ljeto",
@@ -3271,10 +4771,20 @@ null
 "ввічливий; добрий",
 "A0"
 ],
+"ljubiti se": [
+"ljubiti se",
+"цілуватися",
+"A1"
+],
 "ljubičast": [
 "ljubičast",
 "фіолетовий",
 "A0"
+],
+"ljubomoran": [
+"ljubomoran",
+"ревнивий; заздрісний",
+"A1"
 ],
 "ljudi": [
 "ljudi",
@@ -3331,6 +4841,11 @@ null
 "мені погано",
 "A0"
 ],
+"loše volje": [
+"loše volje",
+"не в гуморі, у поганому настрої",
+"A1"
+],
 "lubenica": [
 "lubenica",
 "кавун",
@@ -3344,17 +4859,27 @@ null
 "luka": [
 "luka",
 "порт",
-"A1"
+null
 ],
 "madrac": [
 "madrac",
 "матрац",
 "A0"
 ],
+"maestral": [
+"maestral",
+"маестраль (літній вітер з моря)",
+"A1"
+],
 "magla": [
 "magla",
 "туман",
 "A0"
+],
+"magnetska rezonancija": [
+"magnetska rezonancija",
+"МРТ (магнітно-резонансна томографія)",
+"A1"
 ],
 "mahune": [
 "mahune",
@@ -3416,9 +4941,24 @@ null
 "папка",
 "A1"
 ],
+"maraskino": [
+"maraskino",
+"мараскіно (вишневий лікер)",
+"A1"
+],
 "marenda": [
 "marenda",
 "перекус / пізній сніданок",
+"A1"
+],
+"marka": [
+"marka",
+"поштова марка / бренд",
+"A1"
+],
+"maskara": [
+"maskara",
+"туш для вій",
 "A1"
 ],
 "maslac": [
@@ -3441,10 +4981,20 @@ null
 "мазь",
 "A1"
 ],
+"mastan": [
+"mastan",
+"масний, жирний",
+"A1"
+],
 "matematika": [
 "matematika",
 "математика",
 "A0"
+],
+"materijal": [
+"materijal",
+"матеріал",
+"A1"
 ],
 "materinski jezik": [
 "materinski jezik",
@@ -3501,14 +5051,29 @@ null
 "м'який",
 "A0"
 ],
+"memorija": [
+"memorija",
+"пам'ять",
+"A1"
+],
 "mentalitet": [
 "mentalitet",
 "менталітет",
 "A1"
 ],
+"mentor": [
+"mentor",
+"наставник, ментор",
+"A1"
+],
 "menza": [
 "menza",
 "їдальня",
+"A1"
+],
+"mesar": [
+"mesar",
+"м’ясник",
 "A1"
 ],
 "mesnica": [
@@ -3521,10 +5086,20 @@ null
 "м'ясо",
 "A0"
 ],
+"mesti": [
+"mesti",
+"підмітати",
+"A1"
+],
 "metar": [
 "metar",
 "метр",
 "A0"
+],
+"metla": [
+"metla",
+"мітла",
+"A1"
 ],
 "međugradski": [
 "međugradski",
@@ -3544,6 +5119,11 @@ null
 "miješati": [
 "miješati",
 "мішати; перемішувати",
+"A1"
+],
+"mikrofon": [
+"mikrofon",
+"мікрофон",
 "A1"
 ],
 "mikrovalna": [
@@ -3566,6 +5146,11 @@ null
 "мінеральна вода",
 "A0"
 ],
+"minimalna plaća": [
+"minimalna plaća",
+"мінімальна зарплата",
+"A1"
+],
 "minus": [
 "minus",
 "мінус",
@@ -3579,17 +5164,22 @@ null
 "mir": [
 "mir",
 "спокій; мир",
-"A1"
+null
 ],
 "miran": [
 "miran",
 "спокійний",
 "A0"
 ],
+"mirovanje": [
+"mirovanje",
+"спокій, постільний режим",
+"A1"
+],
 "misa": [
 "misa",
 "меса (церковна служба)",
-"A1"
+null
 ],
 "misliti": [
 "misliti",
@@ -3601,9 +5191,19 @@ null
 "миша",
 "A1"
 ],
+"mišić": [
+"mišić",
+"м’яз",
+"A1"
+],
 "mišljenje": [
 "mišljenje",
 "думка",
+"A1"
+],
+"mjaukati": [
+"mjaukati",
+"нявкати",
 "A1"
 ],
 "mjenjač": [
@@ -3631,6 +5231,11 @@ null
 "місячний проїзний",
 "A0"
 ],
+"mjesečna pokazna karta": [
+"mjesečna pokazna karta",
+"місячний проїзний квиток",
+"A1"
+],
 "mjesečno": [
 "mjesečno",
 "щомісяця; на місяць",
@@ -3646,10 +5251,20 @@ null
 "місце народження",
 "A0"
 ],
+"mjesto sastanka": [
+"mjesto sastanka",
+"місце зустрічі",
+"A1"
+],
 "mlad": [
 "mlad",
 "молодий",
 "A0"
+],
+"mladi luk": [
+"mladi luk",
+"зелена цибуля",
+"A1"
 ],
 "mladić": [
 "mladić",
@@ -3666,10 +5281,25 @@ null
 "молоко",
 "A0"
 ],
+"mliječni proizvodi": [
+"mliječni proizvodi",
+"молочні продукти",
+"A1"
+],
 "mljeveno meso": [
 "mljeveno meso",
 "фарш",
 "A0"
+],
+"mobilni podaci": [
+"mobilni podaci",
+"мобільний інтернет (дані)",
+"A1"
+],
+"mobilni token": [
+"mobilni token",
+"мобільний токен (для входу)",
+"A1"
 ],
 "mobilno bankarstvo": [
 "mobilno bankarstvo",
@@ -3680,6 +5310,16 @@ null
 "mobitel",
 "мобільний телефон",
 "A0"
+],
+"model": [
+"model",
+"модель",
+"A1"
+],
+"moderan": [
+"moderan",
+"сучасний",
+"A1"
 ],
 "modrica": [
 "modrica",
@@ -3731,14 +5371,29 @@ null
 "море",
 "A0"
 ],
+"morske orgulje": [
+"morske orgulje",
+"Морський орган (у Задарі)",
+"A1"
+],
 "most": [
 "most",
 "міст",
 "A0"
 ],
+"motivacijsko pismo": [
+"motivacijsko pismo",
+"мотиваційний лист",
+"A1"
+],
 "motor": [
 "motor",
 "двигун",
+"A1"
+],
+"mozak": [
+"mozak",
+"мозок",
 "A1"
 ],
 "moći": [
@@ -3771,6 +5426,16 @@ null
 "морква",
 "A0"
 ],
+"mrlja": [
+"mrlja",
+"пляма",
+"A1"
+],
+"mrziti": [
+"mrziti",
+"ненавидіти",
+"A1"
+],
 "mršav": [
 "mršav",
 "худий",
@@ -3779,6 +5444,11 @@ null
 "mršaviti": [
 "mršaviti",
 "худнути",
+"A1"
+],
+"munja": [
+"munja",
+"блискавка",
 "A1"
 ],
 "mup": [
@@ -3790,6 +5460,11 @@ null
 "muzej",
 "музей",
 "A0"
+],
+"mučnina": [
+"mučnina",
+"нудота",
+"A1"
 ],
 "muškarac": [
 "muškarac",
@@ -3816,10 +5491,20 @@ null
 "хорватською (мовою)",
 "A0"
 ],
+"na ime": [
+"na ime",
+"на ім’я",
+"A1"
+],
 "na jesen": [
 "na jesen",
 "восени",
 "A0"
+],
+"na kraju": [
+"na kraju",
+"наприкінці; зрештою",
+"A1"
 ],
 "na pruge": [
 "na pruge",
@@ -3851,6 +5536,11 @@ null
 "вчасно",
 "A0"
 ],
+"na zalihi": [
+"na zalihi",
+"у наявності (на складі)",
+"A1"
+],
 "na zdravlje": [
 "na zdravlje",
 "будьмо! (тост); будь здоров (коли чхають)",
@@ -3869,12 +5559,32 @@ null
 "nada": [
 "nada",
 "надія",
+null
+],
+"nadati se": [
+"nadati se",
+"сподіватися",
 "A1"
 ],
 "nadimak": [
 "nadimak",
 "прізвисько; коротке ім’я",
 "A0"
+],
+"nadoknaditi": [
+"nadoknaditi",
+"надолужити, компенсувати",
+"A1"
+],
+"nadoplatiti": [
+"nadoplatiti",
+"поповнити (картку, рахунок)",
+"A1"
+],
+"nadređeni": [
+"nadređeni",
+"керівник, безпосередній начальник",
+"A1"
 ],
 "najam": [
 "najam",
@@ -3886,6 +5596,11 @@ null
 "орендна плата / квартплата",
 "A0"
 ],
+"najaviti": [
+"najaviti",
+"попередити заздалегідь, оголосити",
+"A1"
+],
 "najbliži": [
 "najbliži",
 "найближчий",
@@ -3895,6 +5610,11 @@ null
 "najbolji prijatelj",
 "найкращий друг",
 "A0"
+],
+"najkraći put": [
+"najkraći put",
+"найкоротший шлях",
+"A1"
 ],
 "najmlađi": [
 "najmlađi",
@@ -3911,9 +5631,19 @@ null
 "найбільше; щонайбільше",
 "A0"
 ],
+"nakit": [
+"nakit",
+"прикраси",
+"A1"
+],
 "naknada": [
 "naknada",
 "плата; комісія; компенсація",
+"A1"
+],
+"nakon toga": [
+"nakon toga",
+"після цього",
 "A1"
 ],
 "nalaz krvi": [
@@ -3929,7 +5659,7 @@ null
 "namaz": [
 "namaz",
 "намазка (для хліба)",
-"A1"
+null
 ],
 "namještaj": [
 "namještaj",
@@ -3941,10 +5671,25 @@ null
 "мебльований",
 "A0"
 ],
+"naoblačiti se": [
+"naoblačiti se",
+"захмаритися",
+"A1"
+],
 "naočale": [
 "naočale",
 "окуляри",
 "A0"
+],
+"naplata parkiranja": [
+"naplata parkiranja",
+"оплата паркування",
+"A1"
+],
+"naplatiti": [
+"naplatiti",
+"стягнути оплату",
+"A1"
 ],
 "naplatna kućica": [
 "naplatna kućica",
@@ -3955,6 +5700,31 @@ null
 "napojnica",
 "чайові",
 "A0"
+],
+"napredni": [
+"napredni",
+"просунутий (рівень)",
+"A1"
+],
+"napredovati": [
+"napredovati",
+"просуватися (у навчанні, по службі), прогресувати",
+"A1"
+],
+"naprijed": [
+"naprijed",
+"вперед",
+"A1"
+],
+"napumpati": [
+"napumpati",
+"накачати",
+"A1"
+],
+"napuniti": [
+"napuniti",
+"зарядити; наповнити",
+"A1"
 ],
 "naranča": [
 "naranča",
@@ -3976,6 +5746,11 @@ null
 "нарізати",
 "A0"
 ],
+"narječje": [
+"narječje",
+"наріччя, діалект",
+"A1"
+],
 "narodnost": [
 "narodnost",
 "національність",
@@ -3984,6 +5759,11 @@ null
 "narudžba": [
 "narudžba",
 "замовлення",
+"A1"
+],
+"narukvica": [
+"narukvica",
+"браслет",
 "A1"
 ],
 "naručiti": [
@@ -3996,14 +5776,29 @@ null
 "записатися (на прийом)",
 "A0"
 ],
+"naručiti taksi": [
+"naručiti taksi",
+"викликати таксі",
+"A1"
+],
 "naselje": [
 "naselje",
 "житловий район; селище",
 "A0"
 ],
+"nasjeckati": [
+"nasjeckati",
+"посікти, дрібно нарізати",
+"A1"
+],
 "naslonjač": [
 "naslonjač",
 "крісло",
+"A1"
+],
+"naspavati se": [
+"naspavati se",
+"виспатися",
 "A1"
 ],
 "nastava": [
@@ -4016,9 +5811,19 @@ null
 "продовжити",
 "A0"
 ],
+"nastavnik": [
+"nastavnik",
+"учитель (у старших класах), викладач",
+"A1"
+],
 "nastup": [
 "nastup",
 "виступ",
+"A1"
+],
+"nasuprot": [
+"nasuprot",
+"навпроти",
 "A1"
 ],
 "natašte": [
@@ -4026,9 +5831,29 @@ null
 "натщесерце",
 "A1"
 ],
+"natječaj": [
+"natječaj",
+"конкурс (на посаду), вакансія",
+"A1"
+],
+"natočiti": [
+"natočiti",
+"заправити (бак); налити",
+"A1"
+],
+"natrag": [
+"natrag",
+"назад",
+"A1"
+],
 "naučiti": [
 "naučiti",
 "вивчити",
+"A1"
+],
+"naušnice": [
+"naušnice",
+"сережки",
 "A1"
 ],
 "navečer": [
@@ -4041,6 +5866,11 @@ null
 "вболівати",
 "A1"
 ],
+"navijač": [
+"navijač",
+"вболівальник",
+"A1"
+],
 "navika": [
 "navika",
 "звичка",
@@ -4049,6 +5879,11 @@ null
 "naviknuti se": [
 "naviknuti se",
 "звикнути",
+"A1"
+],
+"nazdraviti": [
+"nazdraviti",
+"виголосити тост, цокнутися",
 "A1"
 ],
 "nazvati": [
@@ -4061,10 +5896,15 @@ null
 "знайти",
 "A0"
 ],
+"naći se": [
+"naći se",
+"зустрітися",
+"A1"
+],
 "način": [
 "način",
 "спосіб",
-"A1"
+null
 ],
 "naš": [
 "naš",
@@ -4086,6 +5926,11 @@ null
 "не дуже добре",
 "A0"
 ],
+"ne podnosim": [
+"ne podnosim",
+"я не переношу, мені не підходить",
+"A1"
+],
 "ne razumijem": [
 "ne razumijem",
 "я не розумію",
@@ -4106,6 +5951,11 @@ null
 "неділя",
 "A0"
 ],
+"nedjeljni ručak": [
+"nedjeljni ručak",
+"недільний обід (з родиною)",
+"A1"
+],
 "nedostajati": [
 "nedostajati",
 "бракувати; сумувати за",
@@ -4121,10 +5971,35 @@ null
 "недолік; нестача",
 "A1"
 ],
+"negdje": [
+"negdje",
+"десь",
+"A1"
+],
+"neispravan": [
+"neispravan",
+"несправний, бракований",
+"A1"
+],
+"nekad": [
+"nekad",
+"колись; іноді",
+"A1"
+],
+"nekako": [
+"nekako",
+"якось",
+"A1"
+],
 "nekoliko": [
 "nekoliko",
 "кілька",
 "A0"
+],
+"nekretnina": [
+"nekretnina",
+"нерухомість (об’єкт)",
+"A1"
 ],
 "nema na čemu": [
 "nema na čemu",
@@ -4136,20 +6011,50 @@ null
 "немає проблем",
 "A0"
 ],
+"nemam vremena": [
+"nemam vremena",
+"у мене немає часу",
+"A1"
+],
+"neograničen": [
+"neograničen",
+"необмежений, безлімітний",
+"A1"
+],
 "neparan broj": [
 "neparan broj",
 "непарне число",
 "A0"
+],
+"nepoznat": [
+"nepoznat",
+"невідомий",
+"A1"
 ],
 "nepromočiv": [
 "nepromočiv",
 "непромокальний",
 "A1"
 ],
+"nepročitan": [
+"nepročitan",
+"непрочитаний",
+"A1"
+],
+"nepuno radno vrijeme": [
+"nepuno radno vrijeme",
+"неповний робочий день",
+"A1"
+],
 "neradni dan": [
 "neradni dan",
 "неробочий день",
 "A0"
+],
+"neriješeno": [
+"neriješeno",
+"нічия (у грі)",
+"A1"
 ],
 "nervozan": [
 "nervozan",
@@ -4171,9 +6076,24 @@ null
 "зникнути",
 "A0"
 ],
+"nesvjestica": [
+"nesvjestica",
+"непритомність",
+"A1"
+],
+"netko": [
+"netko",
+"хтось",
+"A1"
+],
 "neto": [
 "neto",
 "нетто (після податків)",
+"A1"
+],
+"netolerancija": [
+"netolerancija",
+"непереносимість (харчова)",
 "A1"
 ],
 "netočno": [
@@ -4195,6 +6115,21 @@ null
 "nećakinja",
 "племінниця",
 "A0"
+],
+"nešto": [
+"nešto",
+"щось",
+"A1"
+],
+"neželjena pošta": [
+"neželjena pošta",
+"спам",
+"A1"
+],
+"nigdje": [
+"nigdje",
+"ніде",
+"A1"
 ],
 "nikad": [
 "nikad",
@@ -4261,6 +6196,11 @@ null
 "нога",
 "A0"
 ],
+"nogavica": [
+"nogavica",
+"холоша (штанина)",
+"A1"
+],
 "nogomet": [
 "nogomet",
 "футбол",
@@ -4274,6 +6214,11 @@ null
 "nositi": [
 "nositi",
 "носити / одягати",
+"A1"
+],
+"nostalgija": [
+"nostalgija",
+"ностальгія",
 "A1"
 ],
 "nov": [
@@ -4290,6 +6235,11 @@ null
 "novac",
 "гроші",
 "A0"
+],
+"novogradnja": [
+"novogradnja",
+"новобудова",
+"A1"
 ],
 "novčanica": [
 "novčanica",
@@ -4311,9 +6261,24 @@ null
 "ночівля",
 "A0"
 ],
+"noćna linija": [
+"noćna linija",
+"нічний маршрут",
+"A1"
+],
+"noćna mora": [
+"noćna mora",
+"нічний кошмар",
+"A1"
+],
 "noćni": [
 "noćni",
 "нічний",
+"A1"
+],
+"noćni mir": [
+"noćni mir",
+"нічна тиша",
 "A1"
 ],
 "noćni ormarić": [
@@ -4336,9 +6301,24 @@ null
 "нуль",
 "A0"
 ],
+"nuspojava": [
+"nuspojava",
+"побічна дія",
+"A1"
+],
 "obala": [
 "obala",
 "берег / узбережжя",
+"A1"
+],
+"obaveza": [
+"obaveza",
+"обов'язок",
+"A1"
+],
+"obavijest": [
+"obavijest",
+"повідомлення (зокрема — поштове про відправлення)",
 "A1"
 ],
 "obilazak": [
@@ -4376,6 +6356,11 @@ null
 "пояснити",
 "A1"
 ],
+"objava": [
+"objava",
+"публікація",
+"A1"
+],
 "objaviti": [
 "objaviti",
 "опублікувати",
@@ -4396,10 +6381,25 @@ null
 "хмарно",
 "A0"
 ],
+"obnoviti": [
+"obnoviti",
+"відновити, відреставрувати",
+"A1"
+],
+"obožavati": [
+"obožavati",
+"обожнювати",
+"A1"
+],
 "obrazac": [
 "obrazac",
 "бланк / анкета",
 "A0"
+],
+"obraćati se": [
+"obraćati se",
+"звертатися (до когось)",
+"A1"
 ],
 "obrisati": [
 "obrisati",
@@ -4410,6 +6410,16 @@ null
 "obrok",
 "прийом їжі; порція їжі",
 "A0"
+],
+"obuka": [
+"obuka",
+"навчання (на роботі), інструктаж",
+"A1"
+],
+"obuti se": [
+"obuti se",
+"взутися",
+"A1"
 ],
 "obući se": [
 "obući se",
@@ -4426,6 +6436,11 @@ null
 "обов’язково",
 "A0"
 ],
+"ocat": [
+"ocat",
+"оцет",
+"A1"
+],
 "ocjena": [
 "ocjena",
 "оцінка",
@@ -4435,6 +6450,11 @@ null
 "od kada",
 "відколи; з якого часу",
 "A0"
+],
+"odabrati": [
+"odabrati",
+"обрати",
+"A1"
 ],
 "odakle": [
 "odakle",
@@ -4450,6 +6470,11 @@ null
 "odakle ste",
 "звідки ви",
 "A0"
+],
+"odbiti": [
+"odbiti",
+"відмовити",
+"A1"
 ],
 "odblokirati": [
 "odblokirati",
@@ -4471,6 +6496,11 @@ null
 "вихователька (у дитсадку)",
 "A0"
 ],
+"odgovarati": [
+"odgovarati",
+"відповідати; підходити (за розміром, часом)",
+"A1"
+],
 "odgovor": [
 "odgovor",
 "відповідь",
@@ -4486,25 +6516,55 @@ null
 "відповісти",
 "A0"
 ],
+"odgovornost": [
+"odgovornost",
+"відповідальність",
+"A1"
+],
 "odjava": [
 "odjava",
 "виселення (check-out)",
 "A0"
+],
+"odjaviti se": [
+"odjaviti se",
+"виписатися; вийти (з акаунта)",
+"A1"
 ],
 "odjednom": [
 "odjednom",
 "раптом",
 "A0"
 ],
+"odjel": [
+"odjel",
+"відділ (у магазині, установі)",
+"A1"
+],
 "odjeća": [
 "odjeća",
 "одяг",
 "A0"
 ],
+"odlazak": [
+"odlazak",
+"відбуття",
+"A1"
+],
+"odlaziti": [
+"odlaziti",
+"йти; від'їжджати",
+"A1"
+],
 "odlično": [
 "odlično",
 "відмінно",
 "A0"
+],
+"odlučiti": [
+"odlučiti",
+"вирішити",
+"A1"
 ],
 "odmah": [
 "odmah",
@@ -4531,6 +6591,16 @@ null
 "зона відпочинку (на трасі)",
 "A1"
 ],
+"odnijeti": [
+"odnijeti",
+"віднести",
+"A1"
+],
+"odobrenje": [
+"odobrenje",
+"схвалення, дозвіл",
+"A1"
+],
 "odobriti": [
 "odobriti",
 "схвалити",
@@ -4540,6 +6610,16 @@ null
 "odrastao",
 "дорослий",
 "A0"
+],
+"odrasti": [
+"odrasti",
+"вирости, подорослішати",
+"A1"
+],
+"odredište": [
+"odredište",
+"місце призначення",
+"A1"
 ],
 "odrezak": [
 "odrezak",
@@ -4551,20 +6631,60 @@ null
 "зупинитися (в готелі, у когось)",
 "A0"
 ],
+"odsutan": [
+"odsutan",
+"відсутній",
+"A1"
+],
+"odsutnost": [
+"odsutnost",
+"відсутність",
+"A1"
+],
 "oduzeti": [
 "oduzeti",
 "відняти",
 "A0"
+],
+"odvesti": [
+"odvesti",
+"відвезти; відвести",
+"A1"
 ],
 "odvijač": [
 "odvijač",
 "викрутка",
 "A1"
 ],
+"odvlaživač": [
+"odvlaživač",
+"осушувач повітря",
+"A1"
+],
+"odvod": [
+"odvod",
+"злив, стік",
+"A1"
+],
+"odvoz smeća": [
+"odvoz smeća",
+"вивіз сміття",
+"A1"
+],
+"odvući": [
+"odvući",
+"відбуксирувати, евакуювати (авто)",
+"A1"
+],
 "oglas": [
 "oglas",
 "оголошення",
 "A0"
+],
+"oglas za posao": [
+"oglas za posao",
+"оголошення про роботу, вакансія",
+"A1"
 ],
 "ogledalo": [
 "ogledalo",
@@ -4576,9 +6696,24 @@ null
 "обмеження швидкості",
 "A1"
 ],
+"ogrebotina": [
+"ogrebotina",
+"подряпина",
+"A1"
+],
+"ogrlica": [
+"ogrlica",
+"намисто",
+"A1"
+],
 "oguliti": [
 "oguliti",
 "почистити (від шкірки)",
+"A1"
+],
+"ohladiti": [
+"ohladiti",
+"охолодити",
 "A1"
 ],
 "oib": [
@@ -4596,20 +6731,55 @@ null
 "око",
 "A0"
 ],
+"okolica": [
+"okolica",
+"околиці",
+"A1"
+],
+"okretište": [
+"okretište",
+"кінцева зупинка",
+"A1"
+],
+"okupiti se": [
+"okupiti se",
+"зібратися (разом)",
+"A1"
+],
 "okus": [
 "okus",
 "смак",
 "A0"
+],
+"olovka": [
+"olovka",
+"олівець",
+"A1"
 ],
 "oluja": [
 "oluja",
 "буря / шторм",
 "A0"
 ],
+"omekšivač": [
+"omekšivač",
+"кондиціонер (ополіскувач) для білизни",
+"A1"
+],
 "omiljen": [
 "omiljen",
 "улюблений",
 "A0"
+],
+"omot za knjige": [
+"omot za knjige",
+"обкладинка для книжок",
+"A1"
+],
+"omotnica": [
+"omotnica",
+"конверт",
+"A1"
 ],
 "on": [
 "on",
@@ -4661,20 +6831,45 @@ null
 "небезпека",
 "A1"
 ],
+"opeklina": [
+"opeklina",
+"опік",
+"A1"
+],
+"opera": [
+"opera",
+"опера",
+"A1"
+],
+"operater": [
+"operater",
+"оператор (зв’язку)",
+"A1"
+],
 "opet": [
 "opet",
 "знову",
-null
+"A1"
 ],
 "opisati": [
 "opisati",
 "описати",
 "A0"
 ],
+"opomena": [
+"opomena",
+"нагадування про борг; попередження",
+"A1"
+],
+"oporavak": [
+"oporavak",
+"відновлення",
+"A1"
+],
 "oprati": [
 "oprati",
 "помити",
-"A1"
+null
 ],
 "oprosti": [
 "oprosti",
@@ -4686,6 +6881,11 @@ null
 "Вибачте / Перепрошую.",
 "A0"
 ],
+"opustiti se": [
+"opustiti se",
+"розслабитися",
+"A1"
+],
 "opušten": [
 "opušten",
 "розслаблений",
@@ -4696,9 +6896,29 @@ null
 "муніципалітет, громада",
 "A0"
 ],
+"orada": [
+"orada",
+"дорада (риба)",
+"A1"
+],
 "orah": [
 "orah",
 "горіх",
+"A1"
+],
+"orao": [
+"orao",
+"орел",
+"A1"
+],
+"ordinacija": [
+"ordinacija",
+"кабінет лікаря",
+"A1"
+],
+"originalno pakiranje": [
+"originalno pakiranje",
+"оригінальна упаковка",
 "A1"
 ],
 "ormar": [
@@ -4734,6 +6954,11 @@ null
 "osiguranje": [
 "osiguranje",
 "страхування",
+null
+],
+"osigurač": [
+"osigurač",
+"запобіжник (електричний)",
 "A1"
 ],
 "osip": [
@@ -4756,15 +6981,35 @@ null
 "почуватися",
 "A0"
 ],
+"oslić": [
+"oslić",
+"хек",
+"A1"
+],
+"oslovljavati": [
+"oslovljavati",
+"називати (при звертанні: на ім’я, «пане»)",
+"A1"
+],
 "osmi": [
 "osmi",
 "восьмий",
 "A0"
 ],
+"osnovna škola": [
+"osnovna škola",
+"початкова школа",
+"A1"
+],
 "osoba": [
 "osoba",
 "особа",
 "A0"
+],
+"osobina": [
+"osobina",
+"риса (характеру)",
+"A1"
 ],
 "osobna iskaznica": [
 "osobna iskaznica",
@@ -4791,10 +7036,25 @@ null
 "решта (гроші); залишок",
 "A0"
 ],
+"ostati": [
+"ostati",
+"залишитися",
+"A1"
+],
 "ostaviti": [
 "ostaviti",
 "залишити",
 "A0"
+],
+"ostaviti poruku": [
+"ostaviti poruku",
+"залишити повідомлення",
+"A1"
+],
+"ostvariti": [
+"ostvariti",
+"здійснити, реалізувати",
+"A1"
 ],
 "otac": [
 "otac",
@@ -4806,9 +7066,39 @@ null
 "набряклий; опухлий",
 "A1"
 ],
+"otići": [
+"otići",
+"піти, поїхати",
+"A1"
+],
+"otkaz": [
+"otkaz",
+"звільнення",
+"A1"
+],
+"otkazan": [
+"otkazan",
+"скасований",
+"A1"
+],
 "otkazati": [
 "otkazati",
 "скасувати",
+"A1"
+],
+"otkazati rezervaciju": [
+"otkazati rezervaciju",
+"скасувати бронювання",
+"A1"
+],
+"otkazivanje leta": [
+"otkazivanje leta",
+"скасування рейсу",
+"A1"
+],
+"otkazni rok": [
+"otkazni rok",
+"строк попередження про звільнення",
 "A1"
 ],
 "otključati": [
@@ -4821,10 +7111,30 @@ null
 "острів",
 "A1"
 ],
+"otopiti": [
+"otopiti",
+"розчинити",
+"A1"
+],
+"otočje": [
+"otočje",
+"архіпелаг",
+"A1"
+],
+"otpad": [
+"otpad",
+"відходи",
+"A1"
+],
 "otprilike": [
 "otprilike",
 "приблизно",
 "A0"
+],
+"otvarač": [
+"otvarač",
+"відкривачка",
+"A1"
 ],
 "otvoren": [
 "otvoren",
@@ -4841,10 +7151,20 @@ null
 "відчинити / відкрити",
 "A0"
 ],
+"otvoriti račun": [
+"otvoriti račun",
+"відкрити рахунок",
+"A1"
+],
 "ovaj": [
 "ovaj",
 "цей",
 "A0"
+],
+"ovamo": [
+"ovamo",
+"сюди",
+"A1"
 ],
 "ovdje": [
 "ovdje",
@@ -4861,6 +7181,11 @@ null
 "засвідчення (підпису, копії)",
 "A1"
 ],
+"ovjereni prijevod": [
+"ovjereni prijevod",
+"засвідчений переклад",
+"A1"
+],
 "ovjeriti": [
 "ovjeriti",
 "засвідчити (печаткою, у нотаріуса)",
@@ -4871,10 +7196,20 @@ null
 "це… (коли когось представляєте)",
 "A0"
 ],
+"ovratnik": [
+"ovratnik",
+"комір",
+"A1"
+],
 "ozbiljan": [
 "ozbiljan",
 "серйозний",
 "A0"
+],
+"ozdraviti": [
+"ozdraviti",
+"одужати",
+"A1"
 ],
 "ozlijediti se": [
 "ozlijediti se",
@@ -4894,6 +7229,11 @@ null
 "očistiti": [
 "očistiti",
 "почистити; випатрати (рибу)",
+"A1"
+],
+"očitanje": [
+"očitanje",
+"показання (лічильника)",
 "A1"
 ],
 "oštećen": [
@@ -4916,6 +7256,11 @@ null
 "березень",
 "A0"
 ],
+"pacijent": [
+"pacijent",
+"пацієнт",
+"A1"
+],
 "pada kiša": [
 "pada kiša",
 "іде дощ",
@@ -4924,11 +7269,16 @@ null
 "pahuljice": [
 "pahuljice",
 "пластівці",
-"A1"
+null
 ],
 "paket": [
 "paket",
 "посилка",
+"A1"
+],
+"paket podataka": [
+"paket podataka",
+"пакет мобільного інтернету",
 "A1"
 ],
 "paketomat": [
@@ -4956,6 +7306,21 @@ null
 "розумний",
 "A0"
 ],
+"pametni sat": [
+"pametni sat",
+"смарт-годинник",
+"A1"
+],
+"pametni telefon": [
+"pametni telefon",
+"смартфон",
+"A1"
+],
+"pamuk": [
+"pamuk",
+"бавовна",
+"A1"
+],
 "papar": [
 "papar",
 "перець",
@@ -4976,6 +7341,11 @@ null
 "перець (овоч)",
 "A0"
 ],
+"papuče": [
+"papuče",
+"тапочки",
+"A1"
+],
 "par": [
 "par",
 "пара; кілька",
@@ -4985,6 +7355,11 @@ null
 "paran broj",
 "парне число",
 "A0"
+],
+"parfem": [
+"parfem",
+"парфуми",
+"A1"
 ],
 "park": [
 "park",
@@ -5001,10 +7376,30 @@ null
 "автостоянка / парковка",
 "A0"
 ],
+"parkiralište za bicikle": [
+"parkiralište za bicikle",
+"велопарковка",
+"A1"
+],
 "parkirati": [
 "parkirati",
 "паркуватися",
 "A0"
+],
+"parkirna karta": [
+"parkirna karta",
+"паркувальний талон",
+"A1"
+],
+"parkirno mjesto": [
+"parkirno mjesto",
+"паркувальне місце",
+"A1"
+],
+"participacija": [
+"participacija",
+"доплата пацієнта (за медичну послугу)",
+"A1"
 ],
 "partner": [
 "partner",
@@ -5026,10 +7421,35 @@ null
 "впасти",
 "A1"
 ],
+"pastila": [
+"pastila",
+"пастилка, льодяник (від горла)",
+"A1"
+],
+"patentni zatvarač": [
+"patentni zatvarač",
+"застібка-блискавка",
+"A1"
+],
+"patlidžan": [
+"patlidžan",
+"баклажан",
+"A1"
+],
+"pauk": [
+"pauk",
+"евакуатор (розм.); павук",
+"A1"
+],
 "pauza": [
 "pauza",
 "перерва",
 "A0"
+],
+"pauza za ručak": [
+"pauza za ručak",
+"обідня перерва",
+"A1"
 ],
 "pazi": [
 "pazi",
@@ -5041,15 +7461,30 @@ null
 "паґський сир (овечий, з острова Паґ)",
 "A1"
 ],
+"pašticada": [
+"pašticada",
+"паштицада (далматинська тушкована яловичина)",
+"A1"
+],
 "pažljivo": [
 "pažljivo",
 "обережно; уважно",
+"A1"
+],
+"pecati": [
+"pecati",
+"рибалити, ловити рибу (вудкою)",
 "A1"
 ],
 "pecivo": [
 "pecivo",
 "булочка; випічка",
 "A0"
+],
+"pedala": [
+"pedala",
+"педаль",
+"A1"
 ],
 "pedeset": [
 "pedeset",
@@ -5086,6 +7521,11 @@ null
 "підгузки",
 "A1"
 ],
+"perec": [
+"perec",
+"брецель",
+"A1"
+],
 "perilica": [
 "perilica",
 "пральна машина",
@@ -5096,10 +7536,30 @@ null
 "посудомийна машина",
 "A0"
 ],
+"perilica rublja": [
+"perilica rublja",
+"пральна машина",
+"A1"
+],
+"pernica": [
+"pernica",
+"пенал",
+"A1"
+],
 "peron": [
 "peron",
 "перон",
 "A0"
+],
+"persirati": [
+"persirati",
+"звертатися на «Ви»",
+"A1"
+],
+"peršin": [
+"peršin",
+"петрушка",
+"A1"
 ],
 "pet": [
 "pet",
@@ -5161,15 +7621,30 @@ null
 "пісок",
 "A1"
 ],
+"pijesak za mačke": [
+"pijesak za mačke",
+"наповнювач для котячого туалету",
+"A1"
+],
 "pikantan": [
 "pikantan",
 "гострий, пікантний (про їжу)",
 "A0"
 ],
+"piknik": [
+"piknik",
+"пікнік",
+"A1"
+],
 "piletina": [
 "piletina",
 "курятина",
 "A0"
+],
+"pileća prsa": [
+"pileća prsa",
+"курячі грудки, куряче філе",
+"A1"
 ],
 "pin": [
 "PIN",
@@ -5199,6 +7674,11 @@ null
 "pismo": [
 "pismo",
 "лист",
+"A1"
+],
+"pita": [
+"pita",
+"пиріг (листковий)",
 "A1"
 ],
 "pitanje": [
@@ -5241,6 +7721,11 @@ null
 "пішохід",
 "A0"
 ],
+"pješačka zona": [
+"pješačka zona",
+"пішохідна зона",
+"A1"
+],
 "pješački prijelaz": [
 "pješački prijelaz",
 "пішохідний перехід",
@@ -5250,6 +7735,11 @@ null
 "pješice",
 "пішки",
 "A0"
+],
+"pješčana plaža": [
+"pješčana plaža",
+"піщаний пляж",
+"A1"
 ],
 "pladanj": [
 "pladanj",
@@ -5271,6 +7761,11 @@ null
 "план",
 "A0"
 ],
+"plan puta": [
+"plan puta",
+"план подорожі, маршрут",
+"A1"
+],
 "planina": [
 "planina",
 "гора / гірський масив",
@@ -5279,6 +7774,11 @@ null
 "planinariti": [
 "planinariti",
 "ходити в гори (у походи)",
+"A1"
+],
+"planinarski dom": [
+"planinarski dom",
+"гірський притулок",
 "A1"
 ],
 "planirati": [
@@ -5306,6 +7806,11 @@ null
 "заробітна плата",
 "A0"
 ],
+"plaćanje karticom": [
+"plaćanje karticom",
+"оплата карткою",
+"A1"
+],
 "plaćati": [
 "plaćati",
 "платити",
@@ -5314,6 +7819,11 @@ null
 "plaćen": [
 "plaćen",
 "оплачуваний; оплачений",
+"A1"
+],
+"plaćeni dopust": [
+"plaćeni dopust",
+"оплачувана відпустка (короткострокова)",
 "A1"
 ],
 "plaža": [
@@ -5326,6 +7836,11 @@ null
 "танцювати",
 "A1"
 ],
+"plesti": [
+"plesti",
+"в'язати",
+"A1"
+],
 "plijesan": [
 "plijesan",
 "пліснява",
@@ -5336,9 +7851,24 @@ null
 "газ",
 "A0"
 ],
+"plitki tanjur": [
+"plitki tanjur",
+"мілка тарілка",
+"A1"
+],
 "plivati": [
 "plivati",
 "плавати",
+"A1"
+],
+"pljeskati": [
+"pljeskati",
+"аплодувати, плескати",
+"A1"
+],
+"pljusak": [
+"pljusak",
+"злива",
 "A1"
 ],
 "plodovi mora": [
@@ -5366,6 +7896,16 @@ null
 "плюс",
 "A0"
 ],
+"pluća": [
+"pluća",
+"легені",
+"A1"
+],
+"po mom mišljenju": [
+"po mom mišljenju",
+"на мою думку",
+"A1"
+],
 "pobijediti": [
 "pobijediti",
 "перемогти",
@@ -5375,6 +7915,11 @@ null
 "pod",
 "підлога",
 "A0"
+],
+"podgrijati": [
+"podgrijati",
+"підігріти",
+"A1"
 ],
 "podijeljeno s": [
 "podijeljeno s",
@@ -5395,6 +7940,11 @@ null
 "podne",
 "полудень",
 "A0"
+],
+"podrijetlo": [
+"podrijetlo",
+"походження",
+"A1"
 ],
 "podrum": [
 "podrum",
@@ -5441,6 +7991,16 @@ null
 "подарунок",
 "A0"
 ],
+"poklon bon": [
+"poklon bon",
+"подарунковий сертифікат",
+"A1"
+],
+"pokloniti": [
+"pokloniti",
+"подарувати",
+"A1"
+],
 "poklopac": [
 "poklopac",
 "кришка",
@@ -5456,6 +8016,21 @@ null
 "ковдра",
 "A0"
 ],
+"pokrivenost": [
+"pokrivenost",
+"покриття (мережі)",
+"A1"
+],
+"pokucati": [
+"pokucati",
+"постукати",
+"A1"
+],
+"pokupiti": [
+"pokupiti",
+"забрати (дитину, речі)",
+"A1"
+],
 "pokvaren": [
 "pokvaren",
 "зіпсований",
@@ -5464,6 +8039,11 @@ null
 "pokvareno": [
 "pokvareno",
 "зламане",
+null
+],
+"pokvariti se": [
+"pokvariti se",
+"зламатися, зіпсуватися",
 "A1"
 ],
 "pola": [
@@ -5496,10 +8076,20 @@ null
 "відправлятися",
 "A1"
 ],
+"polaznik": [
+"polaznik",
+"слухач (курсу)",
+"A1"
+],
 "polica": [
 "polica",
 "полиця; страховий поліс",
 "A0"
+],
+"polica za knjige": [
+"polica za knjige",
+"книжкова полиця",
+"A1"
 ],
 "policajac": [
 "policajac",
@@ -5516,6 +8106,11 @@ null
 "поліцейський відділок",
 "A0"
 ],
+"polijetanje": [
+"polijetanje",
+"зліт (літака)",
+"A1"
+],
 "poljska": [
 "Poljska",
 "Польща",
@@ -5531,14 +8126,39 @@ null
 "поцілунок",
 "A1"
 ],
+"polnoćka": [
+"polnoćka",
+"опівнічна різдвяна меса",
+"A1"
+],
 "polog": [
 "polog",
 "застава / депозит",
 "A1"
 ],
+"položiti": [
+"položiti",
+"скласти (іспит успішно)",
+"A1"
+],
+"poluotok": [
+"poluotok",
+"півострів",
+"A1"
+],
+"polupansion": [
+"polupansion",
+"напівпансіон",
+"A1"
+],
 "pomagati": [
 "pomagati",
 "допомагати",
+"A1"
+],
+"pomaknuti": [
+"pomaknuti",
+"перенести; зрушити",
 "A1"
 ],
 "pomfrit": [
@@ -5581,6 +8201,11 @@ null
 "компостер для квитків",
 "A1"
 ],
+"poništiti": [
+"poništiti",
+"прокомпостувати (квиток); скасувати",
+"A1"
+],
 "ponosan": [
 "ponosan",
 "гордий",
@@ -5590,6 +8215,16 @@ null
 "ponoviti",
 "повторити",
 "A0"
+],
+"ponovno": [
+"ponovno",
+"знову, ще раз",
+"A1"
+],
+"ponovno pokrenuti": [
+"ponovno pokrenuti",
+"перезавантажити, перезапустити",
+"A1"
 ],
 "ponoć": [
 "ponoć",
@@ -5606,14 +8241,39 @@ null
 "запропонувати",
 "A0"
 ],
+"popapriti": [
+"popapriti",
+"поперчити",
+"A1"
+],
 "popis": [
 "popis",
 "список",
 "A0"
 ],
+"popis pribora": [
+"popis pribora",
+"список приладдя",
+"A1"
+],
+"popis za kupovinu": [
+"popis za kupovinu",
+"список покупок",
+"A1"
+],
 "poplava": [
 "poplava",
 "повінь",
+"A1"
+],
+"popodnevna smjena": [
+"popodnevna smjena",
+"післяобідня зміна (у школі)",
+"A1"
+],
+"popodnevni odmor": [
+"popodnevni odmor",
+"денний сон (у садку), післяобідній відпочинок",
 "A1"
 ],
 "popravak": [
@@ -5664,7 +8324,7 @@ null
 "posebno": [
 "posebno",
 "окремо; особливо",
-"A1"
+null
 ],
 "posjetiti": [
 "posjetiti",
@@ -5675,6 +8335,16 @@ null
 "posjetnica",
 "візитівка",
 "A0"
+],
+"posjeći se": [
+"posjeći se",
+"порізатися",
+"A1"
+],
+"poskok": [
+"poskok",
+"носата гадюка (поскок)",
+"A1"
 ],
 "poslati": [
 "poslati",
@@ -5696,6 +8366,11 @@ null
 "роботодавець",
 "A1"
 ],
+"poslušan": [
+"poslušan",
+"слухняний",
+"A1"
+],
 "posoliti": [
 "posoliti",
 "посолити",
@@ -5705,6 +8380,31 @@ null
 "pospan",
 "сонний",
 "A0"
+],
+"pospremiti": [
+"pospremiti",
+"прибрати (кімнату, речі)",
+"A1"
+],
+"pospremiti stol": [
+"pospremiti stol",
+"прибрати зі столу",
+"A1"
+],
+"postati": [
+"postati",
+"стати (кимось, чимось)",
+"A1"
+],
+"postaviti stol": [
+"postaviti stol",
+"накрити на стіл",
+"A1"
+],
+"postavke": [
+"postavke",
+"налаштування",
+"A1"
 ],
 "posteljina": [
 "posteljina",
@@ -5720,6 +8420,16 @@ null
 "posuditi",
 "позичити",
 "A0"
+],
+"posuđe": [
+"posuđe",
+"посуд",
+"A1"
+],
+"potkrovlje": [
+"potkrovlje",
+"мансарда",
+"A1"
 ],
 "potpis": [
 "potpis",
@@ -5746,6 +8456,21 @@ null
 "довідка / підтвердження",
 "A0"
 ],
+"potvrda u dva koraka": [
+"potvrda u dva koraka",
+"двоетапна перевірка",
+"A1"
+],
+"potvrditi": [
+"potvrditi",
+"підтвердити",
+"A1"
+],
+"pouzdan": [
+"pouzdan",
+"надійний",
+"A1"
+],
 "pouzećem": [
 "pouzećem",
 "післяплатою",
@@ -5761,6 +8486,11 @@ null
 "повідець",
 "A0"
 ],
+"povoljan": [
+"povoljan",
+"вигідний, недорогий",
+"A1"
+],
 "povrat novca": [
 "povrat novca",
 "повернення грошей",
@@ -5771,9 +8501,19 @@ null
 "квиток туди і назад",
 "A0"
 ],
+"povratnica": [
+"povratnica",
+"повідомлення про вручення",
+"A1"
+],
 "povraćati": [
 "povraćati",
 "блювати",
+"A1"
+],
+"povremeno": [
+"povremeno",
+"час від часу",
 "A1"
 ],
 "povrće": [
@@ -5785,6 +8525,11 @@ null
 "pozdrav",
 "привіт; вітання",
 "A0"
+],
+"pozdrav suncu": [
+"Pozdrav Suncu",
+"Вітання Сонцю (інсталяція в Задарі)",
+"A1"
 ],
 "pozdraviti": [
 "pozdraviti",
@@ -5800,6 +8545,16 @@ null
 "pozivni broj",
 "телефонний код",
 "A0"
+],
+"pozivnica": [
+"pozivnica",
+"запрошення",
+"A1"
+],
+"poznanik": [
+"poznanik",
+"знайомий",
+"A1"
 ],
 "poznat": [
 "poznat",
@@ -5831,9 +8586,24 @@ null
 "на початку (місяця, року)",
 "A0"
 ],
+"početkom tjedna": [
+"početkom tjedna",
+"на початку тижня",
+"A1"
+],
+"početnik": [
+"početnik",
+"початківець",
+"A1"
+],
 "počinjati": [
 "počinjati",
 "починати",
+"A1"
+],
+"pošiljatelj": [
+"pošiljatelj",
+"відправник",
 "A1"
 ],
 "pošiljka": [
@@ -5856,6 +8626,11 @@ null
 "поштова скринька",
 "A0"
 ],
+"poštovani": [
+"poštovani",
+"шановний (у листі, зверненні)",
+"A1"
+],
 "poštovati": [
 "poštovati",
 "поважати",
@@ -5866,9 +8641,19 @@ null
 "пожежа",
 "A0"
 ],
+"požuriti se": [
+"požuriti se",
+"поквапитися",
+"A1"
+],
 "prati": [
 "prati",
 "мити / прати",
+"A1"
+],
+"prati zube": [
+"prati zube",
+"чистити зуби",
 "A1"
 ],
 "pratitelj": [
@@ -5881,9 +8666,19 @@ null
 "стежити, супроводжувати",
 "A1"
 ],
+"pratnja": [
+"pratnja",
+"супровід; партнер (на захід)",
+"A1"
+],
 "pravilna prehrana": [
 "pravilna prehrana",
 "правильне харчування",
+"A1"
+],
+"pravilnik": [
+"pravilnik",
+"внутрішні правила, положення",
 "A1"
 ],
 "pravilo": [
@@ -5905,6 +8700,11 @@ null
 "praznik",
 "свято, вихідний",
 "A0"
+],
+"praznik rada": [
+"Praznik rada",
+"День праці (1 травня)",
+"A1"
 ],
 "praćenje pošiljke": [
 "praćenje pošiljke",
@@ -5936,14 +8736,34 @@ null
 "передмістя",
 "A0"
 ],
+"predivan": [
+"predivan",
+"чудовий, прекрасний",
+"A1"
+],
 "predjelo": [
 "predjelo",
 "закуска",
 "A0"
 ],
+"predmet": [
+"predmet",
+"тема (листа); предмет",
+"A1"
+],
+"prednje sjedalo": [
+"prednje sjedalo",
+"переднє сидіння",
+"A1"
+],
 "prednost": [
 "prednost",
 "перевага",
+"A1"
+],
+"predsezona": [
+"predsezona",
+"початок сезону (до липня)",
 "A1"
 ],
 "predstava": [
@@ -5956,6 +8776,11 @@ null
 "представитися",
 "A0"
 ],
+"preferirati": [
+"preferirati",
+"віддавати перевагу",
+"A1"
+],
 "pregled": [
 "pregled",
 "медичний огляд / обстеження",
@@ -5966,10 +8791,25 @@ null
 "оглянути (лікарем)",
 "A1"
 ],
+"pregorjeti": [
+"pregorjeti",
+"перегоріти",
+"A1"
+],
 "prehlada": [
 "prehlada",
 "застуда",
 "A0"
+],
+"prehlađen": [
+"prehlađen",
+"застуджений",
+"A1"
+],
+"prekinuti": [
+"prekinuti",
+"перервати, зупинити; розійтися (prekinuti s nekim)",
+"A1"
 ],
 "prekjučer": [
 "prekjučer",
@@ -5991,10 +8831,30 @@ null
 "понаднормові години",
 "A1"
 ],
+"prekovremeno": [
+"prekovremeno",
+"понаднормово",
+"A1"
+],
+"prema": [
+"prema",
+"у напрямку до",
+"A1"
+],
 "premalen": [
 "premalen",
 "замалий",
 "A0"
+],
+"premijera": [
+"premijera",
+"прем’єра",
+"A1"
+],
+"prenijeti": [
+"prenijeti",
+"перенести",
+"A1"
 ],
 "prenoćiti": [
 "prenoćiti",
@@ -6004,6 +8864,11 @@ null
 "preporuka": [
 "preporuka",
 "рекомендація",
+"A1"
+],
+"preporučeno pismo": [
+"preporučeno pismo",
+"рекомендований лист",
 "A1"
 ],
 "preporučiti": [
@@ -6041,14 +8906,34 @@ null
 "перевдягнути",
 "A1"
 ],
+"presvući se": [
+"presvući se",
+"перевдягнутися",
+"A1"
+],
+"prethodni": [
+"prethodni",
+"попередній",
+"A1"
+],
 "pretjecati": [
 "pretjecati",
 "обганяти",
 "A1"
 ],
+"pretplata": [
+"pretplata",
+"передплата, абонемент",
+"A1"
+],
 "pretraga": [
 "pretraga",
 "обстеження; аналіз",
+"A1"
+],
+"pretraživati": [
+"pretraživati",
+"шукати (в інтернеті)",
 "A1"
 ],
 "preuzeti": [
@@ -6066,10 +8951,25 @@ null
 "надто; забагато",
 "A0"
 ],
+"prezentacija": [
+"prezentacija",
+"презентація",
+"A1"
+],
 "prezime": [
 "prezime",
 "прізвище",
 "A0"
+],
+"pribor za jelo": [
+"pribor za jelo",
+"столові прибори",
+"A1"
+],
+"prihvatiti": [
+"prihvatiti",
+"прийняти",
+"A1"
 ],
 "prijatelj": [
 "prijatelj",
@@ -6086,6 +8986,11 @@ null
 "реєстрація; заява (в поліцію, установу)",
 "A0"
 ],
+"prijava za let": [
+"prijava za let",
+"реєстрація на рейс",
+"A1"
+],
 "prijaviti": [
 "prijaviti",
 "зареєструвати; повідомити",
@@ -6100,6 +9005,11 @@ null
 "prije",
 "перед, раніше",
 "A0"
+],
+"prijenos broja": [
+"prijenos broja",
+"перенесення номера (до іншого оператора)",
+"A1"
 ],
 "prijepodne": [
 "prijepodne",
@@ -6121,10 +9031,30 @@ null
 "перейти",
 "A0"
 ],
+"prilagodba": [
+"prilagodba",
+"адаптація",
+"A1"
+],
 "prilog": [
 "prilog",
 "гарнір",
 "A0"
+],
+"primatelj": [
+"primatelj",
+"одержувач",
+"A1"
+],
+"primiti": [
+"primiti",
+"отримати",
+"A1"
+],
+"primorski": [
+"primorski",
+"приморський",
+"A1"
 ],
 "pripadati": [
 "pripadati",
@@ -6151,14 +9081,29 @@ null
 "мито / збір",
 "A0"
 ],
+"pristup": [
+"pristup",
+"доступ",
+"A1"
+],
 "privatan": [
 "privatan",
 "приватний",
 "A1"
 ],
+"privatni smještaj": [
+"privatni smještaj",
+"приватне житло (апартаменти, кімнати)",
+"A1"
+],
 "privitak": [
 "privitak",
 "вкладення (в листі)",
+"A1"
+],
+"privjesak": [
+"privjesak",
+"кулон, підвіска; брелок",
 "A1"
 ],
 "privremena zaštita": [
@@ -6184,6 +9129,11 @@ null
 "pričati": [
 "pričati",
 "розповідати; розмовляти",
+null
+],
+"pričekati": [
+"pričekati",
+"почекати",
 "A1"
 ],
 "pričuva": [
@@ -6201,9 +9151,24 @@ null
 "приміряти / спробувати",
 "A0"
 ],
+"probava": [
+"probava",
+"травлення",
+"A1"
+],
 "probni rad": [
 "probni rad",
 "випробувальний термін",
+"A1"
+],
+"probuditi se": [
+"probuditi se",
+"прокинутися",
+"A1"
+],
+"probušen": [
+"probušen",
+"проколотий",
 "A1"
 ],
 "prodati": [
@@ -6236,6 +9201,11 @@ null
 "група продовженого дня (у школі)",
 "A1"
 ],
+"produženi vikend": [
+"produženi vikend",
+"довгі вихідні",
+"A1"
+],
 "produžiti": [
 "produžiti",
 "продовжити (термін, документ)",
@@ -6261,6 +9231,21 @@ null
 "програміст",
 "A0"
 ],
+"progutati": [
+"progutati",
+"проковтнути",
+"A1"
+],
+"proizvod": [
+"proizvod",
+"продукт / товар",
+"A1"
+],
+"prokuhati": [
+"prokuhati",
+"прокип’ятити; прокипіти",
+"A1"
+],
 "proljev": [
 "proljev",
 "пронос; діарея",
@@ -6276,6 +9261,11 @@ null
 "рух",
 "A0"
 ],
+"prometan": [
+"prometan",
+"жвавий, з інтенсивним рухом",
+"A1"
+],
 "prometna nesreća": [
 "prometna nesreća",
 "ДТП; аварія",
@@ -6286,10 +9276,30 @@ null
 "дорожній знак",
 "A1"
 ],
+"promijeniti": [
+"promijeniti",
+"змінити",
+"A1"
+],
+"propisati": [
+"propisati",
+"виписати (рецепт)",
+"A1"
+],
+"propuh": [
+"propuh",
+"протяг",
+"A1"
+],
 "propustiti": [
 "propustiti",
 "пропустити",
 "A0"
+],
+"propušteni poziv": [
+"propušteni poziv",
+"пропущений дзвінок",
+"A1"
 ],
 "prosinac": [
 "prosinac",
@@ -6300,6 +9310,11 @@ null
 "proslava",
 "святкування",
 "A0"
+],
+"proslaviti": [
+"proslaviti",
+"відсвяткувати",
+"A1"
 ],
 "proslijediti": [
 "proslijediti",
@@ -6315,6 +9330,16 @@ null
 "provala",
 "квартирна крадіжка, злам",
 "A0"
+],
+"provesti": [
+"provesti",
+"провести",
+"A1"
+],
+"provizija": [
+"provizija",
+"комісія",
+"A1"
 ],
 "provjeriti": [
 "provjeriti",
@@ -6336,6 +9361,11 @@ null
 "прочитати",
 "A1"
 ],
+"prošetati": [
+"prošetati",
+"прогулятися",
+"A1"
+],
 "prošle godine": [
 "prošle godine",
 "торік; минулого року",
@@ -6346,10 +9376,20 @@ null
 "минулий",
 "A0"
 ],
+"prošli tjedan": [
+"prošli tjedan",
+"минулого тижня; минулий тиждень",
+"A1"
+],
 "prsa": [
 "prsa",
 "груди",
 "A0"
+],
+"prsluk": [
+"prsluk",
+"жилет, безрукавка",
+"A1"
 ],
 "prst": [
 "prst",
@@ -6381,6 +9421,16 @@ null
 "перший",
 "A0"
 ],
+"prvi razred": [
+"prvi razred",
+"перший клас (у поїзді)",
+"A1"
+],
+"prvi slobodni termin": [
+"prvi slobodni termin",
+"найближчий вільний час (для запису)",
+"A1"
+],
 "prvo": [
 "prvo",
 "спочатку; по-перше",
@@ -6411,6 +9461,11 @@ null
 "публіка",
 "A1"
 ],
+"pumpa": [
+"pumpa",
+"заправка (АЗС); насос",
+"A1"
+],
 "pun": [
 "pun",
 "повний",
@@ -6429,7 +9484,7 @@ null
 "puniti": [
 "puniti",
 "заряджати; наповнювати",
-"A1"
+null
 ],
 "punjač": [
 "punjač",
@@ -6476,10 +9531,15 @@ null
 "пасажир / мандрівник",
 "A0"
 ],
+"putno osiguranje": [
+"putno osiguranje",
+"туристичне страхування",
+"A1"
+],
 "putovanje": [
 "putovanje",
 "подорож",
-"A1"
+null
 ],
 "putovati": [
 "putovati",
@@ -6506,6 +9566,11 @@ null
 "вживаний, б/в",
 "A0"
 ],
+"rad od kuće": [
+"rad od kuće",
+"робота з дому",
+"A1"
+],
 "radijator": [
 "radijator",
 "радіатор; батарея (опалення)",
@@ -6515,6 +9580,11 @@ null
 "raditi",
 "працювати, робити",
 "A0"
+],
+"radna bilježnica": [
+"radna bilježnica",
+"робочий зошит",
+"A1"
 ],
 "radna dozvola": [
 "radna dozvola",
@@ -6541,6 +9611,11 @@ null
 "робітник",
 "A0"
 ],
+"radnim danom": [
+"radnim danom",
+"у будні",
+"A1"
+],
 "radno mjesto": [
 "radno mjesto",
 "робоче місце",
@@ -6554,6 +9629,11 @@ null
 "rado": [
 "rado",
 "охоче; із задоволенням",
+"A1"
+],
+"radovi na cesti": [
+"radovi na cesti",
+"дорожні роботи",
 "A1"
 ],
 "rajčica": [
@@ -6586,6 +9666,11 @@ null
 "перехрестя",
 "A0"
 ],
+"raspakirati": [
+"raspakirati",
+"розпакувати",
+"A1"
+],
 "raspoloženje": [
 "raspoloženje",
 "настрій",
@@ -6594,6 +9679,11 @@ null
 "raspored": [
 "raspored",
 "розклад",
+"A1"
+],
+"raspored sati": [
+"raspored sati",
+"розклад уроків",
 "A1"
 ],
 "rasprodaja": [
@@ -6610,6 +9700,11 @@ null
 "rastati se",
 "розлучитися; розійтися",
 "A0"
+],
+"ravnalo": [
+"ravnalo",
+"лінійка",
+"A1"
 ],
 "ravnateljica": [
 "ravnateljica",
@@ -6631,14 +9726,24 @@ null
 "оглядати (пам’ятки)",
 "A0"
 ],
+"razgledavanje": [
+"razgledavanje",
+"огляд визначних місць, екскурсія",
+"A1"
+],
 "razgovarati": [
 "razgovarati",
 "розмовляти",
-"A1"
+null
 ],
 "razgovor": [
 "razgovor",
 "розмова / бесіда",
+"A1"
+],
+"razgovor za posao": [
+"razgovor za posao",
+"співбесіда",
 "A1"
 ],
 "razina": [
@@ -6656,10 +9761,25 @@ null
 "різний; відмінний",
 "A1"
 ],
+"razlog": [
+"razlog",
+"причина; привід",
+"A1"
+],
+"razočaran": [
+"razočaran",
+"розчарований",
+"A1"
+],
 "razred": [
 "razred",
 "клас (група учнів)",
 "A0"
+],
+"razrednica": [
+"razrednica",
+"класна керівниця",
+"A1"
 ],
 "razumjeti": [
 "razumjeti",
@@ -6671,6 +9791,11 @@ null
 "розлучений",
 "A0"
 ],
+"razvedriti se": [
+"razvedriti se",
+"проясниться (про небо)",
+"A1"
+],
 "račun": [
 "račun",
 "рахунок / чек",
@@ -6681,6 +9806,11 @@ null
 "рахунок за електрику",
 "A0"
 ],
+"račun za vodu": [
+"račun za vodu",
+"рахунок за воду",
+"A1"
+],
 "računalo": [
 "računalo",
 "комп'ютер",
@@ -6690,6 +9820,16 @@ null
 "računati",
 "обчислювати",
 "A0"
+],
+"računovođa": [
+"računovođa",
+"бухгалтер",
+"A1"
+],
+"recenzija": [
+"recenzija",
+"відгук (про товар); рецензія",
+"A1"
 ],
 "recepcija": [
 "recepcija",
@@ -6706,10 +9846,20 @@ null
 "рецепт",
 "A0"
 ],
+"reciklaža": [
+"reciklaža",
+"переробка",
+"A1"
+],
 "red": [
 "red",
 "черга",
 "A0"
+],
+"red je": [
+"red je",
+"так годиться, так заведено",
+"A1"
 ],
 "redni broj": [
 "redni broj",
@@ -6721,9 +9871,24 @@ null
 "регулярно",
 "A1"
 ],
+"regenerator": [
+"regenerator",
+"бальзам-ополіскувач для волосся",
+"A1"
+],
 "registracija": [
 "registracija",
 "реєстрація (авто)",
+"A1"
+],
+"registrator": [
+"registrator",
+"реєстратор (папка для документів)",
+"A1"
+],
+"regres": [
+"regres",
+"відпускні (виплата до відпустки)",
 "A1"
 ],
 "reklamacija": [
@@ -6746,10 +9911,20 @@ null
 "хвіст",
 "A0"
 ],
+"resetirati": [
+"resetirati",
+"скинути (пароль), перезавантажити",
+"A1"
+],
 "restoran": [
 "restoran",
 "ресторан",
 "A0"
+],
+"rezanci": [
+"rezanci",
+"локшина",
+"A1"
 ],
 "rezati": [
 "rezati",
@@ -6761,10 +9936,25 @@ null
 "бронювання / резерв",
 "A0"
 ],
+"rezervacija sjedala": [
+"rezervacija sjedala",
+"бронювання місця",
+"A1"
+],
 "rezervirati": [
 "rezervirati",
 "забронювати",
 "A0"
+],
+"rezervna odjeća": [
+"rezervna odjeća",
+"запасний одяг",
+"A1"
+],
+"rezervni dio": [
+"rezervni dio",
+"запчастина",
+"A1"
 ],
 "rezervoar": [
 "rezervoar",
@@ -6811,10 +10001,20 @@ null
 "слово",
 "A0"
 ],
+"rimski": [
+"rimski",
+"римський",
+"A1"
+],
+"ris": [
+"ris",
+"рись",
+"A1"
+],
 "riva": [
 "riva",
 "набережна",
-"A1"
+null
 ],
 "riža": [
 "riža",
@@ -6824,7 +10024,7 @@ null
 "rječnik": [
 "rječnik",
 "словник",
-"A1"
+null
 ],
 "rješenje": [
 "rješenje",
@@ -6866,20 +10066,40 @@ null
 "дедлайн / термін",
 "A0"
 ],
+"rok plaćanja": [
+"rok plaćanja",
+"термін оплати",
+"A1"
+],
 "rok trajanja": [
 "rok trajanja",
 "термін придатності",
 "A0"
+],
+"rok za povrat": [
+"rok za povrat",
+"термін повернення (товару)",
+"A1"
 ],
 "romantičan": [
 "romantičan",
 "романтичний",
 "A1"
 ],
+"roming": [
+"roming",
+"роумінг",
+"A1"
+],
 "romobil": [
 "romobil",
 "самокат",
 "A0"
+],
+"ronjenje": [
+"ronjenje",
+"пірнання; дайвінг",
+"A1"
 ],
 "rođak": [
 "rođak",
@@ -6901,6 +10121,11 @@ null
 "день народження",
 "A0"
 ],
+"roštilj": [
+"roštilj",
+"гриль; барбекю",
+"A1"
+],
 "rublje": [
 "rublje",
 "білизна (для прання)",
@@ -6921,6 +10146,11 @@ null
 "рука",
 "A0"
 ],
+"rukav": [
+"rukav",
+"рукав",
+"A1"
+],
 "rukavice": [
 "rukavice",
 "рукавички",
@@ -6931,14 +10161,29 @@ null
 "гандбол",
 "A1"
 ],
+"rukovati se": [
+"rukovati se",
+"потиснути руку, привітатися за руку",
+"A1"
+],
 "ruksak": [
 "ruksak",
 "рюкзак",
 "A0"
 ],
+"rupa": [
+"rupa",
+"дірка, отвір",
+"A1"
+],
 "ruter": [
 "ruter",
 "роутер",
+"A1"
+],
+"rutina": [
+"rutina",
+"розпорядок; звичний ритуал",
 "A1"
 ],
 "ručak": [
@@ -6956,10 +10201,30 @@ null
 "ручна поклажа",
 "A1"
 ],
+"ručni sat": [
+"ručni sat",
+"наручний годинник",
+"A1"
+],
 "ručnik": [
 "ručnik",
 "рушник",
 "A0"
+],
+"ruševine": [
+"ruševine",
+"руїни",
+"A1"
+],
+"ruž za usne": [
+"ruž za usne",
+"губна помада",
+"A1"
+],
+"ružan": [
+"ružan",
+"негарний / бридкий",
+"A1"
 ],
 "ružičast": [
 "ružičast",
@@ -6976,6 +10241,16 @@ null
 "зараз",
 "A0"
 ],
+"sajam": [
+"sajam",
+"ярмарок",
+"A1"
+],
+"sala za sastanke": [
+"sala za sastanke",
+"переговорна кімната",
+"A1"
+],
 "salama": [
 "salama",
 "салямі",
@@ -6985,6 +10260,11 @@ null
 "salata",
 "салат",
 "A0"
+],
+"salveta": [
+"salveta",
+"серветка",
+"A1"
 ],
 "samac": [
 "samac",
@@ -7001,9 +10281,29 @@ null
 "каса самообслуговування",
 "A0"
 ],
+"samostalan": [
+"samostalan",
+"самостійний",
+"A1"
+],
+"samostan": [
+"samostan",
+"монастир",
+"A1"
+],
+"samouvjeren": [
+"samouvjeren",
+"упевнений у собі",
+"A1"
+],
 "san": [
 "san",
 "сон",
+"A1"
+],
+"sandale": [
+"sandale",
+"сандалі",
 "A1"
 ],
 "sanjati": [
@@ -7026,10 +10326,20 @@ null
 "зустріч / нарада",
 "A1"
 ],
+"sastav": [
+"sastav",
+"склад (продукту)",
+"A1"
+],
+"sastojak": [
+"sastojak",
+"інгредієнт",
+"A1"
+],
 "sasvim": [
 "sasvim",
 "цілком; зовсім",
-"A1"
+null
 ],
 "sat": [
 "sat",
@@ -7091,6 +10401,11 @@ null
 "переїзд",
 "A1"
 ],
+"selidbena tvrtka": [
+"selidbena tvrtka",
+"компанія з перевезень (переїздів)",
+"A1"
+],
 "seliti se": [
 "seliti se",
 "переїжджати",
@@ -7099,7 +10414,7 @@ null
 "selo": [
 "selo",
 "село",
-null
+"A1"
 ],
 "semafor": [
 "semafor",
@@ -7126,9 +10441,29 @@ null
 "двоюрідна сестра",
 "A0"
 ],
+"sezona": [
+"sezona",
+"сезон",
+"A1"
+],
 "sezonski": [
 "sezonski",
 "сезонний",
+"A1"
+],
+"signal": [
+"signal",
+"сигнал",
+"A1"
+],
+"siguran": [
+"siguran",
+"безпечний / впевнений",
+"A1"
+],
+"sigurnosno pitanje": [
+"sigurnosno pitanje",
+"контрольне (секретне) питання",
 "A1"
 ],
 "sigurnost": [
@@ -7146,10 +10481,20 @@ null
 "SIM-картка",
 "A1"
 ],
+"simpatija": [
+"simpatija",
+"симпатія (людина, яка подобається)",
+"A1"
+],
 "simpatičan": [
 "simpatičan",
 "симпатичний / приємний",
 "A0"
+],
+"simptom": [
+"simptom",
+"симптом",
+"A1"
 ],
 "sin": [
 "sin",
@@ -7165,6 +10510,16 @@ null
 "sir",
 "сир",
 "A0"
+],
+"sirena": [
+"sirena",
+"сирена",
+"A1"
+],
+"sirni namaz": [
+"sirni namaz",
+"сирна намазка",
+"A1"
 ],
 "sirup": [
 "sirup",
@@ -7196,6 +10551,11 @@ null
 "сидіння; місце",
 "A1"
 ],
+"sjedalo do prolaza": [
+"sjedalo do prolaza",
+"місце біля проходу",
+"A1"
+],
 "sjedalo do prozora": [
 "sjedalo do prozora",
 "місце біля вікна",
@@ -7204,12 +10564,12 @@ null
 "sjediti": [
 "sjediti",
 "сидіти",
-"A1"
+null
 ],
 "sjesti": [
 "sjesti",
 "сісти",
-"A1"
+null
 ],
 "sjetiti se": [
 "sjetiti se",
@@ -7220,6 +10580,16 @@ null
 "sjever",
 "північ",
 "A0"
+],
+"sjećanje": [
+"sjećanje",
+"спогад",
+"A1"
+],
+"sjećati se": [
+"sjećati se",
+"пам’ятати, згадувати",
+"A1"
 ],
 "skenirati": [
 "skenirati",
@@ -7246,14 +10616,39 @@ null
 "зібрати (меблі); скласти",
 "A1"
 ],
+"skoro": [
+"skoro",
+"майже; скоро",
+"A1"
+],
+"skratiti": [
+"skratiti",
+"укоротити; скоротити",
+"A1"
+],
 "skrenuti": [
 "skrenuti",
 "повернути (ліворуч, праворуч)",
 "A0"
 ],
+"skretanje": [
+"skretanje",
+"поворот; з’їзд",
+"A1"
+],
 "skup": [
 "skup",
 "дорогий (за ціною)",
+"A1"
+],
+"skupina": [
+"skupina",
+"група",
+"A1"
+],
+"skupljati": [
+"skupljati",
+"збирати, колекціонувати",
 "A1"
 ],
 "skuplje": [
@@ -7274,6 +10669,11 @@ null
 "slabo": [
 "slabo",
 "слабо; погано",
+null
+],
+"slabost": [
+"slabost",
+"слабкість",
 "A1"
 ],
 "sladak": [
@@ -7324,12 +10724,32 @@ null
 "slavlje": [
 "slavlje",
 "святкування",
+null
+],
+"slavonija": [
+"Slavonija",
+"Славонія",
+"A1"
+],
+"slijetanje": [
+"slijetanje",
+"приземлення (літака)",
 "A1"
 ],
 "slika": [
 "slika",
 "картина / фотографія",
 "A0"
+],
+"slikati": [
+"slikati",
+"малювати (фарбами); фотографувати",
+"A1"
+],
+"slikovnica": [
+"slikovnica",
+"дитяча книжка з малюнками",
+"A1"
 ],
 "sličan": [
 "sličan",
@@ -7351,6 +10771,11 @@ null
 "наступний",
 "A0"
 ],
+"sljedeći tjedan": [
+"sljedeći tjedan",
+"наступного тижня; наступний тиждень",
+"A1"
+],
 "slobodan": [
 "slobodan",
 "вільний",
@@ -7360,6 +10785,11 @@ null
 "slobodan dan",
 "вихідний день",
 "A0"
+],
+"slobodan stol": [
+"slobodan stol",
+"вільний столик",
+"A1"
 ],
 "slobodno": [
 "slobodno",
@@ -7386,6 +10816,11 @@ null
 "буква, літера",
 "A0"
 ],
+"složiti se": [
+"složiti se",
+"погодитися",
+"A1"
+],
 "slušalice": [
 "slušalice",
 "навушники",
@@ -7394,12 +10829,27 @@ null
 "slušati": [
 "slušati",
 "слухати",
+null
+],
+"služba za korisnike": [
+"služba za korisnike",
+"служба підтримки клієнтів",
 "A1"
 ],
 "službenik": [
 "službenik",
 "службовець / чиновник",
 "A0"
+],
+"smatrati": [
+"smatrati",
+"вважати",
+"A1"
+],
+"smetati": [
+"smetati",
+"заважати",
+"A1"
 ],
 "smeće": [
 "smeće",
@@ -7451,6 +10901,16 @@ null
 "житло / розміщення",
 "A0"
 ],
+"smokva": [
+"smokva",
+"інжир",
+"A1"
+],
+"smrznut": [
+"smrznut",
+"заморожений",
+"A1"
+],
 "smrznuti se": [
 "smrznuti se",
 "замерзнути",
@@ -7460,6 +10920,11 @@ null
 "snaha",
 "невістка",
 "A0"
+],
+"snaći se": [
+"snaći se",
+"зорієнтуватися, дати раду",
+"A1"
 ],
 "snijeg": [
 "snijeg",
@@ -7491,9 +10956,24 @@ null
 "сік",
 "A0"
 ],
+"sok od naranče": [
+"sok od naranče",
+"апельсиновий сік",
+"A1"
+],
 "sol": [
 "sol",
 "сіль",
+"A1"
+],
+"sova": [
+"sova",
+"сова",
+"A1"
+],
+"spajalica": [
+"spajalica",
+"скріпка",
 "A1"
 ],
 "spasiti": [
@@ -7519,6 +10999,11 @@ null
 "specijalitet": [
 "specijalitet",
 "фірмова страва; специалітет",
+"A1"
+],
+"specijalitet kuće": [
+"specijalitet kuće",
+"фірмова страва закладу",
 "A1"
 ],
 "spoj": [
@@ -7551,6 +11036,21 @@ null
 "спорт",
 "A1"
 ],
+"sportski": [
+"sportski",
+"спортивний",
+"A1"
+],
+"sportski centar": [
+"sportski centar",
+"спортивний центр",
+"A1"
+],
+"sprej za nos": [
+"sprej za nos",
+"спрей для носа",
+"A1"
+],
 "spreman": [
 "spreman",
 "готовий",
@@ -7559,6 +11059,11 @@ null
 "spremati": [
 "spremati",
 "прибирати; готувати; зберігати",
+null
+],
+"spremati se": [
+"spremati se",
+"збиратися, готуватися (кудись)",
 "A1"
 ],
 "spremiti": [
@@ -7566,10 +11071,20 @@ null
 "зберегти",
 "A1"
 ],
+"sprijateljiti se": [
+"sprijateljiti se",
+"подружитися",
+"A1"
+],
 "spustiti cijenu": [
 "spustiti cijenu",
 "знизити ціну, скинути ціну",
 "A0"
+],
+"sram": [
+"sram",
+"сором",
+"A1"
 ],
 "sramežljiv": [
 "sramežljiv",
@@ -7596,10 +11111,25 @@ null
 "срібний; сріблястий",
 "A0"
 ],
+"srebro": [
+"srebro",
+"срібло",
+"A1"
+],
 "sredina": [
 "sredina",
 "середина",
 "A0"
+],
+"srednja škola": [
+"srednja škola",
+"середня школа",
+"A1"
+],
+"srednjovjekovni": [
+"srednjovjekovni",
+"середньовічний",
+"A1"
 ],
 "sretan": [
 "sretan",
@@ -7646,6 +11176,11 @@ null
 "середа",
 "A0"
 ],
+"srna": [
+"srna",
+"козуля",
+"A1"
+],
 "srpanj": [
 "srpanj",
 "липень",
@@ -7655,6 +11190,11 @@ null
 "stadion",
 "стадіон",
 "A0"
+],
+"stajati": [
+"stajati",
+"стояти; коштувати; личити (stoji ti dobro)",
+"A1"
 ],
 "staklenka": [
 "staklenka",
@@ -7666,15 +11206,40 @@ null
 "постійний",
 "A1"
 ],
+"stalno": [
+"stalno",
+"постійно, весь час",
+"A1"
+],
+"stambena zgrada": [
+"stambena zgrada",
+"житловий будинок",
+"A1"
+],
 "stan": [
 "stan",
 "квартира",
 "A0"
 ],
+"stanar": [
+"stanar",
+"мешканець / орендар",
+"A1"
+],
 "stanica": [
 "stanica",
 "зупинка / станція",
 "A0"
+],
+"stanje računa": [
+"stanje računa",
+"залишок на рахунку",
+"A1"
+],
+"stanka": [
+"stanka",
+"зупинка в дорозі, перерва",
+"A1"
 ],
 "stanodavac": [
 "stanodavac",
@@ -7716,6 +11281,11 @@ null
 "старший",
 "A0"
 ],
+"staromodan": [
+"staromodan",
+"старомодний",
+"A1"
+],
 "stati": [
 "stati",
 "зупинитися",
@@ -7736,6 +11306,21 @@ null
 "сходи",
 "A1"
 ],
+"stil": [
+"stil",
+"стиль",
+"A1"
+],
+"stipendija": [
+"stipendija",
+"стипендія",
+"A1"
+],
+"stizati": [
+"stizati",
+"прибувати, приходити",
+"A1"
+],
 "stići": [
 "stići",
 "прибути / доїхати",
@@ -7751,10 +11336,20 @@ null
 "стіл",
 "A0"
 ],
+"stol uz prozor": [
+"stol uz prozor",
+"столик біля вікна",
+"A1"
+],
 "stol za dvoje": [
 "stol za dvoje",
 "столик на двох",
 "A0"
+],
+"stol za četvero": [
+"stol za četvero",
+"столик на чотирьох",
+"A1"
 ],
 "stolica": [
 "stolica",
@@ -7770,6 +11365,11 @@ null
 "stoljeće",
 "століття",
 "A0"
+],
+"stolnjak": [
+"stolnjak",
+"скатертина",
+"A1"
 ],
 "stopalo": [
 "stopalo",
@@ -7811,6 +11411,11 @@ null
 "іноземка",
 "A0"
 ],
+"stražnje sjedalo": [
+"stražnje sjedalo",
+"заднє сидіння",
+"A1"
+],
 "stres": [
 "stres",
 "стрес",
@@ -7841,6 +11446,16 @@ null
 "електрика",
 "A0"
 ],
+"struka": [
+"struka",
+"професія; спеціальність",
+"A1"
+],
+"stubište": [
+"stubište",
+"сходова клітка",
+"A1"
+],
 "studeni": [
 "studeni",
 "листопад",
@@ -7861,10 +11476,20 @@ null
 "річ; предмет; справа",
 "A0"
 ],
+"stvarno": [
+"stvarno",
+"справді, дійсно",
+"A1"
+],
 "subota": [
 "subota",
 "субота",
 "A0"
+],
+"sudar": [
+"sudar",
+"зіткнення (ДТП)",
+"A1"
 ],
 "sudski tumač": [
 "sudski tumač",
@@ -7881,6 +11506,11 @@ null
 "спідниця",
 "A0"
 ],
+"sumnjati": [
+"sumnjati",
+"сумніватися",
+"A1"
+],
 "sumnjiv": [
 "sumnjiv",
 "підозрілий",
@@ -7890,6 +11520,11 @@ null
 "sunce",
 "сонце",
 "A0"
+],
+"suncobran": [
+"suncobran",
+"парасолька від сонця",
+"A1"
 ],
 "sunčano": [
 "sunčano",
@@ -7926,6 +11561,16 @@ null
 "сусідка",
 "A0"
 ],
+"susjedstvo": [
+"susjedstvo",
+"сусідство; сусіди",
+"A1"
+],
+"sustav": [
+"sustav",
+"система",
+"A1"
+],
 "sutra": [
 "sutra",
 "завтра",
@@ -7936,9 +11581,19 @@ null
 "сувенір",
 "A0"
 ],
+"suvlasnik": [
+"suvlasnik",
+"співвласник",
+"A1"
+],
 "suđe": [
 "suđe",
 "посуд",
+"A1"
+],
+"sušilo za rublje": [
+"sušilo za rublje",
+"сушарка для білизни",
 "A1"
 ],
 "sušiti": [
@@ -7946,15 +11601,50 @@ null
 "сушити",
 "A1"
 ],
+"sušiti kosu": [
+"sušiti kosu",
+"сушити волосся",
+"A1"
+],
 "svakako": [
 "svakako",
 "обов’язково; неодмінно",
 "A0"
 ],
+"svake večeri": [
+"svake večeri",
+"щовечора",
+"A1"
+],
 "svaki dan": [
 "svaki dan",
 "кожного дня",
 "A0"
+],
+"svaki drugi dan": [
+"svaki drugi dan",
+"через день",
+"A1"
+],
+"svaki put": [
+"svaki put",
+"щоразу",
+"A1"
+],
+"svakodnevno": [
+"svakodnevno",
+"щодня, повсякденно",
+"A1"
+],
+"svakog jutra": [
+"svakog jutra",
+"щоранку",
+"A1"
+],
+"svatko": [
+"svatko",
+"кожен, будь-хто",
+"A1"
 ],
 "sve najbolje": [
 "sve najbolje",
@@ -7971,20 +11661,50 @@ null
 "свекруха",
 "A0"
 ],
+"sveta tri kralja": [
+"Sveta tri kralja",
+"Богоявлення (6 січня)",
+"A1"
+],
+"sveti nikola": [
+"Sveti Nikola",
+"Святий Миколай (6 грудня)",
+"A1"
+],
+"sveti stjepan": [
+"Sveti Stjepan",
+"День святого Стефана (26 грудня)",
+"A1"
+],
 "sveučilište": [
 "sveučilište",
 "університет",
 "A0"
+],
+"svečan": [
+"svečan",
+"святковий, урочистий",
+"A1"
 ],
 "svi": [
 "svi",
 "усі; всі",
 "A0"
 ],
+"svi sveti": [
+"Svi sveti",
+"День усіх святих (1 листопада)",
+"A1"
+],
 "svibanj": [
 "svibanj",
 "травень",
 "A0"
+],
+"svidjeti se": [
+"svidjeti se",
+"сподобатися",
+"A1"
 ],
 "svijet": [
 "svijet",
@@ -8001,10 +11721,20 @@ null
 "блакитний, світло-синій",
 "A0"
 ],
+"svijeća": [
+"svijeća",
+"свічка",
+"A1"
+],
 "svinjetina": [
 "svinjetina",
 "свинина",
 "A0"
+],
+"svirati": [
+"svirati",
+"грати (на інструменті)",
+"A1"
 ],
 "sviđati se": [
 "sviđati se",
@@ -8034,7 +11764,7 @@ null
 "svježe": [
 "svježe",
 "свіже",
-"A1"
+null
 ],
 "svježi zrak": [
 "svježi zrak",
@@ -8050,6 +11780,16 @@ null
 "svoj",
 "свій",
 "A0"
+],
+"svratiti": [
+"svratiti",
+"заскочити, зайти ненадовго",
+"A1"
+],
+"svugdje": [
+"svugdje",
+"всюди",
+"A1"
 ],
 "tablet": [
 "tablet",
@@ -8091,6 +11831,11 @@ null
 "таксі",
 "A0"
 ],
+"taksimetar": [
+"taksimetar",
+"таксометр",
+"A1"
+],
 "taksist": [
 "taksist",
 "таксист",
@@ -8126,6 +11871,11 @@ null
 "тарілка",
 "A0"
 ],
+"tanjurić": [
+"tanjurić",
+"блюдце",
+"A1"
+],
 "tarifa": [
 "tarifa",
 "тариф",
@@ -8149,6 +11899,11 @@ null
 "tavan": [
 "tavan",
 "горище",
+"A1"
+],
+"tegla": [
+"tegla",
+"скляна банка (для меду, варення)",
 "A1"
 ],
 "tehničar": [
@@ -8186,6 +11941,16 @@ null
 "температура (жар)",
 "A0"
 ],
+"temperatura zraka": [
+"temperatura zraka",
+"температура повітря",
+"A1"
+],
+"tempere": [
+"tempere",
+"темпера (фарби)",
+"A1"
+],
 "tenis": [
 "tenis",
 "теніс",
@@ -8201,6 +11966,11 @@ null
 "килим",
 "A0"
 ],
+"terapija": [
+"terapija",
+"терапія",
+"A1"
+],
 "terasa": [
 "terasa",
 "тераса",
@@ -8215,6 +11985,11 @@ null
 "termin",
 "(вільний) час; запис (до лікаря, перукаря)",
 "A0"
+],
+"terminal": [
+"terminal",
+"термінал",
+"A1"
 ],
 "termostat": [
 "termostat",
@@ -8271,15 +12046,50 @@ null
 "тіло",
 "A0"
 ],
+"tijelovo": [
+"Tijelovo",
+"Свято Тіла Христового (четвер)",
+"A1"
+],
+"tijesan": [
+"tijesan",
+"тісний",
+"A1"
+],
+"tijesto": [
+"tijesto",
+"тісто",
+"A1"
+],
+"tikati": [
+"tikati",
+"звертатися на «ти»",
+"A1"
+],
+"tikvica": [
+"tikvica",
+"кабачок",
+"A1"
+],
 "tim": [
 "tim",
 "команда",
+"A1"
+],
+"timski rad": [
+"timski rad",
+"командна робота",
 "A1"
 ],
 "tinejdžer": [
 "tinejdžer",
 "підліток",
 "A0"
+],
+"tipka": [
+"tipka",
+"кнопка, клавіша",
+"A1"
 ],
 "tipkovnica": [
 "tipkovnica",
@@ -8296,6 +12106,11 @@ null
 "тисяча",
 "A0"
 ],
+"titula": [
+"titula",
+"звання, титул (dr., prof.)",
+"A1"
+],
 "tišina": [
 "tišina",
 "тиша",
@@ -8310,6 +12125,11 @@ null
 "tjedno",
 "щотижня; на тиждень",
 "A0"
+],
+"tjelesni odgoj": [
+"tjelesni odgoj",
+"фізкультура",
+"A1"
 ],
 "tjestenina": [
 "tjestenina",
@@ -8331,6 +12151,16 @@ null
 "тиск",
 "A0"
 ],
+"tlak u gumama": [
+"tlak u gumama",
+"тиск у шинах",
+"A1"
+],
+"tlakomjer": [
+"tlakomjer",
+"тонометр",
+"A1"
+],
 "to je sve": [
 "to je sve",
 "це все",
@@ -8339,7 +12169,7 @@ null
 "toaletni papir": [
 "toaletni papir",
 "туалетний папір",
-"A1"
+null
 ],
 "tobogan": [
 "tobogan",
@@ -8349,12 +12179,22 @@ null
 "topao": [
 "topao",
 "теплий",
-"A1"
+null
 ],
 "topla voda": [
 "topla voda",
 "гаряча вода",
 "A0"
+],
+"topla čokolada": [
+"topla čokolada",
+"гарячий шоколад",
+"A1"
+],
+"toplinski val": [
+"toplinski val",
+"спека (хвиля спеки)",
+"A1"
 ],
 "toplo": [
 "toplo",
@@ -8416,6 +12256,11 @@ null
 "традиційний",
 "A1"
 ],
+"trajan": [
+"trajan",
+"довговічний, міцний",
+"A1"
+],
 "trajati": [
 "trajati",
 "тривати",
@@ -8429,6 +12274,21 @@ null
 "trajektna luka": [
 "trajektna luka",
 "поромний порт",
+"A1"
+],
+"trajni nalog": [
+"trajni nalog",
+"автоплатіж, постійне доручення (у банку)",
+"A1"
+],
+"traka": [
+"traka",
+"смуга (руху); стрічка",
+"A1"
+],
+"traka za prtljagu": [
+"traka za prtljagu",
+"багажна стрічка",
 "A1"
 ],
 "tramvaj": [
@@ -8445,6 +12305,11 @@ null
 "travanj",
 "квітень",
 "A0"
+],
+"tražilica": [
+"tražilica",
+"пошуковик, рядок пошуку",
+"A1"
 ],
 "tražiti": [
 "tražiti",
@@ -8474,7 +12339,7 @@ null
 "trebati": [
 "trebati",
 "потребувати",
-"A1"
+null
 ],
 "trener": [
 "trener",
@@ -8486,6 +12351,11 @@ null
 "тренування",
 "A1"
 ],
+"trenirka": [
+"trenirka",
+"спортивний костюм",
+"A1"
+],
 "treći": [
 "treći",
 "третій",
@@ -8495,6 +12365,11 @@ null
 "trećina",
 "третина",
 "A0"
+],
+"trešnja": [
+"trešnja",
+"черешня",
+"A1"
 ],
 "trg": [
 "trg",
@@ -8526,15 +12401,30 @@ null
 "тринадцять",
 "A0"
 ],
+"triput": [
+"triput",
+"тричі",
+"A1"
+],
 "tristo": [
 "tristo",
 "триста",
 "A0"
 ],
+"trokut": [
+"trokut",
+"косинець; трикутник",
+"A1"
+],
+"trosoban stan": [
+"trosoban stan",
+"трикімнатна квартира",
+"A1"
+],
 "trčati": [
 "trčati",
 "бігати",
-"A1"
+null
 ],
 "tržnica": [
 "tržnica",
@@ -8576,6 +12466,11 @@ null
 "твій",
 "A0"
 ],
+"tvornica": [
+"tvornica",
+"фабрика, завод",
+"A1"
+],
 "tvrd": [
 "tvrd",
 "твердий",
@@ -8585,6 +12480,11 @@ null
 "tvrtka",
 "компанія / фірма",
 "A0"
+],
+"tvrđava": [
+"tvrđava",
+"фортеця",
+"A1"
 ],
 "u blizini": [
 "u blizini",
@@ -8601,6 +12501,11 @@ null
 "у кутку",
 "A0"
 ],
+"u pravu": [
+"u pravu",
+"правий (бути правим)",
+"A1"
+],
 "u proljeće": [
 "u proljeće",
 "навесні",
@@ -8611,6 +12516,11 @@ null
 "гаразд; добре",
 "A0"
 ],
+"ubaciti karticu": [
+"ubaciti karticu",
+"вставити картку",
+"A1"
+],
 "udaljenost": [
 "udaljenost",
 "відстань",
@@ -8620,6 +12530,11 @@ null
 "udana",
 "заміжня",
 "A0"
+],
+"udariti se": [
+"udariti se",
+"вдаритися",
+"A1"
 ],
 "udati se": [
 "udati se",
@@ -8636,6 +12551,11 @@ null
 "вдова",
 "A0"
 ],
+"udžbenik": [
+"udžbenik",
+"підручник",
+"A1"
+],
 "uganuti": [
 "uganuti",
 "підвернути; вивихнути",
@@ -8646,10 +12566,20 @@ null
 "ріг (вулиці); кут",
 "A0"
 ],
+"ugaona garnitura": [
+"ugaona garnitura",
+"кутовий диван",
+"A1"
+],
 "ugasiti": [
 "ugasiti",
 "вимкнути",
 "A0"
+],
+"uglavnom": [
+"uglavnom",
+"переважно / головним чином",
+"A1"
 ],
 "ugodan dan": [
 "ugodan dan",
@@ -8669,6 +12599,16 @@ null
 "ugovor": [
 "ugovor",
 "договір / контракт",
+"A1"
+],
+"ugovor na neodređeno": [
+"ugovor na neodređeno",
+"безстроковий договір",
+"A1"
+],
+"ugovor na određeno": [
+"ugovor na određeno",
+"строковий договір",
 "A1"
 ],
 "ugristi": [
@@ -8726,10 +12666,20 @@ null
 "українська (мова); український",
 "A0"
 ],
+"ukrasni papir": [
+"ukrasni papir",
+"подарунковий (пакувальний) папір",
+"A1"
+],
 "ukrasti": [
 "ukrasti",
 "украсти",
 "A0"
+],
+"ukrcaj": [
+"ukrcaj",
+"посадка (на судно, літак)",
+"A1"
 ],
 "ukrcajna propusnica": [
 "ukrcajna propusnica",
@@ -8741,6 +12691,11 @@ null
 "разом; загалом",
 "A0"
 ],
+"ukus": [
+"ukus",
+"смак (у виборі), уподобання",
+"A1"
+],
 "ukusan": [
 "ukusan",
 "смачний",
@@ -8751,6 +12706,11 @@ null
 "вхід; під’їзд",
 "A0"
 ],
+"ulaziti": [
+"ulaziti",
+"входити, заходити",
+"A1"
+],
 "ulaznica": [
 "ulaznica",
 "вхідний квиток",
@@ -8760,6 +12720,11 @@ null
 "ulica",
 "вулиця",
 "A0"
+],
+"uličica": [
+"uličica",
+"вуличка",
+"A1"
 ],
 "ulje": [
 "ulje",
@@ -8786,9 +12751,19 @@ null
 "умитися",
 "A1"
 ],
+"umivaonik": [
+"umivaonik",
+"умивальник",
+"A1"
+],
 "umjetnost": [
 "umjetnost",
 "мистецтво",
+"A1"
+],
+"umor": [
+"umor",
+"втома",
 "A1"
 ],
 "umoran": [
@@ -8800,6 +12775,26 @@ null
 "unajmiti",
 "винайняти, орендувати (житло)",
 "A0"
+],
+"unaprijed": [
+"unaprijed",
+"заздалегідь, наперед",
+"A1"
+],
+"uniforma": [
+"uniforma",
+"уніформа",
+"A1"
+],
+"unijeti": [
+"unijeti",
+"ввести (дані); внести",
+"A1"
+],
+"unijeti pin": [
+"unijeti PIN",
+"ввести PIN-код",
+"A1"
 ],
 "unuk": [
 "unuk",
@@ -8816,9 +12811,19 @@ null
 "всередині / всередину",
 "A0"
 ],
+"uopće": [
+"uopće",
+"зовсім, взагалі",
+"A1"
+],
 "upala": [
 "upala",
 "запалення",
+"A1"
+],
+"upala uha": [
+"upala uha",
+"запалення вуха (отит)",
 "A1"
 ],
 "upaliti": [
@@ -8826,10 +12831,25 @@ null
 "увімкнути",
 "A0"
 ],
+"upis": [
+"upis",
+"зарахування",
+"A1"
+],
 "upisati": [
 "upisati",
 "записати (в садок, школу); вписати",
 "A0"
+],
+"upisnina": [
+"upisnina",
+"вступний внесок (плата за запис)",
+"A1"
+],
+"uplata": [
+"uplata",
+"платіж; надходження (на рахунок)",
+"A1"
 ],
 "uplatiti": [
 "uplatiti",
@@ -8840,6 +12860,11 @@ null
 "uplatnica",
 "платіжна квитанція",
 "A0"
+],
+"uplašen": [
+"uplašen",
+"наляканий",
+"A1"
 ],
 "upomoć": [
 "upomoć",
@@ -8871,6 +12896,11 @@ null
 "адміністративний збір",
 "A1"
 ],
+"upravo": [
+"upravo",
+"саме зараз; щойно; якраз",
+"A1"
+],
 "upute": [
 "upute",
 "інструкції",
@@ -8891,10 +12921,25 @@ null
 "самотній",
 "A0"
 ],
+"usavršiti": [
+"usavršiti",
+"вдосконалити",
+"A1"
+],
+"usb ključić": [
+"USB ključić",
+"флешка",
+"A1"
+],
 "useliti se": [
 "useliti se",
 "в'їхати (в житло)",
 "A0"
+],
+"useljiv": [
+"useljiv",
+"готовий до заселення",
+"A1"
 ],
 "usisavati": [
 "usisavati",
@@ -8916,9 +12961,29 @@ null
 "Великдень",
 "A0"
 ],
+"uskrsni ponedjeljak": [
+"Uskrsni ponedjeljak",
+"Великодній понеділок",
+"A1"
+],
 "uspavati": [
 "uspavati",
 "приспати; вкласти спати",
+"A1"
+],
+"uspjeh": [
+"uspjeh",
+"успіх",
+"A1"
+],
+"uspjeti": [
+"uspjeti",
+"вдатися, досягти успіху; встигнути",
+"A1"
+],
+"usporediti": [
+"usporediti",
+"порівняти",
 "A1"
 ],
 "usta": [
@@ -8929,6 +12994,16 @@ null
 "ustajati": [
 "ustajati",
 "вставати (прокидатися і підніматися)",
+"A1"
+],
+"ustati": [
+"ustati",
+"встати (з ліжка)",
+"A1"
+],
+"ustupiti mjesto": [
+"ustupiti mjesto",
+"поступитися місцем",
 "A1"
 ],
 "utakmica": [
@@ -8946,10 +13021,20 @@ null
 "вівторок",
 "A0"
 ],
+"uvala": [
+"uvala",
+"бухта",
+"A1"
+],
 "uvijek": [
 "uvijek",
 "завжди",
 "A0"
+],
+"uvjerenje": [
+"uvjerenje",
+"свідоцтво (про закінчення курсу); довідка",
+"A1"
 ],
 "uvjet": [
 "uvjet",
@@ -8971,6 +13056,11 @@ null
 "тривога",
 "A1"
 ],
+"uzbuđen": [
+"uzbuđen",
+"схвильований (радісно)",
+"A1"
+],
 "uzeti": [
 "uzeti",
 "взяти",
@@ -8979,6 +13069,21 @@ null
 "uzimati": [
 "uzimati",
 "брати; приймати (ліки)",
+"A1"
+],
+"uznemiravati": [
+"uznemiravati",
+"турбувати, непокоїти",
+"A1"
+],
+"uzorak": [
+"uzorak",
+"візерунок; зразок",
+"A1"
+],
+"uzorak urina": [
+"uzorak urina",
+"зразок сечі",
 "A1"
 ],
 "ući": [
@@ -8991,9 +13096,19 @@ null
 "учениця",
 "A1"
 ],
+"učenik": [
+"učenik",
+"учень",
+"A1"
+],
 "učionica": [
 "učionica",
 "клас, аудиторія",
+"A1"
+],
+"učitati": [
+"učitati",
+"завантажити (на сайт)",
 "A1"
 ],
 "učitelj": [
@@ -9016,10 +13131,45 @@ null
 "перекус",
 "A0"
 ],
+"vaditi krv": [
+"vaditi krv",
+"брати кров (на аналіз)",
+"A1"
+],
+"vagati": [
+"vagati",
+"зважувати",
+"A1"
+],
+"vagon": [
+"vagon",
+"вагон",
+"A1"
+],
+"val": [
+"val",
+"хвиля",
+"A1"
+],
 "valentinovo": [
 "Valentinovo",
 "День святого Валентина (14 лютого)",
 "A0"
+],
+"valjak": [
+"valjak",
+"валик (для фарби)",
+"A1"
+],
+"valjda": [
+"valjda",
+"мабуть",
+"A1"
+],
+"van": [
+"van",
+"назовні, надвір (куди?)",
+"A1"
 ],
 "vani": [
 "vani",
@@ -9051,6 +13201,11 @@ null
 "чинний; дійсний",
 "A1"
 ],
+"vegan": [
+"vegan",
+"веган",
+"A1"
+],
 "vegetarijanac": [
 "vegetarijanac",
 "вегетаріанець",
@@ -9066,9 +13221,19 @@ null
 "великий",
 "A0"
 ],
+"velika gospa": [
+"Velika Gospa",
+"Успіння Богородиці (15 серпня)",
+"A1"
+],
 "veliki": [
 "veliki",
 "великий",
+null
+],
+"veliki odmor": [
+"veliki odmor",
+"велика перерва (у школі)",
 "A1"
 ],
 "veličina": [
@@ -9081,6 +13246,11 @@ null
 "лютий",
 "A0"
 ],
+"ventilator": [
+"ventilator",
+"вентилятор",
+"A1"
+],
 "veseo": [
 "veseo",
 "веселий",
@@ -9091,9 +13261,19 @@ null
 "ветеринар",
 "A0"
 ],
+"veza": [
+"veza",
+"зв’язок; стосунки (бути у стосунках — biti u vezi)",
+"A1"
+],
 "vezati": [
 "vezati",
 "зав’язувати; пристібати",
+"A1"
+],
+"vezica": [
+"vezica",
+"пучок (зелені)",
 "A1"
 ],
 "već": [
@@ -9166,6 +13346,16 @@ null
 "вихідні",
 "A0"
 ],
+"vikendica": [
+"vikendica",
+"дача, заміський будинок",
+"A1"
+],
+"vikendom": [
+"vikendom",
+"на вихідних, щовихідних",
+"A1"
+],
 "vilica": [
 "vilica",
 "виделка",
@@ -9175,6 +13365,16 @@ null
 "vino",
 "вино",
 "A0"
+],
+"vinska karta": [
+"vinska karta",
+"винна карта",
+"A1"
+],
+"virus": [
+"virus",
+"вірус",
+"A1"
 ],
 "visok": [
 "visok",
@@ -9191,6 +13391,11 @@ null
 "більше",
 "A0"
 ],
+"više ne": [
+"više ne",
+"більше не; уже ні",
+"A1"
+],
 "vjenčanje": [
 "vjenčanje",
 "весілля",
@@ -9201,20 +13406,40 @@ null
 "одружитися, повінчатися (про пару)",
 "A0"
 ],
+"vjerovati": [
+"vjerovati",
+"вірити",
+"A1"
+],
 "vjetar": [
 "vjetar",
 "вітер",
 "A0"
+],
+"vjetrovit": [
+"vjetrovit",
+"вітряний",
+"A1"
+],
+"vjeverica": [
+"vjeverica",
+"білка",
+"A1"
 ],
 "vješalica": [
 "vješalica",
 "вішалка",
 "A0"
 ],
+"vještina": [
+"vještina",
+"навичка",
+"A1"
+],
 "vježba": [
 "vježba",
 "вправа / тренування",
-"A1"
+null
 ],
 "vježbati": [
 "vježbati",
@@ -9241,6 +13466,11 @@ null
 "власник",
 "A0"
 ],
+"vlažne maramice": [
+"vlažne maramice",
+"вологі серветки",
+"A1"
+],
 "voda": [
 "voda",
 "вода",
@@ -9250,6 +13480,16 @@ null
 "voda bez plina",
 "вода без газу",
 "A0"
+],
+"vodene boje": [
+"vodene boje",
+"акварельні фарби",
+"A1"
+],
+"vodene kozice": [
+"vodene kozice",
+"вітряна віспа",
+"A1"
 ],
 "voditelj": [
 "voditelj",
@@ -9266,10 +13506,20 @@ null
 "сантехнік",
 "A1"
 ],
+"vodokotlić": [
+"vodokotlić",
+"зливний бачок",
+"A1"
+],
 "voljeti": [
 "voljeti",
 "любити, подобатися",
 "A0"
+],
+"volontirati": [
+"volontirati",
+"волонтерити",
+"A1"
 ],
 "vozač": [
 "vozač",
@@ -9316,6 +13566,16 @@ null
 "повернути",
 "A0"
 ],
+"vratiti se": [
+"vratiti se",
+"повернутися",
+"A1"
+],
+"vraćati se": [
+"vraćati se",
+"повертатися",
+"A1"
+],
 "vremenska prognoza": [
 "vremenska prognoza",
 "прогноз погоди",
@@ -9356,24 +13616,69 @@ null
 "погода / час",
 "A0"
 ],
+"vrpca": [
+"vrpca",
+"стрічка",
+"A1"
+],
 "vrt": [
 "vrt",
 "сад",
-null
+"A1"
 ],
 "vrtić": [
 "vrtić",
 "дитячий садок",
 "A0"
 ],
+"vrtlarenje": [
+"vrtlarenje",
+"садівництво, робота в саду",
+"A1"
+],
+"vrtoglavica": [
+"vrtoglavica",
+"запаморочення",
+"A1"
+],
+"vruć": [
+"vruć",
+"гарячий",
+"A1"
+],
 "vruće": [
 "vruće",
 "гаряче; спекотно",
 "A0"
 ],
+"vrućina": [
+"vrućina",
+"спека",
+"A1"
+],
+"vrč": [
+"vrč",
+"глечик",
+"A1"
+],
+"vuk": [
+"vuk",
+"вовк",
+"A1"
+],
 "vuna": [
 "vuna",
 "вовна",
+"A1"
+],
+"web-stranica": [
+"web-stranica",
+"вебсайт",
+"A1"
+],
+"za koliko osoba": [
+"za koliko osoba",
+"на скільки осіб",
 "A1"
 ],
 "za tjedan dana": [
@@ -9391,14 +13696,34 @@ null
 "розвага / вечірка",
 "A0"
 ],
+"zabavno": [
+"zabavno",
+"весело, цікаво",
+"A1"
+],
+"zabiti": [
+"zabiti",
+"забити (цвях)",
+"A1"
+],
 "zaboraviti": [
 "zaboraviti",
 "забути",
 "A0"
 ],
+"zabrana pušenja": [
+"zabrana pušenja",
+"заборона куріння",
+"A1"
+],
 "zabranjeno": [
 "zabranjeno",
 "заборонено",
+"A1"
+],
+"zabranjeno kupanje": [
+"zabranjeno kupanje",
+"купатися заборонено",
 "A1"
 ],
 "zabrinut": [
@@ -9431,6 +13756,11 @@ null
 "задоволений",
 "A1"
 ],
+"zagorje": [
+"Zagorje",
+"Загор’є (край на північ від Загреба)",
+"A1"
+],
 "zagrijati": [
 "zagrijati",
 "розігріти; нагріти",
@@ -9461,6 +13791,11 @@ null
 "спільний",
 "A0"
 ],
+"zajednički prostori": [
+"zajednički prostori",
+"місця загального користування",
+"A1"
+],
 "zajedno": [
 "zajedno",
 "разом",
@@ -9481,24 +13816,64 @@ null
 "замкнути",
 "A0"
 ],
+"zakuhati": [
+"zakuhati",
+"закип’ятити",
+"A1"
+],
+"zalazak sunca": [
+"zalazak sunca",
+"захід сонця",
+"A1"
+],
+"zalijevati": [
+"zalijevati",
+"поливати",
+"A1"
+],
 "zaljubiti se": [
 "zaljubiti se",
 "закохатися",
 "A0"
+],
+"zaljubljen": [
+"zaljubljen",
+"закоханий",
+"A1"
 ],
 "zamijeniti": [
 "zamijeniti",
 "замінити",
 "A0"
 ],
+"zamjena": [
+"zamjena",
+"заміна; обмін (товару)",
+"A1"
+],
+"zamotati": [
+"zamotati",
+"загорнути, запакувати",
+"A1"
+],
 "zanimanje": [
 "zanimanje",
 "професія / заняття",
 "A0"
 ],
+"zanimati se": [
+"zanimati se",
+"цікавитися",
+"A1"
+],
 "zanimljiv": [
 "zanimljiv",
 "цікавий",
+"A1"
+],
+"zaobići": [
+"zaobići",
+"об’їхати, обійти",
 "A1"
 ],
 "zapad": [
@@ -9521,10 +13896,25 @@ null
 "влаштуватися на роботу",
 "A1"
 ],
+"zapravo": [
+"zapravo",
+"насправді",
+"A1"
+],
+"zaraziti se": [
+"zaraziti se",
+"заразитися",
+"A1"
+],
 "zaručen": [
 "zaručen",
 "заручений",
 "A0"
+],
+"zaručiti se": [
+"zaručiti se",
+"заручитися",
+"A1"
 ],
 "zaručnica": [
 "zaručnica",
@@ -9535,6 +13925,31 @@ null
 "zaručnik",
 "наречений",
 "A0"
+],
+"zaspati": [
+"zaspati",
+"заснути",
+"A1"
+],
+"zastava": [
+"zastava",
+"прапор",
+"A1"
+],
+"zastoj": [
+"zastoj",
+"затримка, зупинка; перешкода (блокер у роботі)",
+"A1"
+],
+"zategnuti": [
+"zategnuti",
+"затягнути, підкрутити",
+"A1"
+],
+"zatim": [
+"zatim",
+"потім, після цього",
+"A1"
 ],
 "zato": [
 "zato",
@@ -9556,10 +13971,20 @@ null
 "зачинити / закрити",
 "A0"
 ],
+"zaustavna traka": [
+"zaustavna traka",
+"аварійна смуга (узбіччя на трасі)",
+"A1"
+],
 "zauzet": [
 "zauzet",
 "зайнятий",
 "A0"
+],
+"zauzeto": [
+"zauzeto",
+"зайнято",
+"A1"
 ],
 "zavjesa": [
 "zavjesa",
@@ -9581,9 +14006,44 @@ null
 "закінчувати",
 "A1"
 ],
+"završiti": [
+"završiti",
+"закінчити",
+"A1"
+],
+"začepljen": [
+"začepljen",
+"засмічений, забитий",
+"A1"
+],
+"začepljen nos": [
+"začepljen nos",
+"закладений ніс",
+"A1"
+],
+"začin": [
+"začin",
+"спеція, приправа",
+"A1"
+],
+"začinjen": [
+"začinjen",
+"приправлений, гострий (зі спеціями)",
+"A1"
+],
+"zaštita na radu": [
+"zaštita na radu",
+"охорона праці",
+"A1"
+],
 "zaštitna oprema": [
 "zaštitna oprema",
 "захисне спорядження",
+"A1"
+],
+"zaštitno staklo": [
+"zaštitno staklo",
+"захисне скло (для екрана)",
 "A1"
 ],
 "zaštićen": [
@@ -9600,6 +14060,11 @@ null
 "zbrojiti",
 "додати (числа)",
 "A0"
+],
+"zdjela": [
+"zdjela",
+"миска",
+"A1"
 ],
 "zdjelica": [
 "zdjelica",
@@ -9626,6 +14091,11 @@ null
 "привіт (у Хорватії частіше кажуть «bok»)",
 "A0"
 ],
+"zdravstvena iskaznica": [
+"zdravstvena iskaznica",
+"картка медичного страхування",
+"A1"
+],
 "zdravstveno osiguranje": [
 "zdravstveno osiguranje",
 "медичне страхування",
@@ -9641,6 +14111,16 @@ null
 "зелений",
 "A0"
 ],
+"zelena salata": [
+"zelena salata",
+"салат (листя)",
+"A1"
+],
+"zelenilo": [
+"zelenilo",
+"зелень, зелені насадження",
+"A1"
+],
 "zemlja": [
 "zemlja",
 "земля, країна",
@@ -9650,6 +14130,11 @@ null
 "zet",
 "зять",
 "A0"
+],
+"zglob": [
+"zglob",
+"суглоб; зап’ястя",
+"A1"
 ],
 "zgodan": [
 "zgodan",
@@ -9676,6 +14161,11 @@ null
 "міські мури",
 "A0"
 ],
+"zidni sat": [
+"zidni sat",
+"настінний годинник",
+"A1"
+],
 "zijevati": [
 "zijevati",
 "позіхати",
@@ -9691,10 +14181,40 @@ null
 "узимку",
 "A0"
 ],
+"zimica": [
+"zimica",
+"озноб",
+"A1"
+],
+"zimske gume": [
+"zimske gume",
+"зимові шини",
+"A1"
+],
+"zimski": [
+"zimski",
+"зимовий",
+"A1"
+],
 "zlatan": [
 "zlatan",
 "золотий; золотистий",
 "A0"
+],
+"zlatarna": [
+"zlatarna",
+"ювелірний магазин",
+"A1"
+],
+"zlato": [
+"zlato",
+"золото",
+"A1"
+],
+"zmija": [
+"zmija",
+"змія",
+"A1"
 ],
 "znamenitost": [
 "znamenitost",
@@ -9705,6 +14225,21 @@ null
 "znati",
 "знати",
 "A0"
+],
+"znatiželjan": [
+"znatiželjan",
+"допитливий",
+"A1"
+],
+"znojiti se": [
+"znojiti se",
+"пітніти",
+"A1"
+],
+"zobene pahuljice": [
+"zobene pahuljice",
+"вівсяні пластівці",
+"A1"
 ],
 "zona": [
 "zona",
@@ -9730,6 +14265,11 @@ null
 "zovite policiju",
 "викликайте поліцію",
 "A0"
+],
+"zrakoplovna kompanija": [
+"zrakoplovna kompanija",
+"авіакомпанія",
+"A1"
 ],
 "zračna luka": [
 "zračna luka",
@@ -9766,6 +14306,16 @@ null
 "називатися (звати)",
 "A0"
 ],
+"zvonce": [
+"zvonce",
+"дзвоник",
+"A1"
+],
+"zvonik": [
+"zvonik",
+"дзвіниця",
+"A1"
+],
 "zvoniti": [
 "zvoniti",
 "дзвонити (про дзвінок, будильник, телефон)",
@@ -9801,6 +14351,16 @@ null
 "чай",
 "A0"
 ],
+"čaj s limunom": [
+"čaj s limunom",
+"чай з лимоном",
+"A1"
+],
+"čak": [
+"čak",
+"навіть",
+"A1"
+],
 "čarape": [
 "čarape",
 "шкарпетки",
@@ -9821,6 +14381,11 @@ null
 "склянка / келих",
 "A0"
 ],
+"čaša za vino": [
+"čaša za vino",
+"келих для вина",
+"A1"
+],
 "čekaonica": [
 "čekaonica",
 "зал очікування",
@@ -9834,6 +14399,11 @@ null
 "čekić": [
 "čekić",
 "молоток",
+"A1"
+],
+"čepić": [
+"čepić",
+"свічка (ліки)",
 "A1"
 ],
 "čestitam": [
@@ -9865,6 +14435,11 @@ null
 "četiristo",
 "чотириста",
 "A0"
+],
+"četkati": [
+"četkati",
+"вичісувати (щіткою)",
+"A1"
 ],
 "četkica za zube": [
 "četkica za zube",
@@ -9901,6 +14476,11 @@ null
 "чверть; четверта частина",
 "A0"
 ],
+"češalj": [
+"češalj",
+"гребінець",
+"A1"
+],
 "češljati se": [
 "češljati se",
 "причісуватися",
@@ -9920,6 +14500,11 @@ null
 "čiji",
 "чий",
 "A0"
+],
+"čika": [
+"čika",
+"дядько (до старшого чоловіка, дитяче)",
+"A1"
 ],
 "čime se bavite": [
 "čime se bavite",
@@ -9944,11 +14529,21 @@ null
 "čitati": [
 "čitati",
 "читати",
-"A1"
+null
 ],
 "čizme": [
 "čizme",
 "чоботи",
+"A1"
+],
+"čobanac": [
+"čobanac",
+"чобанац (гостре м’ясне рагу зі Славонії)",
+"A1"
+],
+"čokoladni namaz": [
+"čokoladni namaz",
+"шоколадний крем (для хліба)",
 "A1"
 ],
 "čovjek": [
@@ -9960,6 +14555,21 @@ null
 "čujemo se",
 "зідзвонимось",
 "A0"
+],
+"čuvar": [
+"čuvar",
+"охоронець; сторож",
+"A1"
+],
+"čuvati": [
+"čuvati",
+"берегти; доглядати, наглядати (за дитиною)",
+"A1"
+],
+"šah": [
+"šah",
+"шахи",
+"A1"
 ],
 "šal": [
 "šal",
@@ -9991,6 +14601,11 @@ null
 "строкатий",
 "A0"
 ],
+"šator": [
+"šator",
+"намет",
+"A1"
+],
 "šef": [
 "šef",
 "начальник / шеф",
@@ -10005,6 +14620,11 @@ null
 "šest",
 "шість",
 "A0"
+],
+"šestar": [
+"šestar",
+"циркуль",
+"A1"
 ],
 "šesti": [
 "šesti",
@@ -10021,6 +14641,21 @@ null
 "прогулюватися / гуляти",
 "A0"
 ],
+"šetati psa": [
+"šetati psa",
+"вигулювати собаку",
+"A1"
+],
+"šetnica": [
+"šetnica",
+"набережна, прогулянкова алея",
+"A1"
+],
+"šetnja": [
+"šetnja",
+"прогулянка",
+"A1"
+],
 "šezdeset": [
 "šezdeset",
 "шістдесят",
@@ -10031,20 +14666,55 @@ null
 "цукор",
 "A0"
 ],
+"šećer u krvi": [
+"šećer u krvi",
+"цукор у крові",
+"A1"
+],
+"šešir": [
+"šešir",
+"капелюх",
+"A1"
+],
+"šiljilo": [
+"šiljilo",
+"чинка (точилка)",
+"A1"
+],
 "širok": [
 "širok",
 "широкий",
 "A0"
+],
+"šivati": [
+"šivati",
+"шити",
+"A1"
 ],
 "škampi": [
 "škampi",
 "скампі (лангустини), креветки",
 "A0"
 ],
+"škare": [
+"škare",
+"ножиці",
+"A1"
+],
 "škola": [
 "škola",
 "школа",
 "A0"
+],
+"školska torba": [
+"školska torba",
+"шкільний рюкзак, портфель",
+"A1"
+],
+"školski sat": [
+"školski sat",
+"урок (45 хвилин)",
+"A1"
 ],
 "šlag": [
 "šlag",
@@ -10055,6 +14725,21 @@ null
 "šljiva",
 "слива",
 "A0"
+],
+"šljunčana plaža": [
+"šljunčana plaža",
+"гальковий пляж",
+"A1"
+],
+"šminka": [
+"šminka",
+"макіяж; декоративна косметика",
+"A1"
+],
+"šminkati se": [
+"šminkati se",
+"фарбуватися, робити макіяж",
+"A1"
 ],
 "šogor": [
 "šogor",
@@ -10076,10 +14761,25 @@ null
 "печера",
 "A1"
 ],
+"štand": [
+"štand",
+"прилавок, ятка (на ринку)",
+"A1"
+],
 "štedjeti": [
 "štedjeti",
 "заощаджувати",
 "A0"
+],
+"štedni račun": [
+"štedni račun",
+"ощадний вклад",
+"A1"
+],
+"štednja": [
+"štednja",
+"заощадження",
+"A1"
 ],
 "štednjak": [
 "štednjak",
@@ -10090,6 +14790,11 @@ null
 "štene",
 "цуценя",
 "A0"
+],
+"štitnjača": [
+"štitnjača",
+"щитоподібна залоза",
+"A1"
 ],
 "što": [
 "što",
@@ -10110,6 +14815,11 @@ null
 "što želite",
 "що бажаєте? (у кафе, магазині)",
 "A0"
+],
+"štrudla": [
+"štrudla",
+"штрудель",
+"A1"
 ],
 "štrukli": [
 "štrukli",
@@ -10149,6 +14859,16 @@ null
 "željeti": [
 "željeti",
 "бажати",
+null
+],
+"željeznica": [
+"željeznica",
+"залізниця",
+"A1"
+],
+"želudac": [
+"želudac",
+"шлунок",
 "A1"
 ],
 "žena": [
@@ -10160,6 +14880,16 @@ null
 "ženski",
 "жіночий",
 "A0"
+],
+"žitarice": [
+"žitarice",
+"сухі сніданки, злаки",
+"A1"
+],
+"živac": [
+"živac",
+"нерв",
+"A1"
 ],
 "živjeli": [
 "živjeli",
@@ -10174,7 +14904,7 @@ null
 "život": [
 "život",
 "життя",
-"A1"
+null
 ],
 "životinja": [
 "životinja",
@@ -10190,6 +14920,11 @@ null
 "žlica",
 "ложка",
 "A0"
+],
+"žličica": [
+"žličica",
+"чайна ложечка",
+"A1"
 ],
 "žuriti se": [
 "žuriti se",

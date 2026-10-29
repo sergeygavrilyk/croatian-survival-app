@@ -19,7 +19,13 @@ test('вхід: форма українською, перемикач «Реєс
   await expect(page.getByRole('button', { name: 'Створити акаунт' })).toBeVisible();
 });
 
-for (const path of ['/lessons', '/lessons?level=A1', '/lesson/c0000000-0000-0000-0000-000000000001']) {
+for (const path of [
+  '/lessons',
+  '/lessons?level=A1',
+  '/lesson/c0000000-0000-0000-0000-000000000001',
+  '/lessons/grammar?level=A1',
+  '/lessons/grammar/review?level=A0',
+]) {
   test(`без входу ${path} → сторінка входу`, async ({ page }) => {
     await page.goto(path);
     await expect(page).toHaveURL(/\/login(\?|$)/);

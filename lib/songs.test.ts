@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { listenUrl, songBySlug, SONGS } from './songs.ts';
+import { listenUrl, songBySlug, songIcon, SONGS } from './songs.ts';
 
 const CYR = /[Ѐ-ӿ]/;
 // Повний текст — лише для суспільного надбання (авторське право)
@@ -37,4 +37,11 @@ test('пісні: пошук за адресою і посилання «Пос�
   const url = listenUrl({ listen_query: 'Večeras je naša fešta' });
   assert.ok(url.startsWith('https://www.youtube.com/results?search_query='));
   assert.ok(url.includes('Ve%C4%8Deras'));
+});
+
+test('пісні: у кожної свій емодзі (без прапорів), невідома — 🎵', () => {
+  const icons = SONGS.map((s) => songIcon(s.slug));
+  assert.equal(new Set(icons).size, SONGS.length);
+  for (const i of icons) assert.doesNotMatch(i, /[\u{1F1E6}-\u{1F1FF}]/u, i);
+  assert.equal(songIcon('nema'), '🎵');
 });

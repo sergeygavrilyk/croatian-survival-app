@@ -27,6 +27,38 @@ test('«Уроки»: A0 за замовчуванням, перемикання
   await expect(page.getByText(/^A0 · /)).toBeVisible();
 });
 
+test('«Граматика рівня»: з «Уроків» → теми A1 → тема → тренування; пошук без діакритик', async ({ page }) => {
+  await page.goto('/lessons?level=A1');
+  await page.getByRole('link', { name: /Граматика рівня A1/ }).click();
+  await expect(page).toHaveURL(/\/lessons\/grammar\?level=A1$/);
+  await expect(page.getByRole('heading', { level: 1, name: 'Граматика рівня' })).toBeVisible();
+  await expect(page.getByText(/^Пройдено \d+ з \d+$/)).toBeVisible();
+
+  await page.getByRole('searchbox').fill('akuzativ');
+  await expect(page.getByRole('list', { name: 'Знайдені теми' }).getByRole('link')).not.toHaveCount(0);
+  await page.getByRole('list', { name: 'Знайдені теми' }).getByRole('link').first().click();
+  await expect(page).toHaveURL(/\/lessons\/grammar\/[0-9a-f-]{36}$/);
+  await expect(page.getByRole('heading', { level: 1, name: 'Знахідний відмінок' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Уроки з цією темою' })).toBeVisible();
+
+  const train = page.getByRole('button', { name: /Потренувати тему/ });
+  if (await train.count()) {
+    await train.click();
+    await expect(page.getByText(/^Вправа 1 з \d+$/)).toBeVisible();
+    await page.getByRole('button', { name: 'Закрити тренування' }).click();
+  }
+  await expect(page.getByRole('link', { name: 'Граматика A1' })).toHaveAttribute('href', '/lessons/grammar?level=A1');
+});
+
+test('«Підсумок граматики»: позначити тему → вправи', async ({ page }) => {
+  await page.goto('/lessons/grammar/review?level=A0');
+  await expect(page.getByRole('heading', { level: 1, name: 'Підсумок граматики A0' })).toBeVisible();
+  await page.getByRole('button', { name: 'Треба повторити' }).first().click();
+  await expect(page.getByText('Позначено 1 з', { exact: false })).toBeVisible();
+  await page.getByRole('button', { name: 'Далі: вправи' }).click();
+  await expect(page.getByText(/^Вправа 1 з \d+$|Вправ на ці теми поки немає/)).toBeVisible();
+});
+
 test('урок від початку до святкового екрана: прогрес збережено', async ({ page }) => {
   test.slow(); // 15 вправ, кожна неправильна — ще раз наприкінці
   await page.goto(`/lesson/${TEST_LESSON_ID}`);

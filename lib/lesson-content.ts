@@ -49,6 +49,8 @@ export interface LessonInfo {
   level_code: string | null;
   objectives: string[] | null;
   estimated_minutes: number | null;
+  /** Модуль уроку — для емодзі теми й підпису «Модуль A0.7» (DESIGN_SYSTEM §3.4); у старих офлайн-копіях немає */
+  module?: { order: number; title: string } | null;
 }
 
 /** Вправа уроку (як LessonExerciseData у components/lesson/LessonExercise.tsx). */
@@ -80,6 +82,8 @@ export interface LessonRows {
     objectives: unknown;
     estimated_minutes: unknown;
   };
+  /** Модуль уроку (lessons.unit_id → units.module_id → modules); необов'язковий — збій не ламає урок */
+  module?: { order_index: number | null; title_ua: string | null; title_hr?: string | null } | null;
   items: ReadonlyArray<{ item_type: string; item_id: string }>;
   lexemes: ReadonlyArray<{ id: string; lemma: string; ukrainian_translation: string | null }>;
   exercises: ReadonlyArray<LessonExerciseRow>;
@@ -134,6 +138,10 @@ export function buildLessonContent(rows: LessonRows): LessonContent {
     level_code: rows.lesson.level_code ?? null,
     objectives: stringList(rows.lesson.objectives),
     estimated_minutes: typeof rows.lesson.estimated_minutes === 'number' ? rows.lesson.estimated_minutes : null,
+    module:
+      rows.module && typeof rows.module.order_index === 'number'
+        ? { order: rows.module.order_index, title: rows.module.title_ua ?? rows.module.title_hr ?? '' }
+        : null,
   };
 
   const words: LessonWord[] = inOrder(

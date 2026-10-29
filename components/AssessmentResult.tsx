@@ -3,11 +3,15 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowRight, BookOpen, ChevronDown, CircleAlert, CircleCheck, CircleMinus, CircleX, RotateCcw } from 'lucide-react';
+import { ArrowRight, BookOpen, ChevronDown, CircleCheck, CircleMinus, CircleX, RotateCcw } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import Hr from '@/components/ui/Hr';
 import PageHeader from '@/components/ui/PageHeader';
+import SessionDone from '@/components/ui/SessionDone';
+import LevelBadge from '@/components/ui/LevelBadge';
+import { assessmentCheer } from '@/lib/celebration';
+import { levelStyle } from '@/lib/levels';
 import { moveToLevel, type AssessmentResultView } from '@/app/actions/assessment';
 import { AREA_LABELS, AREAS, areaRatio, percent, type Area } from '@/lib/assessment';
 import { isUkrainian } from '@/lib/lesson-flow';
@@ -29,11 +33,14 @@ const AREA_ADVICE: Record<Area, string> = {
 export default function AssessmentResult({
   result,
   title,
+  icon,
   backHref,
   onRetry,
 }: {
   result: AssessmentResultView;
   title: string;
+  /** Знак перевірки (емодзі модуля, 🚩, 🏆) — у підсумку, коли ще не пройдено */
+  icon?: string;
   backHref: string;
   onRetry: () => void;
 }) {
@@ -42,6 +49,8 @@ export default function AssessmentResult({
   const [moving, setMoving] = useState(false);
   const [moveError, setMoveError] = useState<string | null>(null);
   const { passed } = result;
+  const lv = levelStyle(result.cefr);
+  const cheer = assessmentCheer(passed, result.score);
 
   const goNextLevel = async () => {
     if (!result.nextLevel) return;
@@ -62,26 +71,36 @@ export default function AssessmentResult({
     <div className="min-h-screen pb-10">
       <PageHeader title={title} backHref={backHref} closeMode />
       <main className="mx-auto flex max-w-md flex-col gap-4 px-4 py-6">
-        <Card
-          className={cn('flex flex-col items-center gap-2 text-center', passed ? 'border-success-line bg-success-soft' : 'border-warning-line bg-warning-soft')}
-          role="status"
+        {/* 🎉 + конфеті лише коли пройдено (DESIGN_SYSTEM §6); інакше 💪 / 🌱 — без «провалу» й червоного */}
+        <SessionDone
+          correct={result.correct}
+          total={result.total}
+          emoji={cheer.emoji}
+          title={cheer.title}
+          celebrate={cheer.celebrate}
+          headingAs="h1"
+          stats={
+            <p className="flex flex-col items-center gap-1">
+              <span className={cn('font-heading text-display tabular-nums animate-pop', passed ? 'text-success-ink' : lv.ink)}>
+                {percent(result.score)} %
+              </span>
+              <span className="flex items-center gap-2 text-label text-ink-muted">
+                <LevelBadge level={result.cefr} />
+                {!passed && icon && <span aria-hidden="true">{icon}</span>}
+                Правильно {result.correct} з {result.total}
+              </span>
+            </p>
+          }
         >
-          {passed ? (
-            <CircleCheck className="size-10 text-success-ink" aria-hidden="true" />
-          ) : (
-            <CircleAlert className="size-10 text-warning-ink" aria-hidden="true" />
-          )}
-          <p className={cn('font-heading text-h2', passed ? 'text-success-ink' : 'text-warning-ink')}>
-            {passed ? 'Пройдено!' : 'Ще не пройдено'}
-          </p>
-          <p className="font-heading text-h1">{percent(result.score)} %</p>
-          <p className="text-body text-ink-muted">
-            Правильно {result.correct} з {result.total}. Поріг: ≥ {percent(result.passRatio)} % загалом і ≥ {percent(result.areaMinRatio)} % у кожній навичці.
-          </p>
-        </Card>
+          {passed
+            ? 'Чудова робота — так тримати!'
+            : `Ще не пройдено: потрібно ≥ ${percent(result.passRatio)} % загалом і ≥ ${percent(result.areaMinRatio)} % у кожній навичці. Повторіть підказане нижче — і спробуйте ще раз.`}
+        </SessionDone>
 
         <Card className="flex flex-col gap-4">
-          <h2 className="font-heading text-h3">За навичками</h2>
+          <h2 className="font-heading text-h3">
+            <span aria-hidden="true">📊</span> За навичками
+          </h2>
           <ul className="flex flex-col gap-4">
             {AREAS.map((a) => {
               const s = result.areaScores[a];
@@ -91,26 +110,32 @@ export default function AssessmentResult({
               return (
                 <li key={a} className="flex flex-col gap-1.5">
                   <div className="flex items-center gap-2">
-                    <Icon className="size-4 text-ink-muted" aria-hidden="true" />
+                    <span className={cn('flex size-8 shrink-0 items-center justify-center rounded-full', weak ? 'bg-warning-soft text-warning-ink' : cn(lv.soft, lv.ink))}>
+                      <Icon className="size-4" aria-hidden="true" />
+                    </span>
                     <span className="flex-1 text-body font-semibold">{AREA_LABELS[a].title}</span>
-                    <span className={cn('text-label', weak ? 'text-danger-ink' : 'text-ink-muted')}>
+                    <span className={cn('text-label tabular-nums', weak ? 'text-warning-ink' : 'text-ink-muted')}>
                       {ratio === null ? (s.skipped > 0 ? 'пропущено' : '—') : `${s.correct} з ${s.total} · ${percent(ratio)} %`}
                     </span>
                   </div>
                   <div
-                    className="relative h-2 overflow-hidden rounded-full bg-line"
+                    className="relative h-2 overflow-hidden rounded-full bg-surface-muted"
                     role="img"
                     aria-label={`${AREA_LABELS[a].title}: ${ratio === null ? 'без відповідей' : `${percent(ratio)} %`}${weak ? ', нижче порогу' : ''}`}
                   >
                     <div
-                      className={cn('h-full rounded-full', weak ? 'bg-danger' : 'bg-success')}
+                      className={cn('h-full rounded-full transition-[width] duration-300 ease-out', weak ? 'bg-warning' : 'bg-success')}
                       style={{ width: `${percent(ratio)}%` }}
                     />
                   </div>
                   {s.skipped > 0 && ratio !== null && (
                     <p className="text-caption text-ink-subtle">Пропущено говоріння: {s.skipped} — не рахується в бал.</p>
                   )}
-                  {weak && <p className="text-caption text-danger-ink">Нижче {percent(result.areaMinRatio)} %. {AREA_ADVICE[a]}</p>}
+                  {weak && (
+                    <p className="text-caption text-warning-ink">
+                      <span aria-hidden="true">💡</span> Нижче {percent(result.areaMinRatio)} %. {AREA_ADVICE[a]}
+                    </p>
+                  )}
                 </li>
               );
             })}
@@ -118,13 +143,15 @@ export default function AssessmentResult({
         </Card>
 
         {result.nextLevel && (
-          <Card className="flex flex-col gap-3 border-success-line">
-            <h2 className="font-heading text-h3">Рівень {result.cefr} підтверджено</h2>
+          <Card className="flex flex-col gap-3 border-success-line bg-success-soft">
+            <h2 className="font-heading text-h3 text-success-ink">
+              <span aria-hidden="true">🏅</span> Рівень {result.cefr} підтверджено
+            </h2>
             <p className="text-body text-ink-muted">
               Можна переходити на {result.nextLevel}: застосунок показуватиме уроки й повторення цього рівня. Уроки {result.cefr} лишаються відкриті.
             </p>
             <Button block onClick={goNextLevel} loading={moving}>
-              Перейти на {result.nextLevel}
+              Перейти на {result.nextLevel} · {levelStyle(result.nextLevel).name}
               <ArrowRight className="size-5" aria-hidden="true" />
             </Button>
             {moveError && <p role="alert" className="text-body text-danger-ink">{moveError}</p>}
@@ -133,7 +160,9 @@ export default function AssessmentResult({
 
         {(result.lessons.length > 0 || result.savedMistakes > 0) && (
           <Card className="flex flex-col gap-3">
-            <h2 className="font-heading text-h3">Що повторити</h2>
+            <h2 className="font-heading text-h3">
+              <span aria-hidden="true">🔁</span> Що повторити
+            </h2>
             {result.lessons.length > 0 && (
               <ul className="flex flex-col gap-2">
                 {result.lessons.map((l) => (
@@ -142,7 +171,9 @@ export default function AssessmentResult({
                       href={`/lesson/${l.id}`}
                       className="flex min-h-11 items-center gap-3 rounded-control border border-line bg-surface px-3 py-2 text-body hover:border-primary"
                     >
-                      <BookOpen className="size-5 shrink-0 text-primary" aria-hidden="true" />
+                      <span className={cn('flex size-8 shrink-0 items-center justify-center rounded-full', lv.soft, lv.ink)}>
+                        <BookOpen className="size-4" aria-hidden="true" />
+                      </span>
                       <span className="min-w-0 flex-1">{l.title_ua}</span>
                     </Link>
                   </li>

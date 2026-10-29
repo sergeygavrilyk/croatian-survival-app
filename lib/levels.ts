@@ -78,10 +78,10 @@ export function levelStyle(level: string | null | undefined): LevelStyle {
   return (LEVEL_STYLES as Record<string, LevelStyle>)[code] ?? LEVEL_STYLES.A0;
 }
 
-/** Емодзі модулів за темою: рівень → номер модуля (програма в базі на 2026-10-20). Без прапорів — у Windows вони показуються літерами. */
+/** Емодзі модулів за темою: рівень → номер модуля (A1 — програма v3 з 13 модулів, 2026-10-26). Без прапорів — у Windows вони показуються літерами. */
 const MODULE_ICONS: Record<LevelCode, Record<number, string>> = {
   A0: { 1: '👋', 2: '🙋', 3: '🔢', 4: '🕒', 5: '👨‍👩‍👧', 6: '🏠', 7: '🍽️', 8: '🛒', 9: '🏙️', 10: '🆘' },
-  A1: { 1: '☀️', 2: '🍝', 3: '🛍️', 4: '🚌', 5: '🔑', 6: '💼', 7: '🩺', 8: '🥂', 9: '🏝️', 10: '🏆' },
+  A1: { 1: '☀️', 2: '🍝', 3: '🛍️', 4: '🚌', 5: '🔑', 6: '💼', 7: '💻', 8: '🩺', 9: '🥂', 10: '🏝️', 11: '🏛️', 12: '🎒', 13: '🏆' },
   A2: { 1: '📸', 2: '✈️', 3: '🧑‍💻', 4: '📄', 5: '💊', 6: '🤝', 7: '🛠️', 8: '🗓️', 9: '💭', 10: '🏆' },
   B1: { 1: '🌱', 2: '📈', 3: '🏛️', 4: '📰', 5: '🎭', 6: '🏃', 7: '🌿', 8: '💞', 9: '🗣️', 10: '🏆' },
   B2: { 1: '💬', 2: '📊', 3: '🏛️', 4: '🗳️', 5: '💶', 6: '📺', 7: '🎨', 8: '🔬', 9: '🌌', 10: '⚖️', 11: '🤝', 12: '🏆' },
@@ -112,4 +112,11 @@ export function moduleIcon(level: string | null | undefined, order: number | nul
   const text = title ?? '';
   for (const [re, icon] of KEYWORD_ICONS) if (re.test(text)) return icon;
   return '📚';
+}
+
+/** Знак перевірки рівня (§60): перевірка модуля — емодзі модуля, середина рівня — 🚩, фінал — 🏆. */
+export function assessmentIcon(kind: string, level: string | null | undefined, moduleOrder?: number | null): string {
+  if (kind === 'final') return '🏆';
+  if (kind === 'mid') return '🚩';
+  return moduleIcon(level, moduleOrder);
 }

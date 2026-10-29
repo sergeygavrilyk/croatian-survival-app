@@ -67,13 +67,23 @@ test('inOrder: порядок уроку, відсутні рядки пропу
 test('buildLessonContent: урок, слова й вправи в порядку уроку', () => {
   const c = buildLessonContent(rows());
   assert.deepEqual(c.lesson, {
-    id: 'L1', title_ua: 'Кафе', title_hr: 'U kafiću', level_code: 'A0', objectives: ['Замовити каву'], estimated_minutes: 15,
+    id: 'L1', title_ua: 'Кафе', title_hr: 'U kafiću', level_code: 'A0', objectives: ['Замовити каву'], estimated_minutes: 15, module: null,
   });
   assert.deepEqual(c.words, [
     { id: 'w2', hr_text: 'čaj', ua_translation: '' },
     { id: 'w1', hr_text: 'kava', ua_translation: 'кава' },
   ]);
   assert.deepEqual(c.exercises.map((e) => e.id), ['e2', 'e1']);
+});
+
+test('buildLessonContent: модуль уроку — номер і назва для емодзі теми; без номера — null', () => {
+  assert.deepEqual(buildLessonContent({ ...rows(), module: { order_index: 7, title_ua: 'Їжа', title_hr: 'Hrana' } }).lesson.module, {
+    order: 7,
+    title: 'Їжа',
+  });
+  assert.deepEqual(buildLessonContent({ ...rows(), module: { order_index: 2, title_ua: null, title_hr: 'Ja' } }).lesson.module, { order: 2, title: 'Ja' });
+  assert.equal(buildLessonContent({ ...rows(), module: { order_index: null, title_ua: 'Їжа' } }).lesson.module, null);
+  assert.equal(buildLessonContent({ ...rows(), module: null }).lesson.module, null);
 });
 
 test('buildLessonContent: діалоги без реплік не показуємо, репліки без conversation_id', () => {

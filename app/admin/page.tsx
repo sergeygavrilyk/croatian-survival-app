@@ -1,9 +1,17 @@
 'use client';
 
 import React, { useCallback, useEffect, useState } from 'react';
+import { Check, CircleAlert, CircleCheck, Plus, X } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
-import { useRouter } from 'next/navigation';
 import { normalizeCroatian } from '@/lib/srs';
+import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
+import Hr from '@/components/ui/Hr';
+import IconButton from '@/components/ui/IconButton';
+import LevelBadge from '@/components/ui/LevelBadge';
+import Skeleton from '@/components/ui/Skeleton';
+import { levelStyle, moduleIcon } from '@/lib/levels';
+import { cn } from '@/lib/ui';
 
 const CEFR_LEVELS = ['A0', 'A1', 'A2', 'B1', 'B2'];
 const PARTS_OF_SPEECH: [string, string][] = [
@@ -23,14 +31,15 @@ interface AdminWord {
   status: string | null;
 }
 interface LevelRow { code: string; title_ua: string | null }
-interface ModuleRow { id: string; title_ua: string; order_index: number }
+interface ModuleRow { id: string; title_ua: string; title_hr?: string | null; order_index: number }
 interface UnitRow { id: string; title_ua: string }
 interface LessonRow { id: string; title_ua: string; status: string }
 
 export default function AdminDashboard() {
   // Один клієнт на весь час роботи сторінки (інакше useCallback нижче змінювався б щоразу)
   const [supabase] = useState(() => createClient());
-  const router = useRouter();
+  // Повідомлення замість alert() (не блокує сторінку, видно поруч із формою)
+  const [notice, setNotice] = useState<{ ok: boolean; text: string } | null>(null);
 
   // Стейт для перемикання вкладок
   const [activeTab, setActiveTab] = useState<'vocabulary' | 'curriculum'>('curriculum');
@@ -75,7 +84,7 @@ export default function AdminDashboard() {
       .ilike('lemma', cleanHrText);
 
     if (existingWords && existingWords.length > 0) {
-      alert(`⚠️ Слово "${existingWords[0].lemma}" вже є в базі (переклад: ${existingWords[0].ukrainian_translation}).`);
+      setNotice({ ok: false, text: `Слово «${existingWords[0].lemma}» вже є в базі (переклад: ${existingWords[0].ukrainian_translation}).` });
       return;
     }
 
@@ -98,9 +107,9 @@ export default function AdminDashboard() {
     }]);
 
     if (error) {
-      alert('Помилка при додаванні: ' + error.message);
+      setNotice({ ok: false, text: 'Помилка при додаванні: ' + error.message });
     } else {
-      alert('Слово успішно додано!');
+      setNotice({ ok: true, text: `Слово «${cleanHrText}» додано!` });
       setNewWord({ ...newWord, hr_text: '', ua_translation: '', details_forms: '', details_examples: '' });
       fetchWords();
     }
@@ -231,235 +240,317 @@ export default function AdminDashboard() {
   };
 
   // ==========================================
-  // РЕНДЕР ІНТЕРФЕЙСУ
+  // РЕНДЕР ІНТЕРФЕЙСУ (дизайн-система: токени, примітиви, колір рівня й емодзі модуля — DESIGN_SYSTEM §3.4)
   // ==========================================
+  const levelCode = selectedLevel ?? '';
+  const lv = levelStyle(levelCode);
+  const tabClass = (active: boolean) =>
+    cn(
+      'min-h-11 flex-1 rounded-control px-4 text-label transition-colors duration-150 sm:flex-none',
+      active ? 'bg-surface text-ink shadow-sm' : 'text-ink-muted hover:text-ink',
+    );
+  const fieldClass =
+    'min-h-12 w-full rounded-control border border-line bg-surface px-4 text-body focus:border-primary focus:outline-none';
+  const labelClass = 'mb-1 block text-label text-ink-muted';
+
+  const addForm = (placeholder: string) => (
+    <div className="mt-2 flex items-center gap-1">
+      <input
+        autoFocus
+        value={newItemTitle}
+        onChange={(e) => setNewItemTitle(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') void handleCreateCurriculumItem();
+          if (e.key === 'Escape') setIsAdding(null);
+        }}
+        placeholder={placeholder}
+        aria-label={placeholder}
+        className="min-h-11 min-w-0 flex-1 rounded-control border border-line bg-surface px-3 text-body focus:border-primary focus:outline-none"
+      />
+      <IconButton label="Зберегти" onClick={() => void handleCreateCurriculumItem()} className="bg-primary text-white hover:bg-primary-hover hover:text-white">
+        <Check className="size-5" aria-hidden="true" />
+      </IconButton>
+      <IconButton label="Скасувати" onClick={() => setIsAdding(null)}>
+        <X className="size-5" aria-hidden="true" />
+      </IconButton>
+    </div>
+  );
+
+  const addButton = (kind: 'module' | 'unit' | 'lesson', text: string) => (
+    <button
+      type="button"
+      onClick={() => setIsAdding(kind)}
+      className="mt-2 flex min-h-12 w-full items-center justify-center gap-2 rounded-card border-2 border-dashed border-line text-label text-ink-muted transition-colors duration-150 hover:border-primary hover:text-primary-ink"
+    >
+      <Plus className="size-4" aria-hidden="true" />
+      {text}
+    </button>
+  );
+
+  const column = (title: string, children: React.ReactNode) => (
+    <Card className="h-[75vh] overflow-y-auto p-4">
+      <h2 className="mb-3 px-1 text-label text-ink-subtle">{title}</h2>
+      {children}
+    </Card>
+  );
+
+  const hint = (text: string) => <p className="mt-10 text-center text-body text-ink-subtle">{text}</p>;
+
   return (
-    <div className="min-h-screen bg-slate-50 p-6">
-      <header className="mb-6 flex flex-col md:flex-row md:justify-between md:items-center max-w-7xl mx-auto gap-4">
+    <div className="min-h-screen bg-canvas px-4 py-6 sm:px-6">
+      <header className="mx-auto mb-6 flex max-w-7xl flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Адмін-панель</h1>
-          <p className="text-slate-500 mt-1">Управління контентом та структурою</p>
-        </div>
-        
-        {/* Навігація вкладок */}
-        <div className="flex bg-white p-1 rounded-xl shadow-sm border border-slate-200 w-fit">
-          <button 
-            onClick={() => openTab('curriculum')} 
-            className={`px-6 py-2 rounded-lg font-medium text-sm transition-all ${activeTab === 'curriculum' ? 'bg-blue-600 text-white shadow' : 'text-slate-600 hover:bg-slate-50'}`}
-          >
-            Структура (Уроки)
-          </button>
-          <button 
-            onClick={() => openTab('vocabulary')} 
-            className={`px-6 py-2 rounded-lg font-medium text-sm transition-all ${activeTab === 'vocabulary' ? 'bg-blue-600 text-white shadow' : 'text-slate-600 hover:bg-slate-50'}`}
-          >
-            Словник (Слова)
-          </button>
+          <h1 className="font-heading text-h1">
+            <span aria-hidden="true">🛠️</span> Адмін-панель
+          </h1>
+          <p className="mt-1 text-body text-ink-muted">Управління контентом та структурою</p>
         </div>
 
-        <button onClick={() => router.push('/')} className="text-sm font-medium text-blue-600 hover:text-blue-800 bg-blue-50 px-4 py-2 rounded-xl transition-colors">
-          На дашборд
-        </button>
+        {/* Вкладки */}
+        <div className="flex w-full rounded-control bg-surface-muted p-1 sm:w-fit" aria-label="Розділ адмінки">
+          <button type="button" aria-pressed={activeTab === 'curriculum'} onClick={() => openTab('curriculum')} className={tabClass(activeTab === 'curriculum')}>
+            <span aria-hidden="true">🗂️</span> Структура (уроки)
+          </button>
+          <button type="button" aria-pressed={activeTab === 'vocabulary'} onClick={() => openTab('vocabulary')} className={tabClass(activeTab === 'vocabulary')}>
+            <span aria-hidden="true">📚</span> Словник (слова)
+          </button>
+        </div>
       </header>
 
-      {/* Вкладка 1: CURRICULUM CMS */}
+      {/* Вкладка 1: структура програми */}
       {activeTab === 'curriculum' && (
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6 animate-fade-in-up">
-          {/* КОЛОНКА 1: РІВНІ */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 h-[75vh] overflow-y-auto">
-            <h2 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 px-2">1. Рівень CEFR</h2>
-            {loadingCurriculum ? <div className="p-4 text-slate-400">Завантаження...</div> : (
-              <div className="space-y-2">
-                {levels.map(lvl => (
-                  <button
-                    key={lvl.code}
-                    onClick={() => handleLevelSelect(lvl.code)}
-                    className={`w-full text-left px-4 py-3 rounded-xl transition-all font-medium ${
-                      selectedLevel === lvl.code ? 'bg-blue-600 text-white shadow-md' : 'hover:bg-slate-50 text-slate-700'
-                    }`}
-                  >
-                    <div className="text-lg">{lvl.code}</div>
-                    <div className={`text-xs ${selectedLevel === lvl.code ? 'text-blue-200' : 'text-slate-500'}`}>{lvl.title_ua}</div>
-                  </button>
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 animate-fade-in-up lg:grid-cols-4">
+          {/* 1. Рівні */}
+          {column(
+            '1. Рівень CEFR',
+            loadingCurriculum ? (
+              <div className="flex flex-col gap-2">
+                {[1, 2, 3].map((i) => (
+                  <Skeleton key={i} className="h-16" />
                 ))}
               </div>
-            )}
-          </div>
-
-          {/* КОЛОНКА 2: МОДУЛІ */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 h-[75vh] overflow-y-auto relative">
-            <h2 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 px-2">2. Модулі</h2>
-            {!selectedLevel ? (
-              <p className="text-sm text-slate-400 text-center mt-10">Оберіть рівень</p>
             ) : (
-              <div className="space-y-2 pb-16">
-                {modules.map(mod => (
-                  <button
-                    key={mod.id}
-                    onClick={() => handleModuleSelect(mod.id)}
-                    className={`w-full text-left px-4 py-3 rounded-xl transition-all text-sm font-medium border ${
-                      selectedModule === mod.id ? 'bg-indigo-50 border-indigo-200 text-indigo-700' : 'bg-white border-slate-100 hover:border-slate-300 text-slate-700'
-                    }`}
-                  >
-                    {mod.order_index}. {mod.title_ua}
-                  </button>
-                ))}
-                {isAdding === 'module' ? (
-                  <div className="mt-2 flex gap-2">
-                    <input autoFocus value={newItemTitle} onChange={e => setNewItemTitle(e.target.value)} placeholder="Назва модуля..." className="w-full text-sm px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500" />
-                    <button onClick={handleCreateCurriculumItem} className="bg-blue-600 text-white px-3 rounded-lg text-sm font-bold">✓</button>
-                    <button onClick={() => setIsAdding(null)} className="bg-slate-100 text-slate-500 px-3 rounded-lg text-sm font-bold">✕</button>
-                  </div>
-                ) : (
-                  <button onClick={() => setIsAdding('module')} className="w-full mt-2 py-3 border-2 border-dashed border-slate-200 text-slate-500 rounded-xl text-sm font-medium hover:border-blue-400 hover:text-blue-600 transition-colors">
-                    + Додати модуль
-                  </button>
-                )}
+              <div className="flex flex-col gap-2">
+                {levels.map((lvl) => {
+                  const active = selectedLevel === lvl.code;
+                  const style = levelStyle(lvl.code);
+                  return (
+                    <button
+                      type="button"
+                      key={lvl.code}
+                      onClick={() => handleLevelSelect(lvl.code)}
+                      aria-pressed={active}
+                      className={cn(
+                        'w-full rounded-card px-4 py-3 text-left transition-colors duration-150',
+                        active ? cn(style.solid, 'shadow-sm') : cn('border border-line bg-surface hover:border-primary'),
+                      )}
+                    >
+                      <span className="block font-heading text-h3">{lvl.code}</span>
+                      <span className={cn('block text-caption', active ? 'text-white/90' : 'text-ink-muted')}>
+                        {lvl.title_ua ?? style.name}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
-            )}
-          </div>
+            ),
+          )}
 
-          {/* КОЛОНКА 3: ЮНІТИ */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 h-[75vh] overflow-y-auto relative">
-            <h2 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 px-2">3. Юніти</h2>
-            {!selectedModule ? (
-              <p className="text-sm text-slate-400 text-center mt-10">Оберіть модуль</p>
+          {/* 2. Модулі */}
+          {column(
+            '2. Модулі',
+            !selectedLevel ? (
+              hint('Оберіть рівень')
             ) : (
-              <div className="space-y-2 pb-16">
-                {units.map(unit => (
-                  <button
-                    key={unit.id}
-                    onClick={() => handleUnitSelect(unit.id)}
-                    className={`w-full text-left px-4 py-3 rounded-xl transition-all text-sm font-medium border ${
-                      selectedUnit === unit.id ? 'bg-amber-50 border-amber-200 text-amber-700' : 'bg-white border-slate-100 hover:border-slate-300 text-slate-700'
-                    }`}
-                  >
-                    {unit.title_ua}
-                  </button>
-                ))}
-                {isAdding === 'unit' ? (
-                  <div className="mt-2 flex gap-2">
-                    <input autoFocus value={newItemTitle} onChange={e => setNewItemTitle(e.target.value)} placeholder="Назва юніту..." className="w-full text-sm px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500" />
-                    <button onClick={handleCreateCurriculumItem} className="bg-blue-600 text-white px-3 rounded-lg text-sm font-bold">✓</button>
-                    <button onClick={() => setIsAdding(null)} className="bg-slate-100 text-slate-500 px-3 rounded-lg text-sm font-bold">✕</button>
-                  </div>
-                ) : (
-                  <button onClick={() => setIsAdding('unit')} className="w-full mt-2 py-3 border-2 border-dashed border-slate-200 text-slate-500 rounded-xl text-sm font-medium hover:border-blue-400 hover:text-blue-600 transition-colors">
-                    + Додати юніт
-                  </button>
-                )}
+              <div className="flex flex-col gap-2 pb-4">
+                {modules.map((mod) => {
+                  const active = selectedModule === mod.id;
+                  return (
+                    <button
+                      type="button"
+                      key={mod.id}
+                      onClick={() => handleModuleSelect(mod.id)}
+                      aria-pressed={active}
+                      className={cn(
+                        'flex w-full items-center gap-3 rounded-card border px-3 py-2.5 text-left text-body transition-colors duration-150',
+                        active ? cn(lv.soft, lv.line, lv.ink, 'font-semibold') : 'border-line bg-surface hover:border-primary',
+                      )}
+                    >
+                      <span aria-hidden="true" className={cn('flex size-9 shrink-0 items-center justify-center rounded-control text-xl leading-none', active ? 'bg-surface' : lv.soft)}>
+                        {moduleIcon(levelCode, mod.order_index, mod.title_hr ?? mod.title_ua)}
+                      </span>
+                      <span className="min-w-0 flex-1 break-words">
+                        <span className={cn('text-caption', lv.ink)}>
+                          {levelCode}.{mod.order_index}
+                        </span>{' '}
+                        {mod.title_ua}
+                      </span>
+                    </button>
+                  );
+                })}
+                {isAdding === 'module' ? addForm('Назва модуля…') : addButton('module', 'Додати модуль')}
               </div>
-            )}
-          </div>
+            ),
+          )}
 
-          {/* КОЛОНКА 4: УРОКИ */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 h-[75vh] overflow-y-auto relative">
-            <h2 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 px-2">4. Уроки</h2>
-            {!selectedUnit ? (
-              <p className="text-sm text-slate-400 text-center mt-10">Оберіть юніт</p>
+          {/* 3. Юніти */}
+          {column(
+            '3. Юніти',
+            !selectedModule ? (
+              hint('Оберіть модуль')
             ) : (
-              <div className="space-y-2 pb-16">
-                {lessons.map(lesson => (
-                  <div key={lesson.id} className="w-full text-left px-4 py-3 rounded-xl bg-slate-50 border border-slate-100 text-slate-700 flex justify-between items-center">
-                    <span className="text-sm font-medium truncate pr-2">{lesson.title_ua}</span>
-                    <span className={`text-[10px] px-2 py-1 rounded-full font-bold ${lesson.status === 'PUBLISHED' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-500'}`}>
-                      {lesson.status}
+              <div className="flex flex-col gap-2 pb-4">
+                {units.map((unit) => {
+                  const active = selectedUnit === unit.id;
+                  return (
+                    <button
+                      type="button"
+                      key={unit.id}
+                      onClick={() => handleUnitSelect(unit.id)}
+                      aria-pressed={active}
+                      className={cn(
+                        'w-full rounded-card border px-4 py-3 text-left text-body transition-colors duration-150',
+                        active ? cn(lv.soft, lv.line, lv.ink, 'font-semibold') : 'border-line bg-surface hover:border-primary',
+                      )}
+                    >
+                      {unit.title_ua}
+                    </button>
+                  );
+                })}
+                {isAdding === 'unit' ? addForm('Назва юніту…') : addButton('unit', 'Додати юніт')}
+              </div>
+            ),
+          )}
+
+          {/* 4. Уроки */}
+          {column(
+            '4. Уроки',
+            !selectedUnit ? (
+              hint('Оберіть юніт')
+            ) : (
+              <div className="flex flex-col gap-2 pb-4">
+                {lessons.map((lesson, i) => (
+                  <div key={lesson.id} className="flex w-full items-center gap-3 rounded-card border border-line bg-surface px-3 py-2.5">
+                    <span className={cn('flex size-8 shrink-0 items-center justify-center rounded-full font-heading text-label tabular-nums', lv.soft, lv.ink)}>
+                      {i + 1}
                     </span>
+                    <span className="min-w-0 flex-1 truncate text-body">{lesson.title_ua}</span>
+                    <StatusBadge status={lesson.status} />
                   </div>
                 ))}
-                {isAdding === 'lesson' ? (
-                  <div className="mt-2 flex gap-2">
-                    <input autoFocus value={newItemTitle} onChange={e => setNewItemTitle(e.target.value)} placeholder="Назва уроку..." className="w-full text-sm px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500" />
-                    <button onClick={handleCreateCurriculumItem} className="bg-blue-600 text-white px-3 rounded-lg text-sm font-bold">✓</button>
-                    <button onClick={() => setIsAdding(null)} className="bg-slate-100 text-slate-500 px-3 rounded-lg text-sm font-bold">✕</button>
-                  </div>
-                ) : (
-                  <button onClick={() => setIsAdding('lesson')} className="w-full mt-2 py-3 border-2 border-dashed border-slate-200 text-slate-500 rounded-xl text-sm font-medium hover:border-blue-400 hover:text-blue-600 transition-colors">
-                    + Створити урок
-                  </button>
-                )}
+                {isAdding === 'lesson' ? addForm('Назва уроку…') : addButton('lesson', 'Створити урок')}
               </div>
-            )}
-          </div>
+            ),
+          )}
         </div>
       )}
 
-      {/* Вкладка 2: VOCABULARY (Ваш оригінальний код) */}
+      {/* Вкладка 2: словник */}
       {activeTab === 'vocabulary' && (
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mt-2 animate-fade-in-up">
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 h-fit">
-            <h2 className="text-xl font-bold text-slate-800 mb-6">Додати нове слово</h2>
+        <div className="mx-auto mt-2 grid max-w-6xl grid-cols-1 gap-6 animate-fade-in-up md:grid-cols-3">
+          <Card className="h-fit p-6">
+            <h2 className="mb-5 font-heading text-h3">
+              <span aria-hidden="true">✨</span> Додати нове слово
+            </h2>
             <form onSubmit={handleAddWord} className="flex flex-col gap-4">
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Хорватською (lemma)*</label>
-                <input required type="text" value={newWord.hr_text} onChange={e => setNewWord({...newWord, hr_text: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3" placeholder="напр. račun" />
+                <label htmlFor="admin-lemma" className={labelClass}>Хорватською (lemma)*</label>
+                <input id="admin-lemma" lang="hr" required type="text" value={newWord.hr_text} onChange={(e) => setNewWord({ ...newWord, hr_text: e.target.value })} className={fieldClass} placeholder="напр. račun" />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Українською*</label>
-                <input required type="text" value={newWord.ua_translation} onChange={e => setNewWord({...newWord, ua_translation: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3" placeholder="напр. рахунок" />
+                <label htmlFor="admin-ua" className={labelClass}>Українською*</label>
+                <input id="admin-ua" required type="text" value={newWord.ua_translation} onChange={(e) => setNewWord({ ...newWord, ua_translation: e.target.value })} className={fieldClass} placeholder="напр. рахунок" />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Частина мови</label>
-                  <select value={newWord.part_of_speech} onChange={e => setNewWord({...newWord, part_of_speech: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm">
+                  <label htmlFor="admin-pos" className={labelClass}>Частина мови</label>
+                  <select id="admin-pos" value={newWord.part_of_speech} onChange={(e) => setNewWord({ ...newWord, part_of_speech: e.target.value })} className={fieldClass}>
                     {PARTS_OF_SPEECH.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Рівень</label>
-                  <select value={newWord.cefr} onChange={e => setNewWord({...newWord, cefr: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm">
-                    {CEFR_LEVELS.map(level => <option key={level} value={level}>{level}</option>)}
+                  <label htmlFor="admin-cefr" className={labelClass}>Рівень</label>
+                  <select id="admin-cefr" value={newWord.cefr} onChange={(e) => setNewWord({ ...newWord, cefr: e.target.value })} className={fieldClass}>
+                    {CEFR_LEVELS.map((level) => <option key={level} value={level}>{level} · {levelStyle(level).name}</option>)}
                   </select>
                 </div>
               </div>
-              
-              <div className="pt-4 border-t border-slate-100">
-                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Інші форми (через кому)</label>
-                <input type="text" value={newWord.details_forms} onChange={e => setNewWord({...newWord, details_forms: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3" placeholder="računi, računa..." />
+
+              <div className="border-t border-line pt-4">
+                <label htmlFor="admin-forms" className={labelClass}>Інші форми (через кому)</label>
+                <input id="admin-forms" lang="hr" type="text" value={newWord.details_forms} onChange={(e) => setNewWord({ ...newWord, details_forms: e.target.value })} className={fieldClass} placeholder="računi, računa..." />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Приклади (через | )</label>
-                <textarea value={newWord.details_examples} onChange={e => setNewWord({...newWord, details_examples: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 min-h-[100px]" placeholder="Mogu li dobiti račun? | Račun je 15 eura." />
+                <label htmlFor="admin-examples" className={labelClass}>Приклади (через | )</label>
+                <textarea id="admin-examples" lang="hr" value={newWord.details_examples} onChange={(e) => setNewWord({ ...newWord, details_examples: e.target.value })} className={cn(fieldClass, 'min-h-24 py-3')} placeholder="Mogu li dobiti račun? | Račun je 15 eura." />
               </div>
-              
-              <button type="submit" className="mt-4 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-xl shadow-md transition-all active:scale-95">
+
+              {notice && (
+                <p
+                  role={notice.ok ? 'status' : 'alert'}
+                  className={cn(
+                    'flex items-start gap-2 rounded-card border p-3 text-body',
+                    notice.ok ? 'border-success-line bg-success-soft text-success-ink' : 'border-warning-line bg-warning-soft text-warning-ink',
+                  )}
+                >
+                  {notice.ok ? <CircleCheck className="mt-0.5 size-5 shrink-0" aria-hidden="true" /> : <CircleAlert className="mt-0.5 size-5 shrink-0" aria-hidden="true" />}
+                  {notice.text}
+                </p>
+              )}
+
+              <Button type="submit" block className="mt-2">
                 Зберегти слово
-              </button>
+              </Button>
             </form>
-          </div>
+          </Card>
 
           <div className="md:col-span-2">
-            <h2 className="text-xl font-bold text-slate-800 mb-6">Останні додані слова</h2>
+            <h2 className="mb-4 font-heading text-h3">
+              <span aria-hidden="true">🕒</span> Останні додані слова
+            </h2>
             {loadingWords ? (
-              <div className="animate-pulse flex flex-col gap-3">
-                {[1,2,3].map(i => <div key={i} className="h-16 bg-slate-200 rounded-xl"></div>)}
+              <div className="flex flex-col gap-3">
+                {[1, 2, 3].map((i) => <Skeleton key={i} className="h-20" />)}
               </div>
             ) : (
-              <div className="flex flex-col gap-3">
+              <ul className="flex flex-col gap-3">
                 {words.map((word) => (
-                  <div key={word.id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex justify-between items-start">
-                    <div>
-                      <h3 className="font-bold text-lg text-slate-900">{word.lemma}</h3>
-                      <p className="text-sm text-blue-600 font-medium">{word.ukrainian_translation}</p>
-                      
-                      <div className="mt-2 text-xs flex flex-wrap gap-2">
-                        {word.cefr && <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded">{word.cefr}</span>}
-                        {word.part_of_speech && <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded">{word.part_of_speech}</span>}
-                        {(word.forms?.inflections?.length ?? 0) > 0 && <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded">Форми: {word.forms?.inflections?.length}</span>}
-                        {(word.examples?.length ?? 0) > 0 && <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded">Приклади: {word.examples?.length}</span>}
-                        {word.status && word.status !== 'PUBLISHED' && <span className="bg-amber-50 text-amber-700 px-2 py-1 rounded">{word.status}</span>}
+                  <li key={word.id}>
+                    <Card className="flex items-start justify-between gap-3 p-4">
+                      <div className="min-w-0">
+                        <Hr as="h3" className="font-heading text-h3 break-words">{word.lemma}</Hr>
+                        <p className="text-body text-ink-muted">{word.ukrainian_translation}</p>
+
+                        <div className="mt-2 flex flex-wrap gap-2 text-caption">
+                          {word.cefr && <LevelBadge level={word.cefr} />}
+                          {word.part_of_speech && <span className="rounded-full bg-surface-muted px-2.5 py-0.5 text-ink-muted">{word.part_of_speech}</span>}
+                          {(word.forms?.inflections?.length ?? 0) > 0 && <span className="rounded-full bg-surface-muted px-2.5 py-0.5 text-ink-muted">Форми: {word.forms?.inflections?.length}</span>}
+                          {(word.examples?.length ?? 0) > 0 && <span className="rounded-full bg-surface-muted px-2.5 py-0.5 text-ink-muted">Приклади: {word.examples?.length}</span>}
+                          {word.status && word.status !== 'PUBLISHED' && <StatusBadge status={word.status} />}
+                        </div>
                       </div>
-                    </div>
-                    <div className="text-[10px] text-slate-400 font-mono text-right max-w-[100px] truncate" title={word.id}>
-                      ID: {word.id.substring(0,8)}...
-                    </div>
-                  </div>
+                      <span className="max-w-24 shrink-0 truncate text-right font-mono text-caption text-ink-subtle" title={word.id}>
+                        ID: {word.id.substring(0, 8)}…
+                      </span>
+                    </Card>
+                  </li>
                 ))}
-              </div>
+              </ul>
             )}
           </div>
         </div>
       )}
     </div>
   );
+}
+
+/** Статус контенту (§64): опубліковане — зелене, решта — нейтральне / бурштинове. */
+function StatusBadge({ status }: { status: string }) {
+  const tone =
+    status === 'PUBLISHED'
+      ? 'bg-success-soft text-success-ink'
+      : status === 'DEPRECATED'
+        ? 'bg-surface-muted text-ink-subtle'
+        : 'bg-warning-soft text-warning-ink';
+  return <span className={cn('shrink-0 rounded-full px-2.5 py-0.5 text-caption font-semibold', tone)}>{status}</span>;
 }

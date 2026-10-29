@@ -20,23 +20,23 @@ begin
 end $$;
 
 -- нові уроки — ті, у яких діалоги з пакета curriculum_a1_v2
-create temp view v2_lessons as
+create temp view v2_all as
   select distinct c.lesson_id as id from public.conversations c where c.source = 'claude_curriculum_a1_v2';
+-- ті з них, яких ще не перебудовано за програмою A1 v3 (2026-10-26): лише для них діють перевірки складу уроку v2
+create temp view v2_lessons as
+  select v.id from v2_all v
+   where not exists (select 1 from public.conversations c where c.lesson_id = v.id and c.source = 'claude_curriculum_a1_v3');
 
 -- ---------------------------------------------------------------- структура
-select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons where level_code = 'A1' and status = 'PUBLISHED'$q$) = 89,
-  'A1: 89 опублікованих уроків');
-select pg_temp.ok(pg_temp.n($q$select 1 from v2_lessons$q$) = 40, '40 нових уроків з двома діалогами пакета v2');
-select pg_temp.ok(pg_temp.n($q$select u.id from public.units u join public.modules m on m.id = u.module_id
-  join public.lessons l on l.unit_id = u.id where m.level_code = 'A1'
-  group by u.id having count(*) not between 8 and 9 or max(l.order_index) <> count(*) or min(l.order_index) <> 1$q$) = 0,
-  'у кожному модулі A1 8–9 уроків, місця 1…N без пропусків');
+select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons where level_code = 'A1' and status = 'PUBLISHED'$q$) >= 89,
+  'A1: щонайменше 89 опублікованих уроків (програма A1 v3 додає нові)');
+select pg_temp.ok(pg_temp.n($q$select 1 from v2_all$q$) = 40, '40 нових уроків з двома діалогами пакета v2');
 select pg_temp.ok(pg_temp.n($q$select 1 from (
     select l.title_ua, l.title_hr, row_number() over (order by m.order_index, u.order_index, l.order_index) as n
       from public.lessons l join public.units u on u.id = l.unit_id join public.modules m on m.id = u.module_id
      where m.level_code = 'A1') t
   where t.title_ua not like 'Урок ' || t.n || ':%' or t.title_hr not like 'Lekcija ' || t.n || ':%'$q$) = 0,
-  'назви уроків A1 пронумеровано підряд: «Урок 1» … «Урок 89»');
+  'назви уроків A1 пронумеровано підряд: «Урок 1» … «Урок N»');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.content_versions
   where entity_type = 'lesson' and change_reason like 'curriculum_a1_v2: новий номер уроку%'$q$) >= 40,
   'стара назва перенумерованих уроків збережена в content_versions');
@@ -75,9 +75,10 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.lexemes where lemma in ('Kva
 -- ---------------------------------------------------------------- гість
 set local role anon;
 select set_config('request.jwt.claims', '{"role":"anon"}', true);
-select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons where level_code = 'A1'$q$) = 89, 'гість бачить 89 уроків A1');
-select pg_temp.ok(pg_temp.n($q$select 1 from public.conversations where source = 'claude_curriculum_a1_v2'$q$) = 80,
-  'гість бачить 80 нових діалогів');
+select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons where level_code = 'A1'$q$) >= 89, 'гість бачить усі (≥ 89) уроки A1');
+select pg_temp.ok(pg_temp.n($q$select lesson_id from public.conversations where source = 'claude_curriculum_a1_v2'
+  group by 1 having count(*) <> 2$q$) = 0,
+  'гість бачить діалоги v2 тих уроків, яких ще не перебудовано (по 2 на урок)');
 reset role;
 
 select 'ALL TESTS PASSED' as result;

@@ -25,7 +25,7 @@ async function loadLesson(lessonId: string): Promise<{ content: LessonContent | 
     const [lessonRes, itemsRes, conversationsRes] = await Promise.all([
       supabase
         .from('lessons')
-        .select('id, title_ua, title_hr, level_code, objectives, estimated_minutes')
+        .select('id, title_ua, title_hr, level_code, objectives, estimated_minutes, unit_id')
         .eq('id', lessonId)
         .eq('status', 'PUBLISHED')
         .maybeSingle(),
@@ -46,7 +46,9 @@ async function loadLesson(lessonId: string): Promise<{ content: LessonContent | 
     const errorsFilter = pitfallsFilter({ grammarIds, lexemeIds });
     const none = Promise.resolve({ data: [], error: null });
 
-    const [lexemesRes, exercisesRes, grammarRes, turnsRes, errorsRes] = await Promise.all([
+    const unitId = (lessonRes.data as { unit_id?: string | null }).unit_id ?? null;
+
+    const [lexemesRes, exercisesRes, grammarRes, turnsRes, errorsRes, moduleRes] = await Promise.all([
       lexemeIds.length
         ? supabase.from('lexemes').select('id, lemma, ukrainian_translation').in('id', lexemeIds).eq('status', 'PUBLISHED')
         : none,
@@ -79,9 +81,16 @@ async function loadLesson(lessonId: string): Promise<{ content: LessonContent | 
             .eq('status', 'PUBLISHED')
             .or(errorsFilter)
         : none,
+      // Модуль уроку — для емодзі теми на вступі (DESIGN_SYSTEM §3.4); необов'язковий
+      unitId
+        ? supabase.from('units').select('module:modules(order_index, title_ua, title_hr)').eq('id', unitId).maybeSingle()
+        : Promise.resolve({ data: null, error: null }),
     ]);
     for (const r of [lexemesRes, exercisesRes, grammarRes, turnsRes]) if (r.error) throw r.error;
     if (errorsRes.error) console.warn('Типові помилки не завантажились:', errorsRes.error.message);
+    if (moduleRes.error) console.warn('Модуль уроку не завантажився:', moduleRes.error.message);
+    const moduleRaw = moduleRes.error ? null : (moduleRes.data as { module?: unknown } | null)?.module;
+    const moduleRow = (Array.isArray(moduleRaw) ? moduleRaw[0] : moduleRaw) as LessonRows['module'] | undefined;
 
     const content = buildLessonContent({
       lesson: lessonRes.data as LessonRows['lesson'],
@@ -92,6 +101,7 @@ async function loadLesson(lessonId: string): Promise<{ content: LessonContent | 
       turns: (turnsRes.data ?? []) as LessonRows['turns'],
       grammar: (grammarRes.data ?? []) as unknown as LessonRows['grammar'],
       errors: errorsRes.error ? [] : ((errorsRes.data ?? []) as LessonRows['errors']),
+      module: moduleRow ?? null,
     });
     return { content, notFound: false };
   } catch (err) {

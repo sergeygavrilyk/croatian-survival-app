@@ -101,6 +101,9 @@ Track:
 | `lesson_completed` | сервер, `completeLesson` | lesson_id, level, duration_ms, count (слів у уроці), added_to_review |
 | `review_started` | тренажер, картки завантажені | level, count, source (`review` / `new` / `write`) |
 | `review_completed` | тренажер, оцінено всі картки | level, count, correct_count, duration_ms, source |
+| `review_started` | «Граматика рівня»: «Потренувати тему» або «Підсумок граматики» → вправи (з 2026-10-27) | source (`grammar_topic` / `grammar_review`), level, skill = `grammar`, count, grammar_topic_id (лише тема) |
+| `exercise_completed` | ті самі серії, кожна вправа | source, level, skill = `grammar`, grammar_topic_id, exercise_id, exercise_type, success, attempt, duration_ms, verdict |
+| `review_completed` | ті самі серії, остання вправа | source, level, skill = `grammar`, grammar_topic_id, count, correct_count (з першої спроби), duration_ms |
 | `exercise_completed` | «Ситуації» → «Перевір себе», кожна фраза | exercise_type = `phrase_recall`, source = `situation`, situation, phrase_id, level, success (Знав / Ще ні), duration_ms |
 | `onboarding_started` | `/onboarding`, відкриття | source (`first` / `repeat`) |
 | `onboarding_completed` | сервер, `completeOnboarding` | goals, daily_goal_minutes, level (рівень старту), self_level, source (`placement` / `self`) |

@@ -7,6 +7,7 @@ import Button from '@/components/ui/Button';
 import Hr from '@/components/ui/Hr';
 import AudioButton from '@/components/ui/AudioButton';
 import ProgressBar from '@/components/ui/ProgressBar';
+import SessionDone from '@/components/ui/SessionDone';
 import { browserSpeech, micHelpHere } from '@/utils/speech-recognition';
 import { SpeechError, type ListeningSession, type SpeechErrorCode } from '@/lib/speech-provider';
 import { annotateOriginal, evaluateSpeech, type SpeechEvaluation, type SpeechVerdict } from '@/lib/speaking';
@@ -200,15 +201,19 @@ export default function SpeakingPractice({
     return (
       <div className="flex flex-col gap-4 animate-fade-in-up">
         <div>
-          <h2 className="font-heading text-h2">Говоріння</h2>
+          <h2 className="font-heading text-h2">
+            <span aria-hidden="true">🎙️</span> Говоріння
+          </h2>
           <p className="mt-1 text-body text-ink-muted">Скажіть фразу вголос — застосунок перевірить, чи вас зрозуміють.</p>
         </div>
         <ModeButton
+          emoji="🎧"
           title="Повторити за диктором"
           hint="Бачите й чуєте хорватську фразу, повторюєте її"
           onClick={() => begin('repeat')}
         />
         <ModeButton
+          emoji="🧠"
           title="Сказати самому"
           hint="Бачите лише переклад — згадуєте й кажете хорватською"
           onClick={() => begin('produce')}
@@ -228,24 +233,26 @@ export default function SpeakingPractice({
   // ---------------------------------------------------------------- підсумок
   if (done) {
     return (
-      <Card hero className="animate-fade-in-up text-center">
-        <p className="text-label text-ink-muted">Результат</p>
-        <p className="mt-1 font-heading text-display">
-          {summary.understood} з {order.length}
-        </p>
-        <p className="mt-2 text-body text-ink-muted">
-          фраз вас зрозуміють{summary.firstTry > 0 ? `, ${summary.firstTry} — з першої спроби` : ''}.
-        </p>
-        <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-center">
-          <Button onClick={restart}>
-            <RotateCcw className="size-5" aria-hidden="true" />
-            Ще раз
-          </Button>
-          <Button variant="tertiary" onClick={onExit}>
-            До списку фраз
-          </Button>
-        </div>
-      </Card>
+      // Кінець сесії, як у тренажері: 🎉 / 💪 / 🌱 і конфеті на 🎉 (DESIGN_SYSTEM §3.4)
+      <SessionDone
+        correct={summary.understood}
+        total={order.length}
+        barLabel="Фраз вас зрозуміють"
+        actions={
+          <>
+            <Button block onClick={restart}>
+              <RotateCcw className="size-5" aria-hidden="true" />
+              Ще раз
+            </Button>
+            <Button block variant="tertiary" onClick={onExit}>
+              До списку фраз
+            </Button>
+          </>
+        }
+      >
+        Вас зрозуміють: {summary.understood} з {order.length}
+        {summary.firstTry > 0 ? `, ${summary.firstTry} — з першої спроби` : ''}.
+      </SessionDone>
     );
   }
 
@@ -358,15 +365,15 @@ export default function SpeakingPractice({
   );
 }
 
-function ModeButton({ title, hint, onClick }: { title: string; hint: string; onClick: () => void }) {
+function ModeButton({ emoji, title, hint, onClick }: { emoji: string; title: string; hint: string; onClick: () => void }) {
   return (
     <button
       type="button"
       onClick={onClick}
       className="flex min-h-16 w-full items-center gap-3 rounded-card border border-line bg-surface px-4 py-3 text-left transition-colors duration-150 hover:border-primary/40 active:scale-[0.98]"
     >
-      <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary-ink" aria-hidden="true">
-        <Mic className="size-5" />
+      <span className="flex size-12 shrink-0 items-center justify-center rounded-card bg-primary-soft text-2xl leading-none" aria-hidden="true">
+        {emoji}
       </span>
       <span>
         <span className="block text-body font-semibold">{title}</span>

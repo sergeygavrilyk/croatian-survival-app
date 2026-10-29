@@ -50,6 +50,16 @@ const TITLES: Record<string, string> = {
   speaking: 'Скажіть уголос хорватською',
 };
 
+/** Емодзі типу вправи — категорія поруч із назвою (DESIGN_SYSTEM §3.4), не кнопка. */
+const TYPE_EMOJI: Record<string, string> = {
+  multiple_choice: '🎯',
+  fill_in_the_blank: '🧩',
+  type_answer: '✍️',
+  sentence_builder: '🧱',
+  listening: '🎧',
+  speaking: '🎙️',
+};
+
 const SPEECH_UI: Record<SpeechVerdict, { ok: boolean; title: string; text?: string }> = {
   great: { ok: true, title: 'Чудово! Вас зрозуміють.' },
   understandable: { ok: true, title: 'Зрозуміло.', text: 'Фразу зрозуміють. Можна відшліфувати кілька слів.' },
@@ -99,7 +109,7 @@ export default function LessonExercise({
     <div className="flex flex-col gap-4 animate-fade-in-up">
       <div>
         <p className="text-label text-ink-muted">
-          {TITLES[type] ?? 'Вправа'}
+          <span aria-hidden="true">{TYPE_EMOJI[type] ?? '✏️'}</span> {TITLES[type] ?? 'Вправа'}
           {retry && <span className="ml-2 rounded-full bg-warning-soft px-2 py-0.5 text-caption text-warning-ink">ще раз</span>}
         </p>
         {type !== 'listening' && (

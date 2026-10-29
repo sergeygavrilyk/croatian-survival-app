@@ -4,6 +4,7 @@ import PageHeader from '@/components/ui/PageHeader';
 import SegmentedLinks from '@/components/ui/SegmentedLinks';
 import ErrorState from '@/components/ui/ErrorState';
 import AssessmentListView, { type AssessmentListItem } from '@/components/AssessmentListView';
+import { levelStyle } from '@/lib/levels';
 import {
   ASSESSED_LEVELS, displayOrder, kindTitle, levelStatus, pickAssessmentLevel, summarizeAttempts, type AttemptRow,
 } from '@/lib/assessment';
@@ -60,6 +61,7 @@ export default async function AssessmentsPage({ searchParams }: { searchParams: 
       slug: t.slug as string,
       kind: t.kind as string,
       title: kindTitle(t.kind as string, t.cefr as string, mod?.order_index),
+      moduleOrder: mod?.order_index ?? null,
       subtitle:
         t.kind === 'module' ? mod?.title_ua ?? null : t.kind === 'mid' ? 'Модулі 1–5' : 'Усі 10 модулів',
       minutes: (t.estimated_minutes as number | null) ?? null,
@@ -69,7 +71,8 @@ export default async function AssessmentsPage({ searchParams }: { searchParams: 
     };
   });
   const status = levelStatus(tests.map((t) => ({ id: t.id as string, kind: t.kind as string })), summaries);
-  const levelTabs = available.map((l) => ({ href: `/lessons/tests?level=${l}`, label: l }));
+  // Вибраний рівень — залитий своїм кольором, як на «Уроках» (DESIGN_SYSTEM §3.4)
+  const levelTabs = available.map((l) => ({ href: `/lessons/tests?level=${l}`, label: l, activeClassName: levelStyle(l).solid }));
 
   return (
     <div className="min-h-screen pb-28">

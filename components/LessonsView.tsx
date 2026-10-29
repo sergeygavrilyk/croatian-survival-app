@@ -3,10 +3,11 @@
 import { useState, useTransition } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { BookOpen, Check, ChevronDown, ChevronRight, ClipboardCheck, Dumbbell, Play } from 'lucide-react';
+import { BookOpen, Check, ChevronDown, ChevronRight, ClipboardCheck, Dumbbell, Play, Puzzle, Sparkles } from 'lucide-react';
 import { ASSESSED_LEVELS, assessmentSlug } from '@/lib/assessment';
 import { lessonsHref } from '@/lib/curriculum';
-import { LEVEL_CODES, levelStyle, moduleIcon } from '@/lib/levels';
+import { grammarLevelHref, grammarReviewHref } from '@/lib/grammar';
+import { LEVEL_CODES, assessmentIcon, levelStyle, moduleIcon } from '@/lib/levels';
 import { moduleCardTitles } from '@/lib/reading';
 import { cn } from '@/lib/ui';
 import Button from '@/components/ui/Button';
@@ -41,6 +42,7 @@ export interface CurriculumLesson {
 
 /**
  * «Уроки» (UI-003, 2026-10-20 — на дизайн-системі): рівні → модулі → юніти → уроки.
+ * З 2026-10-27: угорі — «Граматика рівня», у кінці рівня — «Підсумок граматики» перед фінальною перевіркою.
  * Кожен рівень — свій колір, кожен модуль — тематична іконка (lib/levels.ts, рішення власника 2026-10-20).
  * З 2026-10-21 дані бере сервер (app/lessons/page.tsx, §75): рівень — в адресі (?level=A1),
  * тут — лише розгортання модулів. Офлайн (§76) — сторінку, як і решту, кешує PWA.
@@ -125,21 +127,39 @@ export default function LessonsView({
           />
         ) : (
           <>
-            {assessed && (
+            <div className={cn('grid gap-3', assessed && 'sm:grid-cols-2')}>
               <Link
-                href={`/lessons/tests?level=${activeLevel}`}
-                className="flex min-h-16 items-center gap-3 rounded-card border border-line bg-surface p-4 shadow-sm transition-colors duration-150 hover:bg-surface-muted"
+                href={grammarLevelHref(activeLevel)}
+                className={cn(
+                  'flex min-h-16 items-center gap-3 rounded-card border-2 bg-surface p-4 shadow-sm transition-colors duration-150 hover:bg-surface-muted',
+                  lv.line,
+                )}
               >
-                <span className={cn('flex size-10 shrink-0 items-center justify-center rounded-full', lv.soft, lv.ink)}>
-                  <ClipboardCheck className="size-5" aria-hidden="true" />
+                <span className={cn('flex size-10 shrink-0 items-center justify-center rounded-full', lv.solid)}>
+                  <Puzzle className="size-5" aria-hidden="true" />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block font-heading text-h3 text-ink">Перевірки рівня {activeLevel}</span>
-                  <span className="block text-label font-normal text-ink-muted">Після модуля, середина й фінал: розумію, кажу, спілкуюся, переказую</span>
+                  <span className="block font-heading text-h3 text-ink">Граматика рівня {activeLevel}</span>
+                  <span className="block text-label font-normal text-ink-muted">Усі правила рівня в одному місці</span>
                 </span>
                 <ChevronRight className="size-5 shrink-0 text-ink-subtle" aria-hidden="true" />
               </Link>
-            )}
+              {assessed && (
+                <Link
+                  href={`/lessons/tests?level=${activeLevel}`}
+                  className="flex min-h-16 items-center gap-3 rounded-card border border-line bg-surface p-4 shadow-sm transition-colors duration-150 hover:bg-surface-muted"
+                >
+                  <span className={cn('flex size-10 shrink-0 items-center justify-center rounded-full', lv.soft, lv.ink)}>
+                    <ClipboardCheck className="size-5" aria-hidden="true" />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-heading text-h3 text-ink">Перевірки рівня {activeLevel}</span>
+                    <span className="block text-label font-normal text-ink-muted">Після модуля, середина й фінал: розумію, кажу, спілкуюся, переказую</span>
+                  </span>
+                  <ChevronRight className="size-5 shrink-0 text-ink-subtle" aria-hidden="true" />
+                </Link>
+              )}
+            </div>
 
             {modules.map((mod) => {
               const isExpanded = mod.id === expandedModuleId;
@@ -284,6 +304,44 @@ export default function LessonsView({
                 </div>
               );
             })}
+
+            <div className="mt-2 flex items-center gap-3" aria-hidden="true">
+              <span className="h-px flex-1 bg-line-strong" />
+              <span className="text-caption uppercase tracking-wide text-ink-muted">Кінець рівня</span>
+              <span className="h-px flex-1 bg-line-strong" />
+            </div>
+            <Link
+              href={grammarReviewHref(activeLevel)}
+              className={cn(
+                'flex min-h-16 items-center gap-3 rounded-card border-2 border-dashed p-4 transition-colors duration-150 hover:bg-surface',
+                lv.line,
+                lv.soft,
+              )}
+            >
+              <span className={cn('flex size-10 shrink-0 items-center justify-center rounded-full bg-surface', lv.ink)}>
+                <Sparkles className="size-5" aria-hidden="true" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block font-heading text-h3 text-ink">Підсумок граматики {activeLevel}</span>
+                <span className="block text-label font-normal text-ink-muted">Згадати все й потренувати слабке перед фінальною перевіркою · ~15 хв</span>
+              </span>
+              <ChevronRight className={cn('size-5 shrink-0', lv.ink)} aria-hidden="true" />
+            </Link>
+            {assessed && (
+              <Link
+                href={`/assessment/${assessmentSlug(activeLevel, 'final')}`}
+                className="flex min-h-16 items-center gap-3 rounded-card border border-line bg-surface p-4 shadow-sm transition-colors duration-150 hover:bg-surface-muted"
+              >
+                <span className={cn('flex size-10 shrink-0 items-center justify-center rounded-full text-xl leading-none', lv.soft)} aria-hidden="true">
+                  {assessmentIcon('final', activeLevel)}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block font-heading text-h3 text-ink">Фінальна перевірка {activeLevel}</span>
+                  <span className="block text-label font-normal text-ink-muted">Розумію, кажу, спілкуюся, переказую</span>
+                </span>
+                <ChevronRight className="size-5 shrink-0 text-ink-subtle" aria-hidden="true" />
+              </Link>
+            )}
           </>
         )}
       </main>
