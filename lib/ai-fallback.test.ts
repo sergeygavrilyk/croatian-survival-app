@@ -6,7 +6,7 @@ import {
 } from './ai-fallback.ts';
 
 test('ланцюжок моделей: типовий — основна + запасні', () => {
-  assert.deepEqual(buildModelChain(undefined, undefined), [DEFAULT_PRIMARY_MODEL, 'gemini-3.8-flash', 'gemini-3.5-flash-lite']);
+  assert.deepEqual(buildModelChain(undefined, undefined), [DEFAULT_PRIMARY_MODEL, 'gemini-3.5-flash-lite', 'gemini-3.8-flash']);
 });
 
 test('ланцюжок моделей: зі змінних оточення, без повторів і порожніх', () => {

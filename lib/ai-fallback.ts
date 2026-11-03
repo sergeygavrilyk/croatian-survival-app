@@ -7,11 +7,13 @@
  *
  * Рішення власника 2026-10-13: основна — gemini-3.6-flash, запасні — новіша
  * gemini-3.8-flash і легша gemini-3.5-flash-lite (інший пул потужностей).
+ * Рішення власника 2026-11-03: порядок запасних — спершу gemini-3.5-flash-lite (відповідала, коли 3.6 перевантажена),
+ * gemini-3.8-flash — остання (13.10 не відповіла жодного разу з 18: перевантажена або не встигала за 10 с).
  * Список можна змінити без зміни коду: GEMINI_MODEL і GEMINI_FALLBACK_MODELS (через кому).
  */
 
 export const DEFAULT_PRIMARY_MODEL = 'gemini-3.6-flash';
-export const DEFAULT_FALLBACK_MODELS = ['gemini-3.8-flash', 'gemini-3.5-flash-lite'] as const;
+export const DEFAULT_FALLBACK_MODELS = ['gemini-3.5-flash-lite', 'gemini-3.8-flash'] as const;
 /** Скільки моделей пробуємо максимум (захист від надто довгого очікування) */
 export const MAX_MODELS = 4;
 
