@@ -18,6 +18,7 @@ import { track } from '@/lib/analytics-client';
 import { countUk } from '@/lib/format';
 import { levelStyle } from '@/lib/levels';
 import { cn, shuffle } from '@/lib/ui';
+import { seededRandom } from '@/lib/random';
 import { situationCounts, sortedLevels, type SituationInfo } from '@/lib/situations';
 
 export interface SituationPhrase {
@@ -47,16 +48,26 @@ export default function SituationView({
   dialogues,
   loadError,
   roleplay,
+  seed,
 }: {
   situation: SituationInfo;
   phrases: SituationPhrase[];
   dialogues: SituationDialogue[];
   loadError?: boolean;
+  /** Seed перемішування з сервера (newSeed): порядок фраз без Math.random під час рендеру (lib/random.ts) */
+  seed: string;
   /** Рольова гра з AI для цієї ситуації (VS-004) */
   roleplay?: { aiRoleUa: string; goalUa: string } | null;
 }) {
   const [tab, setTab] = useState<Tab>(phrases.length > 0 ? 'phrases' : 'dialogues');
-  const [practice, setPractice] = useState<'recall' | 'speak' | null>(null);
+  const [practice, setPracticeMode] = useState<'recall' | 'speak' | null>(null);
+  // Кожен новий запуск вправи — свій порядок фраз (seed сторінки + номер запуску)
+  const [runs, setRuns] = useState(0);
+  const setPractice = (next: 'recall' | 'speak' | null) => {
+    if (next) setRuns((n) => n + 1);
+    setPracticeMode(next);
+  };
+  const practiceSeed = `${seed}:${runs}`;
 
   const levels = useMemo(
     () => sortedLevels([...phrases.map((p) => p.cefr), ...dialogues.map((d) => d.level)]),
@@ -143,11 +154,12 @@ export default function SituationView({
 
         {tab === 'phrases' &&
           (practice === 'recall' ? (
-            <PhrasePractice situation={situation.code} phrases={phrases} onExit={() => setPractice(null)} />
+            <PhrasePractice situation={situation.code} phrases={phrases} seed={practiceSeed} onExit={() => setPractice(null)} />
           ) : practice === 'speak' ? (
             <SpeakingPractice
               situation={situation.code}
               phrases={phrases}
+              seed={practiceSeed}
               onExit={() => setPractice(null)}
               onFallback={() => setPractice('recall')}
             />
@@ -207,15 +219,17 @@ function PhraseList({ phrases, onPractice }: { phrases: SituationPhrase[]; onPra
 function PhrasePractice({
   situation,
   phrases,
+  seed,
   onExit,
 }: {
   situation: string;
   phrases: SituationPhrase[];
+  seed: string;
   onExit: () => void;
 }) {
   const [round, setRound] = useState(0);
-  // Порядок перемішується на початку кожного кола (лише в браузері — після натиску кнопки)
-  const order = useMemo(() => shuffle(phrases), [phrases, round]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Нове коло — новий порядок; seed замість Math.random, тож рендер чистий (однаковий на сервері й у браузері)
+  const order = useMemo(() => shuffle(phrases, seededRandom(`${seed}:${round}`)), [phrases, seed, round]);
   const [index, setIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [known, setKnown] = useState(0);

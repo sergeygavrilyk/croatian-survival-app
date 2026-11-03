@@ -232,8 +232,7 @@ def level_tests() -> list[dict]:
         for i, it in enumerate(t['items'], 1):
             it['order'] = i
             it['id'] = A.uid('assessment', t['slug'], 'v4', 'item', i)
-    A.validate(out, 'A0')
-    return out
+    return A.finalize(out, 'A0')  # хибні варіанти не повторюються в тесті (2026-11-03)
 
 
 def tests() -> list[dict]:
@@ -245,7 +244,7 @@ def tests() -> list[dict]:
             for it in t['items']:
                 it['id'] = A.uid('assessment', t['slug'], 'v4', 'item', it['order'])  # нові id: старі завдання лишаються як DEPRECATED
             out.append(t)
-    return out
+    return A.finalize(out, 'A0')  # хибні варіанти не повторюються в тесті (2026-11-03)
 
 
 def item_row(t: dict, it: dict) -> str:

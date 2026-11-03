@@ -113,8 +113,6 @@ export interface AssessmentSuggestion {
   minutes: number | null;
 }
 
-/** Середина рівня — після модулів 1–5 (як у «Перевірках рівня»: «Модулі 1–5»). */
-const MID_LAST_MODULE = 5;
 
 /**
  * Яку перевірку запропонувати на «Сьогодні» (до 2026-10-21 — лише після всього рівня).
@@ -127,6 +125,8 @@ export function suggestAssessment(
   completed: ReadonlySet<string>,
   tests: ReadonlyArray<TodayAssessment>,
   attempted: ReadonlySet<string>,
+  /** Після якого модуля середина рівня (A0 — 5, A1 — 6; midLastModule() у lib/assessment.ts) */
+  midAfter = 5,
 ): AssessmentSuggestion | null {
   const modules = new Map<string, { order: number; title: string | null; total: number; done: number }>();
   for (const l of lessons) {
@@ -152,9 +152,9 @@ export function suggestAssessment(
         candidates.push({ slug: t.slug, kind: 'module', moduleOrder: m.order, moduleTitle: m.title, minutes: t.estimated_minutes, rank: m.order });
       }
     } else if (t.kind === 'mid') {
-      const firstHalf = all.filter((m) => m.order <= MID_LAST_MODULE);
+      const firstHalf = all.filter((m) => m.order <= midAfter);
       if (firstHalf.length > 0 && firstHalf.every(isDone)) {
-        candidates.push({ slug: t.slug, kind: 'mid', moduleOrder: lastDone, moduleTitle: null, minutes: t.estimated_minutes, rank: MID_LAST_MODULE + 0.5 });
+        candidates.push({ slug: t.slug, kind: 'mid', moduleOrder: lastDone, moduleTitle: null, minutes: t.estimated_minutes, rank: midAfter + 0.5 });
       }
     } else if (t.kind === 'final') {
       if (all.every(isDone)) {

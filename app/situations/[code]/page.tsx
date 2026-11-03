@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { createClient } from '@/utils/supabase/server';
 import { isSituationCode, situationInfo } from '@/lib/situations';
 import { getScenario } from '@/lib/roleplay';
+import { newSeed } from '@/lib/random';
 import SituationView, { type SituationDialogue, type SituationPhrase } from '@/components/SituationView';
 
 type Params = { params: Promise<{ code: string }> };
@@ -61,6 +62,7 @@ export default async function SituationPage({ params }: Params) {
       dialogues={dialogues}
       loadError={loadError}
       roleplay={scenario ? { aiRoleUa: scenario.aiRoleUa, goalUa: scenario.goalUa } : null}
+      seed={newSeed()}
     />
   );
 }

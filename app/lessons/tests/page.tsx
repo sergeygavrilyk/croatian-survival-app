@@ -6,7 +6,8 @@ import ErrorState from '@/components/ui/ErrorState';
 import AssessmentListView, { type AssessmentListItem } from '@/components/AssessmentListView';
 import { levelStyle } from '@/lib/levels';
 import {
-  ASSESSED_LEVELS, displayOrder, kindTitle, levelStatus, pickAssessmentLevel, summarizeAttempts, type AttemptRow,
+  ASSESSED_LEVELS, displayOrder, kindTitle, levelStatus, levelTestSubtitle, midLastModule, pickAssessmentLevel, summarizeAttempts,
+  type AttemptRow,
 } from '@/lib/assessment';
 
 export const metadata = { title: 'Перевірки рівня · Croatian Survival App' };
@@ -42,9 +43,13 @@ export default async function AssessmentsPage({ searchParams }: { searchParams: 
   const all = testsRes.data ?? [];
   const available = ASSESSED_LEVELS.filter((l) => all.some((t) => t.cefr === l));
   const level = pickAssessmentLevel(requested, profileRes.data?.current_level, available);
-  const tests = all
-    .filter((t) => t.cefr === level)
-    .sort((a, b) => displayOrder(a.kind as string, a.order_index as number) - displayOrder(b.kind as string, b.order_index as number));
+  const levelTests = all.filter((t) => t.cefr === level);
+  // Скільки модулів у рівні — за перевірками модулів (A0 — 10, A1 v3 — 13); середина — після 5 / 6 модулів
+  const moduleCount = levelTests.filter((t) => t.kind === 'module').length;
+  const midAfter = midLastModule(level, moduleCount);
+  const tests = levelTests.sort(
+    (a, b) => displayOrder(a.kind as string, a.order_index as number, midAfter) - displayOrder(b.kind as string, b.order_index as number, midAfter),
+  );
 
   const moduleIds = tests.map((t) => t.module_id as string | null).filter((id): id is string => Boolean(id));
   const modulesRes = moduleIds.length
@@ -62,8 +67,7 @@ export default async function AssessmentsPage({ searchParams }: { searchParams: 
       kind: t.kind as string,
       title: kindTitle(t.kind as string, t.cefr as string, mod?.order_index),
       moduleOrder: mod?.order_index ?? null,
-      subtitle:
-        t.kind === 'module' ? mod?.title_ua ?? null : t.kind === 'mid' ? 'Модулі 1–5' : 'Усі 10 модулів',
+      subtitle: t.kind === 'module' ? mod?.title_ua ?? null : levelTestSubtitle(t.kind as string, level, moduleCount),
       minutes: (t.estimated_minutes as number | null) ?? null,
       attempts: s?.attempts ?? 0,
       bestScore: s?.bestScore ?? null,

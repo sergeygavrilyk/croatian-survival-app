@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { createClient } from '@/utils/supabase/server';
 import { DEFAULT_TIME_ZONE, LEARNING_EVENTS, activityWeek, learningStreak } from '@/lib/progress';
 import { displayName, greetingFor, nextLesson, suggestAssessment, todayLevel, type TodayAssessment, type TodayLesson } from '@/lib/today';
+import { midLastModule } from '@/lib/assessment';
 import { parseMascot } from '@/lib/mascot';
 import TodayView from '@/components/TodayView';
 
@@ -108,6 +109,7 @@ export default async function TodayPage() {
           completed,
           (testsRes.data ?? []) as TodayAssessment[],
           new Set(((attemptsRes.data ?? []) as Array<{ assessment_id: string }>).map((r) => r.assessment_id)),
+          midLastModule(level),
         );
 
   const timestamps = [

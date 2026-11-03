@@ -11,6 +11,7 @@
 import { checkTypedAnswer } from './answer.ts';
 import { checkSentence } from './mistakes.ts';
 import { evaluateSpeech } from './speaking.ts';
+import { countUk } from './format.ts';
 
 export const AREAS = ['understand', 'produce', 'interact', 'mediate'] as const;
 export type Area = (typeof AREAS)[number];
@@ -318,9 +319,30 @@ export function pickAssessmentLevel(requested: unknown, profileLevel: unknown, a
   return available[0] ?? null;
 }
 
-/** Порядок у списку: модулі 1–5 → середина → модулі 6–10 → фінал. */
-export function displayOrder(kind: string, orderIndex: number | null | undefined): number {
-  if (kind === 'mid') return 5.5;
+/**
+ * Після якого модуля — середина рівня: A0 — модулі 1–5 (з 10), A1 v3 — модулі 1–6 (з 13; gen_assessment_a1_v3.py, MID_MODULES).
+ * Новий рівень без запису — половина модулів (округлення вниз).
+ */
+const MID_LAST_MODULE: Readonly<Record<string, number>> = { A0: 5, A1: 6 };
+
+export function midLastModule(cefr: string | null | undefined, moduleCount?: number): number {
+  const known = cefr ? MID_LAST_MODULE[cefr] : undefined;
+  if (known) return known;
+  return moduleCount && moduleCount > 1 ? Math.floor(moduleCount / 2) : 5;
+}
+
+/** Підпис у списку перевірок: середина — «Модулі 1–6», фінал — «Усі 13 модулів»; модуль — його назва (null тут). */
+export function levelTestSubtitle(kind: string, cefr: string | null | undefined, moduleCount: number): string | null {
+  if (kind === 'mid') return `Модулі 1–${midLastModule(cefr, moduleCount)}`;
+  if (kind === 'final') {
+    return moduleCount > 1 ? `Усі ${countUk(moduleCount, ['модуль', 'модулі', 'модулів'])}` : 'Усі модулі рівня';
+  }
+  return null;
+}
+
+/** Порядок у списку: модулі до середини → середина → решта модулів → фінал (A0: 1–5 | 6–10, A1: 1–6 | 7–13). */
+export function displayOrder(kind: string, orderIndex: number | null | undefined, midAfter = 5): number {
+  if (kind === 'mid') return midAfter + 0.5;
   if (kind === 'final') return 1000;
   return typeof orderIndex === 'number' ? orderIndex : 999;
 }

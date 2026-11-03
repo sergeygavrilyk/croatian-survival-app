@@ -110,8 +110,7 @@ def tests() -> list[dict]:
             it['id'] = A.uid('assessment', slug, 'v3', 'item', i)
         out.append({'slug': slug, 'kind': 'module', 'module': m, 'order': m, 'title_ua': f'Перевірка модуля A1.{m}',
                     'module_title': V.module_title(m)[0], 'items': items})
-    A.validate(out, 'A1')
-    return out
+    return A.finalize(out, 'A1')  # хибні варіанти не повторюються в тесті (2026-11-03)
 
 
 # ---------------------------------------------------------------- середина й фінал (як gen_assessment_a0_v4.level_tests)
@@ -262,8 +261,7 @@ def level_tests() -> list[dict]:
             it['id'] = A.uid('assessment', slug, ver, 'item', i)
         out.append({'slug': slug, 'kind': kind, 'module': None, 'upto': upto, 'title_ua': title, 'seed_attempt': attempt,
                     'soft_clashes': soft, 'items': items})
-    A.validate(out, 'A1')
-    return out
+    return A.finalize(out, 'A1')  # хибні варіанти не повторюються в тесті (2026-11-03)
 
 
 def item_row(it: dict) -> str:

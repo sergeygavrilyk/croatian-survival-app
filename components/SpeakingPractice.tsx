@@ -13,6 +13,7 @@ import { SpeechError, type ListeningSession, type SpeechErrorCode } from '@/lib/
 import { annotateOriginal, evaluateSpeech, type SpeechEvaluation, type SpeechVerdict } from '@/lib/speaking';
 import { finishSpeakingSession, recordSpeakingAttempt, startSpeakingSession } from '@/app/actions/speaking';
 import { cn, shuffle } from '@/lib/ui';
+import { seededRandom } from '@/lib/random';
 
 type Mode = 'repeat' | 'produce';
 
@@ -57,11 +58,14 @@ const TONE_CLASS = {
 export default function SpeakingPractice({
   situation,
   phrases,
+  seed,
   onExit,
   onFallback,
 }: {
   situation: string;
   phrases: SpeakingPhrase[];
+  /** Seed перемішування (з SituationView): порядок без Math.random під час рендеру */
+  seed: string;
   onExit: () => void;
   /** Перейти до «Перевір себе», якщо мікрофон недоступний */
   onFallback: () => void;
@@ -69,7 +73,10 @@ export default function SpeakingPractice({
   const supported = useMemo(() => browserSpeech.isSupported(), []);
   const [mode, setMode] = useState<Mode | null>(null);
   const [round, setRound] = useState(0);
-  const order = useMemo(() => shuffle(phrases).slice(0, SESSION_SIZE), [phrases, round]); // eslint-disable-line react-hooks/exhaustive-deps
+  const order = useMemo(
+    () => shuffle(phrases, seededRandom(`${seed}:${round}`)).slice(0, SESSION_SIZE),
+    [phrases, seed, round],
+  );
   const [index, setIndex] = useState(0);
   const [retry, setRetry] = useState(0);
   const [listening, setListening] = useState(false);

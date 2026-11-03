@@ -1,7 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  assessmentSlug, attemptMeta, displayOrder, gradeItem, isLevelAssessmentSlug, kindTitle, levelStatus, mistakesToSave, nextLevel, percent,
+  assessmentSlug, attemptMeta, displayOrder, gradeItem, isLevelAssessmentSlug, kindTitle, levelStatus, levelTestSubtitle, midLastModule,
+  mistakesToSave, nextLevel, percent,
   pickAssessmentLevel, scoreAssessment, summarizeAttempts, type GradableItem, type ItemResponse,
 } from './assessment.ts';
 
@@ -191,4 +192,23 @@ test('levelStatus: скільки пройдено, середина й фіна
   assert.deepEqual(levelStatus(tests, sums), { total: 3, passed: 1, midPassed: false, finalPassed: false });
   const sums2 = summarizeAttempts([{ assessment_id: 'fin', score: 0.8, passed: true, completed_at: '2026-10-15T12:00:00Z' }]);
   assert.equal(levelStatus(tests, sums2).finalPassed, true);
+});
+
+test('середина й фінал за рівнем: A0 — 1–5 з 10, A1 — 1–6 з 13 (підписи й порядок)', () => {
+  assert.equal(midLastModule('A0', 10), 5);
+  assert.equal(midLastModule('A1', 13), 6);
+  assert.equal(midLastModule('A2', 10), 5); // рівень без запису — половина модулів
+  assert.equal(midLastModule('B1', 12), 6);
+  assert.equal(midLastModule(null), 5);
+  assert.equal(levelTestSubtitle('mid', 'A0', 10), 'Модулі 1–5');
+  assert.equal(levelTestSubtitle('mid', 'A1', 13), 'Модулі 1–6');
+  assert.equal(levelTestSubtitle('final', 'A0', 10), 'Усі 10 модулів');
+  assert.equal(levelTestSubtitle('final', 'A1', 13), 'Усі 13 модулів');
+  assert.equal(levelTestSubtitle('final', 'B2', 12), 'Усі 12 модулів');
+  assert.equal(levelTestSubtitle('final', 'B1', 0), 'Усі модулі рівня');
+  assert.equal(levelTestSubtitle('module', 'A1', 13), null);
+  const a1 = [
+    { kind: 'final', order: 100 }, { kind: 'module', order: 7 }, { kind: 'mid', order: 50 }, { kind: 'module', order: 6 }, { kind: 'module', order: 13 },
+  ].sort((a, b) => displayOrder(a.kind, a.order, 6) - displayOrder(b.kind, b.order, 6));
+  assert.deepEqual(a1.map((x) => `${x.kind}${x.order}`), ['module6', 'mid50', 'module7', 'module13', 'final100']);
 });

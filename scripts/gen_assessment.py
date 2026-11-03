@@ -201,6 +201,18 @@ class Pools:
 
 
 # ---------------------------------------------------------------- завдання
+def alts(*groups: list[dict], key: str) -> list[str]:
+    """Запасні хибні варіанти завдання (ті самі правила, що й для двох вибраних; спершу ближчі — з першої групи).
+    Лише для dedupe_options: випадковість make_item не зачіпають, тож завдання без повторів не змінюються."""
+    out, seen = [], set()
+    for g in groups:
+        for x in g:
+            if norm(x[key]) not in seen:
+                seen.add(norm(x[key]))
+                out.append(x[key])
+    return out
+
+
 def make_item(kind: str, src: dict, pools: Pools, module: int, rng: random.Random) -> dict | None:
     """Завдання з джерела; None — якщо не набралося чесних пасток."""
     lv = pools.level
@@ -227,7 +239,7 @@ def make_item(kind: str, src: dict, pools: Pools, module: int, rng: random.Rando
             return None
         opts, ci = choice(src['ua'], ds)
         return {**base, 'prompt_ua': 'Послухайте. Що сказали?', 'audio_hr': src['hr'], 'options': opts, 'correct_index': ci,
-                'explanation_ua': f'Прозвучало: «{src["hr"]}» — «{src["ua"]}».'}
+                'explanation_ua': f'Прозвучало: «{src["hr"]}» — «{src["ua"]}».', 'alts': alts(pick, cands, key='ua')}
 
     if kind == 'read':
         r, qq = src['text'], src['question']
@@ -252,7 +264,8 @@ def make_item(kind: str, src: dict, pools: Pools, module: int, rng: random.Rando
         opts, ci = choice(src['hr'], ds)
         return {**base, 'prompt_ua': 'Вам кажуть. Що доречно відповісти?', 'prompt_hr': src['prompt_hr'], 'audio_hr': src['prompt_hr'],
                 'options': opts, 'correct_index': ci,
-                'explanation_ua': f'Діалог «{src["dialogue"]}»: «{src["prompt_hr"]}» ({src["prompt_ua"]}) — «{src["hr"]}» ({src["ua"]}).'}
+                'explanation_ua': f'Діалог «{src["dialogue"]}»: «{src["prompt_hr"]}» ({src["prompt_ua"]}) — «{src["hr"]}» ({src["ua"]}).',
+                'alts': alts(cands, key='hr')}
 
     if kind == 'relay':
         ds = [x['ua'] for x in rng.sample(src['others'], 2)]
@@ -263,7 +276,11 @@ def make_item(kind: str, src: dict, pools: Pools, module: int, rng: random.Rando
         passage_ua = '\n'.join(f'{t["speaker"]}: {t["ua"]}' for t in src['turns'])
         return {**base, 'prompt_ua': 'Друг поруч не знає хорватської. Перекажіть йому українською, що відповіли на питання:',
                 'prompt_hr': src['q_hr'], 'passage_hr': passage, 'passage_ua': passage_ua, 'options': opts, 'correct_index': ci,
-                'explanation_ua': f'Діалог «{src["dialogue"]}»: «{src["q_hr"]}» — «{src["hr"]}», тобто «{src["ua"]}».'}
+                'explanation_ua': f'Діалог «{src["dialogue"]}»: «{src["q_hr"]}» — «{src["hr"]}», тобто «{src["ua"]}».',
+                # запасні: інші репліки цього діалогу, потім — твердження з інших діалогів модуля
+                'alts': alts(src['others'], [x for y in pools.by_module[module]['relay'] if y['dialogue'] != src['dialogue']
+                                             for x in y['others'] if not is_question(x['hr']) and norm(x['ua']) != norm(src['ua'])],
+                             key='ua')}
 
     if kind == 'ua2hr':
         cands = [x for x in pools.by_module[module]['speak'] if norm(x['hr']) != norm(src['hr']) and norm(x['ua']) != norm(src['ua'])]
@@ -274,7 +291,9 @@ def make_item(kind: str, src: dict, pools: Pools, module: int, rng: random.Rando
             return None
         opts, ci = choice(src['hr'], ds)
         return {**base, 'prompt_ua': f'Друг-українець просить вас сказати хорватською: «{src["ua"].rstrip(".")}». Що ви скажете?',
-                'options': opts, 'correct_index': ci, 'explanation_ua': f'«{src["ua"]}» — «{src["hr"]}».'}
+                'options': opts, 'correct_index': ci, 'explanation_ua': f'«{src["ua"]}» — «{src["hr"]}».',
+                'alts': alts(cands, [x for x in pools.all_of('speak', list(pools.by_module))
+                                     if norm(x['hr']) != norm(src['hr']) and norm(x['ua']) != norm(src['ua'])], key='hr')}
 
     if kind == 'type':
         return {**base, 'prompt_ua': src['prompt'], 'answer_text': src['hr'], 'explanation_ua': f'«{src["ua"]}» — {src["hr"]}.'}
@@ -363,9 +382,77 @@ def build_level(level: dict) -> list[dict]:
     return tests
 
 
-def validate(tests: list[dict], lv: str):
+GREETING_START = ('dobar', 'dobro jutro', 'dobra večer', 'bok', 'zdravo', 'pozdrav')
+
+
+def greeting_on_open(it: dict, option: str) -> bool:
+    """«Centar 112, izvolite…» → «Dobar dan. Zovem se Darja…» — привітання з іменем доречне на відкриту репліку
+    (izvolite, kako vam mogu pomoći…), тож хибним варіантом там бути не може."""
+    prompt = norm(it.get('prompt_hr') or '')
+    return it['kind'] == 'reply' and any(op in prompt for op in OPEN_PROMPTS) and norm(option).startswith(GREETING_START)
+
+
+def dedupe_options(test: dict) -> list[tuple[int, str, str]]:
+    """Хибний варіант не повторюється в тесті (2026-11-03): він не збігається з хибним варіантом попереднього завдання
+    і з правильною відповіддю будь-якого іншого завдання (інакше одне завдання підказує інше або «вчить» хибному).
+    Повтор замінюється запасним варіантом того самого завдання (item['alts'], ті самі правила добору) — окремим
+    генератором випадковості з зерна «тест:місце», тож решта завдань і порядок варіантів лишаються як були.
+    Повертає заміни: (місце, було, стало)."""
+    items = test['items']
+
+    def answer(it: dict) -> str | None:
+        if it['item_type'] == 'multiple_choice' and it['correct_index'] is not None:
+            return it['options'][it['correct_index']]
+        return it.get('answer_text')
+
+    changes = []
+    earlier: set[str] = set()  # хибні варіанти попередніх завдань
+    for idx, it in enumerate(items):
+        if it['item_type'] != 'multiple_choice' or it['kind'] == 'read':
+            continue
+        ci = it['correct_index']
+        others = {norm(a) for j, x in enumerate(items) if j != idx and (a := answer(x))}  # правильні відповіді інших завдань
+        rng = random.Random(f"{test['slug']}:dedupe:{it.get('order', idx + 1)}")
+        for oi, opt in enumerate(it['options']):
+            if oi == ci:
+                continue
+            if norm(opt) in earlier or norm(opt) in others:
+                taken = {norm(o) for o in it['options']} | earlier | others
+                spare = [x for x in it.get('alts', []) if norm(x) not in taken and not greeting_on_open(it, x)]
+                if not spare:
+                    raise SystemExit(f"{test['slug']} #{it.get('order', idx + 1)}: немає запасного варіанта замість «{opt}»")
+                new = rng.choice(spare)
+                it['options'][oi] = new
+                changes.append((it.get('order', idx + 1), opt, new))
+        earlier |= {norm(o) for oi, o in enumerate(it['options']) if oi != ci}
+    return changes
+
+
+def finalize(tests: list[dict], lv: str) -> list[dict]:
+    """Прибрати повтори хибних варіантів у кожному тесті і перевірити (з умовою «хибні варіанти не повторюються»)."""
+    for t in tests:
+        t['dedupe'] = dedupe_options(t)
+    validate(tests, lv, distinct_options=True)
+    return tests
+
+
+def validate(tests: list[dict], lv: str, distinct_options: bool = False):
+    """distinct_options — ще й хибні варіанти не повторюються в тесті (dedupe_options; для перевірок v4 / v3 і новіших)."""
     problems = []
     for t in tests:
+        if distinct_options:
+            shown_wrong: list[str] = []
+            right = set()
+            for it in t['items']:
+                if it['item_type'] == 'multiple_choice' and it['kind'] != 'read':
+                    shown_wrong += [norm(o) for oi, o in enumerate(it['options']) if oi != it['correct_index']]
+                if it['item_type'] == 'multiple_choice' and it['correct_index'] is not None:
+                    right.add(norm(it['options'][it['correct_index']]))
+                elif it.get('answer_text'):
+                    right.add(norm(it['answer_text']))
+            dup = {o for o, c in Counter(shown_wrong).items() if c > 1} | (set(shown_wrong) & right)
+            if dup:
+                problems.append(f'{t["slug"]}: хибні варіанти повторюються в тесті: {sorted(dup)}')
         expected = Counter(AREA[k] for k, n in PLAN[t['kind']] for _ in range(n))
         got = Counter(it['area'] for it in t['items'])
         if got != expected:

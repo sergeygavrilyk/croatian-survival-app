@@ -134,4 +134,5 @@ run $A/data_fixes/20261026_curriculum_a1_v3_m13.sql
 run $A/data_fixes/20261026_assessments_a1_v3_m13.sql
 run $A/data_fixes/20261026_assessments_a1_v3_mid_final.sql
 for f in $A/data_fixes/20261026_reading_known_a1v3_m13_part*.sql; do run "$f"; done
+run $A/data_fixes/20261103_assessments_distinct_options.sql
 echo "Готово. Тести: for t in supabase/tests/*.sql; do psql -h /tmp -p $P -U postgres -q -v ON_ERROR_STOP=1 -f \$t | tail -1; done"

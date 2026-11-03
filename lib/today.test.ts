@@ -97,3 +97,11 @@ test('перевірка: уроки без модуля або без пере�
   assert.equal(suggestAssessment([L('x', 1, 1, 1)], new Set(['x']), TESTS, new Set()), null);
   assert.equal(suggestAssessment(LESSONS6, doneUpTo(6), [], new Set()), null);
 });
+
+test('перевірка: середина A1 — лише після модулів 1–6 (midAfter = 6)', () => {
+  const tried = new Set(['t1', 't2', 't3', 't4', 't5', 't6']);
+  assert.equal(suggestAssessment(LESSONS6, doneUpTo(5), TESTS, tried, 6), null);
+  assert.equal(suggestAssessment(LESSONS6, doneUpTo(5), TESTS, tried)?.slug, 'a0-mid'); // A0 — після 5
+  // усі 6 модулів (і рівень) пройдено: фінал важливіший за середину
+  assert.equal(suggestAssessment(LESSONS6, doneUpTo(6), TESTS, new Set([...tried, 'tfin']), 6)?.slug, 'a0-mid');
+});

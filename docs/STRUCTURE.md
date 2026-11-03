@@ -32,5 +32,5 @@ e2e/                E2E Playwright: smoke.spec.ts (без входу, і в CI),
 supabase/functions/ Edge Functions (generate-audio)
 proxy.ts            захист маршрутів і оновлення сесії Supabase
 docs/               ТЗ і стан проєкту
-*.py, *.sql, *.csv, *.xlsx у корені   скрипти й дані для наповнення бази (історично)
+scripts/legacy/     скрипти першої версії (check.py, data.json, generate_*.py; перенесено з кореня 2026-11-03, ніде не використовуються)
 ```
