@@ -143,4 +143,5 @@ run $A/data_fixes/20261104_vocab_cleanup.sql
 # старі пакети curriculum_* перевизначають exercises_type_check без нових типів — M19 ще раз (ідемпотентна)
 run $A/migrations/20261105100000_m19_writing_mediation.sql
 run $A/data_fixes/20261105_writing_pilot.sql
+run $A/data_fixes/20261107_writing_a0_m02_m05.sql
 echo "Готово. Тести: for t in supabase/tests/*.sql; do psql -h /tmp -p $P -U postgres -q -v ON_ERROR_STOP=1 -f \$t | tail -1; done"

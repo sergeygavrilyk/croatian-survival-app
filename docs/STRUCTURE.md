@@ -24,6 +24,7 @@ utils/speech.ts     озвучення (/api/tts); utils/speech-recognition.ts �
 supabase/migrations/ схема БД (baseline 2026-10-12 + наступні міграції)
 supabase/data_fixes/ разові виправлення даних (зокрема пакети програми curriculum_*.sql)
 scripts/            генератори програми: full_lessons.py (спільна логіка повного уроку), gen_curriculum_*.py + *_data.py (дані) + *_snapshot.json (знімок перекладів бази);
+                    gen_writing.py + writing_data_<партія>.py (письмо й переказ в уроках, партії з 2026-11-07; пілот — gen_writing_pilot_20261105.py),
                     gen_interference.py + interference_data.py (типові помилки), gen_reading.py + reading_data*.py (A0, A1, A2) + reading_lexicon.py + reading_grammar.py (тексти для читання, словничок, граматика);
                     gen_assessment.py + assessment_source_snapshot.json (перевірки рівня A0/A1 з опублікованих уроків); gen_assessment_a0_v4.py (перевірки модулів A0 і — режим level — середина й фінал A0 під уроки за темою)
 supabase/tests/     інтеграційні SQL-тести (RLS, обмеження), з ROLLBACK; усі разом — scripts/dev/sqltests.sh
