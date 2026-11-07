@@ -614,3 +614,68 @@ for _code in ('RD-A0-001', 'RD-A0-012'):
     TEXT_GRAM.setdefault(_code, {}).update({'dobro': 'частина виразу «Dobro došli!» — ласкаво просимо',
                                            'došli': 'частина виразу «Dobro došli!» (došli — дієприкметник від doći, множина)'})
 POS['dobro došli'] = 'сталий вираз «ласкаво просимо»'
+
+# ---------------------------------------------------------------- 2026-11-04: нові тексти A1.7, A1.11, A1.12 і виправлені тексти < 90 %
+POS.update({
+    'istjecati': 'v.ipf', 'kliknuti': 'v.pf', 'unijeti': 'v.pf', 'e-pošta': 'n.f', 'e-Građani': 'державний онлайн-сервіс (назва; множина)',
+    'ekran': 'n.m', 'popust': 'n.m', 'bežični': 'adj', 'web-stranica': 'n.f', 'baka': 'n.f', 'pašticada': 'n.f', 'peka': 'n.f',
+    'nazdraviti': 'v.pf', 'kremšnita': 'n.f', 'prosinac': 'n.m', 'katedrala': 'n.f', 'lampice': 'n.pl.f', 'gost': 'n.m',
+    'izuti se': 'v.pf', 'Hrvat': 'n.m', 'gostoljubiv': 'adj', 'tvrđava': 'n.f', 'kameni': 'adj', 'olovka': 'n.f', 'udžbenik': 'n.m',
+    'potres': 'n.m', 'nuditi': 'v.ipf', 'napisati': 'v.pf', 'primjer': 'n.m', 'poklon': 'n.m', 'laptop': 'n.m', 'miš': 'n.m',
+    'slušalice': 'n.pl.f', 'operater': 'n.m', 'jaslice': 'n.pl.f', 'polnoćka': 'n.f', 'uličica': 'n.f', 'samostan': 'n.m',
+    'pokupiti': 'v.pf', 'gumica': 'n.f', 'šiljilo': 'n.n', 'ravnalo': 'n.n', 'bojice': 'n.pl.f', 'škare': 'n.pl.f',
+    'kišobran': 'n.m', 'prijaviti': 'v.pf', 'futrola': 'n.f', 'PIN': 'абревіатура (особистий код)', 'ispuniti': 'v.pf',
+    'obrazac': 'n.m', 'živjeli': 'interj', 'Božić': 'n.m', 'domaćica': 'n.f',
+    'pernica': 'n.f', 'razrednica': 'n.f', 'provizija': 'n.f', 'Daša': 'name.f', 'Split': 'place', 'Dubrovnik': 'place',
+    'paket podataka': 'phr', 'pametni telefon': 'phr', 'ekran na dodir': 'phr', 'zaštitno staklo': 'phr', 'mobilni token': 'phr',
+    'nedjeljni ručak': 'phr', 'neradni dan': 'phr', 'Sveti Stjepan': 'phr', 'božićno drvce': 'phr', 'crni rižot': 'phr',
+    'roditeljski sastanak': 'phr', 'rezervna odjeća': 'phr', 'kutija za užinu': 'phr', 'popodnevni odmor': 'phr',
+    'popis pribora': 'phr', 'školska torba': 'phr', 'vodene boje': 'phr', 'omot za knjige': 'phr', 'radna bilježnica': 'phr',
+    'debitna kartica': 'phr', 'internetsko bankarstvo': 'phr', 'tekući račun': 'phr', 'hitna služba': 'phr',
+})
+GRAM.update({
+    'istječe': 'pr3s', 'košta': 'pr3s', 'lozinku': 'A.sg', 'klikni': 'im2s', 'kliknite': 'im2p', 'unesi': 'im2s', 'unesite': 'im2p',
+    'adresu': 'A.sg', 'e-pošte': 'G.sg', 'novu': 'A.sg.f', 'e-građane': 'A.pl | «u e-Građane» — куди? (сервіс e-Građani)',
+    'zaboravila': 'lp.f.sg', 'zaboravili': 'lp.m.pl | «Zaboravili ste» — ви забули (ввічливо)', 'trgovini': 'L.sg',
+    'ekranom': 'I.sg', 'popusta': 'G.sg', 'bežične': 'N.pl.f', 'otvorite': 'im2p', 'web-stranicu': 'A.sg', 'svoje': 'A.pl.m',
+    'bake': 'G.sg', 'pašticadu': 'A.sg', 'peku': 'A.sg', 'ručka': 'G.sg', 'nazdrave': 'pr3p', 'kremšnitu': 'A.sg',
+    'djeco': 'V.pl | кличний від djeca: «Djeco!» — діти!', 'prosinca': 'G.sg | у даті: «24. prosinca» — 24 грудня',
+    'katedrali': 'L.sg', 'katedralu': 'A.sg', 'rade': 'pr3p', 'lampicama': 'I.pl', 'goste': 'A.pl | «ići u goste» — іти в гості',
+    'gosti': 'N.pl', 'izuju': 'pr3p', 'hrvati': 'N.pl', 'gostoljubivi': 'N.pl.m', 'tvrđavu': 'A.sg',
+    'stari': 'N.sg.m | повна форма: «stari grad» — старе місто', 'kamenih': 'G.pl', 'roditeljima': 'D.pl', 'olovke': 'pauc',
+    'udžbenike': 'A.pl', 'kupite': 'im2p', 'djeteta': 'G.sg', 'potresa': 'G.sg', 'mirni': 'N.pl.m', 'čekajte': 'im2p',
+    'izađite': 'im2p', 'nudi': 'pr3s', 'napišite': 'im2p', 'važno': 'N.sg.n', 'termina': 'G.sg', 'živite': 'pr2p',
+    'razumijete': 'pr2p', 'gledamo': 'pr1p', 'šalteru': 'L.sg', 'dubrovnika': 'G.sg | «iz Dubrovnika» — з Дубровника',
+})
+TEXT_GRAM.update({
+    'RD-A1-041': {'podataka': 'G.pl | частина виразу «paket podataka» (podatak — дані)'},
+    'RD-A1-042': {'govori': 'im2s | «Ne govori!» — не кажи!'},
+    'RD-A1-043': {'pametni': 'частина виразу «pametni telefon» — смартфон', 'dodir': 'частина виразу «ekran na dodir» — сенсорний екран',
+                  'zaštitno': 'частина виразу «zaštitno staklo»', 'staklo': 'частина виразу «zaštitno staklo»'},
+    'RD-A1-044': {'mobilni': 'частина виразу «mobilni token»', 'token': 'частина виразу «mobilni token»',
+                  'osobnu': 'A.sg | частина виразу «osobna iskaznica»', 'iskaznicu': 'A.sg | частина виразу «osobna iskaznica»'},
+    'RD-A1-045': {'nedjeljni': 'A.sg | частина виразу «nedjeljni ručak»', 'kaže': 'pr3s | теперішній час від reći / kazati: kažem, kažeš, kaže'},
+    'RD-A1-046': {'neradni': 'частина виразу «neradni dan»', 'sveti': 'частина назви свята «Sveti Stjepan»',
+                  'stjepan': 'частина назви свята «Sveti Stjepan»', 'božićno': 'частина виразу «božićno drvce»',
+                  'drvce': 'частина виразу «božićno drvce»'},
+    'RD-A1-048': {'crni': 'A.sg | частина виразу «crni rižot»', 'rižot': 'A.sg | частина виразу «crni rižot»'},
+    'RD-A1-049': {'roditeljski': 'частина виразу «roditeljski sastanak»', 'sastanak': 'частина виразу «roditeljski sastanak»',
+                  'rezervnu': 'A.sg | частина виразу «rezervna odjeća»', 'odjeću': 'A.sg | частина виразу «rezervna odjeća»',
+                  'kutiju': 'A.sg | частина виразу «kutija za užinu»', 'užinu': 'A.sg | частина виразу «kutija za užinu»',
+                  'popodnevni': 'частина виразу «popodnevni odmor»', 'odmor': 'частина виразу «popodnevni odmor»'},
+    'RD-A1-050': {'popis': 'частина виразу «popis pribora»', 'pribora': 'G.sg | частина виразу «popis pribora»',
+                  'školska': 'частина виразу «školska torba»', 'torba': 'частина виразу «školska torba»',
+                  'vodene': 'частина виразу «vodene boje»', 'boje': 'частина виразу «vodene boje»',
+                  'omot': 'частина виразу «omot za knjige»', 'knjige': 'A.pl | частина виразу «omot za knjige»',
+                  'radne': 'A.pl | частина виразу «radna bilježnica»', 'bilježnice': 'A.pl | частина виразу «radna bilježnica»'},
+    'RD-A1-051': {'debitnu': 'A.sg | частина виразу «debitna kartica»', 'karticu': 'A.sg | частина виразу «debitna kartica»',
+                  'internetsko': 'частина виразу «internetsko bankarstvo»', 'bankarstvo': 'частина виразу «internetsko bankarstvo»',
+                  'tekući': 'частина виразу «tekući račun»', 'račun': 'частина виразу «tekući račun»',
+                  'mobilni': 'частина виразу «mobilni token»', 'token': 'частина виразу «mobilni token»'},
+    'RD-A1-052': {'hitna': 'частина виразу «hitna služba»', 'služba': 'частина виразу «hitna služba»'},
+})
+
+# Форми зі старих редакцій текстів, переписаних 2026-11-04 (їх більше немає в жодному тексті)
+for _form in ('podsjećamo', 'pripreme', 'hodajte', 'dobru', 'engleskog', 'lokalni', 'potrebno', 'stranom', 'mjestu',
+              'povrata', 'robu', 'stanare', 'stanovanja', 'volju'):
+    GRAM.pop(_form, None)

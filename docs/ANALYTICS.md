@@ -97,6 +97,7 @@ Track:
 | `lesson_started` | сторінка уроку, після завантаження | lesson_id, level |
 | `word_saved` | урок → «Додати в мій словник» | lexeme_id, lesson_id, source |
 | `exercise_completed` | урок, правильна відповідь | lesson_id, exercise_id, exercise_type, success, attempt (спроб до правильної), duration_ms |
+| `exercise_completed` | урок, «Напишіть повідомлення» / «Перекажіть другу» (з 2026-11-05) | ті самі; exercise_type = `write_message` / `mediation`; success = усі пункти є (без AI); пропуск — success = false. Текст відповіді — у `writing_attempts` / `mediation_attempts`, не в події |
 | `exercise_completed` | тренажер «Написати», кожна відповідь | lexeme_id, level, exercise_type = `type_word`, source = `trainer`, success, verdict (exact / diacritics / typo / wrong), duration_ms |
 | `lesson_completed` | сервер, `completeLesson` | lesson_id, level, duration_ms, count (слів у уроці), added_to_review |
 | `review_started` | тренажер, картки завантажені | level, count, source (`review` / `new` / `write`) |
@@ -158,7 +159,7 @@ group by 1, 2, 3 order by calls desc;
 
 1. **Retrieval + production** — хоча б одна **правильна** вправа, де людина **сама створює** відповідь:
    `exercise_completed` з `success = true` і `exercise_type` ∈ `type_answer` («напишіть»), `type_word` (тренажер «Написати»),
-   `sentence_builder` («складіть»), `listening` («прослухайте і складіть»), `speaking` («скажіть уголос»), `fix_mistake` («виправте помилку»);
+   `sentence_builder` («складіть»), `listening` («прослухайте і складіть»), `speaking` («скажіть уголос»), `fix_mistake` («виправте помилку»), `write_message` («напишіть повідомлення»), `mediation` («перекажіть другу», з 2026-11-05; пропущена вправа — `success = false`);
    **або** `speaking_completed` / `conversation_completed` (говоріння, рольова гра).
 2. **Feedback / review** — завершений урок або повторення: `lesson_completed` або `review_completed`.
 
@@ -174,7 +175,7 @@ group by 1, 2, 3 order by calls desc;
 with s as (
   select user_id, session_id, min(occurred_at)::date as day,
          bool_or(event_name = 'exercise_completed' and success
-                 and properties->>'exercise_type' in ('type_answer', 'type_word', 'sentence_builder', 'listening', 'speaking', 'fix_mistake')) as produced,
+                 and properties->>'exercise_type' in ('type_answer', 'type_word', 'sentence_builder', 'listening', 'speaking', 'fix_mistake', 'write_message', 'mediation')) as produced,
          bool_or(event_name in ('speaking_completed', 'conversation_completed')) as spoke,
          bool_or(event_name in ('lesson_completed', 'review_completed')) as reviewed
   from public.analytics_events

@@ -15,6 +15,8 @@ import { checkTypedAnswer } from '@/lib/answer';
 import { checkSentence } from '@/lib/mistakes';
 import { choicesFrom, isUkrainian, tilesFrom, type PracticeOutcome } from '@/lib/lesson-flow';
 import { cn } from '@/lib/ui';
+import { isWritingType, parseWritingTask } from '@/lib/writing';
+import WritingExercise, { type WritingAttempt } from './WritingExercise';
 
 export interface LessonExerciseData {
   id: string;
@@ -22,6 +24,8 @@ export interface LessonExerciseData {
   question_text: string;
   correct_answer: string;
   options: unknown;
+  /** Завдання письма / переказу (exercises.task, M19) */
+  task?: unknown;
 }
 
 /** Спроба «Скажіть уголос» — LessonPlayer зберігає її в speaking_attempts (до 2026-10-21 не зберігалася). */
@@ -48,6 +52,8 @@ const TITLES: Record<string, string> = {
   sentence_builder: 'Складіть речення',
   listening: 'Прослухайте і складіть фразу',
   speaking: 'Скажіть уголос хорватською',
+  write_message: 'Напишіть повідомлення',
+  mediation: 'Перекажіть другу',
 };
 
 /** Емодзі типу вправи — категорія поруч із назвою (DESIGN_SYSTEM §3.4), не кнопка. */
@@ -58,6 +64,8 @@ const TYPE_EMOJI: Record<string, string> = {
   sentence_builder: '🧱',
   listening: '🎧',
   speaking: '🎙️',
+  write_message: '💬',
+  mediation: '🤝',
 };
 
 const SPEECH_UI: Record<SpeechVerdict, { ok: boolean; title: string; text?: string }> = {
@@ -87,6 +95,7 @@ export default function LessonExercise({
   retry,
   onNext,
   onSpeechAttempt,
+  onWritingAttempt,
 }: {
   exercise: LessonExerciseData;
   /** Повтор після помилки */
@@ -94,9 +103,12 @@ export default function LessonExercise({
   onNext: (outcome: PracticeOutcome, verdict?: string) => void;
   /** Зберегти спробу «Скажіть уголос» (не чекаємо відповіді — навчання не гальмує) */
   onSpeechAttempt?: (attempt: LessonSpeechAttempt) => void;
+  /** Зберегти спробу письма / переказу (лише текст) */
+  onWritingAttempt?: (attempt: WritingAttempt) => void;
 }) {
   const [result, setResult] = useState<Result | null>(null);
   const type = exercise.exercise_type;
+  const writingTask = useMemo(() => (isWritingType(type) ? parseWritingTask(type, exercise.task) : null), [type, exercise.task]);
   const answer = exercise.correct_answer;
   const answerIsHr = !isUkrainian(answer);
 
@@ -118,6 +130,8 @@ export default function LessonExercise({
           </h2>
         )}
       </div>
+
+      {writingTask && <WritingExercise task={writingTask} onNext={(o) => onNext(o)} onAttempt={onWritingAttempt} />}
 
       {(type === 'multiple_choice' || type === 'fill_in_the_blank') && (
         <ChoiceExercise exercise={exercise} locked={result !== null} onAnswer={finish} />

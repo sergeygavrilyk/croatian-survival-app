@@ -45,8 +45,8 @@ select pg_temp.ok(pg_temp.n($q$select 1 from pg_temp.m7() v
   'у кожному уроці 20–25 слів і виразів');
 select pg_temp.ok(pg_temp.n($q$select 1 from pg_temp.m7() v
   where (select count(*) from public.lesson_items i join public.exercises e on e.id = i.item_id
-         where i.lesson_id = v.lid and i.item_type = 'exercise' and e.status = 'PUBLISHED') <> 15
-     or (select count(*) from public.lesson_items i where i.lesson_id = v.lid and i.item_type = 'exercise') <> 15$q$) = 0,
+         where i.lesson_id = v.lid and i.item_type = 'exercise' and e.status = 'PUBLISHED' and i.required) <> 15
+     or (select count(*) from public.lesson_items i where i.lesson_id = v.lid and i.item_type = 'exercise' and i.required) <> 15$q$) = 0,
   'у кожному уроці 15 опублікованих вправ');
 select pg_temp.ok(pg_temp.n($q$select 1 from pg_temp.m7() v
   where (select count(distinct e.exercise_type) from public.lesson_items i join public.exercises e on e.id = i.item_id

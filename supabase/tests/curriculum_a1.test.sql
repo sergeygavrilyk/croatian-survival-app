@@ -45,7 +45,7 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l where l.level_code
   and (select count(*) from public.lesson_items i where i.lesson_id = l.id and i.item_type = 'lexeme') not between 10 and 25$q$) = 0,
   'у кожному уроці A1 10–25 слів (A1 v3: до 25 — скільки потрібно темі)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l where l.level_code = 'A1' and l.status = 'PUBLISHED'
-  and (select count(*) from public.lesson_items i where i.lesson_id = l.id and i.item_type = 'exercise')
+  and (select count(*) from public.lesson_items i where i.lesson_id = l.id and i.item_type = 'exercise' and i.required)
       <> case when exists (select 1 from public.conversations c where c.lesson_id = l.id and c.source = 'claude_curriculum_a1_v3') then 15 else 12 end$q$) = 0,
   'у кожному уроці A1 12 вправ (перебудований за A1 v3 — 15)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l where l.level_code = 'A1' and l.status = 'PUBLISHED'

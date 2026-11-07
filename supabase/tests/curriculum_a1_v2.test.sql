@@ -46,7 +46,7 @@ select pg_temp.ok(pg_temp.n($q$select 1 from v2_lessons v where
   (select count(*) from public.lesson_items i where i.lesson_id = v.id and i.item_type = 'lexeme') <> 14$q$) = 0,
   'у кожному новому уроці 14 слів');
 select pg_temp.ok(pg_temp.n($q$select 1 from v2_lessons v where
-  (select count(*) from public.lesson_items i where i.lesson_id = v.id and i.item_type = 'exercise') <> 12
+  (select count(*) from public.lesson_items i where i.lesson_id = v.id and i.item_type = 'exercise' and i.required) <> 12
   or not exists (select 1 from public.content_reviews r where r.entity_id = v.id and r.notes like '%curriculum_a1_v2%')$q$) = 0,
   'у кожному новому уроці 12 вправ і запис у журналі перевірок');
 select pg_temp.ok(pg_temp.n($q$select x.id from v2_lessons v join public.lesson_items i on i.lesson_id = v.id and i.item_type = 'lexeme'
@@ -63,7 +63,7 @@ select pg_temp.ok(pg_temp.n($q$select distinct i.item_id from public.lesson_item
 
 -- ---------------------------------------------------------------- словник
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lexemes where source = 'claude_curriculum_a1_v2'
-  and status = 'PUBLISHED' and cefr = 'A1'$q$) = 305, '305 нових слів A1 опубліковано');
+  and status = 'PUBLISHED'$q$) = 305, '305 нових слів A1 опубліковано (з 2026-11-04 cefr = рівень першого уроку, тож частина — A0)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lexemes where source = 'claude_curriculum_a1_v2'
   and (normalized <> translate(lower(lemma), 'čćđšž', 'ccdsz') or lemma ~ '[Ѐ-ӿ]'
        or ukrainian_translation !~ '[Ѐ-ӿ]' or jsonb_array_length(examples) <> 1)$q$) = 0,

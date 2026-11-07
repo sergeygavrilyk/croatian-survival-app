@@ -413,3 +413,51 @@ TEXT_FORMS.update({
 TEXT_FORMS['RD-A2-020']['sam'] = ('sam', 'сам (самостійно)')
 for _code in ('RD-A0-001', 'RD-A0-012'):  # «Dobro došli!» — сталий вираз (є в уроках A1)
     TEXT_FORMS.setdefault(_code, {}).update({'dobro': ('dobro došli', 'ласкаво просимо'), 'došli': ('dobro došli', 'ласкаво просимо')})
+
+# ---------------------------------------------------------------- 2026-11-04: нові тексти A1.7, A1.11, A1.12 і виправлені тексти < 90 %
+# (gen_reading.py --core-20261104; дані текстів — reading_data_a1_v3.py, правки текстів — reading_data.py)
+FORMS.update({
+    'gledamo': 'gledati', 'šalteru': 'šalter',
+    'istječe': 'istjecati', 'košta': 'koštati', 'lozinku': 'lozinka', 'klikni': 'kliknuti', 'kliknite': 'kliknuti',
+    'unesi': 'unijeti', 'unesite': 'unijeti', 'adresu': 'adresa', 'e-pošte': 'e-pošta', 'novu': 'nov', 'govori': 'govoriti',
+    'e-građane': 'e-Građani', 'zaboravila': 'zaboraviti', 'zaboravili': 'zaboraviti', 'trgovini': 'trgovina', 'ekranom': 'ekran',
+    'popusta': 'popust', 'bežične': 'bežični', 'otvorite': 'otvoriti', 'web-stranicu': 'web-stranica', 'svoje': 'svoj',
+    'bake': 'baka', 'pašticadu': 'pašticada', 'peku': 'peka', 'ručka': 'ručak', 'nazdrave': 'nazdraviti',
+    'kremšnitu': 'kremšnita', 'djeco': 'djeca', 'prosinca': 'prosinac', 'katedrali': 'katedrala', 'katedralu': 'katedrala',
+    'rade': 'raditi', 'lampicama': 'lampice', 'goste': 'gost', 'gosti': 'gost', 'izuju': 'izuti se', 'hrvati': 'Hrvat',
+    'gostoljubivi': 'gostoljubiv', 'tvrđavu': 'tvrđava', 'stari': 'star', 'kamenih': 'kameni', 'roditeljima': 'roditelji',
+    'olovke': 'olovka', 'udžbenike': 'udžbenik', 'kupite': 'kupiti', 'djeteta': 'dijete', 'potresa': 'potres',
+    'mirni': 'miran', 'čekajte': 'čekati', 'izađite': 'izaći', 'nudi': 'nuditi', 'napišite': 'napisati',
+    'važno': 'važan', 'termina': 'termin', 'živite': 'živjeti', 'razumijete': 'razumjeti',
+})
+EXTRA.update({'nuditi': 'пропонувати', 'napisati': 'написати', 'primjer': 'приклад («na primjer» — наприклад)'})
+NAMES.update({'Daša': 'Даша (ім’я)', 'Split': 'Спліт (місто)'})
+NAMES_LOWER.update({'dubrovnika': 'Дубровник (місто)'})
+NAMES_LEMMA.update({'dubrovnika': 'Dubrovnik'})
+TEXT_FORMS.update({
+    'RD-A1-041': {'podataka': ('paket podataka', 'пакет мобільного інтернету')},
+    'RD-A1-042': {'govori': ('govoriti', 'говорити; казати')},
+    'RD-A1-043': {'pametni': ('pametni telefon', 'смартфон'), 'dodir': ('ekran na dodir', 'сенсорний екран'),
+                  'zaštitno': ('zaštitno staklo', 'захисне скло'), 'staklo': ('zaštitno staklo', 'захисне скло')},
+    'RD-A1-044': {'mobilni': ('mobilni token', 'мобільний токен'), 'token': ('mobilni token', 'мобільний токен'),
+                  'osobnu': ('osobna iskaznica', 'посвідчення особи'), 'iskaznicu': ('osobna iskaznica', 'посвідчення особи')},
+    'RD-A1-045': {'nedjeljni': ('nedjeljni ručak', 'недільний обід'), 'kaže': ('reći', 'сказати (kaže — каже)')},
+    'RD-A1-046': {'neradni': ('neradni dan', 'вихідний, неробочий день'), 'sveti': ('Sveti Stjepan', 'день святого Стефана (26 грудня)'),
+                  'stjepan': ('Sveti Stjepan', 'день святого Стефана (26 грудня)'),
+                  'božićno': ('božićno drvce', 'ялинка'), 'drvce': ('božićno drvce', 'ялинка')},
+    'RD-A1-048': {'rižot': ('crni rižot', 'чорне різото (з чорнилом каракатиці)'), 'crni': ('crni rižot', 'чорне різото (з чорнилом каракатиці)')},
+    'RD-A1-049': {'roditeljski': ('roditeljski sastanak', 'батьківські збори'), 'sastanak': ('roditeljski sastanak', 'батьківські збори'),
+                  'rezervnu': ('rezervna odjeća', 'змінний одяг'), 'odjeću': ('rezervna odjeća', 'змінний одяг'),
+                  'kutiju': ('kutija za užinu', 'ланчбокс, коробка для перекусу'), 'užinu': ('kutija za užinu', 'ланчбокс, коробка для перекусу'),
+                  'popodnevni': ('popodnevni odmor', 'денний сон (у садочку)'), 'odmor': ('popodnevni odmor', 'денний сон (у садочку)')},
+    'RD-A1-050': {'pribora': ('popis pribora', 'список приладдя'), 'popis': ('popis pribora', 'список приладдя'),
+                  'školska': ('školska torba', 'шкільний рюкзак'), 'torba': ('školska torba', 'шкільний рюкзак'),
+                  'vodene': ('vodene boje', 'акварельні фарби'), 'boje': ('vodene boje', 'акварельні фарби'),
+                  'omot': ('omot za knjige', 'обгортка для книжок'), 'knjige': ('omot za knjige', 'обгортка для книжок'),
+                  'radne': ('radna bilježnica', 'робочий зошит'), 'bilježnice': ('radna bilježnica', 'робочий зошит')},
+    'RD-A1-051': {'debitnu': ('debitna kartica', 'дебетова картка'), 'karticu': ('debitna kartica', 'дебетова картка'),
+                  'internetsko': ('internetsko bankarstvo', 'інтернет-банкінг'), 'bankarstvo': ('internetsko bankarstvo', 'інтернет-банкінг'),
+                  'tekući': ('tekući račun', 'поточний рахунок'), 'račun': ('tekući račun', 'поточний рахунок'),
+                  'mobilni': ('mobilni token', 'мобільний токен'), 'token': ('mobilni token', 'мобільний токен')},
+    'RD-A1-052': {'hitna': ('hitna služba', 'екстрена служба'), 'služba': ('hitna služba', 'екстрена служба')},
+})
