@@ -55,9 +55,19 @@ async function loadLesson(lessonId: string): Promise<{ content: LessonContent | 
       exerciseIds.length
         ? supabase
             .from('exercises')
-            .select('id, exercise_type, question_text, correct_answer, options')
+            .select('id, exercise_type, question_text, correct_answer, options, task')
             .in('id', exerciseIds)
             .eq('status', 'PUBLISHED')
+            .then(async (res) =>
+              // колонка task — з міграції M19 (письмо й переказ); без неї урок працює як раніше
+              res.error?.code === '42703'
+                ? supabase
+                    .from('exercises')
+                    .select('id, exercise_type, question_text, correct_answer, options')
+                    .in('id', exerciseIds)
+                    .eq('status', 'PUBLISHED')
+                : res,
+            )
         : none,
       grammarIds.length
         ? supabase

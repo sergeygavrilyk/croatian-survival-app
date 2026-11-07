@@ -60,6 +60,8 @@ export interface LessonExerciseRow {
   question_text: string;
   correct_answer: string;
   options: unknown;
+  /** Завдання письма / переказу (exercises.task, M19); для інших типів — null або немає */
+  task?: unknown;
 }
 
 export interface LessonContent {

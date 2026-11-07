@@ -43,9 +43,10 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l join public.units 
          ('f1b2093d-9699-59af-92b9-ed7bdf7fad49'::uuid, 11, 2), ('42c31cfb-8680-5450-8453-245f3abd475a'::uuid, 12, 1),
          ('fc1baff0-0e48-5676-bd3c-47d88d31e582'::uuid, 13, 1))$q$) = 5,
   'уроки на місцях програми: «Запис до лікаря» A1.8.1, «Магазин електроніки» A1.7.2, «Хорватська кухня» A1.11.2, «Садок» A1.12.1, «Про себе» A1.13.1');
-select pg_temp.ok(pg_temp.n($q$select 1 from public.reading_texts where cefr = 'A1' and module_order in (7, 11, 12)$q$) = 0
+select pg_temp.ok(pg_temp.n($q$select 1 from public.reading_texts where cefr = 'A1' and module_order in (7, 11, 12)
+    and source <> 'claude_reading_a1_v3'$q$) = 0
   and pg_temp.n($q$select 1 from public.reading_texts where cefr = 'A1' and module_order = 13$q$) > 0,
-  'тексти A1 — за своїм модулем (старі A1.7–A1.10 → A1.8–A1.10, A1.13)');
+  'тексти A1 — за своїм модулем (старі A1.7–A1.10 → A1.8–A1.10, A1.13; у 7, 11, 12 — лише нові тексти 2026-11-04)');
 select pg_temp.ok(pg_temp.n($q$select 1 from backup.modules_a1_20261026$q$) = 10 and pg_temp.n($q$select 1 from backup.units_a1_20261026$q$) = 10,
   'стара версія 10 модулів і юнітів A1 — у backup');
 
@@ -236,7 +237,7 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.assessment_items i join publ
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l join v3_lessons v on v.id = l.id
   where (select count(*) from public.lesson_items i where i.lesson_id = l.id and i.item_type = 'lexeme') not between 10 and 25
      or (select count(*) from public.lesson_items i join public.exercises e on e.id = i.item_id
-          where i.lesson_id = l.id and i.item_type = 'exercise' and e.status = 'PUBLISHED') <> 15
+          where i.lesson_id = l.id and i.item_type = 'exercise' and e.status = 'PUBLISHED' and i.required) <> 15
      or (select count(*) from public.conversations c where c.lesson_id = l.id and c.status = 'PUBLISHED') <> 2
      or (select count(*) from public.lesson_items i where i.lesson_id = l.id and i.item_type = 'grammar') <> 1
      or (select count(*) from public.lesson_grammar g where g.lesson_id = l.id) <> 1

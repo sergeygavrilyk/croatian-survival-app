@@ -135,4 +135,12 @@ run $A/data_fixes/20261026_assessments_a1_v3_m13.sql
 run $A/data_fixes/20261026_assessments_a1_v3_mid_final.sql
 for f in $A/data_fixes/20261026_reading_known_a1v3_m13_part*.sql; do run "$f"; done
 run $A/data_fixes/20261103_assessments_distinct_options.sql
+run $A/data_fixes/20261104_core_words_grammar.sql
+run $A/data_fixes/20261104_reading_a1_v3_new.sql
+run $A/data_fixes/20261104_reading_a1_rewrite.sql
+for f in $A/data_fixes/20261104_reading_known_core_part*.sql; do run "$f"; done
+run $A/data_fixes/20261104_vocab_cleanup.sql
+# старі пакети curriculum_* перевизначають exercises_type_check без нових типів — M19 ще раз (ідемпотентна)
+run $A/migrations/20261105100000_m19_writing_mediation.sql
+run $A/data_fixes/20261105_writing_pilot.sql
 echo "Готово. Тести: for t in supabase/tests/*.sql; do psql -h /tmp -p $P -U postgres -q -v ON_ERROR_STOP=1 -f \$t | tail -1; done"

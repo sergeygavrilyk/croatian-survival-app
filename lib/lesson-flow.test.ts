@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  answerCurrent, choicesFrom, estimateMinutes, isRetry, isUkrainian, lessonStages, orderExercises, practiceDone,
+  answerCurrent, choicesFrom, estimateMinutes, isRetry, isUkrainian, lessonStages, NO_RETRY_TYPES, orderExercises, practiceDone,
   startPractice, tilesFrom,
 } from './lesson-flow.ts';
 
@@ -61,4 +61,20 @@ test('урок: варіанти, плитки й мова варіанта', ()
   assert.equal(isUkrainian('Dobar dan'), false);
   assert.equal(estimateMinutes({ words: 0, turns: 0, exercises: 1 }), 5);
   assert.equal(estimateMinutes({ words: 12, turns: 10, exercises: 12 }), 11);
+});
+
+test('письмо й переказ: у кінці черги, після помилки не повертаються', () => {
+  const ordered = orderExercises([
+    { id: 'm', exercise_type: 'mediation' },
+    { id: 'w', exercise_type: 'write_message' },
+    { id: 's', exercise_type: 'speaking' },
+    { id: 'c', exercise_type: 'multiple_choice' },
+  ]);
+  assert.deepEqual(ordered.map((e) => e.id), ['c', 's', 'w', 'm']);
+  let s = startPractice(['w', 'm']);
+  s = answerCurrent(s, 'wrong', !NO_RETRY_TYPES.has('write_message'));
+  assert.deepEqual(s.queue, ['m'], 'неправильне письмо не повертається');
+  s = answerCurrent(s, 'skipped', false);
+  assert.deepEqual(s.skipped, ['m']);
+  assert.equal(s.queue.length, 0);
 });

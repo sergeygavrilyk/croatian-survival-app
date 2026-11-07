@@ -45,8 +45,8 @@ select pg_temp.ok(pg_temp.n($q$select 1 from pg_temp.m8() v
   'у кожному уроці 20–25 слів і виразів');
 select pg_temp.ok(pg_temp.n($q$select 1 from pg_temp.m8() v
   where (select count(*) from public.lesson_items i join public.exercises e on e.id = i.item_id
-         where i.lesson_id = v.lid and i.item_type = 'exercise' and e.status = 'PUBLISHED') <> 15
-     or (select count(*) from public.lesson_items i where i.lesson_id = v.lid and i.item_type = 'exercise') <> 15$q$) = 0,
+         where i.lesson_id = v.lid and i.item_type = 'exercise' and e.status = 'PUBLISHED' and i.required) <> 15
+     or (select count(*) from public.lesson_items i where i.lesson_id = v.lid and i.item_type = 'exercise' and i.required) <> 15$q$) = 0,
   'у кожному уроці 15 опублікованих вправ');
 select pg_temp.ok(pg_temp.n($q$select 1 from pg_temp.m8() v
   where (select count(distinct e.exercise_type) from public.lesson_items i join public.exercises e on e.id = i.item_id
@@ -86,9 +86,9 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.lesson_items i join public.l
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lesson_grammar lg join public.grammar_topics g on g.id = lg.grammar_topic_id
   where lg.lesson_id = '6836e57c-030c-59f8-9818-b44c08b126a6' and g.title_ua = 'Дешевше чи дорожче? Порівняння' and g.cefr = 'A0' and g.status = 'PUBLISHED'$q$) = 1
   and pg_temp.n($q$select 1 from public.grammar_rules r join public.grammar_topics g on g.id = r.topic_id
-                  where g.cefr = 'A0' and g.title_ua = 'Дешевше чи дорожче? Порівняння' and jsonb_array_length(r.examples) = 3$q$) = 4
+                  where g.cefr = 'A0' and g.title_ua = 'Дешевше чи дорожче? Порівняння' and jsonb_array_length(r.examples) >= 3$q$) = 4
   and pg_temp.n($q$select 1 from public.grammar_topics where cefr = 'A0' and title_ua = 'Дешевше чи дорожче? Порівняння'$q$) = 1,
-  'нова тема граматики «Порівняння»: одна, 4 правила по 3 приклади, у новому уроці');
+  'нова тема граматики «Порівняння»: одна, 4 правила, щонайменше по 3 приклади (з 2026-11-04 — по 4), у новому уроці');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lexemes where source = 'claude_curriculum_a0_v4' and status = 'PUBLISHED' and cefr = 'A0'
   and normalized !~ '[čćđšž]' and normalized = lower(normalized) and lemma !~ '[Ѐ-ӿ]' and ukrainian_translation ~ '[Ѐ-ӿ]'
   and jsonb_array_length(examples) = 1 and lower(lemma) in ('šljiva', 'krastavac', 'pola kile', 'limenka', 'staklenka', 'narezati', 'još nešto', 'to je sve', 'samoposlužna blagajna', 'kupovina', 'beskontaktno', 'podići novac', 'trebate li vrećicu', 'pristajati', 'prevelik', 'premalen', 'kakve je boje', 'tamnoplav', 'svijetloplav', 'bež', 'zlatan', 'srebrn', 'na pruge', 'na točkice', 'jeftiniji', 'skuplji', 'jeftinije', 'skuplje', 'zadnja cijena', 'spustiti cijenu', 'ponuditi', 'dogovoreno', 'cjenkati se', 'rabljen', 'buvljak', 'isplatiti se')$q$) = 36,
