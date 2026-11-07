@@ -1,0 +1,81 @@
+# Запуск нових SQL-файлів у робочій базі Supabase після мержу в main (рішення власника 2026-11-07).
+# 1) plan — без доступу до бази: які SQL-файли й тести змінились у цьому push (видно в Summary запуску).
+# 2) apply — середовище production: чекає «Approve» власника (Settings → Environments → production → Required reviewers),
+#    лише потім отримує секрет SUPABASE_DB_URL і запускає scripts/db/apply.sh (журнал ops.sql_journal — двічі не запускає).
+# Вручну: Actions → «Apply SQL (production)» → Run workflow (тести: «all» — усі supabase/tests, порожньо — без тестів).
+name: Apply SQL (production)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/**'
+      - 'supabase/data_fixes/**'
+      - 'supabase/tests/**'
+      - 'supabase/sql_journal_baseline.txt'
+  workflow_dispatch:
+    inputs:
+      tests:
+        description: 'Тести після запуску: імена файлів через пробіл, «all» або порожньо'
+        required: false
+        default: ''
+
+concurrency:
+  group: db-apply
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      tests: ${{ steps.plan.outputs.tests }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - id: plan
+        env:
+          BEFORE: ${{ github.event.before }}
+          INPUT_TESTS: ${{ github.event.inputs.tests }}
+        run: |
+          {
+            echo "## План"
+            if [ "${{ github.event_name }}" = "push" ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+              changed=$(git diff --name-only --diff-filter=AM "$BEFORE" "$GITHUB_SHA" -- supabase/migrations supabase/data_fixes supabase/tests)
+            else
+              changed=""
+              echo "Ручний запуск: буде запущено всі SQL-файли, яких ще немає в журналі."
+            fi
+            echo ""
+            echo "Нові або змінені файли в цьому push:"
+            if [ -n "$changed" ]; then echo "$changed" | sed 's/^/- `/; s/$/`/'; else echo "- (немає)"; fi
+            echo ""
+            echo "Запускаються лише файли, яких ще немає в журналі \`ops.sql_journal\`. Після «Approve» — job **apply**."
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ -n "$INPUT_TESTS" ]; then
+            if [ "$INPUT_TESTS" = "all" ]; then tests=$(ls supabase/tests/*.test.sql | xargs -n1 basename | tr '\n' ' ');
+            else tests="$INPUT_TESTS"; fi
+          else
+            tests=$(echo "$changed" | grep '^supabase/tests/.*\.test\.sql$' | xargs -r -n1 basename | tr '\n' ' ' || true)
+          fi
+          echo "tests=$tests" >> "$GITHUB_OUTPUT"
+          echo "Тести після запуску: ${tests:-(немає)}" >> "$GITHUB_STEP_SUMMARY"
+
+  apply:
+    needs: plan
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v6
+      - name: Перевірити psql
+        run: psql --version
+      - name: Застосувати SQL
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          TESTS: ${{ needs.plan.outputs.tests }}
+        run: |
+          # shellcheck disable=SC2086
+          bash scripts/db/apply.sh $TESTS
