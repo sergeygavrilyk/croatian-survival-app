@@ -20,11 +20,13 @@ import type { LessonContent, LessonDialogue } from '@/lib/lesson-content';
 import { speakCroatian } from '@/utils/speech';
 import { track } from '@/lib/analytics-client';
 import { finishSpeakingSession, recordSpeakingAttempt, startSpeakingSession } from '@/app/actions/speaking';
+import { recordWritingAttempt } from '@/app/actions/writing';
+import { isWritingType, parseWritingTask } from '@/lib/writing';
 import { evaluateSpeech, isUnderstood } from '@/lib/speaking';
 import { situationInfo } from '@/lib/situations';
 import { wordInitial } from '@/lib/word-theme';
 import {
-  answerCurrent, estimateMinutes, isRetry, lessonStages, orderExercises, practiceDone, startPractice,
+  answerCurrent, estimateMinutes, isRetry, lessonStages, NO_RETRY_TYPES, orderExercises, practiceDone, startPractice,
   type LessonStage, type PracticeOutcome,
 } from '@/lib/lesson-flow';
 import { countUk, pluralUk } from '@/lib/format';
@@ -75,7 +77,11 @@ export default function LessonPlayer({
 }) {
   const router = useRouter();
   const { lesson, words, dialogues, grammar } = content;
-  const exercises = useMemo(() => orderExercises(content.exercises), [content.exercises]);
+  // письмо / переказ без коректного завдання (стара офлайн-копія, помилка в даних) — пропускаємо, а не ламаємо урок
+  const exercises = useMemo(
+    () => orderExercises(content.exercises.filter((e) => !isWritingType(e.exercise_type) || parseWritingTask(e.exercise_type, e.task))),
+    [content.exercises],
+  );
   const byId = useMemo(() => new Map(exercises.map((e) => [e.id, e])), [exercises]);
   const stages = useMemo(
     () => lessonStages({ words: words.length, dialogues: dialogues.length, grammar: grammar.length, exercises: exercises.length }),
@@ -398,7 +404,7 @@ export default function LessonPlayer({
       });
       exerciseStartRef.current = nowMs();
       setStreak((n) => (outcome === 'correct' ? n + 1 : 0));
-      const after = answerCurrent(practice, outcome);
+      const after = answerCurrent(practice, outcome, !NO_RETRY_TYPES.has(current.exercise_type));
       setPractice(after);
       setRound((r) => r + 1);
       if (after.queue.length === 0) {
@@ -425,6 +431,11 @@ export default function LessonPlayer({
           retry={retry}
           onNext={onNext}
           onSpeechAttempt={current.exercise_type === 'speaking' ? (attempt) => recordSpeech(current.id, attempt) : undefined}
+          onWritingAttempt={
+            isWritingType(current.exercise_type)
+              ? (a) => void recordWritingAttempt({ exerciseId: current.id, lessonId: lesson.id, text: a.text, outcome: a.outcome, inputMode: a.inputMode }).catch(() => {})
+              : undefined
+          }
         />
       </>,
     );

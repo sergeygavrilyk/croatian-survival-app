@@ -3,7 +3,8 @@
  *
  * Урок іде етапами: вступ → слова → діалоги → граматика (якщо є) → вправи → підсумок.
  * Вправи — від упізнавання до власного мовлення (вибір → вставити → написати → скласти →
- * аудіювання → сказати вголос). Неправильну вправу повторюємо один раз у кінці черги.
+ * аудіювання → сказати вголос → написати повідомлення → перекажіть другу). Неправильну вправу повторюємо один раз
+ * у кінці черги; письмо й переказ — ні (людина вже бачила зразок, lib/writing.ts).
  */
 
 export type LessonStage = 'intro' | 'words' | 'dialogue' | 'grammar' | 'practice' | 'summary';
@@ -15,6 +16,8 @@ export const EXERCISE_TYPES = [
   'sentence_builder',
   'listening',
   'speaking',
+  'write_message',
+  'mediation',
 ] as const;
 export type ExerciseType = (typeof EXERCISE_TYPES)[number];
 
@@ -72,8 +75,14 @@ export function startPractice(ids: readonly string[]): PracticeState {
 
 export type PracticeOutcome = 'correct' | 'wrong' | 'skipped';
 
-/** Відповідь на поточну вправу. Неправильна вперше — повториться в кінці черги; вдруге — ідемо далі. */
-export function answerCurrent(state: PracticeState, outcome: PracticeOutcome): PracticeState {
+/** Типи, які після помилки не повертаємо в чергу: людина вже бачила пункти й зразок. */
+export const NO_RETRY_TYPES: ReadonlySet<string> = new Set(['write_message', 'mediation']);
+
+/**
+ * Відповідь на поточну вправу. Неправильна вперше — повториться в кінці черги; вдруге — ідемо далі.
+ * allowRetry = false (письмо, переказ) — неправильну не повертаємо.
+ */
+export function answerCurrent(state: PracticeState, outcome: PracticeOutcome, allowRetry = true): PracticeState {
   const [current, ...rest] = state.queue;
   if (current === undefined) return state;
   const retried = state.retried.includes(current);
@@ -88,7 +97,7 @@ export function answerCurrent(state: PracticeState, outcome: PracticeOutcome): P
   if (outcome === 'skipped') {
     return { ...state, queue: rest, skipped: [...state.skipped, current] };
   }
-  if (!retried) {
+  if (!retried && allowRetry) {
     return { ...state, queue: [...rest, current], retried: [...state.retried, current] };
   }
   return { ...state, queue: rest };

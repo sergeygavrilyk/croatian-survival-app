@@ -8,6 +8,8 @@
                                              + supabase/data_fixes/20261015_reading_a2_v1_part1.sql, _part2.sql (тексти A2, DRAFT — до рішення власника)
                                              + supabase/data_fixes/20261015_reading_a2_publish.sql (опублікувати A2 — запускає власник)
                                              + supabase/data_fixes/20261015_reading_a0_questions.sql (оновити вже завантажені тексти A0 до поточних даних)
+  python3 -B scripts/gen_reading.py --core-20261104  →  20261104_reading_a1_v3_new.sql (12 текстів A1.7/A1.11/A1.12),
+                                               _reading_a1_rewrite.sql (11 текстів < 90 %), _reading_known_core_partN.sql
   python3 scripts/gen_reading.py --v1       →  ще й supabase/data_fixes/20261014_reading_a1_v1.sql (перший пакет, уже застосований)
   python3 scripts/gen_reading.py --unknown  →  слова текстів, яких ще немає в словничку (для наповнення reading_lexicon.py)
   python3 scripts/gen_reading.py --stats    →  частка знайомих слів у кожному тексті
@@ -21,6 +23,7 @@ scripts/reading_lexicon_snapshot.json (слова уроків A0–A1 з пер
 «Знайомі» слова — ті, що є в уроках A0–A1, і службові слова граматики A0; їх частка — known_ratio.
 Потрібна міграція M15 (reading_texts). SQL ідемпотентний (code унікальний).
 """
+import hashlib
 import json
 import re
 import sys
@@ -31,6 +34,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 import reading_data as D  # noqa: E402
 import reading_data_a0 as D0  # noqa: E402
 import reading_data_a2 as D2  # noqa: E402
+import reading_data_a1_v3 as D3  # noqa: E402  (A1.7, A1.11, A1.12 — 2026-11-04)
 import reading_lexicon as X  # noqa: E402
 import reading_grammar as G  # noqa: E402
 from full_lessons import q, qj  # noqa: E402
@@ -57,7 +61,7 @@ LEVELS = {
     'A0': dict(texts=D0.TEXTS, source='claude_reading_a0_v1', status='PUBLISHED', known={'A0'}, words=(6, 40), min_known=0.4,  # вивіски — нові слова за задумом
                out=ROOT / 'supabase' / 'data_fixes' / '20261015_reading_a0_v1.sql',
                note='Бета: вивіски й написи A0 (§6) за запитом власника 2026-10-15 (reading_a0_v1), як уроки A0. Потрібна перевірка носієм.'),
-    'A1': dict(texts=D.TEXTS, source=SOURCE, status=STATUS, known={'A0', 'A1'}, words=(20, 120), min_known=MIN_KNOWN,
+    'A1': dict(texts=D.TEXTS + D3.TEXTS, source=SOURCE, status=STATUS, known={'A0', 'A1'}, words=(20, 120), min_known=MIN_KNOWN,
                out=OUT, note=REVIEW_NOTE),
     'A2': dict(texts=D2.TEXTS, source='claude_reading_a2_v1', status='DRAFT', known={'A0', 'A1'}, words=(60, 200), min_known=0.7,
                out=None,  # дві частини: 20261015_reading_a2_v1_part1.sql, _part2.sql
@@ -167,7 +171,9 @@ def resolve(code: str, token: str):
     lemma = X.FORMS.get(low, low)
     key = lemma.lower()
     if key in X.EXTRA:
-        return lemma, X.EXTRA[key], key in X.KNOWN
+        # переклад — контекстний з EXTRA, а «знайоме» — як і для інших: службове слово або слово з уроків рівня
+        # (до 2026-11-04 тут було лише X.KNOWN, і слова з EXTRA, які згодом з’явилися в уроках, рахувалися незнайомими)
+        return lemma, X.EXTRA[key], known_lemma(key, level)
     if key in LEX:
         return LEX[key][0], LEX[key][1], known_lemma(key, level)
     return None
@@ -215,7 +221,7 @@ def validate_level(level: str, cfg: dict):
             errors.append(f'{w}: тип {t["type"]!r}')
         if t['situation'] is not None and t['situation'] not in SITUATIONS:
             errors.append(f'{w}: ситуація {t["situation"]!r}')
-        if not (1 <= t['module'] <= 10):
+        if not (1 <= t['module'] <= (13 if level == 'A1' else 10)):  # A1 v3 — 13 модулів
             errors.append(f'{w}: модуль {t["module"]}')
         ua_title, hr_title = t['title']
         if not CYR.search(ua_title) or CYR.search(hr_title):
@@ -695,6 +701,153 @@ $publish$;
 """
 
 
+# ---------------------------------------------------------------- 2026-11-04: аудит A0 / A1, задача 2
+CORE_DATE = '20261104'
+A1V3_SOURCE = 'claude_reading_a1_v3'
+A1V3_NOTE = ('reading_a1_v3 2026-11-04: тексти для модулів A1.7, A1.11, A1.12 (аудит A0 / A1). '
+             'Бета, як уроки A1; потрібна перевірка носієм.')
+REWRITE_CODES = ['RD-A1-010', 'RD-A1-018', 'RD-A1-020', 'RD-A1-021', 'RD-A1-023', 'RD-A1-027', 'RD-A1-030',
+                 'RD-A1-033', 'RD-A1-034', 'RD-A1-035', 'RD-A1-037']
+REWRITE_NOTE = ('reading_a1_rewrite 2026-11-04: менше незнайомих слів (≥ 90 % знайомих, §56) — замінено 1–2 рідкісні слова '
+                'або додано коротке речення; переклад оновлено, питання ті самі.')
+CORE_KNOWN_NOTE = ('reading_known_core 2026-11-04: словничок і частка знайомих слів перераховано після додавання '
+                   '34 базових слів в уроки A0 / A1 (20261104_core_words_grammar.sql). Тексти й питання не змінено.')
+
+
+def build_a1_v3_new() -> str:
+    """12 нових текстів A1 (модулі 7, 11, 12): вставка (наявні коди не перезаписує), журнал, самоперевірка."""
+    texts = D3.TEXTS
+    codes = ', '.join(q(t['code']) for t in texts)
+    first = len(D.TEXTS)
+    out = [f"""-- =====================================================================
+-- Тексти для читання A1: модулі A1.7, A1.11, A1.12 · reading_a1_v3 · 2026-11-04
+-- Згенеровано: python3 -B scripts/gen_reading.py --core-20261104 (не редагуйте вручну).
+-- Запуск: Supabase → SQL Editor → вставити ВЕСЬ файл → Run. Потрібна міграція M15.
+--   * {len(texts)} текстів ({texts[0]['code']} … {texts[-1]['code']}): по 4 на модулі A1.7 «Телефон і комп’ютер»,
+--     A1.11 «Культура й звичаї», A1.12 «Діти, школа, банк, безпека» — у цих модулях текстів ще не було.
+--   * У кожного: повний переклад, словничок «слово → лема → переклад» з граматичною підказкою,
+--     3 питання на розуміння, частка знайомих слів (усі ≥ 90 %).
+--   * Статус PUBLISHED — бета, як уроки A1 (носій ще не перевіряв). Повторний запуск безпечний.
+-- =====================================================================
+
+begin;
+
+do $$
+begin
+  if to_regclass('public.reading_texts') is null then
+    raise exception 'Спершу запустіть міграцію M15 (20261014100000_m15_reading.sql)';
+  end if;
+end $$;
+"""]
+    for i, t in enumerate(texts, first + 1):
+        gl, ratio, n = glossary(t)
+        qs = [{'question_ua': qu, 'options': opts, 'answer': ans} for qu, opts, ans in t['questions']]
+        ua_title, hr_title = t['title']
+        out.append(
+            'insert into public.reading_texts (code, cefr, text_type, situation, module_order, title_ua, title_hr, body_hr, body_ua, glossary, questions, word_count, known_ratio, order_index, status, source)\n'
+            f"values ({q(t['code'])}, 'A1', {q(t['type'])}, {q(t['situation'])}, {t['module']}, {q(ua_title)}, {q(hr_title)},\n"
+            f"        {q(t['hr'])},\n        {q(t['ua'])},\n"
+            f"        {qj(gl)},\n        {qj(qs)}, {n}, {ratio:.3f}, {i}, 'PUBLISHED', {q(A1V3_SOURCE)})\n"
+            'on conflict (code) do nothing;'
+        )
+    out.append(f"""
+-- Журнал перевірки (один запис на текст)
+insert into public.content_reviews (entity_type, entity_id, from_status, to_status, verdict, reviewer_kind, findings, notes)
+select 'reading_text', r.id, null, r.status, 'auto_passed', 'ai', '[]'::jsonb, {q(A1V3_NOTE)}
+from public.reading_texts r
+where r.code in ({codes})
+  and not exists (select 1 from public.content_reviews c where c.entity_id = r.id and c.notes = {q(A1V3_NOTE)});
+
+-- Самоперевірка: якщо щось не так — усе відкочується
+do $$
+declare v_total int; v_bad int;
+begin
+  select count(*) into v_total from public.reading_texts
+   where code in ({codes}) and cefr = 'A1' and status = 'PUBLISHED' and module_order in (7, 11, 12);
+  select count(*) into v_bad from public.reading_texts r where r.code in ({codes})
+     and (jsonb_array_length(r.questions) <> 3 or r.known_ratio < 0.9
+          or exists (select 1 from jsonb_array_elements(r.glossary) e
+                     where e->>'pos' is null or (e->>'gram' is null and e->>'form' <> lower(e->>'lemma'))));
+  if v_total <> {len(texts)} then raise exception 'Нових текстів A1 %, очікувалось {len(texts)} (код уже зайнятий іншим текстом?)', v_total; end if;
+  if v_bad > 0 then raise exception '% текстів без питань, словничка чи граматичних підказок', v_bad; end if;
+  raise notice 'Готово: нових текстів A1 (модулі 7, 11, 12) — %', v_total;
+end $$;
+
+commit;
+""")
+    return '\n'.join(out)
+
+
+def build_a1_rewrite() -> str:
+    """Переписані тексти A1 (менше незнайомих слів): нові body_hr, body_ua, word_count, словничок і частка знайомих.
+    Стара версія — у content_versions; змінює лише тексти, що відрізняються; повторний запуск нічого не змінює."""
+    by_code = {t['code']: t for t in D.TEXTS}
+    data = []
+    for code in REWRITE_CODES:
+        t = by_code[code]
+        gl, ratio, n = glossary(t)
+        data.append({'code': code, 'body_hr': t['hr'], 'body_ua': t['ua'], 'word_count': n,
+                     'glossary': gl, 'known_ratio': round(ratio, 3)})
+    payload = json.dumps(data, ensure_ascii=False).replace("'", "''")
+    if '$rw$' in payload:
+        raise SystemExit('у даних трапився роздільник $rw$')
+    rec = 'g(code text, body_hr text, body_ua text, word_count int, glossary jsonb, known_ratio numeric)'
+    return f"""-- =====================================================================
+-- Тексти для читання A1: {len(data)} текстів з меншою кількістю незнайомих слів · reading_a1_rewrite · 2026-11-04
+-- Згенеровано: python3 -B scripts/gen_reading.py --core-20261104 (не редагуйте вручну).
+-- Навіщо: у цих текстах було < 90 % знайомих слів (§56). Замінено 1–2 рідкісні слова або додано коротке
+--   речення; переклад оновлено; питання ті самі. Тексти: {', '.join(REWRITE_CODES)}.
+--   * Стара версія (текст, переклад, словничок) — у content_versions, запис — у content_reviews.
+--   * Одна дія (або все, або нічого). Повторний запуск безпечний («змінено текстів: 0»).
+-- Запуск: Supabase → SQL Editor → вставити ВЕСЬ файл → Run.
+-- =====================================================================
+
+do $rw$
+declare
+  v_data jsonb := '{payload}'::jsonb;
+  v_changed int;
+  v_same int;
+begin
+  if (select count(*) from public.reading_texts r join jsonb_to_recordset(v_data) as {rec} on g.code = r.code) < {len(data)} then
+    raise exception 'Не знайдено всіх текстів A1 (чи завантажено 20261014_reading_a1_v1.sql?)';
+  end if;
+
+  insert into public.content_versions (entity_type, entity_id, version, payload, change_reason)
+  select 'reading_text', r.id, r.version,
+         jsonb_build_object('code', r.code, 'body_hr', r.body_hr, 'body_ua', r.body_ua, 'word_count', r.word_count,
+                            'glossary', r.glossary, 'known_ratio', r.known_ratio),
+         {q(REWRITE_NOTE)}
+  from public.reading_texts r
+  join jsonb_to_recordset(v_data) as {rec} on g.code = r.code
+  where r.body_hr is distinct from g.body_hr or r.body_ua is distinct from g.body_ua
+  on conflict (entity_type, entity_id, version) do nothing;
+
+  with changed as (
+    update public.reading_texts r
+       set body_hr = g.body_hr, body_ua = g.body_ua, word_count = g.word_count,
+           glossary = g.glossary, known_ratio = g.known_ratio, version = r.version + 1
+      from jsonb_to_recordset(v_data) as {rec}
+     where g.code = r.code and (r.body_hr is distinct from g.body_hr or r.body_ua is distinct from g.body_ua)
+    returning r.id, r.status
+  ), logged as (
+    insert into public.content_reviews (entity_type, entity_id, from_status, to_status, verdict, reviewer_kind, findings, notes)
+    select 'reading_text', c.id, c.status, c.status, 'auto_passed', 'ai', '[]'::jsonb, {q(REWRITE_NOTE)}
+    from changed c
+    returning 1
+  )
+  select count(*) into v_changed from logged;
+
+  select count(*) into v_same
+    from public.reading_texts r
+    join jsonb_to_recordset(v_data) as {rec} on g.code = r.code
+   where r.body_hr = g.body_hr and r.body_ua = g.body_ua and r.known_ratio >= 0.9;
+  if v_same < {len(data)} then raise exception 'Оновлено текстів %, очікувалось {len(data)}', v_same; end if;
+  raise notice 'Готово: {len(data)} текстів A1 оновлено (змінено зараз: %)', v_changed;
+end
+$rw$;
+"""
+
+
 def stats() -> str:
     rows = []
     for t in ALL_TEXTS:
@@ -720,6 +873,39 @@ if __name__ == '__main__':
         sys.exit(1)
     if '--stats' in sys.argv:
         print(stats())
+        sys.exit(0)
+    if '--core-20261104' in sys.argv:
+        # лише файли задачі 2 аудиту A0 / A1: нові тексти, переписані тексти, словничок усіх текстів після 34 базових слів
+        dfx = ROOT / 'supabase' / 'data_fixes'
+        outs = [(dfx / f'{CORE_DATE}_reading_a1_v3_new.sql', build_a1_v3_new()),
+                (dfx / f'{CORE_DATE}_reading_a1_rewrite.sql', build_a1_rewrite())]
+        globals()['KNOWN_SYNC_NOTE'] = CORE_KNOWN_NOTE
+        for pi, sql in enumerate(build_known_sync(), 1):
+            sql = (sql.replace('після уроків A0 за темою', 'після 34 базових слів в уроках A0 / A1')
+                      .replace('уроки A0 перебудовано за темою (curriculum_a0_v4)',
+                               'в уроки A0 / A1 додано 34 базові слова (20261104_core_words_grammar.sql)')
+                      .replace(' · 2026-10-19\n', ' · 2026-11-04\n', 1)
+                      .replace('--known-sync (не', '--core-20261104 (не'))
+            # Порядок: спершу _a1_v3_new і _a1_rewrite — інакше словничок нового тексту ляже на старий текст.
+            # chr(13): у робочій базі тексти з файлів Windows мають рядки CRLF — порівнюємо без \r
+            by_code = {t['code']: t for t in D.TEXTS + D3.TEXTS}
+            here = [c for c in re.findall(r'"code": "(RD-A1-\d{3})"', sql) if c in REWRITE_CODES or c in {t['code'] for t in D3.TEXTS}]
+            guard = ''.join(
+                f"  if not exists (select 1 from public.reading_texts where code = {q(c)} and md5(replace(body_hr, chr(13), '')) = "
+                f"{q(hashlib.md5(by_code[c]['hr'].encode()).hexdigest())}) then\n"
+                f"    raise exception 'Спершу запустіть {CORE_DATE}_reading_a1_v3_new.sql і {CORE_DATE}_reading_a1_rewrite.sql ({c})';\n"
+                '  end if;\n' for c in here)
+            if guard:
+                head = '  v_same int;\nbegin\n'
+                assert sql.count(head) == 1
+                sql = sql.replace(head, head + guard)
+            outs.append((dfx / f'{CORE_DATE}_reading_known_core_part{pi}.sql', sql))
+        for path, sql in outs:
+            size = len(sql.encode())
+            if size > 300 * 1024:
+                raise SystemExit(f'{path.name}: {size // 1024} КБ — більше за ліміт SQL Editor (~300 КБ)')
+            path.write_text(sql, encoding='utf-8')
+            print(f'OK → {path.relative_to(ROOT)}: {size // 1024} КБ')
         sys.exit(0)
     if '--known-sync' in sys.argv:
         # лише цей файл: решта виходів уже застосована в робочій базі

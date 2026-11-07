@@ -34,8 +34,8 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.reading_texts where cefr = '
   'опубліковано ≥ 40 текстів A1');
 select pg_temp.ok(pg_temp.n($q$select distinct text_type from public.reading_texts where status = 'PUBLISHED'$q$) >= 10,
   'щонайменше 10 видів текстів (повідомлення, чат, лист, оголошення, меню, інструкція…)');
-select pg_temp.ok(pg_temp.n($q$select distinct module_order from public.reading_texts where cefr = 'A1' and status = 'PUBLISHED'$q$) = 10,
-  'тексти є для кожного з 10 модулів A1');
+select pg_temp.ok(pg_temp.n($q$select distinct module_order from public.reading_texts where cefr = 'A1' and status = 'PUBLISHED'$q$) = 13,
+  'тексти є для кожного з 13 модулів A1 (програма v3; A1.7, A1.11, A1.12 — з 2026-11-04)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.reading_texts where status = 'PUBLISHED' and cefr = 'A1'
   and (jsonb_array_length(questions) <> 3 or jsonb_array_length(glossary) < 10 or body_ua !~ '[Ѐ-ӿ]' or body_hr ~ '[Ѐ-ӿ]'
        or known_ratio < 0.75 or word_count < 20)$q$) = 0,

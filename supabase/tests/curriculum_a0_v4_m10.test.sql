@@ -47,8 +47,8 @@ select pg_temp.ok(pg_temp.n($q$select 1 from pg_temp.m10() v
   'у кожному уроці 20–25 слів і виразів');
 select pg_temp.ok(pg_temp.n($q$select 1 from pg_temp.m10() v
   where (select count(*) from public.lesson_items i join public.exercises e on e.id = i.item_id
-         where i.lesson_id = v.lid and i.item_type = 'exercise' and e.status = 'PUBLISHED') <> 15
-     or (select count(*) from public.lesson_items i where i.lesson_id = v.lid and i.item_type = 'exercise') <> 15$q$) = 0,
+         where i.lesson_id = v.lid and i.item_type = 'exercise' and e.status = 'PUBLISHED' and i.required) <> 15
+     or (select count(*) from public.lesson_items i where i.lesson_id = v.lid and i.item_type = 'exercise' and i.required) <> 15$q$) = 0,
   'у кожному уроці 15 опублікованих вправ');
 select pg_temp.ok(pg_temp.n($q$select 1 from pg_temp.m10() v
   where (select count(distinct e.exercise_type) from public.lesson_items i join public.exercises e on e.id = i.item_id
@@ -99,9 +99,9 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.lesson_items i join public.l
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lesson_grammar lg join public.grammar_topics g on g.id = lg.grammar_topic_id
   where lg.lesson_id = '599fba4f-4cee-5a88-9f9b-5ce32a445554' and g.title_ua = 'Що болить? Boli me…, bole me…' and g.cefr = 'A0' and g.status = 'PUBLISHED'$q$) = 1
   and pg_temp.n($q$select 1 from public.grammar_rules r join public.grammar_topics g on g.id = r.topic_id
-                  where g.cefr = 'A0' and g.title_ua = 'Що болить? Boli me…, bole me…' and jsonb_array_length(r.examples) = 3$q$) = 3
+                  where g.cefr = 'A0' and g.title_ua = 'Що болить? Boli me…, bole me…' and jsonb_array_length(r.examples) >= 3$q$) = 3
   and pg_temp.n($q$select 1 from public.grammar_topics where cefr = 'A0' and title_ua = 'Що болить? Boli me…, bole me…'$q$) = 1,
-  'нова тема граматики «Що болить?»: одна, 3 правила по 3 приклади, в уроці «Частини тіла»');
+  'нова тема граматики «Що болить?»: одна, 3 правила, щонайменше по 3 приклади (з 2026-11-04 — по 4), в уроці «Частини тіла»');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lexemes where source = 'claude_curriculum_a0_v4' and status = 'PUBLISHED' and cefr = 'A0'
   and normalized !~ '[čćđšž]' and normalized = lower(normalized) and lemma !~ '[Ѐ-ӿ]' and ukrainian_translation ~ '[Ѐ-ӿ]'
   and jsonb_array_length(examples) = 1 and lower(lemma) in ('jednokrevetna soba', 'dvokrevetna soba', 'sef', 'odsjesti', 'prenoćiti', 'lakat', 'prsa', 'stopalo', 'protiv bolova', 'ozlijeđen', 'onesvijestiti se', 'ukrasti', 'džeparoš', 'blokirati', 'zapisnik', 'provala', 'sumnjiv', 'odjednom', 'osobni podaci', 'mjesto rođenja', 'spol', 'muški', 'ženski', 'bračno stanje', 'e-pošta', 'tiskanim slovima', 'rubrika', 'ovjeriti', 'obvezno', 'privremeni boravak', 'uplatiti', 'osobno')$q$) = 32,

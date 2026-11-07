@@ -20,8 +20,8 @@ begin
 end $$;
 
 select pg_temp.ok(pg_temp.n($q$select 1 from public.content_reviews r join public.lexemes l on l.id = r.entity_id
-  where r.notes like 'Приклад додано 2026-10-21%' and jsonb_array_length(l.examples) <> 1$q$) = 0,
-  'кожне слово з пакета має рівно один приклад');
+  where r.notes like 'Приклад додано 2026-10-21%' and jsonb_array_length(l.examples) < 1$q$) = 0,
+  'кожне слово з пакета має приклад (з 2026-11-04 у базових словах — по 2)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.content_reviews where notes like 'Приклад додано 2026-10-21 (A0 / A1%'$q$) > 0,
   'пакет A0 / A1 запущено');
 -- Довідково (не тест): слова A0 / A1 без прикладу. У робочій базі після пакета — лише nulti.

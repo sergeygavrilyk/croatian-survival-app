@@ -39,7 +39,7 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.content_versions where entit
 
 -- ---------------------------------------------------------------- нові уроки
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l where l.level_code = 'A0' and l.order_index >= 4
-  and ((select count(*) from public.lesson_items i where i.lesson_id = l.id and i.item_type = 'exercise') <> 12
+  and ((select count(*) from public.lesson_items i where i.lesson_id = l.id and i.item_type = 'exercise' and i.required) <> 12
     or (select count(*) from public.lesson_items i where i.lesson_id = l.id and i.item_type = 'lexeme') not between 10 and 12
     or (select count(*) from public.conversations c where c.lesson_id = l.id and c.status = 'PUBLISHED') <> 2
     or not exists (select 1 from public.lesson_items i where i.lesson_id = l.id and i.item_type = 'grammar')

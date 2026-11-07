@@ -181,15 +181,15 @@ Plaćanje karticom ili gotovinom.''',
     dict(code='RD-A1-010', type='notice', situation='shopping', module=3,
          title=('Повернення товару', 'Povrat robe'),
          hr='''POVRAT I ZAMJENA ROBE
-Robu možete vratiti ili zamijeniti u roku od 14 dana.
+Stvari možete vratiti ili zamijeniti u roku od 14 dana.
 Trebate račun i originalno pakiranje.
-Odjeću ne smijete nositi prije povrata.
+Odjeću prije toga ne smijete nositi.
 Novac vraćamo na karticu ili u gotovini.
 Pitajte prodavača na blagajni.''',
          ua='''ПОВЕРНЕННЯ Й ОБМІН ТОВАРУ
-Товар можна повернути або обміняти протягом 14 днів.
+Речі можна повернути або обміняти протягом 14 днів.
 Потрібні чек і оригінальна упаковка.
-Одяг не можна носити до повернення.
+Одяг до цього не можна носити.
 Гроші повертаємо на картку або готівкою.
 Запитайте продавця на касі.''',
          questions=[
@@ -326,12 +326,12 @@ Zovite na 091 234 5678.''',
          title=('У будинку не буде води', 'Obavijest: bez vode'),
          hr='''OBAVIJEST STANARIMA
 U srijedu, 15. listopada, od 9 do 14 sati zgrada nema vode zbog popravka cijevi u podrumu.
-Molimo stanare da pripreme vodu za piće i kuhanje.
+Prije toga kupite vodu za piće.
 Ako imate pitanja, zovite upravitelja zgrade.
 Hvala na razumijevanju!''',
          ua='''ОГОЛОШЕННЯ ДЛЯ МЕШКАНЦІВ
 У середу, 15 жовтня, з 9 до 14 години в будинку не буде води через ремонт труб у підвалі.
-Просимо мешканців підготувати воду для пиття й готування.
+Заздалегідь купіть воду для пиття.
 Якщо у вас є питання, телефонуйте управителю будинку.
 Дякуємо за розуміння!''',
          questions=[
@@ -361,15 +361,15 @@ Plava kanta: papir i karton.
 Žuta kanta: plastika i limenke.
 Zelena kanta: staklo.
 Smeđa kanta: ostaci hrane.
-Crna kanta: ostalo smeće.
-Smeće iznosimo navečer, prije osam sati. Velike stvari ne ostavljajte pored kanti.''',
+Crna kanta: drugo smeće.
+Smeće iznosimo navečer, prije osam sati. Velike stvari ne ostavljajte pored kanti. Hvala što čuvate naš grad!''',
          ua='''СОРТУЙТЕ ВІДХОДИ!
 Синій контейнер: папір і картон.
 Жовтий контейнер: пластик і бляшанки.
 Зелений контейнер: скло.
 Коричневий контейнер: залишки їжі.
 Чорний контейнер: інше сміття.
-Сміття виносимо ввечері, до восьмої години. Великих речей не залишайте біля контейнерів.''',
+Сміття виносимо ввечері, до восьмої години. Великих речей не залишайте біля контейнерів. Дякуємо, що бережете наше місто!''',
          questions=[
              ('Куди викидати пляшку зі скла?', ['У зелений контейнер', 'У жовтий', 'У синій'], 'У зелений контейнер'),
              ('Що кидати в синій контейнер?', ['Папір і картон', 'Залишки їжі', 'Пластик'], 'Папір і картон'),
@@ -387,13 +387,13 @@ TEXTS += [
 Posao: čišćenje soba i kupaonica.
 Uvjeti: sezonski posao od svibnja do listopada, puno radno vrijeme.
 Satnica: 7 € neto. Smještaj i hrana su besplatni.
-Iskustvo nije potrebno, znanje engleskog je prednost.
+Iskustvo nije važno, engleski jezik je prednost.
 Životopis pošaljite na posao@hotelmarina.hr.''',
          ua='''ГОТЕЛЬ «МАРИНА» ШУКАЄ ПОКОЇВКУ
 Робота: прибирання номерів і ванних кімнат.
 Умови: сезонна робота з травня до жовтня, повний робочий день.
 Погодинна оплата: 7 € чистими. Житло й харчування безкоштовні.
-Досвід не потрібен, знання англійської — перевага.
+Досвід не важливий, англійська мова — перевага.
 Резюме надсилайте на posao@hotelmarina.hr.''',
          questions=[
              ('Яка це робота?', ['Сезонна', 'Постійна', 'Лише у вихідні'], 'Сезонна'),
@@ -421,13 +421,13 @@ Ana Perić, ured za ljudske resurse''',
 Jutarnja smjena: od 6 do 14 sati.
 Popodnevna smjena: od 14 do 22 sata.
 Pauza: 30 minuta, u kantini na prvom katu.
-Zamjenu smjene dogovorite s voditeljem najkasnije dan prije.
+Zamjenu smjene dogovorite s voditeljem dan prije.
 Bolovanje javite voditelju prije početka smjene.''',
          ua='''РОЗКЛАД ЗМІН – СКЛАД
 Ранкова зміна: з 6 до 14 години.
 Денна зміна: з 14 до 22 години.
 Перерва: 30 хвилин, у їдальні на першому поверсі.
-Обмін змінами погоджуйте з керівником не пізніше ніж за день.
+Обмін змінами погоджуйте з керівником за день.
 Про лікарняний повідомте керівника до початку зміни.''',
          questions=[
              ('Коли починається ранкова зміна?', ['О 6', 'О 8', 'О 14'], 'О 6'),
@@ -491,8 +491,8 @@ Ako kašalj traje dulje od tjedan dana, javite se liječniku.''',
          ]),
     dict(code='RD-A1-027', type='message', situation='health', module=7,
          title=('Нагадування про прийом', 'Podsjetnik za pregled'),
-         hr='''Poštovana, podsjećamo Vas na pregled kod dr. Jurić sutra u 10:30. Ponesite zdravstvenu iskaznicu i uputnicu. Ako ne možete doći, otkažite termin na broj 01 456 7890. Molimo dođite deset minuta ranije.''',
-         ua='''Шановна, нагадуємо вам про огляд у лікарки Юрич завтра о 10:30. Візьміть медичну картку страхування й направлення. Якщо не можете прийти, скасуйте прийом за номером 01 456 7890. Просимо прийти на десять хвилин раніше.''',
+         hr='''Poštovana, imate pregled kod dr. Jurić sutra u 10:30. Ponesite zdravstvenu iskaznicu i uputnicu. Ako ne možete doći, otkažite termin na broj 01 456 7890. Dođite deset minuta prije termina.''',
+         ua='''Шановна, у вас огляд у лікарки Юрич завтра о 10:30. Візьміть медичну картку страхування й направлення. Якщо не можете прийти, скасуйте прийом за номером 01 456 7890. Прийдіть за десять хвилин до прийому.''',
          questions=[
              ('Коли огляд?', ['Завтра о 10:30', 'Сьогодні о 10:30', 'Завтра о 13:00'], 'Завтра о 10:30'),
              ('Що треба взяти?', ['Картку страхування й направлення', 'Паспорт', 'Результати аналізів'], 'Картку страхування й направлення'),
@@ -540,13 +540,13 @@ Ivana''',
          title=('Концерт у парку', 'Koncert u parku'),
          hr='''KONCERT U PARKU ZRINJEVAC
 Subota, 20 sati
-Svira lokalni bend.
+Svira bend iz Zagreba.
 Ulaz je besplatan!
 Ako pada kiša, koncert je u kazalištu.
-Ponesite deku i dobru volju.''',
+Ponesite deku i dobro raspoloženje.''',
          ua='''КОНЦЕРТ У ПАРКУ ЗРИНЄВАЦ
 Субота, 20 година
-Грає місцевий гурт.
+Грає гурт із Загреба.
 Вхід вільний!
 Якщо йде дощ, концерт відбудеться в театрі.
 Візьміть ковдру й гарний настрій.''',
@@ -591,8 +591,8 @@ Taras: Super, vidimo se!''',
 TEXTS += [
     dict(code='RD-A1-033', type='news', situation='travel', module=9,
          title=('Прогноз погоди', 'Vremenska prognoza'),
-         hr='''Sutra je na moru sunčano i toplo, do 28 stupnjeva. U Zagrebu i na sjeveru je oblačno, a poslijepodne pada kiša. Temperatura je od 15 do 20 stupnjeva. U planinama puše jak vjetar. Na Jadranu puše jugo, zato trajekti mogu kasniti.''',
-         ua='''Завтра на морі сонячно й тепло, до 28 градусів. У Загребі й на півночі хмарно, а після обіду йде дощ. Температура від 15 до 20 градусів. У горах дме сильний вітер. На Адріатиці дме юго, тому пороми можуть запізнюватися.''',
+         hr='''Sutra je na moru sunčano i toplo, do 28 stupnjeva. U Zagrebu i na sjeveru je oblačno, a poslijepodne pada kiša. Temperatura je od 15 do 20 stupnjeva. U planinama puše jak vjetar. Na Jadranu puše jugo, zato trajekti mogu kasniti. Ponesite kišobran!''',
+         ua='''Завтра на морі сонячно й тепло, до 28 градусів. У Загребі й на півночі хмарно, а після обіду йде дощ. Температура від 15 до 20 градусів. У горах дме сильний вітер. На Адріатиці дме юго, тому пороми можуть запізнюватися. Візьміть парасольку!''',
          questions=[
              ('Яка погода завтра на морі?', ['Сонячно й тепло', 'Дощ', 'Сніг'], 'Сонячно й тепло'),
              ('Що буде в Загребі після обіду?', ['Дощ', 'Сонце', 'Туман'], 'Дощ'),
@@ -601,7 +601,7 @@ TEXTS += [
     dict(code='RD-A1-034', type='notice', situation='travel', module=9,
          title=('Правила в національному парку', 'Pravila u nacionalnom parku'),
          hr='''DOBRO DOŠLI U NACIONALNI PARK!
-Hodajte samo po stazama.
+Idite samo po stazama.
 Kupanje u jezerima je zabranjeno.
 Ne hranite životinje i ne berite cvijeće.
 Smeće nosite sa sobom.
@@ -621,8 +621,8 @@ Hvala što čuvate prirodu!''',
          ]),
     dict(code='RD-A1-035', type='article', situation='travel', module=9,
          title=('Адвент у Загребі', 'Advent u Zagrebu'),
-         hr='''Advent u Zagrebu počinje krajem studenoga i traje do početka siječnja. Grad je pun svjetla, a na trgovima su male kućice s hranom i pićem. Ljudi piju kuhano vino i jedu fritule i kobasice. Na klizalištu se kližu djeca i odrasli. Svake godine dolazi puno turista iz cijelog svijeta.''',
-         ua='''Адвент у Загребі починається наприкінці листопада й триває до початку січня. Місто сповнене вогнів, а на площах — маленькі будиночки з їжею та напоями. Люди п’ють глінтвейн і їдять фрітуле та ковбаски. На ковзанці катаються діти й дорослі. Щороку приїжджає багато туристів з усього світу.''',
+         hr='''Advent u Zagrebu počinje krajem studenoga i traje do početka siječnja. Grad je pun svjetla, a na trgovima su male kućice s hranom i pićem. Ljudi piju kuhano vino i jedu fritule i kobasice. Na klizalištu se kližu djeca i odrasli. Svake godine dolazi puno turista iz cijelog svijeta. Dođite i vi!''',
+         ua='''Адвент у Загребі починається наприкінці листопада й триває до початку січня. Місто сповнене вогнів, а на площах — маленькі будиночки з їжею та напоями. Люди п’ють глінтвейн і їдять фрітуле та ковбаски. На ковзанці катаються діти й дорослі. Щороку приїжджає багато туристів з усього світу. Приїжджайте й ви!''',
          questions=[
              ('Коли починається адвент?', ['Наприкінці листопада', 'У січні', 'Улітку'], 'Наприкінці листопада'),
              ('Що п’ють люди?', ['Глінтвейн', 'Пиво', 'Сік'], 'Глінтвейн'),
@@ -650,15 +650,17 @@ TEXTS += [
     dict(code='RD-A1-037', type='notice', situation='administration', module=10,
          title=('Документи в MUP', 'Obavijest MUP-a'),
          hr='''OBAVIJEST ZA STRANCE
-Zahtjev za privremeni boravak predajete u policijskoj upravi prema mjestu stanovanja.
+Zahtjev za privremeni boravak predajete u policijskoj upravi u gradu gdje živite.
 Trebate: važeću putovnicu, fotografiju, dokaz o smještaju i zdravstveno osiguranje.
-Dokumente na stranom jeziku prevodi sudski tumač.
-Na šalter dolazite s brojem iz automata. Radno vrijeme: 8 – 15 sati.''',
+Dokumente na ukrajinskom jeziku prevodi sudski tumač.
+Na šalter dolazite s brojem iz automata. Radno vrijeme: 8 – 15 sati.
+Ako ne razumijete, pitajte na šalteru. Dođite na vrijeme!''',
          ua='''ОГОЛОШЕННЯ ДЛЯ ІНОЗЕМЦІВ
-Заяву на тимчасове перебування подаєте в поліцейському управлінні за місцем проживання.
+Заяву на тимчасове перебування подаєте в поліцейському управлінні в місті, де ви живете.
 Потрібно: чинний паспорт, фотографія, підтвердження житла й медичне страхування.
-Документи іноземною мовою перекладає присяжний перекладач.
-До віконця підходите з номером з автомата. Години роботи: 8 – 15 година.''',
+Документи українською мовою перекладає присяжний перекладач.
+До віконця підходите з номером з автомата. Години роботи: з 8:00 до 15:00.
+Якщо не розумієте, запитайте у віконці. Приходьте вчасно!''',
          questions=[
              ('Де подавати заяву?', ['У поліцейському управлінні', 'У банку', 'На пошті'], 'У поліцейському управлінні'),
              ('Хто перекладає документи?', ['Присяжний перекладач', 'Будь-хто', 'Сам заявник'], 'Присяжний перекладач'),
