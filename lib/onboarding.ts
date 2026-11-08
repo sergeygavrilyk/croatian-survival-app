@@ -1,6 +1,6 @@
 /**
  * Онбординг: варіанти відповідей і перевірка введених даних (§44–45, §116).
- * Значення збігаються з CHECK-обмеженнями в міграції M7.
+ * Значення збігаються з CHECK-обмеженнями в міграціях M7 і M21 (мета «Навчання», 2026-11-08).
  */
 import { CEFR_ORDER } from './situations.ts';
 import type { Cefr } from './placement.ts';
@@ -10,8 +10,9 @@ export const LEARNING_GOALS = [
   { key: 'daily_life', label: 'Побут і повсякденне життя', hint: 'магазин, житло, транспорт, лікар', emoji: '🏠' },
   { key: 'work', label: 'Робота', hint: 'колеги, зустрічі, листування', emoji: '💼' },
   { key: 'documents', label: 'Документи й установи', hint: 'MUP, банк, податкова, обрт', emoji: '📄' },
-  { key: 'social', label: 'Спілкування з людьми', hint: 'сусіди, друзі, діти в школі', emoji: '💬' },
-  { key: 'travel', label: 'Подорожі', hint: 'дорога, готель, кордон', emoji: '🧳' },
+  { key: 'social', label: 'Спілкування з людьми', hint: 'сусіди, друзі, знайомства', emoji: '💬' },
+  { key: 'travel', label: 'Туризм і подорожі', hint: 'готель, ресторан, узбережжя Адріатики, острови, пором', emoji: '🧳' },
+  { key: 'study', label: 'Навчання', hint: 'курси, університет, диплом, садок і школа дітей', emoji: '🎓' },
 ] as const;
 
 export type LearningGoal = (typeof LEARNING_GOALS)[number]['key'];
