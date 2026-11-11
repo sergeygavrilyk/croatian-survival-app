@@ -49,3 +49,9 @@ test('PWA зібрано: маніфест і service worker віддаютьс�
   const sw = await request.get('/sw.js');
   expect(sw.ok(), 'public/sw.js з\'являється лише після npm run build').toBe(true);
 });
+
+test('озвучення /api/tts без входу — 401, звук не віддається', async ({ request }) => {
+  const res = await request.get('/api/tts?text=Dobar%20dan');
+  expect(res.status()).toBe(401);
+  expect(res.headers()['content-type'] ?? '').not.toContain('audio');
+});
