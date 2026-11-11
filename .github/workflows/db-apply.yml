@@ -33,7 +33,7 @@ jobs:
     outputs:
       tests: ${{ steps.plan.outputs.tests }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - id: plan
@@ -69,7 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Перевірити psql
         run: psql --version
       - name: Застосувати SQL
