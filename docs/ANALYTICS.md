@@ -136,7 +136,7 @@ Track:
 | `feature` | Де записується | Стан |
 |---|---|---|
 | `quick_translate` | `app/actions/translate.ts` («Мені потрібно сказати…» на головній), через `AIProvider` (з 2026-10-12): токени, затримка, помилки | ✅ |
-| `tts` | `app/api/tts` | ще ні — неофіційний безкоштовний TTS; додати разом із `SpeechProvider` (§79) |
+| `tts` | `app/api/tts` (з 2026-11-11): `provider = google_translate_tts`, символи, затримка, помилки; денний ліміт — `consume_tts_quota()` (M22) | ✅ |
 | `roleplay` | `app/actions/roleplay.ts` через `AIProvider` (`lib/ai-gemini.ts`): кожна репліка AI і підсумкова оцінка | ✅ |
 | `what_do_i_say`, `what_did_i_hear`, `chat`, `stt`, `pronunciation`, `content_generation` | відповідні зрізи VS-005…VS-006 і генерація контенту | ще ні |
 
