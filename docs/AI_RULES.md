@@ -107,6 +107,8 @@ The Human Product Owner makes the final priority decision.
 
 ## 102. Project State
 
+**Де і коли оновлювати (рішення власника 2026-11-11).** Після КОЖНОЇ зміни Claude оновлює `docs/PROJECT_STATE.md`, `docs/HISTORY.md`, `CLAUDE.md` (якщо змінилися правила) і змінені файли ТЗ у трьох місцях: у гілці PR, одразу в папці власника на комп'ютері (не чекаючи мержу) і в проєкті claude.ai. Кожне рішення власника, що змінює ТЗ, фіксується в профільному файлі ТЗ і рядком у `docs/SPEC_CHANGELOG.md` (дата, що оновлено, було → стало).
+
 Maintain:
 
 ```yaml
