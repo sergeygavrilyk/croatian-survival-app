@@ -1,0 +1,43 @@
+# Щомісячна перевірка оновлень залежностей (рішення власника 2026-11-11, docs/TESTING.md §4).
+# Dependabot сам відкриває PR з оновленими package.json і package-lock.json; на кожному PR іде CI.
+# Мерж — лише власник, як і для інших PR. Мажорні версії (Next 17, React 20, ESLint 10 тощо)
+# автоматично не пропонуємо — їх готує Claude окремим PR після перевірки змін.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: monthly
+      time: "06:00"
+      timezone: Europe/Zagreb
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      # Next.js і його правила ESLint — завжди однієї версії, одним PR
+      nextjs:
+        patterns:
+          - "next"
+          - "eslint-config-next"
+          - "@next/*"
+      npm-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-major"
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: monthly
+      time: "06:00"
+      timezone: Europe/Zagreb
+    commit-message:
+      prefix: "ci(deps)"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
