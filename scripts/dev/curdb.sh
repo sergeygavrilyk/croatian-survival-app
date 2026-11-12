@@ -152,4 +152,6 @@ run $A/migrations/20261112100000_m23_listening_dialogue.sql
 run $A/data_fixes/20261112_listening_pilot.sql
 # програма A2 v2 (2026-11-12): структура, граматика, модулі (порядок — за назвою файлу)
 for f in $A/data_fixes/20261112_curriculum_a2_v2_*.sql; do run "$f"; done
+# регістр наявних слів (informal / colloquial / slang), 2026-11-12 — після всіх пакетів слів
+run $A/data_fixes/20261112_lexeme_register.sql
 echo "Готово. Тести: for t in supabase/tests/*.sql; do psql -h /tmp -p $P -U postgres -q -v ON_ERROR_STOP=1 -f \$t | tail -1; done"

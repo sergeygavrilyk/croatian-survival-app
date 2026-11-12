@@ -81,6 +81,15 @@
 | 2026-11-12 | **Аудіювання:** «Підготувати пропозицію нової вправи «прослухайте діалог чи оголошення» — Підготуй». | Власник |
 | 2026-11-12 | **Впровадження A2 v2:** «Впроваджуємо повністю рівень A2 v2 згідно project_state.md з уроками, модулями, словами, вправами, граматика, перевірками рівня.» — PR #19 (14 модулів, 86 уроків, 22 теми граматики, 16 перевірок). | Власник |
 | 2026-11-12 | **Мовна перевірка A2 і skills:** «обидва» — (1) мовна перевірка A2 (skill `croatian-content-review`); (2) картка skills: новий `level-build-croatia` і правки `content-sql-pack`, `lesson-topic-rebuild`, `feature-slice-croatia`, `croatian-content-review`. PR #19 на той час уже змерджено й SQL запущено, тому виправлення — PR #20 з новим SQL. | Власник |
+| 2026-11-12 | **Регістр лексем:** «Необхідно зробити скріпт, який порівняє лексеми в DB supbase та проставить їм визначеннями в `CONTENT_PIPELINE.md`: `informal` — літературне, але неофіційне (bok, ćao, Kako si? замість Kako ste?); `colloquial` — розмовне, нелітературне (kužiti, frka); `slang` — мова групи (frend, fora)» (до подальших правок B1). Визначення — `CONTENT_PIPELINE.md` → «Регістр лексем»; скрипт і пакет позначок — PR «Регістр наявних слів». | Власник |
+
+## Регістр наявних слів: informal / colloquial / slang (2026-11-12)
+
+- Рішення власника (перед подальшими правками B1): скрипт, що порівнює лексеми робочої бази й ставить `register` за визначеннями — `informal` (літературне, але неофіційне: *bok, ćao, Kako si?*), `colloquial` (розмовне, нелітературне: *kužiti, frka*), `slang` (мова групи: *frend, fora*). Визначення — `docs/CONTENT_PIPELINE.md` → «Регістр лексем».
+- `scripts/lexeme_register.py` — правила: словник ~60 слів (зокрема для майбутніх батчів B1 / «Živi hrvatski»), ознака «звертання на ти» у виразах (`ti / te / tebi / si`, 2-га особа *imaš, zoveš*; не якщо є «ви»; прислів'я — виняток), 8 сумнівних (омоніми *pauk*, *kvadrat*; «(розм.)» у перекладі стандартних *dućan*, *bilježnik*); `export_query()` — запит знімка (лише читання); `check_register()` тепер викликає `scripts/lexeme_checks.py` для кожного нового батчу.
+- `scripts/gen_lexeme_register_20261112.py` + знімок `scripts/lexeme_register_20261112_snapshot.json` (52 з 6 185 опублікованих — усі, яких стосуються правила) → пакет `supabase/data_fixes/20261112_lexeme_register.sql`: **34 слова** (informal 25, colloquial 9; сленгу в базі ще немає) — лише де `register` порожній; стара версія — `content_versions`, запис — `content_reviews` (`script`). Не змінює: *ae, onak* (slang), *pomidor, kapula, šugaman* (`regional` — пакет M24), переклади, `regionality`. Звіт для носія — `content/reviews/2026-11-12_lexeme_register.md`.
+- Тест `supabase/tests/lexeme_register.test.sql`; рядок у `scripts/dev/curdb.sh` (після всіх пакетів слів).
+- Перевірка: `lexeme_register.py --selftest`, `lexeme_checks.py --selftest`; локальна база з нуля + пакет двічі (вдруге — 0 змін); SQL-тести; CI.
 
 ## Мовна перевірка A2 v2 після публікації (2026-11-12)
 
