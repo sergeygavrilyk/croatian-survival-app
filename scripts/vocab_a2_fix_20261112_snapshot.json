@@ -1,0 +1,792 @@
+[
+ {
+  "id": "d85d0ed7-9cfa-4c4f-b904-ded209edd532",
+  "lemma": "ae",
+  "normalized": "ae",
+  "part_of_speech": "particle",
+  "cefr": "A2",
+  "ukrainian_translation": "так, ага (сленг, Далмація)",
+  "ukrainian_explanation": "Розмовне «так, ага» в Далмації. Нейтрально — da.",
+  "register": "slang",
+  "regionality": "Dalmatia",
+  "vocabulary_type": "formulaic",
+  "forms": {},
+  "examples": [
+   "Ae, tako je.",
+   "Ae?"
+  ],
+  "status": "PUBLISHED",
+  "version": 1
+ },
+ {
+  "id": "bcca306f-137a-44e7-862e-2e9489da67b4",
+  "lemma": "apoteka",
+  "normalized": "apoteka",
+  "part_of_speech": "noun",
+  "cefr": "A2",
+  "ukrainian_translation": "аптека (розмовне; стандартно — ljekarna)",
+  "ukrainian_explanation": "Розмовне слово (стандартне в Сербії та Боснії). У стандартній хорватській — ljekarna.",
+  "register": "colloquial",
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {
+   "gender": "f"
+  },
+  "examples": [
+   "Je li apoteka još otvorena?"
+  ],
+  "status": "PUBLISHED",
+  "version": 2
+ },
+ {
+  "id": "b3eebe9d-6f04-42ba-9825-ad93be5da787",
+  "lemma": "baviti",
+  "normalized": "baviti",
+  "part_of_speech": "verb",
+  "cefr": "A2",
+  "ukrainian_translation": "займатися",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {
+   "aspect": "ipfv",
+   "reflexive": "baviti se"
+  },
+  "examples": [
+   "Bavim se sportom."
+  ],
+  "status": "PUBLISHED",
+  "version": 2
+ },
+ {
+  "id": "f51fd621-41fd-40c8-a5fc-6e7527e4af16",
+  "lemma": "da li govorite engleski",
+  "normalized": "da li govorite engleski",
+  "part_of_speech": "phrase",
+  "cefr": "A2",
+  "ukrainian_translation": "чи розмовляєте ви англійською (сербська конструкція; хорватською — Govorite li engleski?)",
+  "ukrainian_explanation": "Питання з «da li…» — сербська конструкція. У хорватській: Govorite li engleski?",
+  "register": "non_standard",
+  "regionality": null,
+  "vocabulary_type": "chunk",
+  "forms": {},
+  "examples": [],
+  "status": "PUBLISHED",
+  "version": 1
+ },
+ {
+  "id": "6aec657b-e2ff-4209-a797-750d0a123c33",
+  "lemma": "dijalog",
+  "normalized": "dijalog",
+  "part_of_speech": "noun",
+  "cefr": "A1",
+  "ukrainian_translation": "діалог",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {
+   "gender": "m"
+  },
+  "examples": [
+   "Pročitajte dijalog naglas."
+  ],
+  "status": "PUBLISHED",
+  "version": 4
+ },
+ {
+  "id": "13a3f261-da85-4321-8e53-260ae438ebe7",
+  "lemma": "dijaloz -> dijalog",
+  "normalized": "dijaloz -> dijalog",
+  "part_of_speech": "phrase",
+  "cefr": "A2",
+  "ukrainian_translation": "діалог",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {},
+  "examples": [],
+  "status": "PUBLISHED",
+  "version": 2
+ },
+ {
+  "id": "f6100892-7fe0-4683-a6dd-d18d4edc7790",
+  "lemma": "događati",
+  "normalized": "dogadati",
+  "part_of_speech": "verb",
+  "cefr": "A2",
+  "ukrainian_translation": "відбуватися",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {
+   "aspect": "ipfv",
+   "reflexive": "događati se"
+  },
+  "examples": [
+   "Što se događa?"
+  ],
+  "status": "PUBLISHED",
+  "version": 2
+ },
+ {
+  "id": "bb435ef2-67a8-4d37-b978-cff9c4d0415a",
+  "lemma": "dogoditi",
+  "normalized": "dogoditi",
+  "part_of_speech": "verb",
+  "cefr": "A2",
+  "ukrainian_translation": "статися",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {
+   "aspect": "pfv",
+   "reflexive": "dogoditi se"
+  },
+  "examples": [
+   "Što se dogodilo?"
+  ],
+  "status": "PUBLISHED",
+  "version": 1
+ },
+ {
+  "id": "6597e52c-aa70-41b4-bacd-270331c13440",
+  "lemma": "družiti",
+  "normalized": "druziti",
+  "part_of_speech": "verb",
+  "cefr": "A2",
+  "ukrainian_translation": "спілкуватися; проводити час разом",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {
+   "aspect": "ipfv",
+   "reflexive": "družiti se"
+  },
+  "examples": [
+   "Volim se družiti s prijateljima."
+  ],
+  "status": "PUBLISHED",
+  "version": 2
+ },
+ {
+  "id": "7d4203a9-9a95-4661-a35c-6931a8d0c792",
+  "lemma": "družiti se",
+  "normalized": "druziti se",
+  "part_of_speech": "verb",
+  "cefr": "A0",
+  "ukrainian_translation": "проводити час разом; товаришувати",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {
+   "past": "družio se",
+   "aspect": "ipfv",
+   "present": {
+    "1s": "družim se",
+    "2s": "družiš se",
+    "3s": "druži se"
+   }
+  },
+  "examples": [
+   "Volim se družiti s kolegama poslije posla."
+  ],
+  "status": "PUBLISHED",
+  "version": 2
+ },
+ {
+  "id": "26a83b67-7082-4aad-8544-6b1b18cf46ee",
+  "lemma": "govorite li engleski",
+  "normalized": "govorite li engleski",
+  "part_of_speech": "phrase",
+  "cefr": "A0",
+  "ukrainian_translation": "ви розмовляєте англійською",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "chunk",
+  "forms": {},
+  "examples": [
+   "Oprostite, govorite li engleski?"
+  ],
+  "status": "PUBLISHED",
+  "version": 2
+ },
+ {
+  "id": "8ac1e0bd-8171-46a0-9266-00f0de96386f",
+  "lemma": "kapula",
+  "normalized": "kapula",
+  "part_of_speech": "noun",
+  "cefr": "A2",
+  "ukrainian_translation": "цибуля (діалект, Далмація; стандартно — luk)",
+  "ukrainian_explanation": "Діалектне слово (Далмація). У стандартній хорватській — luk.",
+  "register": "regional",
+  "regionality": "Dalmatia",
+  "vocabulary_type": "core",
+  "forms": {
+   "gender": "f"
+  },
+  "examples": [
+   "Za salatu trebam jednu kapulu."
+  ],
+  "status": "PUBLISHED",
+  "version": 1
+ },
+ {
+  "id": "fe6cdc9f-a3a6-49fa-88ca-cea720df0101",
+  "lemma": "klasičan",
+  "normalized": "klasican",
+  "part_of_speech": "adjective",
+  "cefr": "A2",
+  "ukrainian_translation": "класичний",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {},
+  "examples": [
+   "Volim klasičnu glazbu."
+  ],
+  "status": "PUBLISHED",
+  "version": 3
+ },
+ {
+  "id": "8db091cc-dd70-484c-9eae-9f8fe9d27598",
+  "lemma": "klasično",
+  "normalized": "klasicno",
+  "part_of_speech": "adjective",
+  "cefr": "A2",
+  "ukrainian_translation": "класичне",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {},
+  "examples": [
+   "Uređenje stana je klasično i jednostavno."
+  ],
+  "status": "PUBLISHED",
+  "version": 3
+ },
+ {
+  "id": "bdd246be-62b5-4fbc-83d0-52fce4c523d5",
+  "lemma": "kompjuter",
+  "normalized": "kompjuter",
+  "part_of_speech": "noun",
+  "cefr": "A2",
+  "ukrainian_translation": "комп’ютер (розмовне; стандартно — računalo)",
+  "ukrainian_explanation": "Розмовне слово. У стандартній хорватській — računalo.",
+  "register": "colloquial",
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {
+   "loc": "kompjuteru",
+   "gender": "m"
+  },
+  "examples": [
+   "Radim na kompjuteru."
+  ],
+  "status": "PUBLISHED",
+  "version": 1
+ },
+ {
+  "id": "d26c7426-28d2-45b9-b248-6fc696a6fb6b",
+  "lemma": "ljekarna",
+  "normalized": "ljekarna",
+  "part_of_speech": "noun",
+  "cefr": "A0",
+  "ukrainian_translation": "аптека",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {
+   "loc": "ljekarni",
+   "gender": "f",
+   "plural": "ljekarne"
+  },
+  "examples": [
+   "Dežurna ljekarna radi 24 sata."
+  ],
+  "status": "PUBLISHED",
+  "version": 2
+ },
+ {
+  "id": "c81aa199-8a0c-41f6-a915-072fa5262bec",
+  "lemma": "luk",
+  "normalized": "luk",
+  "part_of_speech": "noun",
+  "cefr": "A0",
+  "ukrainian_translation": "цибуля",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {
+   "loc": "luku",
+   "gender": "m"
+  },
+  "examples": [
+   "Juha treba malo luka."
+  ],
+  "status": "PUBLISHED",
+  "version": 2
+ },
+ {
+  "id": "877fc9ef-702d-4961-a432-82131443a51d",
+  "lemma": "moderan",
+  "normalized": "moderan",
+  "part_of_speech": "adjective",
+  "cefr": "A1",
+  "ukrainian_translation": "сучасний",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {
+   "degree": "positive"
+  },
+  "examples": [
+   "Žive u modernom stanu."
+  ],
+  "status": "PUBLISHED",
+  "version": 2
+ },
+ {
+  "id": "ac78afa6-1985-4feb-a33a-28216e97f2ba",
+  "lemma": "moderno",
+  "normalized": "moderno",
+  "part_of_speech": "adjective",
+  "cefr": "A2",
+  "ukrainian_translation": "сучасне",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {},
+  "examples": [
+   "Stan je moderno uređen."
+  ],
+  "status": "PUBLISHED",
+  "version": 3
+ },
+ {
+  "id": "f706ae0f-4506-45f6-ae84-9d5c6e7cae6a",
+  "lemma": "navići",
+  "normalized": "navici",
+  "part_of_speech": "verb",
+  "cefr": "A2",
+  "ukrainian_translation": "звикнути",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {
+   "aspect": "pfv",
+   "reflexive": "navići se"
+  },
+  "examples": [
+   "Trebao sam vremena da se naviknem."
+  ],
+  "status": "PUBLISHED",
+  "version": 2
+ },
+ {
+  "id": "ae820b6e-1ea7-47ec-91ec-46f645a5e311",
+  "lemma": "naviknuti se",
+  "normalized": "naviknuti se",
+  "part_of_speech": "verb",
+  "cefr": "A1",
+  "ukrainian_translation": "звикнути",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {
+   "aspect": "pfv"
+  },
+  "examples": [
+   "Brzo se navikneš na sporiji život."
+  ],
+  "status": "PUBLISHED",
+  "version": 1
+ },
+ {
+  "id": "9beb0f7c-0772-41be-b40c-fe3bf79b6c4d",
+  "lemma": "onak",
+  "normalized": "onak",
+  "part_of_speech": "adverb",
+  "cefr": "A2",
+  "ukrainian_translation": "ну, типу; якось так (сленг, Загреб)",
+  "ukrainian_explanation": "Розмовне слово-паразит у Загребі (від onako — «так, отак»). У нейтральній мові не вживається.",
+  "register": "slang",
+  "regionality": "Zagreb",
+  "vocabulary_type": "formulaic",
+  "forms": {},
+  "examples": [
+   "Bilo je onak, ništa posebno."
+  ],
+  "status": "PUBLISHED",
+  "version": 2
+ },
+ {
+  "id": "2f393a80-3652-4176-9b67-925c5e1d2d65",
+  "lemma": "podaci",
+  "normalized": "podaci",
+  "part_of_speech": "noun",
+  "cefr": "A2",
+  "ukrainian_translation": "дані",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {
+   "gender": "m_pl"
+  },
+  "examples": [
+   "Unesite svoje podatke u obrazac."
+  ],
+  "status": "PUBLISHED",
+  "version": 3
+ },
+ {
+  "id": "fa1a7466-1631-45b9-846b-a41958b74d9f",
+  "lemma": "podatak",
+  "normalized": "podatak",
+  "part_of_speech": "noun",
+  "cefr": "A1",
+  "ukrainian_translation": "дані",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {
+   "loc": "podatku",
+   "gender": "m",
+   "plural": "podaci"
+  },
+  "examples": [
+   "Unesite vaše osobne podatke."
+  ],
+  "status": "PUBLISHED",
+  "version": 1
+ },
+ {
+  "id": "04850d32-d7fe-4c4e-9041-d41cdf9e369a",
+  "lemma": "pomidor",
+  "normalized": "pomidor",
+  "part_of_speech": "noun",
+  "cefr": "A2",
+  "ukrainian_translation": "помідор (діалект, Далмація; стандартно — rajčica)",
+  "ukrainian_explanation": "Діалектне слово (Далмація). У стандартній хорватській — rajčica.",
+  "register": "regional",
+  "regionality": "Dalmatia",
+  "vocabulary_type": "core",
+  "forms": {
+   "gender": "m",
+   "plural": "pomidori"
+  },
+  "examples": [
+   "Salata od pomidora."
+  ],
+  "status": "PUBLISHED",
+  "version": 1
+ },
+ {
+  "id": "d0184f21-b3c4-4ce0-99a0-f475c8e8354d",
+  "lemma": "posati",
+  "normalized": "posati",
+  "part_of_speech": "verb",
+  "cefr": "A2",
+  "ukrainian_translation": "надіслати",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {
+   "aspect": "pfv"
+  },
+  "examples": [],
+  "status": "PUBLISHED",
+  "version": 2
+ },
+ {
+  "id": "af7e595d-c952-4391-9d22-945f4516bc6c",
+  "lemma": "poslati",
+  "normalized": "poslati",
+  "part_of_speech": "verb",
+  "cefr": "A1",
+  "ukrainian_translation": "надіслати / відправити",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {
+   "past": "poslao",
+   "aspect": "pfv",
+   "present": {
+    "1p": "pošaljemo",
+    "1s": "pošaljem",
+    "2p": "pošaljete",
+    "2s": "pošalješ",
+    "3p": "pošalju",
+    "3s": "pošalje"
+   }
+  },
+  "examples": [
+   "Moram poslati email.",
+   "Poslao sam dokumente."
+  ],
+  "status": "PUBLISHED",
+  "version": 2
+ },
+ {
+  "id": "7bd3505f-072b-41d5-8dc9-f7b5758ea6aa",
+  "lemma": "računalo",
+  "normalized": "racunalo",
+  "part_of_speech": "noun",
+  "cefr": "A1",
+  "ukrainian_translation": "комп'ютер",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {
+   "loc": "računalu",
+   "gender": "n",
+   "plural": "računala"
+  },
+  "examples": [
+   "Radim na računalu u uredu."
+  ],
+  "status": "PUBLISHED",
+  "version": 1
+ },
+ {
+  "id": "b261e74e-6724-4871-aeb6-d37741ae92ad",
+  "lemma": "rajčica",
+  "normalized": "rajcica",
+  "part_of_speech": "noun",
+  "cefr": "A0",
+  "ukrainian_translation": "помідор",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {
+   "loc": "rajčici",
+   "gender": "f",
+   "plural": "rajčice"
+  },
+  "examples": [
+   "Juha od rajčice."
+  ],
+  "status": "PUBLISHED",
+  "version": 2
+ },
+ {
+  "id": "3c623d93-a9a4-477f-922f-05ce0876a23f",
+  "lemma": "ručnik",
+  "normalized": "rucnik",
+  "part_of_speech": "noun",
+  "cefr": "A0",
+  "ukrainian_translation": "рушник",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {
+   "gender": "m"
+  },
+  "examples": [
+   "Trebam još jedan ručnik, molim."
+  ],
+  "status": "PUBLISHED",
+  "version": 3
+ },
+ {
+  "id": "01eae55e-695d-40b7-9c11-1b26ba57671b",
+  "lemma": "sistem",
+  "normalized": "sistem",
+  "part_of_speech": "noun",
+  "cefr": "B1",
+  "ukrainian_translation": "система",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {
+   "gender": "m"
+  },
+  "examples": [
+   "Sistem je pao, pokušajte kasnije."
+  ],
+  "status": "PUBLISHED",
+  "version": 3
+ },
+ {
+  "id": "34ff81d5-615a-49f3-a955-84bbd7eb76ac",
+  "lemma": "smijeti",
+  "normalized": "smijeti",
+  "part_of_speech": "verb",
+  "cefr": "A2",
+  "ukrainian_translation": "сміти",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {
+   "aspect": "ipfv"
+  },
+  "examples": [],
+  "status": "PUBLISHED",
+  "version": 2
+ },
+ {
+  "id": "502d613c-0d48-454b-96fc-3e6e45f37671",
+  "lemma": "smjeti",
+  "normalized": "smjeti",
+  "part_of_speech": "verb",
+  "cefr": "A1",
+  "ukrainian_translation": "сміти, мати дозвіл",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {
+   "aspect": "ipfv"
+  },
+  "examples": [
+   "Smijem li ovdje pušiti?"
+  ],
+  "status": "PUBLISHED",
+  "version": 4
+ },
+ {
+  "id": "ed685104-7eaa-4e44-9ad3-1da69d4d4da6",
+  "lemma": "šugaman",
+  "normalized": "sugaman",
+  "part_of_speech": "noun",
+  "cefr": "A2",
+  "ukrainian_translation": "рушник (діалект, Далмація; стандартно — ručnik)",
+  "ukrainian_explanation": "Діалектне слово (Далмація). У стандартній хорватській — ručnik.",
+  "register": "regional",
+  "regionality": "Dalmatia",
+  "vocabulary_type": "core",
+  "forms": {
+   "gender": "m",
+   "plural": "šugamani"
+  },
+  "examples": [
+   "Ponesi šugaman za plažu."
+  ],
+  "status": "PUBLISHED",
+  "version": 1
+ },
+ {
+  "id": "3f034035-4423-4cb3-9aec-0a89eee35b16",
+  "lemma": "sustav",
+  "normalized": "sustav",
+  "part_of_speech": "noun",
+  "cefr": "A1",
+  "ukrainian_translation": "система",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {
+   "gender": "m"
+  },
+  "examples": [
+   "Sustav je trenutno nedostupan."
+  ],
+  "status": "PUBLISHED",
+  "version": 3
+ },
+ {
+  "id": "bba22542-fb71-4350-a52b-426700906be4",
+  "lemma": "talenat",
+  "normalized": "talenat",
+  "part_of_speech": "noun",
+  "cefr": "A2",
+  "ukrainian_translation": "талант",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {
+   "gender": "m"
+  },
+  "examples": [
+   "Ima talenta za jezike."
+  ],
+  "status": "PUBLISHED",
+  "version": 3
+ },
+ {
+  "id": "398a37b4-2d44-40b7-adc8-55a9916a5120",
+  "lemma": "usluga",
+  "normalized": "usluga",
+  "part_of_speech": "noun",
+  "cefr": "A2",
+  "ukrainian_translation": "послуга",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {
+   "gender": "f"
+  },
+  "examples": [
+   "Usluga u restoranu je bila spora."
+  ],
+  "status": "PUBLISHED",
+  "version": 3
+ },
+ {
+  "id": "3fe87ea6-ad06-4cc7-b9c5-d390139fef55",
+  "lemma": "usluge",
+  "normalized": "usluge",
+  "part_of_speech": "noun",
+  "cefr": "A2",
+  "ukrainian_translation": "послуги",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {
+   "gender": "f_pl"
+  },
+  "examples": [
+   "Cijene usluga su na stranici."
+  ],
+  "status": "PUBLISHED",
+  "version": 3
+ },
+ {
+  "id": "2e2250c9-1abe-4b0a-aa4c-af162f7d00fc",
+  "lemma": "utisak",
+  "normalized": "utisak",
+  "part_of_speech": "noun",
+  "cefr": "A2",
+  "ukrainian_translation": "враження",
+  "ukrainian_explanation": null,
+  "register": null,
+  "regionality": null,
+  "vocabulary_type": "core",
+  "forms": {
+   "gender": "m"
+  },
+  "examples": [
+   "Ostavio je dobar utisak."
+  ],
+  "status": "PUBLISHED",
+  "version": 3
+ }
+]

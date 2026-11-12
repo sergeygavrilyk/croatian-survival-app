@@ -145,4 +145,6 @@ run $A/migrations/20261105100000_m19_writing_mediation.sql
 run $A/data_fixes/20261105_writing_pilot.sql
 run $A/data_fixes/20261107_writing_a0_m02_m05.sql
 run $A/data_fixes/20261107_writing_a0_m06_m10.sql
+run $S/seed_vocab_a2_fix_20261112.sql
+run $A/data_fixes/20261112_vocab_a2_fix.sql
 echo "Готово. Тести: for t in supabase/tests/*.sql; do psql -h /tmp -p $P -U postgres -q -v ON_ERROR_STOP=1 -f \$t | tail -1; done"
