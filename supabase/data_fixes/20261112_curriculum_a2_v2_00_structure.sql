@@ -514,6 +514,77 @@ on conflict (id) do nothing;
 insert into public.content_reviews (entity_type, entity_id, from_status, to_status, verdict, reviewer_kind, findings, notes)
 select 'grammar_topic', '20fd9d75-7bef-51c3-9711-f09462b61b82', null, 'PUBLISHED', 'auto_passed', 'ai', '[]'::jsonb, 'Бета: тема граматики A2 за програмою A2 v2 (рішення власника 2026-11-12). Потрібна перевірка носієм.'
 where not exists (select 1 from public.content_reviews where entity_id = '20fd9d75-7bef-51c3-9711-f09462b61b82' and notes = 'Бета: тема граматики A2 за програмою A2 v2 (рішення власника 2026-11-12). Потрібна перевірка носієм.');
+-- Переклади наявних слів під значення уроків A2 (7): лише якщо переклад той самий; стара версія — у content_versions
+do $$
+declare r record;
+begin
+  for r in select * from public.lexemes where lower(lemma) = 'obrt' and ukrainian_translation = 'ремесло' loop
+    insert into public.content_versions (entity_type, entity_id, version, payload, change_reason)
+    values ('lexeme', r.id, coalesce((select max(version) from public.content_versions where entity_type = 'lexeme' and entity_id = r.id), 0) + 1,
+            to_jsonb(r), 'curriculum_a2_v2: переклад слова уточнено під значення в уроках A2 — стара версія');
+    update public.lexemes set ukrainian_translation = 'ремесло; обрт (дрібне підприємництво, як ФОП)' where id = r.id;
+  end loop;
+end $$;
+do $$
+declare r record;
+begin
+  for r in select * from public.lexemes where lower(lemma) = 'obrtnik' and ukrainian_translation = 'ремісник' loop
+    insert into public.content_versions (entity_type, entity_id, version, payload, change_reason)
+    values ('lexeme', r.id, coalesce((select max(version) from public.content_versions where entity_type = 'lexeme' and entity_id = r.id), 0) + 1,
+            to_jsonb(r), 'curriculum_a2_v2: переклад слова уточнено під значення в уроках A2 — стара версія');
+    update public.lexemes set ukrainian_translation = 'ремісник; власник обрту (підприємець)' where id = r.id;
+  end loop;
+end $$;
+do $$
+declare r record;
+begin
+  for r in select * from public.lexemes where lower(lemma) = 'donirati' and ukrainian_translation = 'доручити, пожертвувати' loop
+    insert into public.content_versions (entity_type, entity_id, version, payload, change_reason)
+    values ('lexeme', r.id, coalesce((select max(version) from public.content_versions where entity_type = 'lexeme' and entity_id = r.id), 0) + 1,
+            to_jsonb(r), 'curriculum_a2_v2: переклад слова уточнено під значення в уроках A2 — стара версія');
+    update public.lexemes set ukrainian_translation = 'пожертвувати, подарувати' where id = r.id;
+  end loop;
+end $$;
+do $$
+declare r record;
+begin
+  for r in select * from public.lexemes where lower(lemma) = 'ispitni rok' and ukrainian_translation = 'іспитовий семестр' loop
+    insert into public.content_versions (entity_type, entity_id, version, payload, change_reason)
+    values ('lexeme', r.id, coalesce((select max(version) from public.content_versions where entity_type = 'lexeme' and entity_id = r.id), 0) + 1,
+            to_jsonb(r), 'curriculum_a2_v2: переклад слова уточнено під значення в уроках A2 — стара версія');
+    update public.lexemes set ukrainian_translation = 'екзаменаційна сесія; дата іспиту' where id = r.id;
+  end loop;
+end $$;
+do $$
+declare r record;
+begin
+  for r in select * from public.lexemes where lower(lemma) = 'izgubljene stvari' and ukrainian_translation = 'бюро знахідок' loop
+    insert into public.content_versions (entity_type, entity_id, version, payload, change_reason)
+    values ('lexeme', r.id, coalesce((select max(version) from public.content_versions where entity_type = 'lexeme' and entity_id = r.id), 0) + 1,
+            to_jsonb(r), 'curriculum_a2_v2: переклад слова уточнено під значення в уроках A2 — стара версія');
+    update public.lexemes set ukrainian_translation = 'загублені речі' where id = r.id;
+  end loop;
+end $$;
+do $$
+declare r record;
+begin
+  for r in select * from public.lexemes where lower(lemma) = 'naglasak' and ukrainian_translation = 'наголос' loop
+    insert into public.content_versions (entity_type, entity_id, version, payload, change_reason)
+    values ('lexeme', r.id, coalesce((select max(version) from public.content_versions where entity_type = 'lexeme' and entity_id = r.id), 0) + 1,
+            to_jsonb(r), 'curriculum_a2_v2: переклад слова уточнено під значення в уроках A2 — стара версія');
+    update public.lexemes set ukrainian_translation = 'наголос; акцент' where id = r.id;
+  end loop;
+end $$;
+do $$
+declare r record;
+begin
+  for r in select * from public.lexemes where lower(lemma) = 'gubitak' and ukrainian_translation = 'збиток' loop
+    insert into public.content_versions (entity_type, entity_id, version, payload, change_reason)
+    values ('lexeme', r.id, coalesce((select max(version) from public.content_versions where entity_type = 'lexeme' and entity_id = r.id), 0) + 1,
+            to_jsonb(r), 'curriculum_a2_v2: переклад слова уточнено під значення в уроках A2 — стара версія');
+    update public.lexemes set ukrainian_translation = 'втрата; збиток' where id = r.id;
+  end loop;
+end $$;
 
 -- Самоперевірка: якщо щось не так — усе відкочується
 do $$

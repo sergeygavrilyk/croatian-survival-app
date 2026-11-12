@@ -139,8 +139,9 @@ def lex_base(upto: int) -> dict:
             break
         for r in new_lexemes(m):
             lex[r['lemma'].lower()] = (r['lemma'], r['ukrainian_translation'])
-    # слово вже є в робочій базі (запас A2 / B1) — у вправах переклад з бази
-    lex.update({k: (v[0], v[1]) for k, v in SNAPSHOT.get('prod_existing', {}).items()})
+    for lemma, _old, new in D.FIX_TRANSLATIONS:
+        if lemma.lower() in lex:
+            lex[lemma.lower()] = (lex[lemma.lower()][0], new)
     return lex
 
 
@@ -383,6 +384,7 @@ def version_sql(entity: str, table: str, ident: str, reason: str) -> str:
             f"         to_jsonb(x), {q(reason)} from public.{table} x where x.id = {q(ident)};")
 
 
+FIX_NOTE = 'curriculum_a2_v2: переклад слова уточнено під значення в уроках A2 — стара версія'
 GRAMMAR_NOTE = 'Бета: тема граматики A2 за програмою A2 v2 (рішення власника 2026-11-12). Потрібна перевірка носієм.'
 
 
@@ -475,6 +477,18 @@ end $$;""")
         s.append('insert into public.content_reviews (entity_type, entity_id, from_status, to_status, verdict, reviewer_kind, findings, notes)\n'
                  f"select 'grammar_topic', {q(gid)}, null, {q(STATUS)}, 'auto_passed', 'ai', '[]'::jsonb, {q(GRAMMAR_NOTE)}\n"
                  f'where not exists (select 1 from public.content_reviews where entity_id = {q(gid)} and notes = {q(GRAMMAR_NOTE)});')
+    s.append(f'-- Переклади наявних слів під значення уроків A2 ({len(D.FIX_TRANSLATIONS)}): лише якщо переклад той самий; стара версія — у content_versions')
+    for lemma, old_ua, new_ua in D.FIX_TRANSLATIONS:
+        s.append(f"""do $$
+declare r record;
+begin
+  for r in select * from public.lexemes where lower(lemma) = {q(lemma.lower())} and ukrainian_translation = {q(old_ua)} loop
+    insert into public.content_versions (entity_type, entity_id, version, payload, change_reason)
+    values ('lexeme', r.id, coalesce((select max(version) from public.content_versions where entity_type = 'lexeme' and entity_id = r.id), 0) + 1,
+            to_jsonb(r), {q(FIX_NOTE)});
+    update public.lexemes set ukrainian_translation = {q(new_ua)} where id = r.id;
+  end loop;
+end $$;""")
     ids = ', '.join(q(topic_id(c)) for c in D.GRAMMAR)
     n_rules = sum(len(g['rules']) for g in D.GRAMMAR.values())
     places = ', '.join(f"({q(module_id(m))}::uuid, {m})" for m in D.PROGRAM)
@@ -709,7 +723,7 @@ def review(c: CourseA2, m: int) -> str:
     keys = sorted(c.lessons)
     old = set(SNAPSHOT['lesson_words'])
     mod = MODULES[m]
-    prod = SNAPSHOT.get('prod_existing', {})
+    prod = D.PROD_EXISTING | set(SNAPSHOT.get('lexicon_words', []))
     out = [f'# Програма A2 v2 — модуль A2.{m} «{D.PROGRAM[m]["title"][0]}», звіт для перевірки', '',
            f'> Згенеровано `scripts/gen_curriculum_a2_v2.py --review {m}` 2026-11-12. Бета за рішенням власника 2026-11-12: 20–25 нових слів '
            'за темою, 90–95 % нових для рівня, діалоги під тему, «Прослухайте діалог чи оголошення», письмо й переказ (ua → hr).', '',

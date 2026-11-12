@@ -156,7 +156,7 @@ LESSONS = [
             ('slabo se čuje', 'погано чути', 'ph', '', 'Oprostite, slabo se čuje.'),
             ('prekinula se veza', 'зв’язок перервався', 'ph', '', 'Prekinula se veza, nazvat ću ponovno.'),
             ('slovkati', 'продиктувати по літерах', 'v', 'ipfv', 'Možete li slovkati svoje prezime?'),
-            ('kućni broj', 'внутрішній номер', 'ph', 'm', 'Moj kućni broj je dvjesto četiri.'),
+            ('interni broj', 'внутрішній номер (телефону)', 'ph', 'm', 'Moj interni broj je dvjesto četiri.'),
             ('centrala', 'комутатор, приймальня', 'n', 'f', 'Nazovite centralu i tražite odjel.'),
             ('glasovna pošta', 'голосова пошта', 'ph', 'f', 'Ostavite poruku na glasovnoj pošti.'),
             ('zapisati broj', 'записати номер', 'ph', '', 'Čekajte, da zapišem broj.'),
@@ -192,7 +192,7 @@ LESSONS = [
         listening=dict(kind='dialogue', situation='Дар’я телефонує в бухгалтерію. Послухайте розмову.', script=[
             ('Centrala', 'Dobar dan, kako Vam mogu pomoći?', 'Добрий день, чим можу допомогти?'),
             ('Darja', 'Trebam računovodstvo, zbog moje platne liste.', 'Мені потрібна бухгалтерія, щодо мого розрахункового листа.'),
-            ('Centrala', 'Linija je zauzeta. Njihov kućni broj je tristo dvanaest.', 'Лінія зайнята. Їхній внутрішній номер — триста дванадцять.'),
+            ('Centrala', 'Linija je zauzeta. Njihov interni broj je tristo dvanaest.', 'Лінія зайнята. Їхній внутрішній номер — триста дванадцять.'),
             ('Darja', 'Hvala, nazvat ću ih poslije podne.', 'Дякую, я подзвоню їм після обіду.'),
         ], questions=[
             ('Куди дзвонить Дар’я?', ['у бухгалтерію', 'у відділ продажу', 'директорові'], 0, 1),

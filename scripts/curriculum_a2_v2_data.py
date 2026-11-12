@@ -788,3 +788,38 @@ GRAMMAR = {
               ('Ako budem mogla, doći ću.', 'Якщо зможу, прийду.')]),
         ]),
 }
+
+# Переклади наявних слів, які уроки A2 вживають в іншому чи ширшому значенні (звірено з робочою базою 2026-11-12).
+# Змінюється, лише якщо переклад досі той самий; стара версія — у content_versions.
+FIX_TRANSLATIONS = [
+    ('obrt', 'ремесло', 'ремесло; обрт (дрібне підприємництво, як ФОП)'),
+    ('obrtnik', 'ремісник', 'ремісник; власник обрту (підприємець)'),
+    ('donirati', 'доручити, пожертвувати', 'пожертвувати, подарувати'),
+    ('ispitni rok', 'іспитовий семестр', 'екзаменаційна сесія; дата іспиту'),
+    ('izgubljene stvari', 'бюро знахідок', 'загублені речі'),
+    ('naglasak', 'наголос', 'наголос; акцент'),
+    ('gubitak', 'збиток', 'втрата; збиток'),
+]
+
+# Слова уроків A2, які вже є в робочій базі (не в уроках A0 / A1): їх не додаємо, урок бере наявне слово.
+PROD_EXISTING = {
+    'akcijska cijena', 'argument', 'atmosfera', 'besplatan', 'biljka', 'birokracija', 'bonus', 'brava', 'dakle', 'djelatnost',
+    'dobit', 'domaće vino', 'donirati', 'dostupan', 'dovoljan', 'doživljaj', 'dubina', 'duhovit', 'dužnost', 'emisija',
+    'generacija', 'glas', 'glasati', 'glumiti', 'gramatika', 'gubitak', 'hitna intervencija', 'hrabrost', 'iako', 'ishod',
+    'iskren', 'ispitni rok', 'istek', 'izbjegavati', 'izgovor', 'izgubljene stvari', 'izjava', 'iznimka', 'javna rasvjeta',
+    'karakter', 'kategorija', 'klimatske promjene', 'kompromis', 'konzulat', 'krivnja', 'literatura', 'lučka kapetanija', 'mana',
+    'marljiv', 'maslinik', 'metal', 'međunarodni', 'miris', 'mladost', 'molba', 'morska struja', 'naglasak', 'nagrada', 'napet',
+    'napokon', 'napredak', 'naslov', 'nedostupan', 'neljubazan', 'nestrpljiv', 'neuspjeh', 'nezadovoljan', 'novinar',
+    'obavijestiti', 'obećati', 'obrt', 'obrtnik', 'odgađati', 'odličan', 'odustati', 'odvajati', 'okoliš', 'olakšanje',
+    'operirati', 'oporaviti se', 'opravdati', 'oprostiti', 'opuštanje', 'organizirati', 'pisac', 'pitka voda', 'plastika',
+    'podrška', 'poduzetnik', 'poglavlje', 'pogledati', 'pohađati', 'pohvaliti', 'pomalo', 'pomiriti se', 'ponašati se',
+    'porezna uprava', 'posjetitelj', 'posljedica', 'postići', 'posvađati se', 'potrošač', 'povjerenje', 'pošten', 'predložiti',
+    'prekršaj', 'prigovor', 'prihod', 'prilagoditi se', 'prilika', 'prioritet', 'prisjetiti se', 'procjena', 'prometna dozvola',
+    'promijeniti se', 'promjena', 'pronaći', 'propis', 'proračun', 'proći', 'punomoć', 'rasprava', 'raspravljati', 'ravnatelj',
+    'razboljeti se', 'razočaranje', 'red vožnje', 'redatelj', 'reklama', 'rizik', 'roman', 'rođenje', 'savjetovati', 'semestar',
+    'seminar', 'sidro', 'sindikat', 'skroman', 'sličnost', 'slučajno', 'spojiti', 'srušiti', 'staklo', 'stav', 'studentski dom',
+    'surađivati', 'susret', 'svađa', 'svađati se', 'tema', 'trošak', 'tunel', 'tuš kabina', 'tvrdoglav', 'udruga', 'ugraditi',
+    'uhvatiti', 'uloga', 'umrijeti', 'uplašiti se', 'uporan', 'uzbudljiv', 'učinkovit', 'uštedjeti', 'vatrogasci', 'važiti',
+    'veseliti se', 'većina', 'vikati', 'vrsta', 'zabrana', 'zahtijevati', 'zaključak', 'zaključiti', 'čim', 'članak', 'šteta',
+    'žalba',
+}

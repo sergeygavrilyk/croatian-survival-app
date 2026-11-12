@@ -154,7 +154,7 @@ LESSONS = [
             ('prometna traka', 'смуга руху', 'ph', 'f', 'Prešao je u moju prometnu traku.'),
             ('skrenuti', 'повернути', 'v', 'pfv:skretati', 'Skrenuo je lijevo bez žmigavca.'),
             ('žmigavac', 'покажчик повороту', 'n', 'm', 'Nije uključio žmigavac.'),
-            ('zavoj', 'поворот (дороги)', 'n', 'm', 'Izletio je iz zavoja.'),
+            ('oštar zavoj', 'крутий поворот', 'ph', 'm', 'Izletio je iz oštrog zavoja.'),
             ('ogrebotina na branik', 'подряпина на бампері', 'ph', 'f', 'Na branik je samo ogrebotina.'),
             ('branik', 'бампер', 'n', 'm', 'Stražnji branik je udubljen.'),
             ('udubljen', 'вм’ятий', 'adj', '', 'Vrata su udubljena.'),

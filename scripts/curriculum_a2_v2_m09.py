@@ -278,7 +278,7 @@ LESSONS = [
             ('crveno upozorenje', 'червоний рівень небезпеки', 'ph', 'n', 'Na snazi je crveno upozorenje zbog vrućine.'),
             ('narančasto upozorenje', 'помаранчевий рівень небезпеки', 'ph', 'n', 'Narančasto upozorenje vrijedi do večeri.'),
             ('olujni vjetar', 'штормовий вітер', 'ph', 'm', 'Olujni vjetar je srušio drveće.'),
-            ('tuča', 'град (опади)', 'n', 'f', 'Tuča je oštetila automobile.'),
+            ('ledena kiša', 'крижаний дощ', 'ph', 'f', 'Ledena kiša je oštetila automobile.'),
             ('bujica', 'бурхливий потік (після зливи)', 'n', 'f', 'Bujica je odnijela most.'),
             ('šumski požar', 'лісова пожежа', 'ph', 'm', 'Šumski požar je blizu sela.'),
             ('vatrogasci', 'пожежники', 'n', 'm_pl', 'Vatrogasci su cijelu noć gasili požar.'),
