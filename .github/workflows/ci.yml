@@ -42,8 +42,13 @@ jobs:
         run: npm run build
       - name: Типи
         run: npm run typecheck
+      # Сам браузер — з CDN Playwright. Системні бібліотеки на ubuntu-24.04 уже є (бракує лише необов'язкових шрифтів),
+      # тож збій дзеркал Ubuntu (apt) не блокує E2E: install-deps — не довше 5 хв, помилка — лише попередження.
       - name: Браузер для E2E
-        run: npx playwright install --with-deps chromium
+        run: |
+          npx playwright install chromium
+          timeout --kill-after=15 300 npx playwright install-deps chromium \
+            || echo "::warning::Системні пакети для Playwright не встановились (дзеркала Ubuntu?) — E2E запускаємо з тим, що є на сервері"
       - name: E2E без входу (smoke)
         run: npm run e2e:smoke
       - name: Звіт E2E (якщо впало)
