@@ -78,3 +78,15 @@ test('письмо й переказ: у кінці черги, після по�
   assert.deepEqual(s.skipped, ['m']);
   assert.equal(s.queue.length, 0);
 });
+
+test('«прослухайте діалог»: після «складіть на слух», до «скажіть уголос»; після помилки не повертається', () => {
+  const ordered = orderExercises([
+    { id: 's', exercise_type: 'speaking' },
+    { id: 'd', exercise_type: 'listening_dialogue' },
+    { id: 'l', exercise_type: 'listening' },
+  ]);
+  assert.deepEqual(ordered.map((e) => e.id), ['l', 'd', 's']);
+  assert.equal(NO_RETRY_TYPES.has('listening_dialogue'), true);
+  const s = answerCurrent(startPractice(['d', 's']), 'wrong', !NO_RETRY_TYPES.has('listening_dialogue'));
+  assert.deepEqual(s.queue, ['s']);
+});

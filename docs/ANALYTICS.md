@@ -98,6 +98,7 @@ Track:
 | `word_saved` | урок → «Додати в мій словник» | lexeme_id, lesson_id, source |
 | `exercise_completed` | урок, правильна відповідь | lesson_id, exercise_id, exercise_type, success, attempt (спроб до правильної), duration_ms |
 | `exercise_completed` | урок, «Напишіть повідомлення» / «Перекажіть другу» (з 2026-11-05) | ті самі; exercise_type = `write_message` / `mediation`; success = усі пункти є (без AI); пропуск — success = false. Текст відповіді — у `writing_attempts` / `mediation_attempts`, не в події |
+| `exercise_completed` | урок, «Прослухайте діалог чи оголошення» (з 2026-11-12) | ті самі; exercise_type = `listening_dialogue`; success = усі запитання правильні; count — запитань, correct_count — правильних, plays — скільки разів слухали, slow_used — «Повільніше»; пропуск (без інтернету / «не можу слухати») — success = false, у черзі як пропущена |
 | `exercise_completed` | тренажер «Написати», кожна відповідь | lexeme_id, level, exercise_type = `type_word`, source = `trainer`, success, verdict (exact / diacritics / typo / wrong), duration_ms |
 | `lesson_completed` | сервер, `completeLesson` | lesson_id, level, duration_ms, count (слів у уроці), added_to_review |
 | `review_started` | тренажер, картки завантажені | level, count, source (`review` / `new` / `write`) |

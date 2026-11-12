@@ -83,6 +83,9 @@ export interface EventProps {
   /** speech_diagnostic: послідовність подій розпізнавання («st@0 au@120 … end@4100») і платформа */
   speech_trace?: string;
   speech_platform?: string;
+  /** «Прослухайте діалог чи оголошення»: скільки разів слухали, чи вмикали «Повільніше» (lib/listening.ts) */
+  plays?: number;
+  slow_used?: boolean;
   /** «Граматика рівня»: тема, яку тренують (lib/grammar.ts) */
   grammar_topic_id?: string;
   device?: string;

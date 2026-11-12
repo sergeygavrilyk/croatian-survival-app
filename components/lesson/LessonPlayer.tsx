@@ -22,6 +22,8 @@ import { track } from '@/lib/analytics-client';
 import { finishSpeakingSession, recordSpeakingAttempt, startSpeakingSession } from '@/app/actions/speaking';
 import { recordWritingAttempt } from '@/app/actions/writing';
 import { isWritingType, parseWritingTask } from '@/lib/writing';
+import { LISTENING_TYPE, parseListeningTask } from '@/lib/listening';
+import type { ListeningDetails } from './ListeningDialogueExercise';
 import { evaluateSpeech, isUnderstood } from '@/lib/speaking';
 import { situationInfo } from '@/lib/situations';
 import { wordInitial } from '@/lib/word-theme';
@@ -77,9 +79,16 @@ export default function LessonPlayer({
 }) {
   const router = useRouter();
   const { lesson, words, dialogues, grammar } = content;
-  // письмо / переказ без коректного завдання (стара офлайн-копія, помилка в даних) — пропускаємо, а не ламаємо урок
+  // письмо / переказ / «прослухайте діалог» без коректного завдання (стара офлайн-копія, помилка в даних) — пропускаємо, а не ламаємо урок
   const exercises = useMemo(
-    () => orderExercises(content.exercises.filter((e) => !isWritingType(e.exercise_type) || parseWritingTask(e.exercise_type, e.task))),
+    () =>
+      orderExercises(
+        content.exercises.filter(
+          (e) =>
+            (!isWritingType(e.exercise_type) || parseWritingTask(e.exercise_type, e.task)) &&
+            (e.exercise_type !== LISTENING_TYPE || parseListeningTask(e.task)),
+        ),
+      ),
     [content.exercises],
   );
   const byId = useMemo(() => new Map(exercises.map((e) => [e.id, e])), [exercises]);
@@ -392,7 +401,7 @@ export default function LessonPlayer({
   const current = stage === 'practice' && currentId ? byId.get(currentId) : undefined;
   if (current) {
     const retry = isRetry(practice);
-    const onNext = (outcome: PracticeOutcome, verdict?: string) => {
+    const onNext = (outcome: PracticeOutcome, verdict?: string, details?: ListeningDetails) => {
       track('exercise_completed', {
         lesson_id: lesson.id,
         exercise_id: current.id,
@@ -401,6 +410,7 @@ export default function LessonPlayer({
         attempt: retry ? 2 : 1,
         duration_ms: nowMs() - exerciseStartRef.current,
         ...(verdict ? { verdict } : {}),
+        ...(details ?? {}),
       });
       exerciseStartRef.current = nowMs();
       setStreak((n) => (outcome === 'correct' ? n + 1 : 0));
