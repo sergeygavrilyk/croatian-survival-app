@@ -2,6 +2,7 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { trackEvent } from '@/app/actions/analytics';
+import { newWordProgress } from '@/lib/word-save';
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -30,13 +31,7 @@ export async function saveReadingWord(
   if (!lexeme) return { ok: false, error: 'Цього слова ще немає у словнику застосунку.' };
 
   const { error } = await supabase.from('user_progress').upsert(
-    {
-      user_id: user.id,
-      lexeme_id: lexeme.id as string,
-      interval_days: 0,
-      repetition_count: 0,
-      next_review_date: new Date().toISOString(),
-    },
+    newWordProgress(user.id, lexeme.id as string, new Date()),
     { onConflict: 'user_id,lexeme_id', ignoreDuplicates: true }, // уже збережене слово не скидаємо
   );
   if (error) {

@@ -84,6 +84,26 @@ test('читання: список → текст відкривається', a
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 });
 
+test('словник: пошук → картка слова → «Додати в повторення»', async ({ page }) => {
+  await page.goto('/dictionary');
+  await page.getByLabel('Пошук слова').fill('pomidor');
+  await page.getByRole('button', { name: /^pomidor — .*Відкрити картку слова/ }).click();
+  const sheet = page.getByRole('dialog', { name: 'pomidor' });
+  await expect(sheet).toBeVisible();
+  await expect(sheet).toContainText('регіонально');
+  // тестовий акаунт міг додати слово в минулому запуску
+  const add = sheet.getByRole('button', { name: 'Додати в повторення' });
+  if (await add.isVisible()) {
+    await add.click();
+    await expect(sheet.getByRole('status')).toContainText('Додано в повторення');
+  } else {
+    await expect(sheet.getByRole('status')).toContainText('вже вчите');
+  }
+  await page.keyboard.press('Escape');
+  await expect(sheet).toBeHidden();
+  await expect(page.getByRole('button', { name: /^pomidor — .*вчу\. Відкрити картку слова/ })).toBeVisible();
+});
+
 test('офлайн (§76): відкриті раз урок і текст відкриваються без інтернету', async ({ page, context, request }) => {
   test.slow();
   const sw = await request.get('/sw.js');
