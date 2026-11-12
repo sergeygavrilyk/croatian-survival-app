@@ -196,6 +196,8 @@ Level → Module → Unit → Lesson → Learning Objectives → Input → Pract
 
 ## 30. B1 Curriculum
 
+*Програма B1 v1 (пропозиція 2026-11-12, чекає рішень власника):* 14 модулів, 84 уроки, 3 діалоги на урок, 4 тексти для читання й рольова гра в кожному модулі, код ситуації в кожному уроці — `content/reviews/2026-11-12_curriculum_b1_v1_program.md`. Нижче — каркас у базі (10 DRAFT-модулів).
+
 10 modules:
 
 - 1\. Personal life
@@ -246,6 +248,8 @@ Every lesson contains:
 - 12\. Assessment
 
 Not every lesson must contain all components, but every lesson must have a defined skill purpose.
+
+**Діалоги в уроці за рівнями** (рішення власника 2026-11-12): A0–A2 — 2 діалоги; **B1 — 3 діалоги по 8–10 реплік** (нейтральний — ситуація уроку; ускладнення — проблема чи незгода; між друзями — розмовна мова); **B2 — 4 діалоги по 8–10 реплік** (+ регіональний голос — зрозуміти місцеве мовлення). Кожен діалог має код ситуації (`conversations.situation`, `lib/situations.ts`), тож потрапляє в розділ «Ситуації». З B1 у програмі рівня для кожного модуля вказано 4 тексти для читання (`reading_texts`) і рольову гру (M9).
 
 ## 33. Lesson Schema
 
