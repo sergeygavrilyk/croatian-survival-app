@@ -51,17 +51,22 @@ Context → Examples → Pattern discovery → Short explanation → Controlled 
 
 ## 23. Grammar A2
 
-- perfekt;
-- future;
-- dative;
-- instrumental;
-- genitive expansion;
+*Рішення власника 2026-11-12:* «11 нових тем граматики. Граматика потрібна бути як нагадування з іншого рівня та також доповнена за необхідністю рівня A2». Основи perfekt, futur I, зворотних дієслів, орудного й коротких форм давального вже в A1 — в A2 вони йдуть як **нагадування + розширення**. Повний розподіл тем по модулях — `content/reviews/2026-11-12_curriculum_a2_v2_program.md`.
+
+22 теми:
+
+- conditional I (politeness, wishes, purpose *da bih*);
+- subordinate clauses (*ako, kad, dok, čim, da, što*);
 - aspect;
-- reflexive verbs;
-- subordinate clauses;
-- conditional;
+- pronoun patterns (full and clitic forms in all cases);
 - comparative structures;
-- pronoun patterns.
+- genitive expansion (plural, *zbog, umjesto, tijekom, osim, nakon*);
+- perfekt — reminder + aspect in the past;
+- reflexive verbs — reminder + *sjećati se* + genitive;
+- instrumental — reminder + plural, *pred, iza, među*;
+- dative — reminder + full forms, plural, *prema*;
+- future I — reminder + perfective aspect;
+- **new:** plural dative / locative / instrumental; sound changes (fleeting *a*, sibilarisation, jotation); stem extension and irregular plurals (*gradovi, djeca, braća, ime – imena*); possessive adjectives (*Ivanov, mamin*); numbers 2–4, collective numerals, dates; prefixed verbs of motion; impersonal sentences; *se*-passive; clitic order; relative *koji* (start of B1); future II — recognition only.
 
 ## 24. Grammar B1
 
@@ -168,18 +173,24 @@ Level → Module → Unit → Lesson → Learning Objectives → Input → Pract
 
 ## 29. A2 Curriculum
 
-10 modules:
+*Рішення власника 2026-11-12:* «12 + 2 модуля які були би цікавими для українців, разом 14 модулів і 86 уроків, уроки повинні закривати модуль, згідно рівня A2»; 20–25 нових слів на урок; уроки A2 — бета. Деталі — `content/reviews/2026-11-12_curriculum_a2_v2_program.md`.
 
-- 1\. Experiences
-- 2\. Travel
-- 3\. Work
-- 4\. Administration
-- 5\. Health
-- 6\. Relationships
-- 7\. Problems
-- 8\. Plans
-- 9\. Opinions
-- 10\. A2 integration
+14 modules, 86 lessons:
+
+- 1\. Tourism & travel: the Adriatic (8)
+- 2\. Education: courses, university, school (8)
+- 3\. My past: childhood & memories (6)
+- 4\. People & relationships (7)
+- 5\. Work & career (7)
+- 6\. Institutions, services & money (6)
+- 7\. Health: the system & wellbeing (5)
+- 8\. Car in Croatia (6) — for Ukrainians
+- 9\. Trouble in the city & environment (6)
+- 10\. Media, culture & opinions (6)
+- 11\. Croatia: regions & customs (6)
+- 12\. Ukrainians in Croatia (6) — for Ukrainians
+- 13\. Plans, wishes & arrangements (6)
+- 14\. A2 integration (3)
 
 ## 30. B1 Curriculum
 
