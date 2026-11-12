@@ -3,8 +3,9 @@
  *
  * Урок іде етапами: вступ → слова → діалоги → граматика (якщо є) → вправи → підсумок.
  * Вправи — від упізнавання до власного мовлення (вибір → вставити → написати → скласти →
- * аудіювання → сказати вголос → написати повідомлення → перекажіть другу). Неправильну вправу повторюємо один раз
- * у кінці черги; письмо й переказ — ні (людина вже бачила зразок, lib/writing.ts).
+ * аудіювання → прослухайте діалог чи оголошення → сказати вголос → написати повідомлення → перекажіть другу).
+ * Неправильну вправу повторюємо один раз у кінці черги; письмо, переказ і «прослухайте діалог» — ні (людина вже бачила
+ * зразок / текст запису, lib/writing.ts, lib/listening.ts).
  */
 
 export type LessonStage = 'intro' | 'words' | 'dialogue' | 'grammar' | 'practice' | 'summary';
@@ -15,6 +16,7 @@ export const EXERCISE_TYPES = [
   'type_answer',
   'sentence_builder',
   'listening',
+  'listening_dialogue',
   'speaking',
   'write_message',
   'mediation',
@@ -76,7 +78,7 @@ export function startPractice(ids: readonly string[]): PracticeState {
 export type PracticeOutcome = 'correct' | 'wrong' | 'skipped';
 
 /** Типи, які після помилки не повертаємо в чергу: людина вже бачила пункти й зразок. */
-export const NO_RETRY_TYPES: ReadonlySet<string> = new Set(['write_message', 'mediation']);
+export const NO_RETRY_TYPES: ReadonlySet<string> = new Set(['write_message', 'mediation', 'listening_dialogue']);
 
 /**
  * Відповідь на поточну вправу. Неправильна вперше — повториться в кінці черги; вдруге — ідемо далі.

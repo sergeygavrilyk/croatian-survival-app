@@ -17,6 +17,8 @@ import { choicesFrom, isUkrainian, tilesFrom, type PracticeOutcome } from '@/lib
 import { cn } from '@/lib/ui';
 import { isWritingType, parseWritingTask } from '@/lib/writing';
 import WritingExercise, { type WritingAttempt } from './WritingExercise';
+import ListeningDialogueExercise, { type ListeningDetails } from './ListeningDialogueExercise';
+import { LISTENING_TYPE, parseListeningTask } from '@/lib/listening';
 
 export interface LessonExerciseData {
   id: string;
@@ -51,6 +53,7 @@ const TITLES: Record<string, string> = {
   type_answer: 'Напишіть хорватською',
   sentence_builder: 'Складіть речення',
   listening: 'Прослухайте і складіть фразу',
+  listening_dialogue: 'Прослухайте діалог чи оголошення',
   speaking: 'Скажіть уголос хорватською',
   write_message: 'Напишіть повідомлення',
   mediation: 'Перекажіть другу',
@@ -63,6 +66,7 @@ const TYPE_EMOJI: Record<string, string> = {
   type_answer: '✍️',
   sentence_builder: '🧱',
   listening: '🎧',
+  listening_dialogue: '📻',
   speaking: '🎙️',
   write_message: '💬',
   mediation: '🤝',
@@ -100,7 +104,8 @@ export default function LessonExercise({
   exercise: LessonExerciseData;
   /** Повтор після помилки */
   retry: boolean;
-  onNext: (outcome: PracticeOutcome, verdict?: string) => void;
+  /** details — подробиці для події exercise_completed (напр. «Прослухайте діалог»: скільки разів слухали) */
+  onNext: (outcome: PracticeOutcome, verdict?: string, details?: ListeningDetails) => void;
   /** Зберегти спробу «Скажіть уголос» (не чекаємо відповіді — навчання не гальмує) */
   onSpeechAttempt?: (attempt: LessonSpeechAttempt) => void;
   /** Зберегти спробу письма / переказу (лише текст) */
@@ -109,6 +114,7 @@ export default function LessonExercise({
   const [result, setResult] = useState<Result | null>(null);
   const type = exercise.exercise_type;
   const writingTask = useMemo(() => (isWritingType(type) ? parseWritingTask(type, exercise.task) : null), [type, exercise.task]);
+  const listeningTask = useMemo(() => (type === LISTENING_TYPE ? parseListeningTask(exercise.task) : null), [type, exercise.task]);
   const answer = exercise.correct_answer;
   const answerIsHr = !isUkrainian(answer);
 
@@ -132,6 +138,7 @@ export default function LessonExercise({
       </div>
 
       {writingTask && <WritingExercise task={writingTask} onNext={(o) => onNext(o)} onAttempt={onWritingAttempt} />}
+      {listeningTask && <ListeningDialogueExercise task={listeningTask} onNext={(o, d) => onNext(o, undefined, d)} />}
 
       {(type === 'multiple_choice' || type === 'fill_in_the_blank') && (
         <ChoiceExercise exercise={exercise} locked={result !== null} onAnswer={finish} />
