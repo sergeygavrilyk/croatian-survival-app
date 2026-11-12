@@ -36,7 +36,7 @@
 | potvrda o prebivalištu | довідка про місце проживання | Za produljenje treba potvrda o prebivalištu. |
 | prijaviti adresu | зареєструвати адресу | Novu adresu morate prijaviti u roku od osam dana. |
 | obavijestiti | повідомити | O selidbi obavijestite policiju. |
-| službeniku | службовцю (кому?) | Dokumente sam dala službeniku na šalteru. |
+| rok važenja | строк дії | Rok važenja iskaznice je godinu dana. |
 | pravo na rad | право на роботу | S ovim statusom imate pravo na rad. |
 | ostati u Hrvatskoj | залишитися в Хорватії | Još ne znamo hoćemo li ostati u Hrvatskoj. |
 
@@ -72,10 +72,10 @@
 | multiple_choice | Що означає «obavijestiti»? | повідомити | статус тимчасового захисту · закінчення строку дії посвідки · повідомити · посвідка іноземця |
 | multiple_choice | Що означає «raseljena osoba»? | переміщена особа | переміщена особа · український паспорт · повідомити · відбиток пальця |
 | multiple_choice | Що означає «odjel za strance»? | відділ у справах іноземців | члени родини · консульство · зареєструвати адресу · відділ у справах іноземців |
-| multiple_choice | Як хорватською «український паспорт»? | ukrajinska putovnica | službeniku · ukrajinska putovnica · ostati u Hrvatskoj · konzulat |
-| multiple_choice | Як хорватською «консульство»? | konzulat | prijaviti adresu · konzulat · pravo na rad · biometrijska fotografija |
+| multiple_choice | Що означає «pravo na rad»? | право на роботу | залишитися в Хорватії · право на роботу · український паспорт · повідомити |
+| multiple_choice | Як хорватською «український паспорт»? | ukrajinska putovnica | biometrijska fotografija · ukrajinska putovnica · pravo na rad · prijaviti adresu |
+| multiple_choice | Як хорватською «консульство»? | konzulat | potvrda o prebivalištu · konzulat · odjel za strance · ukrajinska putovnica |
 | type_answer | Напишіть хорватською: «відбиток пальця» | otisak prsta |  |
-| type_answer | Напишіть хорватською: «службовцю (кому?)» | službeniku |  |
 | sentence_builder | Складіть: «Нову адресу треба зареєструвати.» | Novu adresu treba prijaviti. | treba · Novu · prijaviti. · adresu |
 | sentence_builder | Складіть: «З цим статусом ви маєте право на роботу.» | S ovim statusom imate pravo na rad. | pravo · rad. · imate · statusom · S · ovim · na |
 | listening | Прослухайте і складіть фразу | Nova se radi u konzulatu. | radi · konzulatu. · se · u · Nova |
@@ -105,11 +105,11 @@
 | nacionalna manjina | національна меншина | Ukrajinci su u Hrvatskoj nacionalna manjina. |
 | Rusini | русини | Rusini i Ukrajinci žive u Slavoniji stoljećima. |
 | kulturno društvo | культурне товариство | Kulturno društvo ima zbor i folklor. |
-| obilježiti | відзначити | Dan neovisnosti obilježavamo zajedno. |
+| obilježiti | відзначити | Dan neovisnosti obilježili smo zajedno. |
 | Dan neovisnosti Ukrajine | День Незалежності України | Dan neovisnosti Ukrajine je dvadeset četvrtog kolovoza. |
 | druženje | спілкування, дружні зустрічі | Druženje nam je važno. |
 | međusobna pomoć | взаємодопомога | Međusobna pomoć je temelj zajednice. |
-| savjetovati | радити, консультувати | Udruga savjetuje ljudima oko dokumenata. |
+| savjetovati | радити, консультувати | Udruga savjetuje ljude oko dokumenata. |
 | prevoditelj volonter | перекладач-волонтер | Prevoditelj volonter ide s ljudima liječniku. |
 | Facebook grupa | група у Facebook | Sve novosti su u Facebook grupi. |
 | novopridošli | новоприбулі | Novopridošlima pomažemo naći stan. |
@@ -120,7 +120,7 @@
 - *Daša:* Darja, jesi li čula za ukrajinsku udrugu u Rijeci? — Дар’є, ти чула про українську асоціацію в Рієці?
 - *Darja:* Jesam! Pridružila sam se prošle godine. — Так! Я приєдналася минулого року.
 - *Daša:* Što radite? — Що ви робите?
-- *Darja:* Pomažemo novopridošlima naći stan i savjetujemo ljudima oko dokumenata. — Допомагаємо новоприбулим знайти житло й радимо людям щодо документів.
+- *Darja:* Pomažemo novopridošlima naći stan i savjetujemo ljude oko dokumenata. — Допомагаємо новоприбулим знайти житло й радимо людям щодо документів.
 - *Daša:* A djeca? — А діти?
 - *Darja:* Idu u subotnju školu. Uče ukrajinski i povijest. — Ходять у суботню школу. Вчать українську й історію.
 
@@ -190,7 +190,7 @@
 | solidarnost | солідарність | Solidarnost Hrvata nas je dirnula. |
 | dirnuti | зворушити | Njihova pomoć me jako dirnula. |
 | vratiti dobrotu | віддячити добром | Volontiram da vratim dobrotu. |
-| slobodno vrijeme za druge | вільний час для інших | Dio slobodnog vremena dajem drugima. |
+| dobrotvorni | благодійний | Dobrotvorni koncert je prikupio novac za bolnicu. |
 | neprofitni | неприбутковий | To je neprofitna organizacija. |
 
 **Діалог «Sabirno mjesto»** (Пункт збору)
@@ -267,7 +267,7 @@
 | međunarodni | міжнародний | Međunarodni prijenos je skuplji. |
 | adresa primatelja | адреса одержувача | Adresu primatelja napišite čitko. |
 | aplikacija za plaćanje | платіжний застосунок | Novac šaljem preko aplikacije za plaćanje. |
-| platiti kuriru | заплатити кур’єрові | Platila sam kuriru gotovinom. |
+| pouzeće | накладений платіж | Paket plaćam pouzećem. |
 
 **Діалог «Paket mami»** (Посилка мамі)
 
@@ -302,7 +302,7 @@
 | multiple_choice | Що означає «pratiti pošiljku»? | відстежувати посилку | отримати гроші · одержувач · митна декларація · відстежувати посилку |
 | multiple_choice | Що означає «poslati novac»? | надіслати гроші | відправник · кур’єрська служба · надіслати гроші · строк доставки |
 | multiple_choice | Що означає «težina paketa»? | вага посилки | надіслати посилку · відправник · номер для відстеження · вага посилки |
-| multiple_choice | Як хорватською «гривня»? | hrivnja | primiti novac · platiti kuriru · hrivnja · devizni tečaj |
+| multiple_choice | Як хорватською «гривня»? | hrivnja | primiti novac · pouzeće · hrivnja · devizni tečaj |
 | multiple_choice | Як хорватською «міжнародний»? | međunarodni | međunarodni · hrivnja · prijenos novca · rok dostave |
 | type_answer | Напишіть хорватською: «відправник» | pošiljatelj |  |
 | type_answer | Напишіть хорватською: «одержувач» | primatelj |  |
@@ -320,7 +320,7 @@
 
 Граматика: «Давальний відмінок: повні форми й множина».
 
-**Слова (21; уже були в словнику: naglasak):**
+**Слова (21; з уроків A0 / A1: slikovnica, tečno; уже були в словнику: naglasak, slikovnica, tečno):**
 
 | Слово | Переклад | Приклад |
 |---|---|---|
@@ -331,20 +331,20 @@
 | zaboravljati | забувати | Sin polako zaboravlja ukrajinski. |
 | naglasak | наголос; акцент | Kći govori hrvatski bez naglaska. |
 | progovoriti | заговорити | Mali je progovorio na dva jezika. |
-| kod kuće ukrajinski | удома — українською | Pravilo je: kod kuće ukrajinski, vani hrvatski. |
+| jezik okoline | мова оточення | Djeca brzo nauče jezik okoline. |
 | ćirilica | кирилиця | Kći uči čitati ćirilicu. |
 | latinica | латиниця | U školi pišu latinicom. |
-| crtani filmovi na ukrajinskom | мультики українською | Gledaju crtane filmove na ukrajinskom. |
-| čitati sinu | читати синові | Svake večeri čitam sinu na ukrajinskom. |
+| obiteljsko pravilo | сімейне правило | Naše obiteljsko pravilo je: kod kuće samo ukrajinski. |
+| slikovnica | дитяча книжка з малюнками | Sinu čitam ukrajinske slikovnice. |
 | online škola | онлайн-школа | Kći pohađa ukrajinsku online školu. |
-| dvije škole | дві школи | Teško je pohađati dvije škole. |
+| dvojezični odgoj | двомовне виховання | Dvojezični odgoj traži puno strpljenja. |
 | prilagodba djeteta | адаптація дитини | Prilagodba djeteta trajala je pola godine. |
 | prijatelji iz razreda | однокласники (друзі з класу) | Prijatelji iz razreda su Hrvati. |
 | identitet | ідентичність | Važno nam je očuvati identitet. |
 | korijeni | коріння | Djeca trebaju znati svoje korijene. |
 | prevoditi roditeljima | перекладати батькам | Sin nam prevodi kod liječnika. |
 | ponosan na | гордий за | Ponosna sam na kćer, govori tri jezika. |
-| kćeri je lakše | доньці легше | Kćeri je lakše nego sinu. |
+| tečno | вільно (про мову) | Kći tečno govori hrvatski. |
 
 **Діалог «Dva jezika»** (Дві мови)
 
@@ -374,14 +374,14 @@
 | Тип | Питання | Відповідь | Варіанти |
 |---|---|---|---|
 | fill_in_the_blank | Svake večeri čitam ___ priču na ukrajinskom. | sinu | sina · sin · sinom · sinu |
-| multiple_choice | Що означає «crtani filmovi na ukrajinskom»? | мультики українською | латиниця · двомовність · наголос; акцент · мультики українською |
-| multiple_choice | Що означає «materinji jezik»? | рідна мова | наголос; акцент · рідна мова · удома — українською · доньці легше |
-| multiple_choice | Що означає «kćeri je lakše»? | доньці легше | мультики українською · доньці легше · змішувати мови · онлайн-школа |
-| multiple_choice | Як хорватською «забувати»? | zaboravljati | zaboravljati · naglasak · crtani filmovi na ukrajinskom · ćirilica |
-| multiple_choice | Як хорватською «двомовна родина»? | dvojezična obitelj | dvije škole · ponosan na · materinji jezik · dvojezična obitelj |
+| multiple_choice | Що означає «dvojezična obitelj»? | двомовна родина | сімейне правило · рідна мова · заговорити · двомовна родина |
+| multiple_choice | Що означає «materinji jezik»? | рідна мова | наголос; акцент · рідна мова · мова оточення · вільно (про мову) |
+| multiple_choice | Що означає «prilagodba djeteta»? | адаптація дитини | адаптація дитини · сімейне правило · змішувати мови · онлайн-школа |
+| multiple_choice | Як хорватською «забувати»? | zaboravljati | zaboravljati · naglasak · obiteljsko pravilo · ćirilica |
+| multiple_choice | Як хорватською «сімейне правило»? | obiteljsko pravilo | ponosan na · obiteljsko pravilo · dvojezičnost · dvojezični odgoj |
 | type_answer | Напишіть хорватською: «заговорити» | progovoriti |  |
+| type_answer | Напишіть хорватською: «вільно (про мову)» | tečno |  |
 | type_answer | Напишіть хорватською: «двомовність» | dvojezičnost |  |
-| type_answer | Напишіть хорватською: «ідентичність» | identitet |  |
 | sentence_builder | Складіть: «Діти іноді змішують мови.» | Djeca ponekad miješaju jezike. | jezike. · Djeca · miješaju · ponekad |
 | sentence_builder | Складіть: «Українська — моя рідна мова.» | Ukrajinski mi je materinji jezik. | je · Ukrajinski · mi · jezik. · materinji |
 | listening | Прослухайте і складіть фразу | Ponekad. Sin polako zaboravlja ukrajinski, zato mu čitam svake večeri. | polako · mu · zaboravlja · Ponekad. · svake · zato · ukrajinski, · večeri. · Sin · čitam |
@@ -396,7 +396,7 @@
 
 Граматика: «Порівняльні конструкції».
 
-**Слова (20; з уроків A0 / A1: godišnja doba; уже були в словнику: sličnost, birokracija, godišnja doba):**
+**Слова (20; з уроків A0 / A1: godišnja doba, naviknuti se; уже були в словнику: sličnost, birokracija, godišnja doba, naviknuti se):**
 
 | Слово | Переклад | Приклад |
 |---|---|---|
@@ -413,7 +413,7 @@
 | opušteniji | розслабленіший | Hrvati su opušteniji od nas. |
 | marljiviji | працьовитіший | Ne mislim da je itko marljiviji od drugih. |
 | nedostaju mi | мені бракує, я сумую за (мн.) | Nedostaju mi prijatelji i ukrajinski kruh. |
-| navikla sam se na | я звикла до | Navikla sam se na fjaku. |
+| naviknuti se | звикнути | Navikla sam se na fjaku. |
 | isti kao | такий самий, як | Boršč nije isti kao maneštra. |
 | za razliku od | на відміну від | Za razliku od Kijeva, Split je malen. |
 | u usporedbi s | у порівнянні з | U usporedbi s Ukrajinom, ovdje je više sunca. |
@@ -452,7 +452,7 @@
 |---|---|---|---|
 | fill_in_the_blank | Stanovi su ovdje skuplji ___ u Kijevu. | nego | nego · kao · od · isti |
 | multiple_choice | Що означає «kad se sve zbroji»? | якщо все підсумувати | одного дня, колись · якщо все підсумувати · інакший · працьовитіший |
-| multiple_choice | Що означає «navikla sam se na»? | я звикла до | інакший · пори року · ритм життя · я звикла до |
+| multiple_choice | Що означає «naviknuti se»? | звикнути | інакший · звикнути · ритм життя · пори року |
 | multiple_choice | Що означає «jednog dana»? | одного дня, колись | друга батьківщина · такий самий, як · розслабленіший · одного дня, колись |
 | multiple_choice | Як хорватською «у порівнянні з»? | u usporedbi s | u usporedbi s · druga domovina · godišnja doba · isti kao |
 | multiple_choice | Як хорватською «друга батьківщина»? | druga domovina | ritam života · druga domovina · sličnost · kad se sve zbroji |

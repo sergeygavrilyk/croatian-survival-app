@@ -78,6 +78,16 @@ select pg_temp.ok(pg_temp.n($q$select 1 from a2_lessons v join public.lesson_ite
   where (select count(*) from jsonb_array_elements(e.task -> 'questions') q where q ? 'answer_text') <> (case when v.mo >= 8 then 1 else 0 end)$q$) = 0,
   '«на слух»: до A2.8 лише вибір, з A2.8 — рівно одне питання з короткою відповіддю');
 
+-- мовна перевірка 2026-11-12 (пакет 20261112_curriculum_a2_v2_u1_review_fix.sql)
+select pg_temp.ok(pg_temp.n($q$select 1 from a2_lessons v join public.lesson_items i on i.lesson_id = v.id and i.item_type = 'lexeme'
+  join public.lexemes x on x.id = i.item_id where lower(x.lemma) in ('u tramvajima', 'službeniku', 'dati mi ga', 'nazdravlje', 'nevaljao', 'cimerica iz klupe')$q$) = 0,
+  'мовна перевірка: форм слів і помилкових лем більше немає в уроках A2');
+select pg_temp.ok(pg_temp.n($q$select distinct lower(x.lemma) from a2_lessons v join public.lesson_items i on i.lesson_id = v.id and i.item_type = 'lexeme'
+  join public.lexemes x on x.id = i.item_id where lower(x.lemma) in ('kolegica iz klupe', 'knjiga žalbi', 'podići čašu', 'rok važenja')$q$) = 4,
+  'мовна перевірка: нові слова на місці замінених');
+select pg_temp.ok(pg_temp.n($q$select 1 from public.conversation_turns where ua_translation like '%дорады%' or ua_translation like '%конова%'$q$) = 0,
+  'мовна перевірка: виправлені репліки діалогів');
+
 -- ---------------------------------------------------------------- граматика
 select pg_temp.ok(pg_temp.n($q$select 1 from public.grammar_topics where cefr = 'A2' and status = 'PUBLISHED'$q$) >= 22,
   'граматика A2: ≥ 22 опубліковані теми');

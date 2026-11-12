@@ -24,9 +24,9 @@ LESSONS = [
             ('prijava krađe', 'заява про крадіжку', 'ph', 'f', 'Za osiguranje trebam prijavu krađe.'),
             ('smeđ', 'коричневий', 'adj', '', 'Novčanik je smeđ i kožni.'),
             ('kišobran', 'парасолька', 'n', 'm', 'Kišobrani se najčešće zaboravljaju.'),
-            ('u tramvajima', 'у трамваях', 'ph', '', 'U tramvajima ljudi često zaborave kišobrane.'),
-            ('s dokumentima', 'з документами', 'ph', '', 'Izgubila sam torbu s dokumentima.'),
-            ('po džepovima', 'по кишенях', 'ph', '', 'Tražila sam ključeve po svim džepovima.'),
+            ('kožna torbica', 'шкіряна сумочка', 'ph', 'f', 'Izgubila sam crnu kožnu torbicu.'),
+            ('putna torba', 'дорожня сумка', 'ph', 'f', 'Putnu torbu ostavila sam na kolodvoru.'),
+            ('pretražiti', 'обшукати, перерити', 'v', 'pfv:pretraživati', 'Pretražila sam sve džepove.'),
             ('obrazac za prijavu', 'бланк заяви', 'ph', 'm', 'Ispunite obrazac za prijavu gubitka.'),
             ('javiti se ako se nađe', 'повідомити, якщо знайдеться', 'ph', '', 'Javit ćemo Vam se ako se nađe.'),
             ('osobne stvari', 'особисті речі', 'ph', 'f_pl', 'Osobne stvari čuvajte uz sebe.'),
@@ -98,8 +98,8 @@ LESSONS = [
             ('ostaci hrane', 'залишки їжі', 'ph', 'm_pl', 'Ostaci hrane ne idu u plastiku.'),
             ('raspored odvoza', 'графік вивезення сміття', 'ph', 'm', 'Raspored odvoza je na stranici grada.'),
             ('kazna za neodvajanje', 'штраф за несортування', 'ph', 'f', 'Postoji i kazna za neodvajanje otpada.'),
-            ('u spremnicima', 'у контейнерах', 'ph', '', 'U spremnicima za papir često ima plastike.'),
-            ('okolišno', 'екологічно', 'adv', '', 'Živimo okolišno odgovorno.'),
+            ('smeđa kanta', 'коричневий бак (для біовідходів)', 'ph', 'f', 'Ostatke hrane bacamo u smeđu kantu.'),
+            ('kompostirati', 'компостувати', 'v', 'ipfv', 'Ostatke povrća kompostiramo u vrtu.'),
             ('tetrapak', 'тетрапак (упаковка з-під молока, соку)', 'n', 'm', 'Tetrapak od mlijeka ide u žutu vreću.'),
         ],
         scenes=[
@@ -160,12 +160,12 @@ LESSONS = [
             ('divlje odlagalište', 'стихійне звалище', 'ph', 'n', 'Iza šume je divlje odlagalište.'),
             ('prijaviti problem', 'повідомити про проблему', 'ph', '', 'Problem možete prijaviti u aplikaciji grada.'),
             ('aplikacija grada', 'міський застосунок', 'ph', 'f', 'Preko aplikacije grada prijavila sam rupu.'),
-            ('besplatno jednom godišnje', 'раз на рік безкоштовно', 'ph', '', 'Odvoz je besplatno jednom godišnje.'),
+            ('jednom godišnje', 'раз на рік', 'ph', '', 'Odvoz glomaznog otpada je besplatan jednom godišnje.'),
             ('kauč', 'диван', 'n', 'm', 'Stari kauč je pun prašine.'),
             ('raskrčiti', 'розчистити', 'v', 'pfv:krčiti', 'Treba raskrčiti podrum.'),
             ('nagomilati se', 'накопичитися', 'v', 'pfv:gomilati se', 'Na balkonu se nagomilalo puno stvari.'),
-            ('ispred zgrade', 'перед будинком', 'ph', '', 'Kauč smo ostavili ispred zgrade.'),
-            ('u ulicama', 'на вулицях', 'ph', '', 'U ulicama starog grada nema kontejnera.'),
+            ('spremište', 'комора, підсобка', 'n', 'n', 'Stare stvari držimo u spremištu.'),
+            ('nepropisno odlaganje', 'незаконне викидання сміття', 'ph', 'n', 'Za nepropisno odlaganje otpada plaća se kazna.'),
         ],
         scenes=[
             ('Старий диван', 'Stari kauč', [
@@ -229,8 +229,8 @@ LESSONS = [
             ('vrsta', 'вид (тварин, рослин)', 'n', 'f', 'U parku živi više od sto vrsta ptica.'),
             ('bacati smeće', 'смітити', 'ph', '', 'Zabranjeno je bacati smeće u prirodu.'),
             ('ekološki osviješten', 'екологічно свідомий', 'ph', '', 'Mladi su danas ekološki osviješteniji.'),
-            ('s volonterima', 'з волонтерами', 'ph', '', 'Plažu smo očistili s volonterima.'),
-            ('u rijekama', 'у річках', 'ph', '', 'U rijekama je sve manje ribe.'),
+            ('volonter', 'волонтер', 'n', 'm', 'Kao volonter čistim plaže.'),
+            ('zagađen', 'забруднений', 'adj', '', 'Rijeka je zagađena nakon kiše.'),
         ],
         scenes=[
             ('Акція на пляжі', 'Akcija na plaži', [
@@ -292,8 +292,8 @@ LESSONS = [
             ('nestanak struje', 'відключення світла', 'ph', 'm', 'Zbog oluje je nestanak struje.'),
             ('srušeno stablo', 'повалене дерево', 'ph', 'n', 'Srušeno stablo blokira cestu.'),
             ('evakuirati', 'евакуювати', 'v', 'biasp', 'Evakuirali su turiste iz kampa.'),
-            ('na cestama', 'на дорогах', 'ph', '', 'Na cestama je puno vode.'),
-            ('u kućama', 'у будинках', 'ph', '', 'Ljudi su ostali u kućama.'),
+            ('poplavljen', 'затоплений', 'adj', '', 'Podrum je poplavljen nakon oluje.'),
+            ('sigurno mjesto', 'безпечне місце', 'ph', 'n', 'Djecu smo odveli na sigurno mjesto.'),
             ('hitne službe', 'екстрені служби', 'ph', 'f_pl', 'U hitnom slučaju nazovite hitne službe na 112.'),
         ],
         scenes=[
@@ -359,7 +359,7 @@ LESSONS = [
             ('uvenuti', 'зів’янути', 'v', 'pfv:venuti', 'Dok smo bili na moru, biljke su uvenule.'),
             ('zalijevanje', 'полив', 'n', 'n', 'Ljeti je zalijevanje navečer najbolje.'),
             ('vrtlarski centar', 'садовий центр', 'ph', 'm', 'U vrtlarskom centru imaju sve za balkon.'),
-            ('s biljkama', 'з рослинами', 'ph', '', 'Balkon s biljkama je kao mali vrt.'),
+            ('presaditi', 'пересадити', 'v', 'pfv:presađivati', 'Presadila sam bosiljak u veći lonac.'),
         ],
         scenes=[
             ('Балкон Дар’ї', 'Darjin balkon', [

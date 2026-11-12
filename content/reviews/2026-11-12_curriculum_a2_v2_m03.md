@@ -97,9 +97,9 @@
 | Слово | Переклад | Приклад |
 |---|---|---|
 | školski dani | шкільні роки | Rado se sjećam školskih dana. |
-| omiljeni predmet | улюблений предмет | Moj omiljeni predmet bila je kemija. |
+| omiljeni predmet | улюблений предмет | Kemija mi je bila omiljeni predmet. |
 | školska klupa | шкільна парта | Sjedila sam u prvoj klupi. |
-| cimerica iz klupe | сусідка по парті | Moja cimerica iz klupe je danas liječnica. |
+| kolegica iz klupe | сусідка по парті | Moja kolegica iz klupe je danas liječnica. |
 | najbolji prijatelj | найкращий друг | Moj najbolji prijatelj iz škole živi u Kanadi. |
 | stroga učiteljica | сувора вчителька | Imali smo strogu učiteljicu matematike. |
 | omiljeni učitelj | улюблений учитель | Moj omiljeni učitelj predavao je povijest. |
@@ -151,12 +151,12 @@
 | multiple_choice | Що означає «omiljeni učitelj»? | улюблений учитель | улюблений учитель · відмінник · шпаргалка · сувора вчителька |
 | multiple_choice | Що означає «najbolji prijatelj»? | найкращий друг | забути · найкращий друг · сувора вчителька · засоромитися |
 | multiple_choice | Як хорватською «покоління; випуск (класу)»? | generacija | kontrolni · posramiti se · šalabahter · generacija |
-| multiple_choice | Як хорватською «випускний вечір»? | maturalna zabava | cimerica iz klupe · maturalna zabava · školska klupa · prepisivati zadaću |
+| multiple_choice | Як хорватською «випускний вечір»? | maturalna zabava | kolegica iz klupe · maturalna zabava · školska klupa · prepisivati zadaću |
 | type_answer | Напишіть хорватською: «відмінник» | odličan učenik |  |
 | type_answer | Напишіть хорватською: «прогулювати (уроки)» | markirati |  |
 | type_answer | Напишіть хорватською: «засоромитися» | posramiti se |  |
 | sentence_builder | Складіть: «Я не можу пригадати його ім’я.» | Ne mogu se prisjetiti njegova imena. | mogu · se · imena. · Ne · njegova · prisjetiti |
-| sentence_builder | Складіть: «Мій улюблений предмет була хімія.» | Moj omiljeni predmet bila je kemija. | je · Moj · predmet · kemija. · bila · omiljeni |
+| sentence_builder | Складіть: «Хімія була моїм улюбленим предметом.» | Kemija mi je bila omiljeni predmet. | bila · mi · predmet. · omiljeni · je · Kemija |
 | listening | Прослухайте і складіть фразу | Otišli smo u kino, ali ravnatelj nas je uhvatio na ulici. | smo · nas · ulici. · u · je · Otišli · kino, · ravnatelj · ali · uhvatio · na |
 | speaking | Ти пам’ятаєш свою першу вчительку? | Sjećaš li se svoje prve učiteljice? |  |
 | speaking | Я ніколи не забуду той день. | Nikad neću zaboraviti taj dan. |  |
@@ -177,7 +177,7 @@
 | tada | тоді | Tada nismo imali mobitele. |
 | tadašnji | тодішній | Tadašnji život bio je jednostavniji. |
 | nekadašnji | колишній | Ovo je nekadašnja zgrada pošte. |
-| u ono vrijeme | у ті часи | U ono vrijeme se pisalo pisma. |
+| u ono vrijeme | у ті часи | U ono vrijeme pisala su se pisma. |
 | prije dvadeset godina | двадцять років тому | Prije dvadeset godina sve je bilo jeftinije. |
 | promijeniti se | змінитися | Grad se jako promijenio. |
 | mijenjati se | змінюватися | Cijene se stalno mijenjaju. |
@@ -188,7 +188,7 @@
 | telefonska govornica | телефонна будка | Zvala sam mamu iz telefonske govornice. |
 | videokazeta | відеокасета | Filmove smo gledali na videokazetama. |
 | ploča | платівка | Tata još ima stare ploče. |
-| generacijski jaz | конфлікт поколінь | Između mene i djece postoji generacijski jaz. |
+| generacijski jaz | розрив між поколіннями | Između mene i djece postoji generacijski jaz. |
 | više ne postoji | більше не існує | Ta trgovina više ne postoji. |
 | nestati | зникнути | Stari kafići su nestali iz centra. |
 | izgraditi | збудувати | Izgradili su novi trgovački centar. |
@@ -206,7 +206,7 @@
 **Діалог «Nekad i sad»** (Колись і тепер)
 
 - *Marko:* Tata kaže da je nekoć sve bilo jednostavnije. — Тато каже, що колись усе було простіше.
-- *Ivan:* Možda. U ono vrijeme se pisalo pisma i zvalo iz telefonske govornice. — Можливо. У ті часи писали листи й дзвонили з телефонних будок.
+- *Ivan:* Možda. U ono vrijeme ljudi su pisali pisma i zvali iz telefonske govornice. — Можливо. У ті часи писали листи й дзвонили з телефонних будок.
 - *Marko:* Moja djeca ne znaju što je videokazeta. — Мої діти не знають, що таке відеокасета.
 - *Ivan:* To je generacijski jaz. Ali stvari se stalno mijenjaju. — Це конфлікт поколінь. Але все постійно змінюється.
 - *Marko:* Istina. Samo je tatin stari album ostao isti. — Правда. Лише татів старий альбом лишився таким самим.
@@ -225,7 +225,7 @@
 | fill_in_the_blank | Za deset godina grad se potpuno ___. | promijenio | mijenjati · promijenio · mijenja · promijeniti |
 | multiple_choice | Що означає «više ne postoji»? | більше не існує | більше не існує · двадцять років тому · змінюватися · простіший |
 | multiple_choice | Що означає «ploča»? | платівка | платівка · писати листи · простіший · колись, раніше |
-| multiple_choice | Що означає «generacijski jaz»? | конфлікт поколінь | чорно-біла фотографія · колись, раніше · конфлікт поколінь · колишній |
+| multiple_choice | Що означає «generacijski jaz»? | розрив між поколіннями | чорно-біла фотографія · колись, раніше · розрив між поколіннями · колишній |
 | multiple_choice | Як хорватською «телефонна будка»? | telefonska govornica | srušiti · crno-bijela fotografija · telefonska govornica · tada |
 | multiple_choice | Як хорватською «зміна»? | promjena | promjena · stari album · crno-bijela fotografija · izgraditi |
 | type_answer | Напишіть хорватською: «тоді» | tada |  |
@@ -250,7 +250,7 @@
 | Слово | Переклад | Приклад |
 |---|---|---|
 | napustiti | покинути, залишити | Napustili smo Harkiv u ožujku. |
-| rodno mjesto | рідне місце, рідне село | Moje rodno mjesto je malo selo kod Sumija. |
+| rodno mjesto | рідне місце, рідне село | Moje rodno mjesto je malo selo kod Poltave. |
 | novi početak | новий початок | Hrvatska je za nas bila novi početak. |
 | prvi mjeseci | перші місяці | Prvi mjeseci su bili najteži. |
 | priviknuti se | звикнути | Brzo smo se priviknuli na novi grad. |
@@ -363,7 +363,7 @@
 - *Marko:* Ljetos mi se dogodila smiješna zgoda. — Цього літа зі мною стався кумедний випадок.
 - *Ivan:* Pričaj! — Розповідай!
 - *Marko:* Slikao sam zalazak sunca s mola, i u tom trenutku mi je mobitel ispao u more. — Я фотографував захід сонця з молу, і в ту мить мобільний випав у море.
-- *Ivan:* Nažalost! I što si napravio? — Як шкода! І що ти зробив?
+- *Ivan:* Ma nemoj! I što si napravio? — Та ти що! І що ти зробив?
 - *Marko:* Srećom, jedan dječak je skočio i izvadio ga. Svi su se nasmijali. — На щастя, один хлопчик стрибнув і дістав його. Усі засміялися.
 
 **Прослухайте голосове повідомлення** — Даша надіслала вам голосове повідомлення з поїздки.

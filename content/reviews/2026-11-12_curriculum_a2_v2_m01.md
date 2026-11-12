@@ -37,7 +37,7 @@
 | dostupan | доступний | Otok je dostupan trajektom i katamaranom. |
 | odlučiti se | вирішити, зважитися | Još se nismo odlučili između Istre i Dalmacije. |
 | više bih volio | я б радше хотів | Više bih volio otići na neki otok. |
-| vrijedi | варто | Vrijedi rezervirati ranije. |
+| vrijedi | варто (+ інфінітив) | Vrijedi rezervirati ranije. |
 | isplativ | вигідний | Putovanje u lipnju je isplativije. |
 | datum polaska | дата відправлення | Još nismo odredili datum polaska. |
 
@@ -55,7 +55,7 @@
 - *Agent:* Dobar dan! Kako Vam mogu pomoći? — Добрий день! Чим можу вам допомогти?
 - *Marko:* Htio bih neki paket aranžman za obiteljski odmor. — Я хотів би якийсь пакетний тур для сімейного відпочинку.
 - *Agent:* Kakav je Vaš proračun? — Який у вас бюджет?
-- *Marko:* Do osamsto eura za četvero, ako je moguće. — До вісімсот євро на чотирьох, якщо можливо.
+- *Marko:* Do osamsto eura za četvero, ako je moguće. — До восьмисот євро на чотирьох, якщо можливо.
 - *Agent:* Imamo last minute ponudu za Rab: cijena po osobi je dvjesto eura. — Маємо гарячу пропозицію на Раб: ціна з людини — двісті євро.
 - *Marko:* Odlično, to se isplati. Je li plaža pješčana? — Чудово, це вигідно. Пляж піщаний?
 
@@ -73,7 +73,7 @@
 |---|---|---|---|
 | fill_in_the_blank | Mi ___ htjeli otići na more u rujnu. | bismo | bismo · bi · biste · bih |
 | multiple_choice | Що означає «ljetovanje»? | літній відпочинок; відпустка влітку | літній відпочинок; відпустка влітку · гаряча пропозиція (останньої хвилини) · дата відправлення · доступний |
-| multiple_choice | Що означає «dostupan»? | доступний | тихе місце · варто · доступний · вигідний |
+| multiple_choice | Що означає «dostupan»? | доступний | тихе місце · варто (+ інфінітив) · доступний · вигідний |
 | multiple_choice | Що означає «ljetovati»? | відпочивати влітку (на морі) | розпал сезону · ціна з людини · відпочивати влітку (на морі) · туристична агенція |
 | multiple_choice | Як хорватською «туристична агенція»? | turistička agencija | datum polaska · turistička agencija · dostupan · isplativ |
 | multiple_choice | Як хорватською «бюджет»? | proračun | glavna sezona · proračun · turističko mjesto · primorje |
@@ -302,9 +302,9 @@
 - Konobar: Danas preporučujem hobotnicu ispod peke, ali treba čekati sat vremena. — Сьогодні раджу восьминога під пекою, але треба чекати годину.
 - Darja: Predugo je, djeca su gladna. Imate li nešto brže? — Задовго, діти голодні. У вас є щось швидше?
 - Konobar: Oradu na žaru, gotova je za dvadeset minuta. — Дораду на грилі, буде готова за двадцять хвилин.
-- Darja: Dobro, dvije orade s krumpirom i jedan sok za djecu. — Добре, дві дорады з картоплею і один сік для дітей.
+- Darja: Dobro, dvije orade s krumpirom i jedan sok za djecu. — Добре, дві доради з картоплею і один сік для дітей.
 - ❓ Скільки треба чекати восьминога? → **годину**
-- ❓ Що замовила Дар’я? → **дві дорады**
+- ❓ Що замовила Дар’я? → **дві доради**
 
 | Тип | Питання | Відповідь | Варіанти |
 |---|---|---|---|
@@ -433,7 +433,7 @@
 | napuhati | надути | Tata, možeš li napuhati madrac? |
 | madrac za plažu | надувний матрац | Vjetar je odnio madrac za plažu. |
 | nudistička plaža | нудистський пляж | Iza rta je nudistička plaža. |
-| ubod | укус, ужалення | Na ubod meduze stavi hladnu vodu i ocat. |
+| ubod | укус, ужалення | Ubod meduze jako peče. |
 | temperatura mora | температура моря | Temperatura mora danas je dvadeset četiri stupnja. |
 
 **Діалог «Pazi, ježinci!»** (Обережно, їжаки!)
@@ -507,7 +507,7 @@
 | udobna obuća | зручне взуття | Za obilazak trebate udobnu obuću. |
 | dostupno za invalidska kolica | доступно для візків | Jedna staza je dostupna za invalidska kolica. |
 | posjetitelj | відвідувач | Park ima tisuće posjetitelja dnevno. |
-| radno vrijeme parka | години роботи парку | Radno vrijeme parka ljeti je od sedam do osam. |
+| radno vrijeme parka | години роботи парку | Radno vrijeme parka ljeti je od sedam do dvadeset sati. |
 | pješačenje | піші прогулянки, хайкінг | Volimo pješačenje po planinama. |
 | najam bicikla | прокат велосипеда | Na ulazu postoji najam bicikla. |
 | netaknut | незайманий | Ovdje je priroda netaknuta. |

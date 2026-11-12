@@ -182,7 +182,7 @@
 | skrenuti | повернути | Skrenuo je lijevo bez žmigavca. |
 | žmigavac | покажчик повороту | Nije uključio žmigavac. |
 | oštar zavoj | крутий поворот | Izletio je iz oštrog zavoja. |
-| ogrebotina na branik | подряпина на бампері | Na branik je samo ogrebotina. |
+| ogrebotina na braniku | подряпина на бампері | Na braniku je samo ogrebotina. |
 | branik | бампер | Stražnji branik je udubljen. |
 | udubljen | вм’ятий | Vrata su udubljena. |
 | materijalna šteta | матеріальна шкода | Ima samo materijalne štete, nitko nije ozlijeđen. |
@@ -190,7 +190,7 @@
 | sigurnosni trokut | знак аварійної зупинки | Postavite sigurnosni trokut iza auta. |
 | pozvati policiju | викликати поліцію | Ako se ne slažete, pozovite policiju. |
 | vučna služba | евакуатор (служба) | Vučna služba je odvezla auto u servis. |
-| na licu mjesta | на місці (події) | Policija je izašla na lice mjesta. |
+| na licu mjesta | на місці (події) | Policija je bila na licu mjesta za deset minuta. |
 | krivac | винуватець | Krivac je drugi vozač. |
 | izjava svjedoka | показання свідка | Trebamo izjavu svjedoka. |
 | fotografirati štetu | сфотографувати пошкодження | Fotografirajte štetu i oba auta. |
@@ -256,8 +256,8 @@
 | prekršaj | правопорушення | Prolazak kroz crveno je težak prekršaj. |
 | prekoračiti brzinu | перевищити швидкість | Prekoračio sam brzinu za dvadeset kilometara. |
 | prometna kazna | штраф за порушення ПДР | Prometna kazna stigla je poštom. |
-| platiti na licu mjesta | заплатити на місці | Kaznu možete platiti na licu mjesta upola manje. |
-| upola manje | удвічі менше | Ako platite odmah, plaćate upola manje. |
+| platiti na licu mjesta | заплатити на місці | Kaznu sam platila na licu mjesta. |
+| upola manje | удвічі менше | Na sniženju sve košta upola manje. |
 | kazneni bodovi | штрафні бали | Dobio je dva kaznena boda. |
 | proći kroz crveno | проїхати на червоне | Prošao je kroz crveno i udario pješaka. |
 | parkirna zona | паркувальна зона | U prvoj parkirnoj zoni možete stajati sat vremena. |
@@ -280,7 +280,7 @@
 - *Ivan:* Oprostite, nisam vidio znak. — Перепрошую, я не бачив знака.
 - *Policajac:* Radar Vas je snimio. To je prekršaj. — Радар вас зафіксував. Це правопорушення.
 - *Ivan:* Mogu li platiti na licu mjesta? — Можу я заплатити на місці?
-- *Policajac:* Možete, onda plaćate upola manje. — Можете, тоді платите вдвічі менше.
+- *Policajac:* Možete, onda plaćate manje. — Можете, тоді платите менше.
 
 **Діалог «Gdje mi je auto?»** (Де моє авто?)
 
@@ -333,7 +333,7 @@
 | brza cesta | швидкісна дорога | Do Zadra možete i brzom cestom. |
 | tunel | тунель | Kroz tunel Sveti Rok vozi se polako. |
 | vijadukt | віадук | Na vijaduktu puše jak vjetar. |
-| zimska oprema | зимове спорядження | Zimska oprema obvezna je od studenog do travnja. |
+| zimska oprema | зимове спорядження | Zimska oprema obvezna je od sredine studenog do sredine travnja. |
 | lanci za snijeg | ланцюги на колеса | U Lici ponekad trebaju lanci za snijeg. |
 | poledica | ожеледиця | Na cesti je poledica, vozite oprezno. |
 | stanje na cestama | стан доріг | Prije puta provjerite stanje na cestama. |
@@ -353,7 +353,7 @@
 **Діалог «Prije puta za Split»** (Перед поїздкою до Спліта)
 
 - *Darja:* Ivane, trebamo li zimske gume za put u Split? — Іване, нам потрібні зимові шини для поїздки до Спліта?
-- *Ivan:* Trebamo, zimska oprema je obvezna od studenog. Kroz Liku može biti poledice. — Потрібні, зимове спорядження обов’язкове з листопада. Через Ліку може бути ожеледиця.
+- *Ivan:* Trebamo, zimska oprema je obvezna od sredine studenog. Kroz Liku može biti poledice. — Потрібні, зимове спорядження обов’язкове із середини листопада. Через Ліку може бути ожеледиця.
 - *Darja:* Kako se plaća cestarina? — Як оплачують проїзд?
 - *Ivan:* Na izlazu s autoceste, karticom. Ili elektronička naplata, ako imaš uređaj. — На виїзді з автостради, карткою. Або електронна оплата, якщо маєш пристрій.
 - *Darja:* Provjerit ću stanje na cestama prije polaska. — Перевірю стан доріг перед виїздом.
@@ -430,7 +430,7 @@
 **Діалог «Poziv na oglas»** (Дзвінок за оголошенням)
 
 - *Darja:* Dobar dan, zovem zbog oglasa za auto. Je li još na prodaju? — Добрий день, дзвоню щодо оголошення про авто. Воно ще продається?
-- *Prodavač:* Jest. Godište je dvije tisuće šesnaest, sto dvadeset tisuća kilometara. — Так. Рік випуску дві тисячі шістнадцятий, сто двадцять тисяч кілометрів.
+- *Prodavač:* Jest. Godište je dvije tisuće šesnaesto, sto dvadeset tisuća kilometara. — Так. Рік випуску дві тисячі шістнадцятий, сто двадцять тисяч кілометрів.
 - *Darja:* Jeste li prvi vlasnik? Imate li servisnu knjižicu? — Ви перший власник? У вас є сервісна книжка?
 - *Prodavač:* Prvi sam vlasnik i imam sve račune iz servisa. — Я перший власник, і в мене всі рахунки із сервісу.
 - *Darja:* Je li auto ikad bio udaren? — Авто колись було бите?
@@ -456,7 +456,7 @@
 
 | Тип | Питання | Відповідь | Варіанти |
 |---|---|---|---|
-| fill_in_the_blank | Dovest ću auto na pregled, pa ćemo se ___. | provozati | izvozati · provoziti · dovozati · provozati |
+| fill_in_the_blank | Dovest ću auto na pregled, pa ćemo se ___. | provozati | provozao · provozam · provozali · provozati |
 | multiple_choice | Що означає «kupoprodajni ugovor za vozilo»? | договір купівлі-продажу авто | механік · рік виробництва · договір купівлі-продажу авто · переоформлення власності |
 | multiple_choice | Що означає «dovesti na pregled»? | пригнати на огляд | переоформлення власності · фіксована ціна · проїхатися · пригнати на огляд |
 | multiple_choice | Що означає «godina proizvodnje»? | рік виробництва | проїхатися · іржа · договір купівлі-продажу авто · рік виробництва |

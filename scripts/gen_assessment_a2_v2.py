@@ -319,6 +319,9 @@ def main():
         out.write_text(report(), encoding='utf-8')
         print(out.relative_to(ROOT))
         return
+    if '--force' not in sys.argv:
+        print('SQL перевірок A2 уже запущено 2026-11-12 (PR #19) — файл не перезаписую; зміни — scripts/gen_curriculum_a2_v2_fix.py, свідомо — --force.')
+        return
     sql = build()
     OUT.write_text(sql, encoding='utf-8')
     print(f'{OUT.relative_to(ROOT)}: {len(sql.encode()) // 1024} КБ; завдань: {sum(len(t["items"]) for t in tests())}')

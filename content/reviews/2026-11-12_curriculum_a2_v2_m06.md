@@ -105,9 +105,9 @@
 | soboslikar | маляр (стін) | Soboslikar će okrečiti stan za dva dana. |
 | keramičar | плиточник | Keramičar je postavio nove pločice. |
 | okrečiti | побілити, пофарбувати стіни | Prije useljenja treba okrečiti zidove. |
-| pločice | плитка | U kupaonici su pucale pločice. |
+| pločice | плитка | U kupaonici su popucale pločice. |
 | brava | замок | Brava se zaglavila. |
-| zamijeniti bravu | замінити замок | Zamijenili smo bravu umjesto stare. |
+| zamijeniti bravu | замінити замок | Zamijenili smo staru bravu. |
 | predračun | попередній рахунок, кошторис | Pošaljite mi predračun prije radova. |
 | procjena | оцінка (вартості) | Procjena je oko dvjesto eura. |
 | materijal | матеріал | Materijal nije uključen u cijenu. |
@@ -165,7 +165,7 @@
 | speaking | Засмітився злив на кухні. | Začepio se odvod u kuhinji. |  |
 | speaking | Чи можемо домовитися на середу? | Možemo li dogovoriti termin za srijedu? |  |
 
-**Напишіть повідомлення:** Напишіть майстрові: у ванній тріснула плитка і капає кран; спитайте, коли він може прийти і скільки це коштуватиме. Зразок: *Dobar dan, u kupaonici su pucale pločice i slavina kapa. Kada možete doći i koliko će koštati?*
+**Напишіть повідомлення:** Напишіть майстрові: у ванній тріснула плитка і капає кран; спитайте, коли він може прийти і скільки це коштуватиме. Зразок: *Dobar dan, u kupaonici su popucale pločice i slavina kapa. Kada možete doći i koliko će koštati?*
 
 **Перекажіть другу (ua → hr):** «Скажи майстрові, що я замкнулася ззовні й мені потрібно замінити замок сьогодні.» Зразок: *Zaključala se vani i treba zamijeniti bravu još danas.*
 
@@ -213,7 +213,7 @@
 - *Ivan:* Mogu li ovdje ovjeriti presliku diplome? — Чи можу я тут засвідчити копію диплома?
 - *Bilježnik:* Možete, ako imate original. — Можете, якщо маєте оригінал.
 - *Ivan:* Imam. A koliko košta? — Маю. А скільки коштує?
-- *Bilježnik:* Javnobilježnička pristojba je propisana, oko deset eura po stranici. — Нотаріальний збір установлений, близько десяти євро за сторінку.
+- *Bilježnik:* Javnobilježnička pristojba je propisana, ovisi o broju stranica. — Нотаріальний збір установлений, залежить від кількості сторінок.
 - *Ivan:* Dobro. Hoće li biti pečat? — Добре. Чи буде печатка?
 - *Bilježnik:* Hoće. Na kraju piše „ovjereno“, s pečatom i potpisom. — Буде. Наприкінці написано «засвідчено», з печаткою й підписом.
 
@@ -425,7 +425,7 @@
 | zakonski rok | установлений законом строк | Ured mora odgovoriti u zakonskom roku. |
 | nadležan | компетентний, відповідальний (орган) | Koji ured je nadležan za to? |
 | povratnica | повідомлення про вручення | Preporučeno pismo s povratnicom. |
-| s poštovanjem, potpis | з повагою, підпис | Na kraju napišite: s poštovanjem, potpis. |
+| službena osoba | посадова особа | Zahtjev je zaprimila službena osoba. |
 | ispuniti obrazac | заповнити бланк | Ispunite obrazac tiskanim slovima. |
 | tiskana slova | друковані літери | Ime napišite tiskanim slovima. |
 | dopuna zahtjeva | доповнення заяви | Dobili smo poziv za dopunu zahtjeva. |
@@ -463,8 +463,8 @@
 | fill_in_the_blank | Zahtjev ___ predaje u pisarnici. | se | je · ga · se · su |
 | multiple_choice | Що означає «urudžbeni broj»? | вхідний номер (реєстраційний) | доповнення заяви · скарга, оскарження · адресовано (кому) · вхідний номер (реєстраційний) |
 | multiple_choice | Що означає «molba»? | прохання, заява (офіційна) | право на оскарження · прохання, заява (офіційна) · заповнити бланк · тема (офіційного листа) |
-| multiple_choice | Що означає «zakonski rok»? | установлений законом строк | з повагою, підпис · канцелярія (приймання документів) · установлений законом строк · адресовано (кому) |
-| multiple_choice | Як хорватською «прошу видати»? | molim izdavanje | s poštovanjem, potpis · molim izdavanje · urudžbeni broj · molba |
+| multiple_choice | Що означає «zakonski rok»? | установлений законом строк | посадова особа · канцелярія (приймання документів) · установлений законом строк · адресовано (кому) |
+| multiple_choice | Як хорватською «прошу видати»? | molim izdavanje | službena osoba · molim izdavanje · urudžbeni broj · molba |
 | multiple_choice | Як хорватською «компетентний, відповідальний (орган)»? | nadležan | obrazloženje · povratnica · podnositelj zahtjeva · nadležan |
 | type_answer | Напишіть хорватською: «цим листом, таким чином» | ovim putem |  |
 | type_answer | Напишіть хорватською: «канцелярія (приймання документів)» | pisarnica |  |

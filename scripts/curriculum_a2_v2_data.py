@@ -803,6 +803,7 @@ FIX_TRANSLATIONS = [
 
 # Слова уроків A2, які вже є в робочій базі (не в уроках A0 / A1): їх не додаємо, урок бере наявне слово.
 PROD_EXISTING = {
+    'certifikat', 'naviknuti se', 'ovjereni prijevod', 'proslava', 'slikovnica', 'štednja', 'tečno',  # мовна перевірка 2026-11-12
     'akcijska cijena', 'argument', 'atmosfera', 'besplatan', 'biljka', 'birokracija', 'bonus', 'brava', 'dakle', 'djelatnost',
     'dobit', 'domaće vino', 'donirati', 'dostupan', 'dovoljan', 'doživljaj', 'dubina', 'duhovit', 'dužnost', 'emisija',
     'generacija', 'glas', 'glasati', 'glumiti', 'gramatika', 'gubitak', 'hitna intervencija', 'hrabrost', 'iako', 'ishod',

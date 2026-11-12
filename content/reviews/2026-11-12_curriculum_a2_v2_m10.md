@@ -99,7 +99,7 @@
 | reklama | реклама | Ova reklama je posvuda. |
 | letak | листівка (рекламна) | U poštanskom sandučiću je letak trgovine. |
 | plakat | плакат | Na plakatu piše da je koncert otkazan. |
-| prodaje se | продається | Prodaje se dječja kolica, kao nova. |
+| prodaje se | продається | Prodaju se dječja kolica, kao nova. |
 | kao nov | як новий | Bicikl je kao nov. |
 | malo korišten | мало вживаний | Prodajem malo korištenu perilicu. |
 | po dogovoru | за домовленістю | Cijena po dogovoru. |
@@ -230,7 +230,7 @@
 | sentence_builder | Складіть: «Дія відбувається в Загребі.» | Radnja se događa u Zagrebu. | Zagrebu. · Radnja · u · događa · se |
 | sentence_builder | Складіть: «Я читаю дедалі більше хорватською.» | Sve više čitam na hrvatskom. | čitam · na · više · Sve · hrvatskom. |
 | listening | Прослухайте і складіть фразу | Imamo, i e-knjige. Posudba traje tri tjedna. | i · traje · Imamo, · e-knjige. · tri · Posudba · tjedna. |
-| speaking | Яке твій улюблений жанр? | Koji je tvoj omiljeni žanr? |  |
+| speaking | Який твій улюблений жанр? | Koji je tvoj omiljeni žanr? |  |
 | speaking | Книжка цікавіша за фільм. | Knjiga je zanimljivija od filma. |  |
 
 **Напишіть повідомлення:** Порадьте подрузі книжку: що це за жанр, про що вона і чому краща за попередню. Зразок: *Čitam kriminalistički roman, radnja se događa u Splitu. Bolji je od prošlog, preporučujem ti ga!*
@@ -358,7 +358,7 @@
 - *Ivan:* Jesi li bio u onom novom restoranu u centru? — Ти був у тому новому ресторані в центрі?
 - *Marko:* Jesam. Iskreno, precijenjen je. Hrana je prosječna, a cijene visoke. — Так. Чесно, він переоцінений. Їжа посередня, а ціни високі.
 - *Ivan:* Šteta. A neki bolji? — Шкода. А якийсь кращий?
-- *Marko:* Mala konoba iza tržnice. Omjer cijene i kvalitete je odličan. — Маленька конова за ринком. Співвідношення ціни й якості чудове.
+- *Marko:* Mala konoba iza tržnice. Omjer cijene i kvalitete je odličan. — Маленька коноба за ринком. Співвідношення ціни й якості чудове.
 
 **Прослухайте голосове повідомлення** — Подруга надіслала вам голосове з порадою.
 
