@@ -100,7 +100,7 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.grammar_rules r join public.
 select pg_temp.ok(pg_temp.n($q$select 1 from public.conversation_turns t join public.conversations c on c.id = t.conversation_id
   join public.lessons l on l.id = c.lesson_id where l.id = '4b2bf351-c5fc-57ca-9fd9-24fb8a4bfc0d'$q$) >= 8,
   'гість бачить обидва діалоги уроку A1.10.3');
-select pg_temp.ok(pg_temp.n($q$select 1 from public.modules where level_code = 'A2'$q$) = 0, 'гість не бачить чернеток A2');
+select pg_temp.ok(pg_temp.n($q$select 1 from public.modules where level_code in ('A2', 'B1', 'B2') and status <> 'PUBLISHED'$q$) = 0, 'гість не бачить чернеток A2–B2');
 
 reset role;
 select 'ALL TESTS PASSED' as result;

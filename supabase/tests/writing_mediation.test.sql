@@ -51,10 +51,13 @@ select pg_temp.ok(pg_temp.n($q$select 1 from wx, jsonb_array_elements(task -> 'p
   'кожен пункт має опис і ключі для перевірки');
 select pg_temp.ok(pg_temp.n($q$select 1 from wx where exercise_type = 'write_message'
   and (task -> 'models')::text ~ '[Ѐ-ӿ]'$q$) = 0, 'зразки повідомлень — хорватською, без кирилиці');
-select pg_temp.ok(pg_temp.n($q$select 1 from wx where exercise_type = 'mediation'
+select pg_temp.ok(pg_temp.n($q$select 1 from wx where exercise_type = 'mediation' and (level_code = 'A0' or level_code = 'A1' and mo <= 10)
   and (task ->> 'direction' <> 'hr_ua' or coalesce(task ->> 'source_hr', '') ~ '[Ѐ-ӿ]' or coalesce(task ->> 'source_hr', '') = ''
        or (task -> 'models' ->> 0) !~ '[Ѐ-ӿ]')$q$) = 0,
   'переказ A0–A1.10: хорватський текст → відповідь українською');
+select pg_temp.ok(pg_temp.n($q$select 1 from wx where exercise_type = 'mediation' and level_code = 'A2'
+  and (task ->> 'direction' <> 'ua_hr' or coalesce(task ->> 'friend_ua', '') !~ '[Ѐ-ӿ]' or (task -> 'models' ->> 0) ~ '[Ѐ-ӿ]')$q$) = 0,
+  'переказ A2 (рішення 2026-11-12): прохання друга українською → відповідь хорватською (ua_hr)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lesson_items li join public.exercises e on e.id = li.item_id
   where li.item_type = 'exercise' and e.exercise_type in ('write_message', 'mediation') and li.required$q$) = 0,
   'письмо й переказ — необов’язкові (можна пропустити)');
