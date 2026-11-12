@@ -130,7 +130,7 @@ LESSONS = [
         build=[('Складіть: «Нам треба дитяче ліжечко.»', 'Trebamo dječji krevetić.'),
                ('Складіть: «Передоплату можна внести на рахунок.»', 'Predujam se može uplatiti na račun.')],
         listen='Koliko iznosi predujam?',
-        speak=[('Апартаменти вільні в липні?', 'Je li apartman raspoloživ u srpnju?'),
+        speak=[('Апартамент вільний у липні?', 'Je li apartman raspoloživ u srpnju?'),
                ('Чи не могли б ви надіслати мені підтвердження?', 'Biste li mi mogli poslati potvrdu?')],
         listening=dict(kind='voicemail', situation='Господиня апартаментів залишила вам повідомлення.', script=[
             ('Dobar dan, ovdje Ana Bašić, iznajmljivačica iz Pakoštana.', 'Добрий день, це Ана Башич, господиня апартаментів з Пакоштан.'),

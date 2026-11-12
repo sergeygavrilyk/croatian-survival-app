@@ -197,7 +197,9 @@ test('levelStatus: скільки пройдено, середина й фіна
 test('середина й фінал за рівнем: A0 — 1–5 з 10, A1 — 1–6 з 13 (підписи й порядок)', () => {
   assert.equal(midLastModule('A0', 10), 5);
   assert.equal(midLastModule('A1', 13), 6);
-  assert.equal(midLastModule('A2', 10), 5); // рівень без запису — половина модулів
+  assert.equal(midLastModule('A2', 14), 7); // A2 v2 (2026-11-12): середина — після A2.7
+  assert.equal(midLastModule('A2'), 7);
+  assert.equal(midLastModule('B2', 10), 5); // рівень без запису — половина модулів
   assert.equal(midLastModule('B1', 12), 6);
   assert.equal(midLastModule(null), 5);
   assert.equal(levelTestSubtitle('mid', 'A0', 10), 'Модулі 1–5');
