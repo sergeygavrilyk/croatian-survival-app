@@ -32,7 +32,7 @@ HERE = Path(__file__).parent
 sys.path.insert(0, str(HERE))
 import curriculum_a2_v2_data as D  # noqa: E402
 import gen_writing as GW  # noqa: E402
-from full_lessons import CYR, HELPERS_SQL, Course, Place, fold_ua, q, qj, shuffled, typable, uid  # noqa: E402
+from full_lessons import CYR, HELPERS_SQL, STOP_UA, Course, Place, fold_ua, q, qj, shuffled, typable, uid  # noqa: E402
 from lexeme_checks import check_batch, normalize  # noqa: E402
 
 ROOT = HERE.resolve().parent
@@ -148,6 +148,14 @@ def lex_base(upto: int) -> dict:
 class CourseA2(Course):
     """Як курс A1 v3 (вправи на слова — спершу однозначні для «як хорватською» / «напишіть»), але одна «прослухайте і складіть»
     замінена на «прослухайте діалог чи оголошення» (рішення власника 2026-11-12)."""
+
+    STOP_A2 = STOP_UA | {'про', 'за', 'по', 'із', 'зі', 'без', 'при', 'після', 'перед', 'або', 'і', 'й', 'та', 'а', 'не', 'щоб', 'через',
+                         'під', 'над', 'між', 'кого', 'кому', 'чого', 'когось', 'комусь', 'щось', 'себе', 'собі', 'свій', 'своє'}
+
+    def ua_tokens(self, word: str) -> set[str]:
+        """Як у Course, але без приміток у дужках і службових слів: «покривати (про страховку)» не близьке до «довідка про відвідування»."""
+        t = re.sub(r'\([^)]*\)', ' ', self.display_ua(word))
+        return {x for x in fold_ua(t).replace(';', ' ').replace(',', ' ').split() if x not in self.STOP_A2}
 
     def vocab_exercises(self, key) -> list[dict]:
         import random
