@@ -61,14 +61,14 @@
 - Daša: Zašto si se vratio? — Чому ти повернувся?
 - Marko: Nedostajalo mi je more. Prije dvije godine otvorio sam obrt. — Мені бракувало моря. Два роки тому я відкрив власну справу.
 - Daša: A planovi? — А плани?
-- Marko: Za pet godina želim imati malu konobu. — Через п’ять років я хочу мати маленьку конову.
+- Marko: Za pet godina želim imati malu konobu. — Через п’ять років я хочу мати маленьку конобу.
 - ❓ Де народився Марко? → **у Шибенику**
 - ❓ Скільки років він працював у Німеччині? → **10**
-- ❓ Що він хоче мати через п’ять років? → **маленьку конову**
+- ❓ Що він хоче мати через п’ять років? → **маленьку конобу**
 
 | Тип | Питання | Відповідь | Варіанти |
 |---|---|---|---|
-| fill_in_the_blank | Prve mjesece sam ___ jezik, a onda sam našla posao. | učila | učila · naučit ću · učim · naučila |
+| fill_in_the_blank | Prve mjesece sam ___ jezik, a onda sam našla posao. | učila | učila · uči · učiti · učim |
 | multiple_choice | Що означає «namjeravati»? | мати намір | крок уперед · вчитися на помилках · мати намір · новий розділ (життя) |
 | multiple_choice | Що означає «korak naprijed»? | крок уперед | вдячний · новий розділ (життя) · невдача · крок уперед |
 | multiple_choice | Що означає «ne žalim ni za čim»? | ні про що не шкодую | новий розділ (життя) · досягнення · мати намір · ні про що не шкодую |
@@ -91,7 +91,7 @@
 
 Граматика: «Порядок коротких слів (енклітик)».
 
-**Слова (20; з уроків A0 / A1: zapisati; уже були в словнику: zapisati):**
+**Слова (20; з уроків A0 / A1: zapisati, ovjereni prijevod; уже були в словнику: zapisati, ovjereni prijevod):**
 
 | Слово | Переклад | Приклад |
 |---|---|---|
@@ -113,8 +113,8 @@
 | samopouzdanje | впевненість у собі | Jezik mi je dao samopouzdanje. |
 | izaći na kraj | впоратися | Izašla sam na kraj i s birokracijom. |
 | svakodnevna situacija | повсякденна ситуація | Svakodnevne situacije više nisu problem. |
-| dati mi ga | дати мені його | Imate li obrazac? Možete li mi ga dati? |
-| reći ću mu | я скажу йому | Reći ću mu da Vas nazove. |
+| ovjereni prijevod | засвідчений переклад | Za vrtić treba ovjereni prijevod rodnog lista. |
+| povratna informacija | зворотний зв’язок | Javit ćemo Vam se s povratnom informacijom. |
 
 **Діалог «U uredu»** (В установі)
 
@@ -146,7 +146,7 @@
 | Тип | Питання | Відповідь | Варіанти |
 |---|---|---|---|
 | fill_in_the_blank | Prijevod? Donijet ću ___ ga sutra. | Vam | Vaš · Vas · Vi · Vam |
-| multiple_choice | Що означає «reći ću mu»? | я скажу йому | я скажу йому · повсякденна ситуація · без перекладача · попросити роз’яснення |
+| multiple_choice | Що означає «povratna informacija»? | зворотний зв’язок | повсякденна ситуація · зворотний зв’язок · без перекладача · попросити роз’яснення |
 | multiple_choice | Що означає «ponovite, molim Vas»? | повторіть, будь ласка | повторіть, будь ласка · що саме · впоратися · самостійно |
 | multiple_choice | Що означає «zapisati»? | записати | описати симптоми · записати · самостійно · давати собі раду, орієнтуватися |
 | multiple_choice | Що означає «kome se mogu obratiti»? | до кого я можу звернутися | до кого я можу звернутися · повторіть, будь ласка · описати симптоми · записати |

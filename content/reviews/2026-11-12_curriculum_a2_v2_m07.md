@@ -35,9 +35,9 @@
 | termin za pregled | час огляду | Dobila sam termin za pregled u srijedu. |
 | karton | медична картка | Sve je zapisano u Vašem kartonu. |
 | dijagnoza | діагноз | Još ne znam dijagnozu. |
-| liječnici | лікарі | Liječnici rade u dvije smjene. |
-| u ruci | у руці | Osjećam trnce u ruci. |
-| na nozi | на нозі | Imam modricu na nozi. |
+| krvna slika | загальний аналіз крові | Krvna slika je uredna. |
+| trnci | поколювання, мурашки | Osjećam trnce u ruci. |
+| kontrolni pregled | контрольний огляд | Kontrolni pregled je za mjesec dana. |
 | ginekolog | гінеколог | Naručila sam se kod ginekologa. |
 | snimiti EKG | зробити ЕКГ | Prije operacije treba snimiti EKG. |
 
@@ -70,11 +70,11 @@
 | Тип | Питання | Відповідь | Варіанти |
 |---|---|---|---|
 | fill_in_the_blank | Osjećam bol u ___ već tjedan dana. | ruci | ruku · ruka · ruci · rukom |
-| multiple_choice | Що означає «liječnici»? | лікарі | лікар загальної практики · лікарі · ортопед · натщесерце |
+| multiple_choice | Що означає «krvna slika»? | загальний аналіз крові | ортопед · натщесерце · лікар загальної практики · загальний аналіз крові |
 | multiple_choice | Що означає «nalaz»? | результат аналізу | обраний (сімейний) лікар · результат аналізу · зробити ЕКГ · медична картка |
 | multiple_choice | Що означає «snimiti EKG»? | зробити ЕКГ | зробити ЕКГ · діагноз · медична картка · офтальмолог |
-| multiple_choice | Як хорватською «у руці»? | u ruci | u ruci · specijalistički pregled · oftalmolog · e-uputnica |
-| multiple_choice | Як хорватською «ортопед»? | ortoped | dijagnoza · u ruci · vađenje krvi · ortoped |
+| multiple_choice | Як хорватською «поколювання, мурашки»? | trnci | specijalistički pregled · oftalmolog · trnci · e-uputnica |
+| multiple_choice | Як хорватською «ортопед»? | ortoped | dijagnoza · trnci · vađenje krvi · ortoped |
 | type_answer | Напишіть хорватською: «невролог» | neurolog |  |
 | type_answer | Напишіть хорватською: «електронне направлення» | e-uputnica |  |
 | type_answer | Напишіть хорватською: «офтальмолог» | oftalmolog |  |
@@ -207,7 +207,7 @@
 **Діалог «Baka i šećer»** (Бабуся й діабет)
 
 - *Daša:* Darja, tvoja baka ima šećernu bolest? — Дар’є, у твоєї бабусі цукровий діабет?
-- *Darja:* Ima. Uzima inzulin prije jela i mjeri šećer u krvi. — Так. Вона колє інсулін перед їжею й міряє цукор у крові.
+- *Darja:* Ima. Uzima inzulin prije jela i mjeri šećer u krvi. — Так. Вона коле інсулін перед їжею й міряє цукор у крові.
 - *Daša:* Je li joj teško? — Їй важко?
 - *Darja:* Navikla se. Najvažnija je zdrava prehrana i redoviti pregledi. — Звикла. Найважливіше — здорове харчування й регулярні огляди.
 
