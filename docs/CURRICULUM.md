@@ -192,6 +192,8 @@ Level → Module → Unit → Lesson → Learning Objectives → Input → Pract
 - 13\. Plans, wishes & arrangements (6)
 - 14\. A2 integration (3)
 
+*Реалізація (2026-11-12, PR #19):* усі 86 уроків, 22 теми граматики й 16 перевірок — `scripts/gen_curriculum_a2_v2.py`, `scripts/gen_assessment_a2_v2.py`; бета. Тексти для читання — поки 20 з 56.
+
 ## 30. B1 Curriculum
 
 10 modules:

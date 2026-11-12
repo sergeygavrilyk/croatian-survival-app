@@ -74,8 +74,8 @@ set local role anon;
 select set_config('request.jwt.claims', '{"role":"anon"}', true);
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons where level_code = 'A0'$q$)
   = (select count(*) from public.lessons where level_code = 'A0' and status = 'PUBLISHED'), 'гість бачить усі опубліковані уроки A0 (чернетку — ні)');
-select pg_temp.ok(pg_temp.n($q$select 1 from public.modules where level_code = 'A2'$q$) = 0,
-  'гість не бачить чернеток A2 (A1 опубліковано 2026-10-13)');
+select pg_temp.ok(pg_temp.n($q$select 1 from public.modules where level_code in ('A2', 'B1', 'B2') and status <> 'PUBLISHED'$q$) = 0,
+  'гість не бачить чернеток A2–B2 (A2 — бета з 2026-11-12)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lesson_items i join public.lessons l on l.id = i.lesson_id
   where l.id = 'b095637e-0644-507e-8f3d-d323483dd3e4'$q$) > 0, 'гість бачить склад уроку A0.10.3');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.conversation_turns t join public.conversations c on c.id = t.conversation_id

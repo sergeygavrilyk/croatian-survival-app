@@ -150,4 +150,6 @@ run $A/data_fixes/20261112_vocab_a2_fix.sql
 # старі пакети curriculum_* і M19 перевизначають exercises_type_check — M23 ще раз (ідемпотентна)
 run $A/migrations/20261112100000_m23_listening_dialogue.sql
 run $A/data_fixes/20261112_listening_pilot.sql
+# програма A2 v2 (2026-11-12): структура, граматика, модулі (порядок — за назвою файлу)
+for f in $A/data_fixes/20261112_curriculum_a2_v2_*.sql; do run "$f"; done
 echo "Готово. Тести: for t in supabase/tests/*.sql; do psql -h /tmp -p $P -U postgres -q -v ON_ERROR_STOP=1 -f \$t | tail -1; done"

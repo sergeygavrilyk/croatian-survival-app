@@ -323,7 +323,7 @@ export function pickAssessmentLevel(requested: unknown, profileLevel: unknown, a
  * Після якого модуля — середина рівня: A0 — модулі 1–5 (з 10), A1 v3 — модулі 1–6 (з 13; gen_assessment_a1_v3.py, MID_MODULES).
  * Новий рівень без запису — половина модулів (округлення вниз).
  */
-const MID_LAST_MODULE: Readonly<Record<string, number>> = { A0: 5, A1: 6 };
+const MID_LAST_MODULE: Readonly<Record<string, number>> = { A0: 5, A1: 6, A2: 7 };
 
 export function midLastModule(cefr: string | null | undefined, moduleCount?: number): number {
   const known = cefr ? MID_LAST_MODULE[cefr] : undefined;

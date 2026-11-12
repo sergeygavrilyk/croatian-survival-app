@@ -96,11 +96,12 @@ test('рівень читання: з адреси, з профілю (B1/B2 →
   assert.equal(pickReadingLevel('A2', null, []), 'A2');
 });
 
-test('заголовки груп: модулі A0/A1 і теми A2, вивіски', () => {
+test('заголовки груп: модулі A0/A1/A2, вивіски', () => {
   assert.equal(moduleTitle('Модуль A0.10 — Survival Croatian (виживання)'), 'Survival Croatian (виживання)');
   assert.equal(moduleHeading('A1', 3, 'Модуль A1.3 — Покупки'), 'Після модуля A1.3 · Покупки');
   assert.equal(moduleHeading('A0', 2, null), 'Після модуля A0.2');
-  assert.equal(moduleHeading('A2', 2, null), 'Тема 2 · Подорожі');
+  assert.equal(moduleHeading('A2', 1, null), 'Після модуля A2.1 · Туризм і подорожі: Адріатика'); // A2 v2 (2026-11-12)
+  assert.equal(moduleHeading('A2', 5, 'Модуль A2.5 — Робота й кар’єра'), 'Після модуля A2.5 · Робота й кар’єра');
   assert.equal(moduleHeading('A2', null), 'Інші тексти');
   assert.equal(textTypeLabel('sign'), 'Вивіски');
   assert.ok(levelIntro('A0').includes('Вивіски'));
