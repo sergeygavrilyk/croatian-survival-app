@@ -1,13 +1,15 @@
 'use client';
 
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { Check, Search, X } from 'lucide-react';
+import { BookmarkPlus, Check, CircleCheck, Search, X } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
+import { saveDictionaryWord } from '@/app/actions/dictionary';
 import PracticeTabs from '@/components/ui/PracticeTabs';
 import { dictionarySearchTerm, posLabelUk } from '@/lib/format';
 import { LEVEL_CODES, levelStyle } from '@/lib/levels';
 import { cn } from '@/lib/ui';
 import { WORD_THEME_SELECT, wordThemes, type WordTheme } from '@/lib/word-theme';
+import { wordExamples } from '@/lib/word-save';
 import AudioButton from '@/components/ui/AudioButton';
 import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
@@ -28,11 +30,17 @@ interface Word {
   translation: string;
   pos: string | null;
   level: string | null;
+  explanation: string | null;
+  examples: string[];
 }
+
+/** Стан кнопки «Додати в повторення» в картці слова: текст — помилка. */
+type SaveState = 'idle' | 'saving' | 'saved' | string;
 
 /**
  * Словник (розділ «Практика»): пошук по всьому словнику, фільтр за рівнем.
  * Біля слова — емодзі теми уроку в кольорі рівня, бейдж рівня, частина мови, «Вчу» (DESIGN_SYSTEM §3.4).
+ * Натиск на слово — картка знизу: переклад, пояснення, приклади й «Додати в повторення» (тренажер).
  */
 export default function DictionaryPage() {
   const supabase = createClient();
@@ -52,6 +60,9 @@ export default function DictionaryPage() {
   const [themes, setThemes] = useState<Map<string, WordTheme>>(new Map());
   const [learning, setLearning] = useState<Set<string>>(new Set());
   const userIdRef = useRef<string | null | undefined>(undefined);
+  // Картка слова (натиск на слово) і стан кнопки «Додати в повторення»
+  const [selected, setSelected] = useState<Word | null>(null);
+  const [saveState, setSaveState] = useState<SaveState>('idle');
 
   /** Тема (емодзі модуля) і «Вчу» для нової порції слів. */
   const enrich = useCallback(async (ids: string[]) => {
@@ -101,7 +112,7 @@ export default function DictionaryPage() {
     const to = from + PAGE_SIZE - 1;
     let request = supabase
       .from('lexemes')
-      .select('id, lemma, ukrainian_translation, part_of_speech, cefr')
+      .select('id, lemma, ukrainian_translation, part_of_speech, cefr, ukrainian_explanation, examples')
       .eq('status', 'PUBLISHED')
       .not('lemma', 'like', '%:%'); // без реплік діалогів («Konobar: …»)
     if (search) {
@@ -121,6 +132,8 @@ export default function DictionaryPage() {
       translation: lex.ukrainian_translation,
       pos: posLabelUk(lex.part_of_speech),
       level: lex.cefr,
+      explanation: lex.ukrainian_explanation ?? null,
+      examples: wordExamples(lex.examples),
     }));
   }, [supabase]);
 
@@ -181,6 +194,38 @@ export default function DictionaryPage() {
   const loadMore = () => {
     if (loadingMore || !hasMore) return;
     loadPage(page + 1, false);
+  };
+
+  const openWord = (word: Word) => {
+    setSelected(word);
+    setSaveState('idle');
+  };
+
+  const closeWord = () => setSelected(null);
+
+  // Escape закриває картку слова
+  useEffect(() => {
+    if (!selected) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setSelected(null);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [selected]);
+
+  const saveWord = async (word: Word) => {
+    setSaveState('saving');
+    try {
+      const res = await saveDictionaryWord(word.id);
+      if (res.ok) {
+        setSaveState('saved');
+        setLearning(prev => new Set(prev).add(word.id));
+      } else {
+        setSaveState(res.error);
+      }
+    } catch {
+      setSaveState('Не вдалося додати слово. Перевірте інтернет.');
+    }
   };
 
   const retry = () => {
@@ -263,7 +308,7 @@ export default function DictionaryPage() {
           <>
             <ul className="grid gap-3 sm:grid-cols-2">
               {words.map((word) => (
-                <WordRow key={word.id} word={word} theme={themes.get(word.id)} isLearning={learning.has(word.id)} />
+                <WordRow key={word.id} word={word} theme={themes.get(word.id)} isLearning={learning.has(word.id)} onOpen={openWord} />
               ))}
             </ul>
 
@@ -302,31 +347,139 @@ export default function DictionaryPage() {
           />
         )}
       </main>
+
+      {selected && (
+        <WordSheet
+          word={selected}
+          theme={themes.get(selected.id)}
+          isLearning={learning.has(selected.id)}
+          saveState={saveState}
+          onSave={() => void saveWord(selected)}
+          onClose={closeWord}
+        />
+      )}
     </div>
   );
 }
 
-function WordRow({ word, theme, isLearning }: { word: Word; theme?: WordTheme; isLearning: boolean }) {
+function WordRow({ word, theme, isLearning, onOpen }: { word: Word; theme?: WordTheme; isLearning: boolean; onOpen: (word: Word) => void }) {
   return (
-    <li className="flex items-center gap-3 rounded-card border border-line bg-surface p-4 shadow-sm">
-      <WordTile lemma={word.lemma} level={word.level} theme={theme} />
-      <div className="min-w-0 flex-1">
-        <Hr as="h3" className="font-heading text-h3 break-words text-ink">
-          {word.lemma}
-        </Hr>
-        <p className="text-body break-words text-ink-muted">{word.translation}</p>
-        <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1">
-          {word.level && <LevelBadge level={word.level} />}
-          {word.pos && <span className="text-caption text-ink-subtle">{word.pos}</span>}
-          {isLearning && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-success-soft px-2 py-0.5 text-caption font-semibold text-success-ink">
-              <Check className="size-3.5" strokeWidth={3} aria-hidden="true" />
-              Вчу
-            </span>
+    <li className="flex items-center gap-1 rounded-card border border-line bg-surface shadow-sm transition-colors duration-150 hover:border-primary">
+      <button
+        type="button"
+        onClick={() => onOpen(word)}
+        aria-label={`${word.lemma} — ${word.translation}${isLearning ? ", вчу" : ""}. Відкрити картку слова`}
+        className="flex min-w-0 flex-1 items-center gap-3 rounded-card p-4 text-left"
+      >
+        <WordTile lemma={word.lemma} level={word.level} theme={theme} />
+        <span className="block min-w-0 flex-1">
+          <Hr className="block font-heading text-h3 break-words text-ink">{word.lemma}</Hr>
+          <span className="block text-body break-words text-ink-muted">{word.translation}</span>
+          <span className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+            {word.level && <LevelBadge level={word.level} />}
+            {word.pos && <span className="text-caption text-ink-subtle">{word.pos}</span>}
+            {isLearning && <LearningBadge />}
+          </span>
+        </span>
+      </button>
+      <AudioButton text={word.lemma} label={`Прослухати: ${word.lemma}`} className="mr-3" />
+    </li>
+  );
+}
+
+function LearningBadge() {
+  return (
+    <span className="inline-flex items-center gap-1 rounded-full bg-success-soft px-2 py-0.5 text-caption font-semibold text-success-ink">
+      <Check className="size-3.5" strokeWidth={3} aria-hidden="true" />
+      Вчу
+    </span>
+  );
+}
+
+/** Картка слова знизу: переклад, пояснення, приклади, «Додати в повторення». */
+function WordSheet({
+  word,
+  theme,
+  isLearning,
+  saveState,
+  onSave,
+  onClose,
+}: {
+  word: Word;
+  theme?: WordTheme;
+  isLearning: boolean;
+  saveState: SaveState;
+  onSave: () => void;
+  onClose: () => void;
+}) {
+  const error = saveState !== 'idle' && saveState !== 'saving' && saveState !== 'saved' ? saveState : null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center">
+      <button type="button" aria-label="Закрити картку слова" onClick={onClose} className="absolute inset-0 cursor-default bg-ink/40" />
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="word-sheet-title"
+        className="relative w-full max-w-2xl rounded-t-hero border border-line bg-surface p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-md animate-fade-in-up"
+      >
+        <div className="flex items-start gap-3">
+          <WordTile lemma={word.lemma} level={word.level} theme={theme} />
+          <div className="min-w-0 flex-1">
+            <Hr as="h2" id="word-sheet-title" className="font-heading text-word break-words">
+              {word.lemma}
+            </Hr>
+            <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+              {word.level && <LevelBadge level={word.level} />}
+              {word.pos && <span className="text-caption text-ink-muted">{word.pos}</span>}
+              {isLearning && <LearningBadge />}
+            </div>
+          </div>
+          <AudioButton text={word.lemma} label={`Прослухати: ${word.lemma}`} />
+          <IconButton label="Закрити картку слова" onClick={onClose}>
+            <X className="size-5" aria-hidden="true" />
+          </IconButton>
+        </div>
+
+        <p className="mt-3 text-body-lg break-words">{word.translation}</p>
+        {word.explanation && <p className="mt-1 text-label font-normal break-words text-ink-muted">{word.explanation}</p>}
+
+        {word.examples.length > 0 && (
+          <ul className="mt-3 flex flex-col gap-1.5" aria-label="Приклади">
+            {word.examples.map((ex) => (
+              <li key={ex} className="flex items-center gap-2 rounded-control bg-surface-muted py-1 pr-1 pl-3">
+                <Hr className="min-w-0 flex-1 text-body">{ex}</Hr>
+                <AudioButton text={ex} label={`Прослухати приклад: ${ex}`} />
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <div className="mt-4">
+          {saveState === 'saved' ? (
+            <p className="flex items-center gap-2 text-label text-success-ink" role="status">
+              <CircleCheck className="size-5" aria-hidden="true" />
+              Додано в повторення — слово з’явиться в «Тренажері» сьогодні
+            </p>
+          ) : isLearning ? (
+            <p className="flex items-center gap-2 text-label text-success-ink" role="status">
+              <CircleCheck className="size-5" aria-hidden="true" />
+              Ви вже вчите це слово — воно в «Тренажері»
+            </p>
+          ) : (
+            <>
+              <Button block onClick={onSave} loading={saveState === 'saving'}>
+                <BookmarkPlus className="size-5" aria-hidden="true" />
+                Додати в повторення
+              </Button>
+              {error && (
+                <p className="mt-2 text-label text-danger-ink" role="alert">
+                  {error}
+                </p>
+              )}
+            </>
           )}
         </div>
       </div>
-      <AudioButton text={word.lemma} label={`Прослухати: ${word.lemma}`} />
-    </li>
+    </div>
   );
 }
