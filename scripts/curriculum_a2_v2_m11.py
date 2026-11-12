@@ -12,7 +12,7 @@ LESSONS = [
         title=('Істрія', 'Istra'), situation='travel', grammar='POSV',
         objectives=['Розповісти про Істрію: міста на пагорбах, кухня, двомовність', 'Прикметники від місць: istarski, rovinjski, pulski'],
         vocab=[
-            ('istarski', 'істрійський', 'adj', '', 'Istarski pršut je suši od dalmatinskog.'),
+            ('istarski', 'істрійський', 'adj', '', 'Istarski pršut se ne dimi, za razliku od dalmatinskog.'),
             ('brdski gradić', 'містечко на пагорбі', 'ph', 'm', 'Motovun je brdski gradić iznad doline.'),
             ('dolina', 'долина', 'n', 'f', 'Iz Motovuna se vidi cijela dolina.'),
             ('maneštra', 'манештра (густий овочевий суп)', 'n', 'f', 'Zimi kuhamo istarsku maneštru.'),
@@ -45,7 +45,7 @@ LESSONS = [
             ('В агротуризмі', 'U agroturizmu', [
                 ('Domaćin', 'Dobro došli! Danas imamo maneštru i fuže s tartufima.', 'Ласкаво просимо! Сьогодні маємо манештру й фужі з трюфелями.'),
                 ('Ivan', 'Zvuči odlično. Što preporučujete za piće?', 'Звучить чудово. Що порадите з напоїв?'),
-                ('Domaćin', 'Našu malvaziju ili teran. Vino je iz našeg vinograda.', 'Нашу мальвазію або теран. Вино з нашого винограднику.'),
+                ('Domaćin', 'Našu malvaziju ili teran. Vino je iz našeg vinograda.', 'Нашу мальвазію або теран. Вино з нашого виноградника.'),
                 ('Ivan', 'Zašto su natpisi dvojezični?', 'Чому написи двомовні?'),
                 ('Domaćin', 'U Istri živi talijanska manjina, pa je talijanski službeni jezik u nekim gradovima.', 'В Істрії живе італійська меншина, тож італійська — офіційна мова в деяких містах.'),
             ]),
@@ -79,7 +79,7 @@ LESSONS = [
         objectives=['Розповісти про Славонію: рівнини, кухня, тамбурашка музика', 'Присвійні й прикметники від місць: slavonski, osječki, bakin kulen'],
         vocab=[
             ('slavonski', 'славонський', 'adj', '', 'Slavonski kulen je ljut i mirisan.'),
-            ('osječki', 'осієцький (з Осієка)', 'adj', '', 'Osječka tvrđava je stara četiristo godina.'),
+            ('osječki', 'осієцький (з Осієка)', 'adj', '', 'Osječka Tvrđa je barokni dio grada.'),
             ('vukovarski', 'вуковарський', 'adj', '', 'Vukovarski vodotoranj je simbol grada.'),
             ('žitna polja', 'хлібні поля', 'ph', 'n_pl', 'Ljeti su žitna polja žuta.'),
             ('suncokret', 'соняшник', 'n', 'm', 'Polja suncokreta podsjećaju me na Ukrajinu.'),
@@ -280,8 +280,8 @@ LESSONS = [
             ('pristojno', 'чемно, пристойно', 'adv', '', 'Pristojno je donijeti nešto domaćinu.'),
             ('nepristojno', 'нечемно, непристойно', 'adv', '', 'Nepristojno je kasniti na ručak.'),
             ('poljubiti u obraz', 'поцілувати в щоку', 'ph', '', 'Prijatelji se pozdravljaju poljupcem u obraz.'),
-            ('dva poljupca', 'два поцілунки (при вітанні)', 'ph', 'm_pl', 'U Hrvatskoj se daju dva poljupca.'),
-            ('kava traje satima', 'кава триває годинами', 'ph', '', 'Kod nas kava traje satima.'),
+            ('papuče za goste', 'капці для гостей', 'ph', 'f_pl', 'Domaćica ima papuče za goste.'),
+            ('obiteljsko okupljanje', 'родинна зустріч', 'ph', 'n', 'Nedjeljom je obiteljsko okupljanje kod bake.'),
             ('domaćičin', 'господинин', 'adj', '', 'Pohvalite domaćičin kolač.'),
             ('obiteljski ručak', 'сімейний обід', 'ph', 'm', 'Nedjeljom je obiteljski ručak kod bake.'),
             ('pomalo', 'потроху, не поспішаючи', 'adv', '', 'Pomalo, nema žurbe.'),
@@ -343,8 +343,8 @@ LESSONS = [
         title=('Клапа, тамбурица й спадщина ЮНЕСКО', 'Klapa, tamburica i baština UNESCO-a'), situation='small_talk', grammar='POSV',
         objectives=['Розповісти про музику й традиції, які охороняє ЮНЕСКО', 'Прикметники: paška čipka, sinjska alka, dalmatinsko pjevanje'],
         vocab=[
-            ('klapsko pjevanje', 'спів клапи (дalmatинський хоровий спів)', 'ph', 'n', 'Klapsko pjevanje je na popisu UNESCO-a.'),
-            ('tamburica', 'тамбурица (струнний інструмент)', 'n', 'f', 'Djed je svirao tamburicu.'),
+            ('klapsko pjevanje', 'спів клапи (далматинський хоровий спів)', 'ph', 'n', 'Klapsko pjevanje je na popisu UNESCO-a.'),
+            ('tamburica', 'тамбуриця (струнний інструмент)', 'n', 'f', 'Djed je svirao tamburicu.'),
             ('nematerijalna baština', 'нематеріальна спадщина', 'ph', 'f', 'Hrvatska ima puno nematerijalne baštine.'),
             ('kulturna baština', 'культурна спадщина', 'ph', 'f', 'Dubrovnik je dio svjetske kulturne baštine.'),
             ('paška čipka', 'пазьке мереживо', 'ph', 'f', 'Paška čipka se radi ručno.'),

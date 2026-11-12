@@ -269,7 +269,7 @@
 | bilješke | нотатки, конспект | Možeš li mi posuditi svoje bilješke? |
 | skripta | конспект лекцій (посібник) | Skripta se kupuje u skriptarnici. |
 | literatura | література (для курсу) | Popis literature je na stranici kolegija. |
-| prolazna ocjena | прохідна оцінка | Dovoljan je prolazna ocjena. |
+| prolazna ocjena | прохідна оцінка | Dvojka je prolazna ocjena. |
 | prepisivati | списувати | Na ispitu je zabranjeno prepisivati. |
 | naučiti napamet | вивчити напам’ять | Formule moraš naučiti napamet. |
 | ponavljati gradivo | повторювати матеріал | Cijeli tjedan ponavljam gradivo. |

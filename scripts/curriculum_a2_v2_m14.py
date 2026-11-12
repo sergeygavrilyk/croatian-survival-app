@@ -49,7 +49,7 @@ LESSONS = [
                 ('Darja', 'Nadam se miru. Svaki dan je mali korak naprijed.', 'Сподіваюся на мир. Кожен день — маленький крок уперед.'),
             ]),
         ],
-        fill=('Prve mjesece sam ___ jezik, a onda sam našla posao.', 'učila', ['naučila', 'učim', 'naučit ću']),
+        fill=('Prve mjesece sam ___ jezik, a onda sam našla posao.', 'učila', ['učim', 'učiti', 'uči']),
         build=[('Складіть: «Я навчилася на помилках.»', 'Naučila sam iz pogrešaka.'),
                ('Складіть: «Наразі я працюю в садочку.»', 'Trenutačno radim u vrtiću.')],
         listen='Nadam se miru. Svaki dan je mali korak naprijed.',
@@ -59,11 +59,11 @@ LESSONS = [
             ('Daša', 'Zašto si se vratio?', 'Чому ти повернувся?'),
             ('Marko', 'Nedostajalo mi je more. Prije dvije godine otvorio sam obrt.', 'Мені бракувало моря. Два роки тому я відкрив власну справу.'),
             ('Daša', 'A planovi?', 'А плани?'),
-            ('Marko', 'Za pet godina želim imati malu konobu.', 'Через п’ять років я хочу мати маленьку конову.'),
+            ('Marko', 'Za pet godina želim imati malu konobu.', 'Через п’ять років я хочу мати маленьку конобу.'),
         ], questions=[
             ('Де народився Марко?', ['у Шибенику', 'у Спліті', 'у Німеччині'], 0, 0),
             ('Скільки років він працював у Німеччині?', '10', ['десять', '10 років'], 0),
-            ('Що він хоче мати через п’ять років?', ['готель', 'маленьку конову', 'човен'], 1, 4),
+            ('Що він хоче мати через п’ять років?', ['готель', 'маленьку конобу', 'човен'], 1, 4),
         ]),
         write=dict(situation='Напишіть коротко свою історію: де ви виросли, що робите зараз і що плануєте через п’ять років.',
                    points=[('де виросли', [['odras'], ['rođen']]), ('що робите зараз', [['sad'], ['trenutačno'], ['danas']]), ('плани', [['za pet godina'], ['planir'], ['namjerav'], ['ću']])],
@@ -96,8 +96,8 @@ LESSONS = [
             ('samopouzdanje', 'впевненість у собі', 'n', 'n', 'Jezik mi je dao samopouzdanje.'),
             ('izaći na kraj', 'впоратися', 'ph', '', 'Izašla sam na kraj i s birokracijom.'),
             ('svakodnevna situacija', 'повсякденна ситуація', 'ph', 'f', 'Svakodnevne situacije više nisu problem.'),
-            ('dati mi ga', 'дати мені його', 'ph', '', 'Imate li obrazac? Možete li mi ga dati?'),
-            ('reći ću mu', 'я скажу йому', 'ph', '', 'Reći ću mu da Vas nazove.'),
+            ('ovjereni prijevod', 'засвідчений переклад', 'ph', 'm', 'Za vrtić treba ovjereni prijevod rodnog lista.'),
+            ('povratna informacija', 'зворотний зв’язок', 'ph', 'f', 'Javit ćemo Vam se s povratnom informacijom.'),
         ],
         scenes=[
             ('В установі', 'U uredu', [

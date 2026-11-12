@@ -13,7 +13,7 @@
 
 Граматика: «Futur I: нагадування й доконаний вид».
 
-**Слова (21; уже були в словнику: uštedjeti, odustati):**
+**Слова (21; з уроків A0 / A1: štednja, certifikat; уже були в словнику: uštedjeti, štednja, odustati, certifikat):**
 
 | Слово | Переклад | Приклад |
 |---|---|---|
@@ -29,14 +29,14 @@
 | zacrtati | накреслити, запланувати | Zacrtala sam plan za cijelu godinu. |
 | ispuniti obećanje | виконати обіцянку | Ispunit ću obećanje koje sam dala djeci. |
 | do kraja godine | до кінця року | Do kraja godine želim promijeniti posao. |
-| svaki mjesec po malo | щомісяця потроху | Štedim svaki mjesec po malo. |
+| štednja | заощадження | Štednja za stan traje godinama. |
 | odustati | відмовитися (від мети), здатися | Nemoj odustati u veljači! |
-| položit ću | я складу (іспит) | Ove godine položit ću ispit B1. |
+| certifikat | сертифікат | Nakon ispita dobit ćete certifikat B1. |
 | dobiti povišicu | отримати підвищення зарплати | Nadam se da ću dobiti povišicu. |
 | vozački za motor | права на мотоцикл | Želim položiti vozački za motor. |
 | vrijedno raditi | старанно працювати | Vrijedno radim na svom hrvatskom. |
 | vidjet ćemo | побачимо | Hoću li uspjeti? Vidjet ćemo. |
-| nova godina, novi početak | новий рік — новий початок | Kažu: nova godina, novi početak. |
+| planer | планер, щоденник планів | Ciljeve zapisujem u planer. |
 | lista ciljeva | список цілей | Lista ciljeva visi na hladnjaku. |
 
 **Діалог «Novogodišnje odluke»** (Новорічні обіцянки)
@@ -68,13 +68,13 @@
 |---|---|---|---|
 | fill_in_the_blank | Do ljeta ___ uštedjeti za more. | ću | sam · budem · bih · ću |
 | multiple_choice | Що означає «vozački za motor»? | права на мотоцикл | відмовитися (від мети), здатися · старанно працювати · досягти мети · права на мотоцикл |
-| multiple_choice | Що означає «svaki mjesec po malo»? | щомісяця потроху | відмовитися (від мети), здатися · заощадити · щомісяця потроху · накреслити, запланувати |
-| multiple_choice | Що означає «štedjeti za»? | відкладати гроші на | я складу (іспит) · відкладати гроші на · новий рік — новий початок · права на мотоцикл |
-| multiple_choice | Як хорватською «накреслити, запланувати»? | zacrtati | odustati · štedjeti za · zacrtati · položit ću |
-| multiple_choice | Як хорватською «старанно працювати»? | vrijedno raditi | položit ću · zacrtati · štedjeti za · vrijedno raditi |
+| multiple_choice | Що означає «štedjeti za»? | відкладати гроші на | відмовитися (від мети), здатися · відкладати гроші на · виконати обіцянку · заощадити |
+| multiple_choice | Що означає «planer»? | планер, щоденник планів | відмовитися (від мети), здатися · побачимо · планер, щоденник планів · отримати підвищення зарплати |
+| multiple_choice | Як хорватською «накреслити, запланувати»? | zacrtati | odustati · štedjeti za · zacrtati · certifikat |
+| multiple_choice | Як хорватською «старанно працювати»? | vrijedno raditi | certifikat · zacrtati · štedjeti za · vrijedno raditi |
+| type_answer | Напишіть хорватською: «заощадження» | štednja |  |
 | type_answer | Напишіть хорватською: «мотивація» | motivacija |  |
 | type_answer | Напишіть хорватською: «досягти мети» | ostvariti cilj |  |
-| type_answer | Напишіть хорватською: «короткостроковий» | kratkoročni |  |
 | sentence_builder | Складіть: «Цього року я складу іспит B1.» | Ove godine položit ću ispit B1. | godine · ću · B1. · položit · ispit · Ove |
 | sentence_builder | Складіть: «Не здавайся в лютому!» | Nemoj odustati u veljači! | veljači! · Nemoj · odustati · u |
 | listening | Прослухайте і складіть фразу | Svaki dan po pola sata. Napredak pratim u bilježnici. | pola · sata. · u · po · dan · pratim · Napredak · bilježnici. · Svaki |
@@ -97,7 +97,7 @@
 | volio bih | я б дуже хотів | Volio bih naučiti svirati gitaru. |
 | da imam | якби я мав | Da imam više vremena, slikala bih. |
 | kad bih mogla | якби я могла | Kad bih mogla, putovala bih oko svijeta. |
-| putovati oko svijeta | подорожувати навколо світу | Mladi često sanjaju putovati oko svijeta. |
+| putovati oko svijeta | подорожувати навколо світу | Mladi često sanjaju o putovanju oko svijeta. |
 | dobiti na lutriji | виграти в лотерею | Što bi napravio da dobiješ na lutriji? |
 | jedrilica | вітрильник | Kad bih imao novca, kupio bih jedrilicu. |
 | slikati | малювати (фарбами) | Volim slikati more. |
@@ -109,8 +109,8 @@
 | mirno starenje | спокійна старість | Želim mirno starenje uz more. |
 | vlastiti posao | власна справа | Moj san je vlastiti posao. |
 | nikad ne reci nikad | ніколи не кажи «ніколи» | Nikad ne reci nikad! |
-| kad bi sve bilo moguće | якби все було можливо | Kad bi sve bilo moguće, što bi radila? |
-| voljela bih | я б дуже хотіла | Voljela bih vidjeti polarnu svjetlost. |
+| jedriti | ходити під вітрилом | Ljeti jedrimo po Kornatima. |
+| polarna svjetlost | північне сяйво | Voljela bih vidjeti polarnu svjetlost. |
 | lutrija | лотерея | Igram lutriju svaki tjedan. |
 | kad odrastem | коли виросту | Kad odrastem, bit ću pilot. |
 
@@ -150,8 +150,8 @@
 | multiple_choice | Як хорватською «виграти в лотерею»? | dobiti na lutriji | dobiti na lutriji · vlastiti posao · nikad ne reci nikad · volio bih |
 | multiple_choice | Як хорватською «ніколи не кажи «ніколи»»? | nikad ne reci nikad | realan · zašto ne · da imam · nikad ne reci nikad |
 | type_answer | Напишіть хорватською: «реальний» | realan |  |
+| type_answer | Напишіть хорватською: «ходити під вітрилом» | jedriti |  |
 | type_answer | Напишіть хорватською: «недосяжний» | nedostižan |  |
-| type_answer | Напишіть хорватською: «лотерея» | lutrija |  |
 | sentence_builder | Складіть: «Моя мрія — жити біля моря.» | Moj san je živjeti uz more. | je · živjeti · san · Moj · more. · uz |
 | sentence_builder | Складіть: «Якби я могла, я б подорожувала.» | Kad bih mogla, putovala bih. | Kad · bih · bih. · putovala · mogla, |
 | listening | Прослухайте і складіть фразу | Volio bih naučiti svirati gitaru. | svirati · naučiti · gitaru. · Volio · bih |
@@ -392,28 +392,28 @@
 
 Граматика: «Futur I: нагадування й доконаний вид».
 
-**Слова (20; з уроків A0 / A1: društvene igre; уже були в словнику: organizirati, većina, glasati, društvene igre):**
+**Слова (20; з уроків A0 / A1: proslava, društvene igre; уже були в словнику: organizirati, proslava, većina, glasati, društvene igre):**
 
 | Слово | Переклад | Приклад |
 |---|---|---|
 | organizirati | організувати | Organiziram rođendan za Dašu. |
 | popis gostiju | список гостей | Na popisu gostiju je dvadeset ljudi. |
-| svatko donosi nešto | кожен приносить щось | Svatko donosi nešto za jelo. |
+| proslava | святкування | Proslava je u subotu u osam. |
 | podijeliti troškove | поділити витрати | Troškove ćemo podijeliti na pola. |
 | iznajmiti prostor | орендувати приміщення | Iznajmili smo prostor u kafiću. |
 | grupni chat | груповий чат | Sve detalje pišem u grupni chat. |
 | anketa | опитування | Napravila sam anketu za datum. |
 | većina | більшість | Većini odgovara subota. |
 | glasati | голосувати | Glasajte do petka! |
-| iznenađenje za | сюрприз для | To je iznenađenje za Ivana, ne govori mu! |
+| rođendanska torta | святковий торт (на день народження) | Rođendansku tortu radi Darja. |
 | ukrasi | прикраси | Darja će donijeti ukrase. |
 | baloni | повітряні кульки | Djeca su napuhala balone. |
 | društvene igre | настільні ігри | Navečer igramo društvene igre. |
 | raspremiti | прибрати (після свята) | Tko će raspremiti nakon zabave? |
 | dobro raspoloženje | гарний настрій | Najvažnije je dobro raspoloženje. |
 | na otvorenom | просто неба | Ako bude toplo, druženje je na otvorenom. |
-| tko će | хто буде (хто зробить) | Tko će donijeti glazbu? |
-| bit će super | буде супер | Bit će super, vidjet ćeš! |
+| zabavljati se | розважатися | Djeca su se zabavljala cijelu večer. |
+| glazbena lista | плейлист, добірка музики | Marko je složio glazbenu listu za zabavu. |
 | zabava iznenađenja | вечірка-сюрприз | Spremamo zabavu iznenađenja za Dašu. |
 | piće za sve | напої для всіх | Ivan donosi piće za sve. |
 
@@ -445,11 +445,11 @@
 | Тип | Питання | Відповідь | Варіанти |
 |---|---|---|---|
 | fill_in_the_blank | Tko ___ donijeti glazbu? | će | bude · će · je · bi |
-| multiple_choice | Що означає «podijeliti troškove»? | поділити витрати | сюрприз для · поділити витрати · список гостей · просто неба |
-| multiple_choice | Що означає «svatko donosi nešto»? | кожен приносить щось | сюрприз для · організувати · кожен приносить щось · більшість |
+| multiple_choice | Що означає «podijeliti troškove»? | поділити витрати | святковий торт (на день народження) · поділити витрати · список гостей · просто неба |
+| multiple_choice | Що означає «proslava»? | святкування | організувати · святковий торт (на день народження) · святкування · більшість |
 | multiple_choice | Що означає «piće za sve»? | напої для всіх | вечірка-сюрприз · прикраси · повітряні кульки · напої для всіх |
 | multiple_choice | Як хорватською «організувати»? | organizirati | piće za sve · na otvorenom · organizirati · grupni chat |
-| multiple_choice | Як хорватською «прибрати (після свята)»? | raspremiti | bit će super · dobro raspoloženje · glasati · raspremiti |
+| multiple_choice | Як хорватською «прибрати (після свята)»? | raspremiti | glazbena lista · dobro raspoloženje · glasati · raspremiti |
 | type_answer | Напишіть хорватською: «більшість» | većina |  |
 | type_answer | Напишіть хорватською: «повітряні кульки» | baloni |  |
 | type_answer | Напишіть хорватською: «голосувати» | glasati |  |

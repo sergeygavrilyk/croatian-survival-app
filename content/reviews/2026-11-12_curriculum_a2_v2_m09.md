@@ -30,9 +30,9 @@
 | prijava krađe | заява про крадіжку | Za osiguranje trebam prijavu krađe. |
 | smeđ | коричневий | Novčanik je smeđ i kožni. |
 | kišobran | парасолька | Kišobrani se najčešće zaboravljaju. |
-| u tramvajima | у трамваях | U tramvajima ljudi često zaborave kišobrane. |
-| s dokumentima | з документами | Izgubila sam torbu s dokumentima. |
-| po džepovima | по кишенях | Tražila sam ključeve po svim džepovima. |
+| kožna torbica | шкіряна сумочка | Izgubila sam crnu kožnu torbicu. |
+| putna torba | дорожня сумка | Putnu torbu ostavila sam na kolodvoru. |
+| pretražiti | обшукати, перерити | Pretražila sam sve džepove. |
 | obrazac za prijavu | бланк заяви | Ispunite obrazac za prijavu gubitka. |
 | javiti se ako se nađe | повідомити, якщо знайдеться | Javit ćemo Vam se ako se nađe. |
 | osobne stvari | особисті речі | Osobne stvari čuvajte uz sebe. |
@@ -72,12 +72,12 @@
 | fill_in_the_blank | U ___ ljudi često zaborave kišobrane. | tramvajima | tramvaja · tramvaje · tramvaji · tramvajima |
 | multiple_choice | Що означає «blokirati karticu»? | заблокувати картку | заблокувати картку · знайти · загублені речі · залишити десь |
 | multiple_choice | Що означає «osobne stvari»? | особисті речі | особисті речі · бюро знахідок · той, хто знайшов · втрата; збиток |
-| multiple_choice | Що означає «prijava krađe»? | заява про крадіжку | з документами · у трамваях · той, хто знайшов · заява про крадіжку |
-| multiple_choice | Як хорватською «по кишенях»? | po džepovima | obrazac za prijavu · javiti se ako se nađe · po džepovima · gubitak |
+| multiple_choice | Що означає «prijava krađe»? | заява про крадіжку | дорожня сумка · шкіряна сумочка · той, хто знайшов · заява про крадіжку |
+| multiple_choice | Як хорватською «обшукати, перерити»? | pretražiti | javiti se ako se nađe · obrazac za prijavu · pretražiti · gubitak |
 | multiple_choice | Як хорватською «знайти»? | pronaći | javiti se ako se nađe · smeđ · prijava krađe · pronaći |
-| type_answer | Напишіть хорватською: «коричневий» | smeđ |  |
-| type_answer | Напишіть хорватською: «з документами» | s dokumentima |  |
-| type_answer | Напишіть хорватською: «у трамваях» | u tramvajima |  |
+| type_answer | Напишіть хорватською: «шкіряна сумочка» | kožna torbica |  |
+| type_answer | Напишіть хорватською: «парасолька» | kišobran |  |
+| type_answer | Напишіть хорватською: «той, хто знайшов» | pronalazač |  |
 | sentence_builder | Складіть: «Я одразу заблокувала картку.» | Odmah sam blokirala karticu. | sam · blokirala · karticu. · Odmah |
 | sentence_builder | Складіть: «Я загубила сумку з документами.» | Izgubila sam torbu s dokumentima. | sam · s · Izgubila · torbu · dokumentima. |
 | listening | Прослухайте і складіть фразу | I ona je u novčaniku. Moram prijaviti gubitak policiji. | u · policiji. · novčaniku. · ona · I · Moram · gubitak · prijaviti · je |
@@ -115,8 +115,8 @@
 | ostaci hrane | залишки їжі | Ostaci hrane ne idu u plastiku. |
 | raspored odvoza | графік вивезення сміття | Raspored odvoza je na stranici grada. |
 | kazna za neodvajanje | штраф за несортування | Postoji i kazna za neodvajanje otpada. |
-| u spremnicima | у контейнерах | U spremnicima za papir često ima plastike. |
-| okolišno | екологічно | Živimo okolišno odgovorno. |
+| smeđa kanta | коричневий бак (для біовідходів) | Ostatke hrane bacamo u smeđu kantu. |
+| kompostirati | компостувати | Ostatke povrća kompostiramo u vrtu. |
 | tetrapak | тетрапак (упаковка з-під молока, соку) | Tetrapak od mlijeka ide u žutu vreću. |
 
 **Діалог «Što ide gdje?»** (Що куди?)
@@ -152,10 +152,10 @@
 | multiple_choice | Що означає «kazna za neodvajanje»? | штраф за несортування | штраф за несортування · майданчик з контейнерами для сортування · сортувати, відокремлювати · упаковка |
 | multiple_choice | Що означає «ostaci hrane»? | залишки їжі | біовідходи · повернення застави за тару · бляшанка · залишки їжі |
 | multiple_choice | Як хорватською «пляшка»? | boca | boca · tetrapak · staklo · odvajanje otpada |
-| multiple_choice | Як хорватською «у контейнерах»? | u spremnicima | reciklirati · odvajanje otpada · žuta vreća · u spremnicima |
-| type_answer | Напишіть хорватською: «скло» | staklo |  |
+| multiple_choice | Як хорватською «скло»? | staklo | reciklirati · staklo · odvajanje otpada · limenka |
 | type_answer | Напишіть хорватською: «біовідходи» | biootpad |  |
 | type_answer | Напишіть хорватською: «контейнер» | spremnik |  |
+| type_answer | Напишіть хорватською: «тетрапак (упаковка з-під молока, соку)» | tetrapak |  |
 | sentence_builder | Складіть: «Скло викидають у зелений контейнер.» | Staklo se baca u zeleni spremnik. | spremnik. · Staklo · u · se · zeleni · baca |
 | sentence_builder | Складіть: «Зімніть пляшки перед тим, як викинути.» | Zgnječite boce prije bacanja. | boce · prije · bacanja. · Zgnječite |
 | listening | Прослухайте і складіть фразу | One idu u miješani komunalni otpad. | komunalni · u · otpad. · miješani · One · idu |
@@ -188,12 +188,12 @@
 | divlje odlagalište | стихійне звалище | Iza šume je divlje odlagalište. |
 | prijaviti problem | повідомити про проблему | Problem možete prijaviti u aplikaciji grada. |
 | aplikacija grada | міський застосунок | Preko aplikacije grada prijavila sam rupu. |
-| besplatno jednom godišnje | раз на рік безкоштовно | Odvoz je besplatno jednom godišnje. |
+| jednom godišnje | раз на рік | Odvoz glomaznog otpada je besplatan jednom godišnje. |
 | kauč | диван | Stari kauč je pun prašine. |
 | raskrčiti | розчистити | Treba raskrčiti podrum. |
 | nagomilati se | накопичитися | Na balkonu se nagomilalo puno stvari. |
-| ispred zgrade | перед будинком | Kauč smo ostavili ispred zgrade. |
-| u ulicama | на вулицях | U ulicama starog grada nema kontejnera. |
+| spremište | комора, підсобка | Stare stvari držimo u spremištu. |
+| nepropisno odlaganje | незаконне викидання сміття | Za nepropisno odlaganje otpada plaća se kazna. |
 
 **Діалог «Stari kauč»** (Старий диван)
 
@@ -226,11 +226,11 @@
 | multiple_choice | Що означає «naručiti odvoz»? | замовити вивезення | використані батарейки · пункт приймання вторсировини · замовити вивезення · стихійне звалище |
 | multiple_choice | Що означає «javna rasvjeta»? | вуличне освітлення | вуличне освітлення · накопичитися · електронні відходи · стихійне звалище |
 | multiple_choice | Що означає «divlje odlagalište»? | стихійне звалище | електронні відходи · повідомити про проблему · яма на дорозі · стихійне звалище |
-| multiple_choice | Як хорватською «розчистити»? | raskrčiti | komunalno poduzeće · aplikacija grada · besplatno jednom godišnje · raskrčiti |
-| multiple_choice | Як хорватською «старі меблі»? | stari namještaj | javna rasvjeta · ispred zgrade · opasni otpad · stari namještaj |
-| type_answer | Напишіть хорватською: «на вулицях» | u ulicama |  |
-| type_answer | Напишіть хорватською: «перед будинком» | ispred zgrade |  |
+| multiple_choice | Як хорватською «розчистити»? | raskrčiti | komunalno poduzeće · aplikacija grada · jednom godišnje · raskrčiti |
+| multiple_choice | Як хорватською «старі меблі»? | stari namještaj | javna rasvjeta · spremište · opasni otpad · stari namještaj |
+| type_answer | Напишіть хорватською: «комора, підсобка» | spremište |  |
 | type_answer | Напишіть хорватською: «диван» | kauč |  |
+| type_answer | Напишіть хорватською: «накопичитися» | nagomilati se |  |
 | sentence_builder | Складіть: «Залиште старі меблі перед будинком.» | Ostavite stari namještaj ispred zgrade. | namještaj · ispred · stari · zgrade. · Ostavite |
 | sentence_builder | Складіть: «Використані батарейки поверніть у магазин.» | Istrošene baterije vratite u trgovinu. | u · trgovinu. · Istrošene · baterije · vratite |
 | listening | Прослухайте і складіть фразу | Već sam prijavio prošli mjesec. | prošli · mjesec. · sam · prijavio · Već |
@@ -268,8 +268,8 @@
 | vrsta | вид (тварин, рослин) | U parku živi više od sto vrsta ptica. |
 | bacati smeće | смітити | Zabranjeno je bacati smeće u prirodu. |
 | ekološki osviješten | екологічно свідомий | Mladi su danas ekološki osviješteniji. |
-| s volonterima | з волонтерами | Plažu smo očistili s volonterima. |
-| u rijekama | у річках | U rijekama je sve manje ribe. |
+| volonter | волонтер | Kao volonter čistim plaže. |
+| zagađen | забруднений | Rijeka je zagađena nakon kiše. |
 
 **Діалог «Akcija na plaži»** (Акція на пляжі)
 
@@ -299,9 +299,9 @@
 |---|---|---|---|
 | fill_in_the_blank | Plažu smo očistili s ___. | volonterima | volonteri · volontere · volontera · volonterima |
 | multiple_choice | Що означає «klimatske promjene»? | зміна клімату | під загрозою, зникаючий · вид (тварин, рослин) · заощаджувати електроенергію · зміна клімату |
-| multiple_choice | Що означає «ekološki osviješten»? | екологічно свідомий | відновлювані джерела енергії · з волонтерами · екологічно свідомий · довкілля |
+| multiple_choice | Що означає «ekološki osviješten»? | екологічно свідомий | відновлювані джерела енергії · волонтер · екологічно свідомий · довкілля |
 | multiple_choice | Що означає «štedjeti vodu»? | заощаджувати воду | смітити · прибирання пляжу · екологічно свідомий · заощаджувати воду |
-| multiple_choice | Як хорватською «з волонтерами»? | s volonterima | onečišćenje · ekološki osviješten · s volonterima · obnovljivi izvori energije |
+| multiple_choice | Як хорватською «волонтер»? | volonter | volonter · obnovljivi izvori energije · onečišćenje · ekološki osviješten |
 | multiple_choice | Як хорватською «багаторазовий»? | višekratan | višekratan · ekološka akcija · ekološki osviješten · vrsta |
 | type_answer | Напишіть хорватською: «забруднення» | onečišćenje |  |
 | type_answer | Напишіть хорватською: «сонячні панелі» | solarni paneli |  |
@@ -342,8 +342,8 @@
 | nestanak struje | відключення світла | Zbog oluje je nestanak struje. |
 | srušeno stablo | повалене дерево | Srušeno stablo blokira cestu. |
 | evakuirati | евакуювати | Evakuirali su turiste iz kampa. |
-| na cestama | на дорогах | Na cestama je puno vode. |
-| u kućama | у будинках | Ljudi su ostali u kućama. |
+| poplavljen | затоплений | Podrum je poplavljen nakon oluje. |
+| sigurno mjesto | безпечне місце | Djecu smo odveli na sigurno mjesto. |
 | hitne službe | екстрені служби | U hitnom slučaju nazovite hitne službe na 112. |
 
 **Діалог «Crveno upozorenje»** (Червоне попередження)
@@ -377,11 +377,11 @@
 | multiple_choice | Що означає «olujni vjetar»? | штормовий вітер | уникати · лісова пожежа · метеопопередження · штормовий вітер |
 | multiple_choice | Що означає «starije osobe»? | літні люди | літні люди · штормовий вітер · канадер (протипожежний літак) · лісова пожежа |
 | multiple_choice | Що означає «kanader»? | канадер (протипожежний літак) | повалене дерево · канадер (протипожежний літак) · евакуювати · літні люди |
-| multiple_choice | Як хорватською «відключення світла»? | nestanak struje | bujica · nestanak struje · na cestama · narančasto upozorenje |
+| multiple_choice | Як хорватською «відключення світла»? | nestanak struje | bujica · nestanak struje · poplavljen · narančasto upozorenje |
 | multiple_choice | Як хорватською «сховатися»? | skloniti se | olujni vjetar · ugroženo područje · izbjegavati · skloniti se |
 | type_answer | Напишіть хорватською: «метеопопередження» | meteoalarm |  |
 | type_answer | Напишіть хорватською: «крижаний дощ» | ledena kiša |  |
-| type_answer | Напишіть хорватською: «на дорогах» | na cestama |  |
+| type_answer | Напишіть хорватською: «затоплений» | poplavljen |  |
 | sentence_builder | Складіть: «Сховайтеся в закритому приміщенні.» | Sklonite se u zatvoreni prostor. | Sklonite · u · se · prostor. · zatvoreni |
 | sentence_builder | Складіть: «Повалене дерево блокує дорогу.» | Srušeno stablo blokira cestu. | cestu. · stablo · Srušeno · blokira |
 | listening | Прослухайте і складіть фразу | Neka ostane u kući i pije puno pitke vode. | ostane · i · pitke · kući · Neka · pije · vode. · puno · u |
@@ -420,7 +420,7 @@
 | uvenuti | зів’янути | Dok smo bili na moru, biljke su uvenule. |
 | zalijevanje | полив | Ljeti je zalijevanje navečer najbolje. |
 | vrtlarski centar | садовий центр | U vrtlarskom centru imaju sve za balkon. |
-| s biljkama | з рослинами | Balkon s biljkama je kao mali vrt. |
+| presaditi | пересадити | Presadila sam bosiljak u veći lonac. |
 
 **Діалог «Darjin balkon»** (Балкон Дар’ї)
 

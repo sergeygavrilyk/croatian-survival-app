@@ -18,7 +18,7 @@
 
 | Слово | Переклад | Приклад |
 |---|---|---|
-| istarski | істрійський | Istarski pršut je suši od dalmatinskog. |
+| istarski | істрійський | Istarski pršut se ne dimi, za razliku od dalmatinskog. |
 | brdski gradić | містечко на пагорбі | Motovun je brdski gradić iznad doline. |
 | dolina | долина | Iz Motovuna se vidi cijela dolina. |
 | maneštra | манештра (густий овочевий суп) | Zimi kuhamo istarsku maneštru. |
@@ -52,7 +52,7 @@
 
 - *Domaćin:* Dobro došli! Danas imamo maneštru i fuže s tartufima. — Ласкаво просимо! Сьогодні маємо манештру й фужі з трюфелями.
 - *Ivan:* Zvuči odlično. Što preporučujete za piće? — Звучить чудово. Що порадите з напоїв?
-- *Domaćin:* Našu malvaziju ili teran. Vino je iz našeg vinograda. — Нашу мальвазію або теран. Вино з нашого винограднику.
+- *Domaćin:* Našu malvaziju ili teran. Vino je iz našeg vinograda. — Нашу мальвазію або теран. Вино з нашого виноградника.
 - *Ivan:* Zašto su natpisi dvojezični? — Чому написи двомовні?
 - *Domaćin:* U Istri živi talijanska manjina, pa je talijanski službeni jezik u nekim gradovima. — В Істрії живе італійська меншина, тож італійська — офіційна мова в деяких містах.
 
@@ -96,7 +96,7 @@
 | Слово | Переклад | Приклад |
 |---|---|---|
 | slavonski | славонський | Slavonski kulen je ljut i mirisan. |
-| osječki | осієцький (з Осієка) | Osječka tvrđava je stara četiristo godina. |
+| osječki | осієцький (з Осієка) | Osječka Tvrđa je barokni dio grada. |
 | vukovarski | вуковарський | Vukovarski vodotoranj je simbol grada. |
 | žitna polja | хлібні поля | Ljeti su žitna polja žuta. |
 | suncokret | соняшник | Polja suncokreta podsjećaju me na Ukrajinu. |
@@ -330,8 +330,8 @@
 | pristojno | чемно, пристойно | Pristojno je donijeti nešto domaćinu. |
 | nepristojno | нечемно, непристойно | Nepristojno je kasniti na ručak. |
 | poljubiti u obraz | поцілувати в щоку | Prijatelji se pozdravljaju poljupcem u obraz. |
-| dva poljupca | два поцілунки (при вітанні) | U Hrvatskoj se daju dva poljupca. |
-| kava traje satima | кава триває годинами | Kod nas kava traje satima. |
+| papuče za goste | капці для гостей | Domaćica ima papuče za goste. |
+| obiteljsko okupljanje | родинна зустріч | Nedjeljom je obiteljsko okupljanje kod bake. |
 | domaćičin | господинин | Pohvalite domaćičin kolač. |
 | obiteljski ručak | сімейний обід | Nedjeljom je obiteljski ručak kod bake. |
 | pomalo | потроху, не поспішаючи | Pomalo, nema žurbe. |
@@ -380,12 +380,12 @@
 | fill_in_the_blank | Pohvalite ___ kolač, ona ga je pekla cijelo jutro. | domaćičin | domaćin · domaćica · domaćice · domaćičin |
 | multiple_choice | Що означає «lijepo ponašanje»? | гарна поведінка | набережна (у приморському місті) · заведено (звичай) · гарна поведінка · подарунок господарю |
 | multiple_choice | Що означає «kavanska kultura»? | культура кав’ярень | культура кав’ярень · гостини, візит · нечемно, непристойно · запрошення на каву |
-| multiple_choice | Що означає «ispijati kavu»? | попивати каву | господинин · поводитися · чемно, пристойно · попивати каву |
-| multiple_choice | Як хорватською «чемно, пристойно»? | pristojno | kava traje satima · pristojno · poziv na kavu · lijepo ponašanje |
+| multiple_choice | Що означає «papuče za goste»? | капці для гостей | сімейний обід · чемно, пристойно · капці для гостей · поводитися |
+| multiple_choice | Як хорватською «чемно, пристойно»? | pristojno | obiteljsko okupljanje · pristojno · poziv na kavu · lijepo ponašanje |
 | multiple_choice | Як хорватською «заведено (звичай)»? | običaj je | običaj je · poljubiti u obraz · poslužiti · ispijati kavu |
 | type_answer | Напишіть хорватською: «нечемно, непристойно» | nepristojno |  |
 | type_answer | Напишіть хорватською: «поводитися» | ponašati se |  |
-| type_answer | Напишіть хорватською: «два поцілунки (при вітанні)» | dva poljupca |  |
+| type_answer | Напишіть хорватською: «гостини, візит» | gostovanje |  |
 | sentence_builder | Складіть: «У чужому домі поводимося чемно.» | U tuđoj kući se ponašamo pristojno. | se · kući · pristojno. · tuđoj · ponašamo · U |
 | sentence_builder | Складіть: «До старших звертаються на «ви».» | Starijima se persira. | persira. · se · Starijima |
 | listening | Прослухайте і складіть фразу | Teško. Uzmi barem mali komad, to je pristojno. | pristojno. · to · barem · komad, · Uzmi · mali · Teško. · je |
@@ -404,8 +404,8 @@
 
 | Слово | Переклад | Приклад |
 |---|---|---|
-| klapsko pjevanje | спів клапи (дalmatинський хоровий спів) | Klapsko pjevanje je na popisu UNESCO-a. |
-| tamburica | тамбурица (струнний інструмент) | Djed je svirao tamburicu. |
+| klapsko pjevanje | спів клапи (далматинський хоровий спів) | Klapsko pjevanje je na popisu UNESCO-a. |
+| tamburica | тамбуриця (струнний інструмент) | Djed je svirao tamburicu. |
 | nematerijalna baština | нематеріальна спадщина | Hrvatska ima puno nematerijalne baštine. |
 | kulturna baština | культурна спадщина | Dubrovnik je dio svjetske kulturne baštine. |
 | paška čipka | пазьке мереживо | Paška čipka se radi ručno. |
@@ -454,10 +454,10 @@
 | Тип | Питання | Відповідь | Варіанти |
 |---|---|---|---|
 | fill_in_the_blank | ___ alka je stari viteški turnir. | Sinjska | Sinj · Sinjski · Sinjska · Sinja |
-| multiple_choice | Що означає «folklorna skupina»? | фольклорний ансамбль | тамбурица (струнний інструмент) · а капела (без інструментів) · нематеріальна спадщина · фольклорний ансамбль |
+| multiple_choice | Що означає «folklorna skupina»? | фольклорний ансамбль | тамбуриця (струнний інструмент) · а капела (без інструментів) · нематеріальна спадщина · фольклорний ансамбль |
 | multiple_choice | Що означає «kulturna baština»? | культурна спадщина | ручна робота · бечарац (славонська пісня-жарт) · коло (народний танець) · культурна спадщина |
 | multiple_choice | Що означає «ručni rad»? | ручна робота | лицарський турнір · голос · нематеріальна спадщина · ручна робота |
-| multiple_choice | Як хорватською «спів клапи (дalmatинський хоровий спів)»? | klapsko pjevanje | licitar · glas · kolo · klapsko pjevanje |
+| multiple_choice | Як хорватською «спів клапи (далматинський хоровий спів)»? | klapsko pjevanje | licitar · glas · kolo · klapsko pjevanje |
 | multiple_choice | Як хорватською «а капела (без інструментів)»? | a cappella | tamburica · paška čipka · a cappella · sinjska alka |
 | type_answer | Напишіть хорватською: «ойкання (старовинний спів)» | ojkanje |  |
 | type_answer | Напишіть хорватською: «сіньська алка (лицарський турнір)» | sinjska alka |  |

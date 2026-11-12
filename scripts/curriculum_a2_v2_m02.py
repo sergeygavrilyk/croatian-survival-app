@@ -232,7 +232,7 @@ LESSONS = [
             ('bilješke', 'нотатки, конспект', 'n', 'f_pl', 'Možeš li mi posuditi svoje bilješke?'),
             ('skripta', 'конспект лекцій (посібник)', 'n', 'f', 'Skripta se kupuje u skriptarnici.'),
             ('literatura', 'література (для курсу)', 'n', 'f', 'Popis literature je na stranici kolegija.'),
-            ('prolazna ocjena', 'прохідна оцінка', 'ph', 'f', 'Dovoljan je prolazna ocjena.'),
+            ('prolazna ocjena', 'прохідна оцінка', 'ph', 'f', 'Dvojka je prolazna ocjena.'),
             ('prepisivati', 'списувати', 'v', 'ipfv', 'Na ispitu je zabranjeno prepisivati.'),
             ('naučiti napamet', 'вивчити напам’ять', 'ph', '', 'Formule moraš naučiti napamet.'),
             ('ponavljati gradivo', 'повторювати матеріал', 'ph', '', 'Cijeli tjedan ponavljam gradivo.'),

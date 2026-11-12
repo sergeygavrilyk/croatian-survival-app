@@ -762,9 +762,17 @@ def review(c: CourseA2, m: int) -> str:
     return '\n'.join(out) + '\n'
 
 
+FROZEN = ('SQL A2 v2 (00_structure, m01–m14) уже запущено в робочій базі 2026-11-12 (PR #19) — файли не перезаписую. '
+          'Зміни даних — пакетом scripts/gen_curriculum_a2_v2_fix.py; лише перевірка: --check; перезаписати свідомо: --force.')
+
+
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith('--')]
+    write = '--force' in sys.argv
     if args == ['structure']:
+        if not write:
+            print(FROZEN)
+            return
         STRUCTURE_OUT.write_text(structure_sql(), encoding='utf-8')
         print(f'{STRUCTURE_OUT.relative_to(ROOT)}: {STRUCTURE_OUT.stat().st_size // 1024} КБ; уроків у програмі: {TOTAL}')
         return
@@ -789,6 +797,9 @@ def main():
             out = REVIEWS / f'2026-11-12_curriculum_a2_v2_m{m:02d}.md'
             out.write_text(review(courses[m], m), encoding='utf-8')
             print(out.relative_to(ROOT))
+        return
+    if not write:
+        print(f'Перевірка пройдена: модулі {", ".join(f"A2.{m}" for m in modules)}. ' + FROZEN)
         return
     for m in modules:
         sql = build_module(courses[m], m)

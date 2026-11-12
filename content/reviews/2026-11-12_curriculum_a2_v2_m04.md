@@ -107,10 +107,10 @@
 | zaprositi | освідчитися | Zaprosio ju je na plaži. |
 | krštenje | хрестини | Krštenje je u nedjelju u crkvi. |
 | krstiti | хрестити | Dijete su krstili u lipnju. |
-| kumstvo | кумівство | Kumstvo je u Hrvatskoj važna veza. |
+| kumstvo | стосунки кумів, кумівство (родинний зв’язок) | Kumstvo je u Hrvatskoj važna veza. |
 | jubilej | ювілей | Djed slavi jubilej, osamdeset godina. |
 | zdravica | тост | Kum je održao zdravicu. |
-| nazdravlje | будьмо! (тост) | Živjeli! Nazdravlje mladencima! |
+| podići čašu | підняти келих (за когось) | Podignimo čaše za mladence! |
 | živjeli | будьмо! (тост) | Podignimo čaše. Živjeli! |
 | svečana odjeća | святковий одяг | Na krštenje se dolazi u svečanoj odjeći. |
 | omotnica s novcem | конверт з грошима | Mladencima se obično daje omotnica s novcem. |
@@ -133,7 +133,7 @@
 - *Kum:* Dragi gosti, podignimo čaše za mladence! Živjeli! — Дорогі гості, піднімімо келихи за молодят! Будьмо!
 - *Svi:* Živjeli! — Будьмо!
 - *Darja:* Kako lijepa zdravica! Tko je ovaj čovjek? — Який гарний тост! Хто цей чоловік?
-- *Daša:* To je kum. Kumstvo je ovdje jako važno, kum je kao član obitelji. — Це кум. Кумівство тут дуже важливе, кум — як член родини.
+- *Daša:* To je kum. Kumstvo je ovdje jako važno, kum je kao član obitelji. — Це кум. Кумів тут дуже шанують, кум — як член родини.
 - *Darja:* A sad? Svi trče prema mladenki. — А зараз? Усі біжать до нареченої.
 - *Daša:* Mladenka će baciti buket. Hajde, probaj ga uhvatiti! — Наречена кидатиме букет. Давай, спробуй його спіймати!
 
@@ -150,14 +150,14 @@
 | Тип | Питання | Відповідь | Варіанти |
 |---|---|---|---|
 | fill_in_the_blank | Na svadbi je bilo puno ___ iz cijele Hrvatske. | ljudi | čovjek · ljudi · ljudima · čovjeka |
-| multiple_choice | Що означає «nazdravlje»? | будьмо! (тост) | весільні гості · звичай · будьмо! (тост) · заручини |
-| multiple_choice | Що означає «zaruke»? | заручини | хрестини · заручини · приймати (гостей), почастувати · будьмо! (тост) |
-| multiple_choice | Що означає «svečana odjeća»? | святковий одяг | святковий одяг · будьмо! (тост) · кумівство · тост |
+| multiple_choice | Що означає «običaj»? | звичай | звичай · заручини · весільні гості · конверт з грошима |
+| multiple_choice | Що означає «zaruke»? | заручини | хрестини · заручини · приймати (гостей), почастувати · підняти келих (за когось) |
+| multiple_choice | Що означає «svečana odjeća»? | святковий одяг | святковий одяг · підняти келих (за когось) · стосунки кумів, кумівство (родинний зв’язок) · тост |
 | multiple_choice | Як хорватською «весільні гості»? | svatovi | slavlje · jubilej · ugostiti · svatovi |
 | multiple_choice | Як хорватською «наречений»? | mladoženja | krštenje · svatovi · mladenci · mladoženja |
 | type_answer | Напишіть хорватською: «хрестини» | krštenje |  |
+| type_answer | Напишіть хорватською: «підняти келих (за когось)» | podići čašu |  |
 | type_answer | Напишіть хорватською: «свято, святкування» | slavlje |  |
-| type_answer | Напишіть хорватською: «звичай» | običaj |  |
 | sentence_builder | Складіть: «Хрестини в неділю вранці.» | Krštenje je u nedjelju ujutro. | nedjelju · je · ujutro. · Krštenje · u |
 | sentence_builder | Складіть: «Він освідчився їй на пляжі.» | Zaprosio ju je na plaži. | plaži. · Zaprosio · je · na · ju |
 | listening | Прослухайте і складіть фразу | U lipnju. Bit će oko dvjesto svatova. | će · svatova. · lipnju. · Bit · dvjesto · oko · U |
@@ -252,7 +252,7 @@
 | svađa | сварка | Svađa je počela zbog sitnice. |
 | posvađati se | посваритися | Posvađala sam se sa sestrom. |
 | svađati se | сваритися | Ne svađajte se pred djecom. |
-| nesporazum | непорозуміння | Sve je bio samo nesporazum. |
+| nesporazum | непорозуміння | Sve je to bio samo nesporazum. |
 | isprika | вибачення | Dugujem ti ispriku. |
 | uvrijediti | образити | Nisam te htjela uvrijediti. |
 | uvrijeđen | ображений | Još je uvrijeđen i ne javlja se. |
@@ -308,14 +308,14 @@
 | type_answer | Напишіть хорватською: «сваритися» | svađati se |  |
 | type_answer | Напишіть хорватською: «заспокоїтися» | smiriti se |  |
 | sentence_builder | Складіть: «Я не хотіла тебе образити.» | Nisam te htjela uvrijediti. | uvrijediti. · htjela · te · Nisam |
-| sentence_builder | Складіть: «Усе це було лише непорозуміння.» | Sve je bio samo nesporazum. | samo · je · nesporazum. · bio · Sve |
+| sentence_builder | Складіть: «Усе це було лише непорозуміння.» | Sve je to bio samo nesporazum. | nesporazum. · to · Sve · bio · je · samo |
 | listening | Прослухайте і складіть фразу | Jest. Ne javlja mi se dva dana. | Ne · Jest. · javlja · mi · dva · se · dana. |
 | speaking | Пробач мені, будь ласка. | Oprosti mi, molim te. |  |
 | speaking | Заспокойся, поговорімо нормально. | Smiri se, razgovarajmo normalno. |  |
 
 **Напишіть повідомлення:** Напишіть подрузі вибачення: ви не хотіли її образити, вам шкода, і пропонуєте зустрітися на каву. Зразок: *Oprosti mi, nisam te htjela uvrijediti. Jako mi je žao. Idemo sutra na kavu?*
 
-**Перекажіть другу (ua → hr):** «Скажи Оксані, що я її не ображалася і що це було непорозуміння.» Зразок: *Moja prijateljica nije ljuta na tebe. To je bio samo nesporazum.*
+**Перекажіть другу (ua → hr):** «Скажи Оксані, що я на неї не серджуся і що це було лише непорозуміння.» Зразок: *Moja prijateljica nije ljuta na tebe. To je bio samo nesporazum.*
 
 ## Урок 27: Згоден чи ні? Моя думка · Slažem se ili ne? Moje mišljenje
 
@@ -344,7 +344,7 @@
 | prednost | перевага | Prednost malog grada je mir. |
 | nedostatak | недолік | Nedostatak je loš prijevoz. |
 | prijedlog | пропозиція | Imam prijedlog za vikend. |
-| predložiti | запропонувати | Predlažem da idemo vlakom. |
+| predložiti | запропонувати | Predložila sam da idemo vlakom. |
 | protuargument | контраргумент | Na to imam jedan protuargument. |
 
 **Діалог «Grad ili selo?»** (Місто чи село?)
@@ -407,7 +407,7 @@
 | žaliti se | скаржитися | Žalim se na loše usluge. |
 | potrošač | споживач | Kao potrošač imate pravo na prigovor. |
 | prava potrošača | права споживачів | Prava potrošača su zaštićena zakonom. |
-| knjiga žalbe | книга скарг | Tražila sam knjigu žalbe. |
+| knjiga žalbi | книга скарг | Tražila sam knjigu žalbi. |
 | voditelj trgovine | керівник магазину | Želim razgovarati s voditeljem trgovine. |
 | nezadovoljan | незадоволений | Nezadovoljna sam uslugom. |
 | neprihvatljiv | неприйнятний | Takvo ponašanje je neprihvatljivo. |
@@ -418,7 +418,7 @@
 | nadoknaditi | відшкодувати | Trgovina će nam nadoknaditi štetu. |
 | šteta | збиток, шкода | Tko će platiti štetu? |
 | ispričati se kupcu | вибачитися перед покупцем | Prodavač se ispričao kupcu. |
-| nevaljao | неякісний, бракований | Prodali su mi nevaljalu robu. |
+| tvornička greška | заводський брак | Na perilici je tvornička greška. |
 | ispravak | виправлення | Tražim ispravak računa. |
 | udruga za zaštitu potrošača | спілка захисту споживачів | Javila sam se udruzi za zaštitu potrošača. |
 | reklamirati | подати рекламацію (повернути з претензією) | Cipele sam reklamirala nakon tjedan dana. |
@@ -457,7 +457,7 @@
 | multiple_choice | Що означає «ispričati se kupcu»? | вибачитися перед покупцем | керівник магазину · письмова скарга · вибачитися перед покупцем · неввічливий |
 | multiple_choice | Що означає «prava potrošača»? | права споживачів | письмова скарга · незадоволений · вибачитися перед покупцем · права споживачів |
 | multiple_choice | Що означає «prigovor»? | скарга, претензія | вимагати · скарга, претензія · неввічливий · строк відповіді |
-| multiple_choice | Як хорватською «книга скарг»? | knjiga žalbe | knjiga žalbe · jamstveni list · žaliti se · prava potrošača |
+| multiple_choice | Як хорватською «книга скарг»? | knjiga žalbi | žaliti se · knjiga žalbi · prava potrošača · jamstveni list |
 | multiple_choice | Як хорватською «виправлення»? | ispravak | ispravak · pisani prigovor · potrošač · žaliti se |
 | type_answer | Напишіть хорватською: «неприйнятний» | neprihvatljiv |  |
 | type_answer | Напишіть хорватською: «вимагати» | zahtijevati |  |
@@ -546,5 +546,5 @@
 
 **Напишіть повідомлення:** Напишіть записку сусідові: ваш син спить після обіду, ви просите не свердлити з 14 до 16. Зразок: *Poštovani susjede, moj sin spava poslije ručka. Molim Vas da ne bušite od 14 do 16 sati. Hvala!*
 
-**Перекажіть другу (ua → hr):** «Скажи сусідові, що в нас у ванній вогкість і, здається, він нас затопив.» Зразок: *U njezinoj kupaonici je vlaga. Čini se da ste ih poplavili.*
+**Перекажіть другу (ua → hr):** «Скажи сусідові, що в нас у ванній вогкість і, здається, він нас затопив.» Зразок: *U njihovoj kupaonici je vlaga. Čini se da ste ih poplavili.*
 
