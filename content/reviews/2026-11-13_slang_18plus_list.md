@@ -20,7 +20,7 @@
 - **DEPRECATED у базі** (*Kužiš?*, *nemam pojma* — колись прибрані як речення): повертаємо новою версією наявного рядка, а не новою лемою. У *Kužiš?* поле `normalized` з діакритиками й «?» (`kužiš?`) — помилка даних, виправити тим самим пакетом.
 - **«?»** у примітці — 45 слів: перевірити носієм (чи вживають, значення, написання). Група «Сумнівні» — кальки з англійської з прикладу власника; у модулі — лише після «так» носія.
 - Розмітка — модель §4.1 (`register` / `regionality` / `usage_tags`); `vulgar` — лише в модулі «18+», який видно після ввімкнення «Показувати контент 18+».
-- Образливі слова про групи людей (урок X3) — лише впізнавання: позначка «образа», чому образливо, нейтральний відповідник у примітці.
+- Образи (тег `offensive`, затверджено 2026-11-13) — лише впізнавання: позначка «образа» на картці, чому образливо, нейтральний відповідник у примітці.
 - Що змінено проти прикладу власника: прибрано стандартні слова (*žlica, kapa, kafić, dečko, teta, smijati se, kupanje, kartica, blokirati*); виправлено *Purger, katrida, buksna, kompir, pomidor*; додано розмовні слова, яких у прикладі не було (*fuš, rintati, nacvrcan, gablec, cajt…*), і лексику «18+».
 - Далі: власник і носій переглядають список → батч слів (`croatian-lexeme-batch`: приклади, пояснення, форми) → уроки модулів (`lesson-topic-rebuild` / `level-build-croatia`).
 
@@ -74,7 +74,7 @@
 | 15 | *frajer* | крутий хлопець; хлопець | noun | `colloquial` | `general` | germanism | немає |  |
 | 16 | *faca* | важна персона; «фейс» | noun | `colloquial` | `general` | italianism | немає |  |
 | 17 | *štreber* | зубрила; ботанік | noun | `colloquial` | `general` | germanism | немає |  |
-| 18 | *papak* | лох; селюк | noun | `slang` | `Zagreb` | {} | немає | образливе |
+| 18 | *papak* | лох; селюк | noun | `slang` | `Zagreb` | offensive | немає | образливе |
 | 19 | *papučar* | підкаблучник | noun | `colloquial` | `general` | {} | немає |  |
 | 20 | *šminker* | модник; мажор | noun | `slang` | `Zagreb` | germanism | немає |  |
 | 21 | *gazda* | хазяїн; бос | noun | `colloquial` | `general` | {} | немає |  |
@@ -379,7 +379,7 @@
 | 73 | *ma da* | та ну; невже | phrase | `colloquial` | `general` | {} | немає |  |
 | 74 | *ne pitaj* | краще не питай | phrase | `colloquial` | `general` | {} | немає |  |
 | 75 | *ajd bok* | ну все, бувай | phrase | `informal` | `general` | {} | немає |  |
-| 76 | *drogaš* | наркоман | noun | `slang` | `general` | {} | немає | образливе |
+| 76 | *drogaš* | наркоман | noun | `slang` | `general` | offensive | немає | образливе |
 | 77 | *trava* | трава (марихуана) | noun | `slang` | `general` | {} | немає → одна лема з обома значеннями (стандартне першим) | нз (трава) |
 | 78 | *džoint* | косяк | noun | `slang` | `general` | anglicism | немає |  |
 | 79 | *buksna* | косяк | noun | `slang` | `Zagreb` | {} | немає | у списку власника — «схованка»: ні, це косяк |
@@ -471,29 +471,29 @@
 
 | № | Слово | Переклад | Частина мови | register | regionality | usage_tags | У базі | Примітка |
 |---|---|---|---|---|---|---|---|---|
-| 1 | *budala* | дурень | noun | `colloquial` | `general` | {} | немає | образа, легка |
-| 2 | *glupan* | дурень; тупак | noun | `colloquial` | `general` | {} | немає | образа |
-| 3 | *kreten* | кретин | noun | `colloquial` | `general` | {} | немає | образа |
-| 4 | *debil* | дебіл | noun | `vulgar` | `general` | {} | немає | образа; зачіпає людей з інвалідністю |
-| 5 | *konj* | бовдур; дурень | noun | `colloquial` | `general` | {} | є з іншим значенням — A1: «кінь» → додати значення до наявної лексеми | образа; нз (кінь) |
-| 6 | *đubre* | покидьок | noun | `vulgar` | `general` | {} | немає | образа |
-| 7 | *šupak* | мудак | noun | `vulgar` | `general` | {} | немає | образа |
-| 8 | *seronja* | пустобрех; мудак | noun | `vulgar` | `general` | {} | немає | образа |
-| 9 | *kurva* | повія; шльондра | noun | `vulgar` | `general` | {} | немає | образа; і як вигук |
-| 10 | *kurvin sin* | сучий син | phrase | `vulgar` | `general` | {} | немає | образа |
-| 11 | *jebi se* | пішов ти | phrase | `vulgar` | `general` | {} | немає | образа |
+| 1 | *budala* | дурень | noun | `colloquial` | `general` | offensive | немає | образа, легка |
+| 2 | *glupan* | дурень; тупак | noun | `colloquial` | `general` | offensive | немає | образа |
+| 3 | *kreten* | кретин | noun | `colloquial` | `general` | offensive | немає | образа |
+| 4 | *debil* | дебіл | noun | `vulgar` | `general` | offensive | немає | образа; зачіпає людей з інвалідністю |
+| 5 | *konj* | бовдур; дурень | noun | `colloquial` | `general` | offensive | є з іншим значенням — A1: «кінь» → додати значення до наявної лексеми | образа; нз (кінь) |
+| 6 | *đubre* | покидьок | noun | `vulgar` | `general` | offensive | немає | образа |
+| 7 | *šupak* | мудак | noun | `vulgar` | `general` | offensive | немає | образа |
+| 8 | *seronja* | пустобрех; мудак | noun | `vulgar` | `general` | offensive | немає | образа |
+| 9 | *kurva* | повія; шльондра | noun | `vulgar` | `general` | offensive | немає | образа; і як вигук |
+| 10 | *kurvin sin* | сучий син | phrase | `vulgar` | `general` | offensive | немає | образа |
+| 11 | *jebi se* | пішов ти | phrase | `vulgar` | `general` | offensive | немає | образа |
 | 12 | *marš* | геть!; марш! | interjection | `colloquial` | `general` | {} | немає | грубо |
 | 13 | *gubi se* | забирайся; зникни | phrase | `colloquial` | `general` | {} | немає | грубо |
-| 14 | *peder* | педик | noun | `vulgar` | `general` | {} | немає | образа за орієнтацією; нейтрально — gej |
-| 15 | *lezba* | образливо про лесбійку | noun | `vulgar` | `general` | {} | немає | образа за орієнтацією; нейтрально — lezbijka |
-| 16 | *Cigan* | образливо про рома | noun | `vulgar` | `general` | {} | немає | образа за національністю; нейтрально — Rom |
-| 17 | *Šiptar* | образливо про албанця | noun | `vulgar` | `general` | {} | немає | образа за національністю; нейтрально — Albanac |
-| 18 | *balija* | образливо про босняка-мусульманина | noun | `vulgar` | `general` | {} | немає | образа за національністю й релігією; нейтрально — Bošnjak |
-| 19 | *četnik* | четник (образа для серба) | noun | `vulgar` | `general` | {} | немає | образа; історичне слово — ? |
-| 20 | *ustaša* | усташ (образа для хорвата) | noun | `vulgar` | `general` | {} | немає | образа; історичне слово — ? |
-| 21 | *crnčuga* | образливо про темношкірого | noun | `vulgar` | `general` | {} | немає | расистська образа; нейтрально — crnac (застаріває), tamnoput |
-| 22 | *retardiran* | відсталий (образа) | adjective | `vulgar` | `general` | {} | немає | образа людей з інвалідністю |
-| 23 | *seljačina* | селюк; бидло | noun | `vulgar` | `general` | {} | немає | образа |
+| 14 | *peder* | педик | noun | `vulgar` | `general` | offensive | немає | образа за орієнтацією; нейтрально — gej |
+| 15 | *lezba* | образливо про лесбійку | noun | `vulgar` | `general` | offensive | немає | образа за орієнтацією; нейтрально — lezbijka |
+| 16 | *Cigan* | образливо про рома | noun | `vulgar` | `general` | offensive | немає | образа за національністю; нейтрально — Rom |
+| 17 | *Šiptar* | образливо про албанця | noun | `vulgar` | `general` | offensive | немає | образа за національністю; нейтрально — Albanac |
+| 18 | *balija* | образливо про босняка-мусульманина | noun | `vulgar` | `general` | offensive | немає | образа за національністю й релігією; нейтрально — Bošnjak |
+| 19 | *četnik* | четник (образа для серба) | noun | `vulgar` | `general` | offensive | немає | образа; історичне слово — ? |
+| 20 | *ustaša* | усташ (образа для хорвата) | noun | `vulgar` | `general` | offensive | немає | образа; історичне слово — ? |
+| 21 | *crnčuga* | образливо про темношкірого | noun | `vulgar` | `general` | offensive | немає | расистська образа; нейтрально — crnac (застаріває), tamnoput |
+| 22 | *retardiran* | відсталий (образа) | adjective | `vulgar` | `general` | offensive | немає | образа людей з інвалідністю |
+| 23 | *seljačina* | селюк; бидло | noun | `vulgar` | `general` | offensive | немає | образа |
 
 ### X4 · B1 · 18+ — 4. Лайка з релігійними словами · 18
 
@@ -523,13 +523,13 @@
 | № | Слово | Переклад | Частина мови | register | regionality | usage_tags | У базі | Примітка |
 |---|---|---|---|---|---|---|---|---|
 | 1 | *jebem ti mater* | класична лайка «про матір» | phrase | `vulgar` | `general` | {} | немає | між друзями — вигук, до незнайомого — тяжка образа |
-| 2 | *pasji sin* | собачий син | phrase | `vulgar` | `general` | {} | немає | образа |
-| 3 | *glupača* | дурепа | noun | `colloquial` | `general` | {} | немає | образа |
-| 4 | *majmun* | бовдур; мавпа (образа) | noun | `colloquial` | `general` | {} | немає → одна лема з обома значеннями (стандартне першим) | образа; нз (мавпа) |
-| 5 | *krava* | корова (образа для жінки) | noun | `vulgar` | `general` | {} | є з іншим значенням — A1: «корова» → додати значення до наявної лексеми | образа; нз (корова) |
-| 6 | *drolja* | шльондра | noun | `vulgar` | `general` | {} | немає | образа |
-| 7 | *komad* | красуня; «шматочок» | noun | `vulgar` | `general` | {} | є з іншим значенням — A0: «шматок, штука» → додати значення до наявної лексеми | зневажливо, про жінку; нз (шматок) |
-| 8 | *treba* | дівчина (зневажливо) | noun | `vulgar` | `general` | {} | немає → одна лема з обома значеннями (стандартне першим) | зневажливо; нз (треба) |
+| 2 | *pasji sin* | собачий син | phrase | `vulgar` | `general` | offensive | немає | образа |
+| 3 | *glupača* | дурепа | noun | `colloquial` | `general` | offensive | немає | образа |
+| 4 | *majmun* | бовдур; мавпа (образа) | noun | `colloquial` | `general` | offensive | немає → одна лема з обома значеннями (стандартне першим) | образа; нз (мавпа) |
+| 5 | *krava* | корова (образа для жінки) | noun | `vulgar` | `general` | offensive | є з іншим значенням — A1: «корова» → додати значення до наявної лексеми | образа; нз (корова) |
+| 6 | *drolja* | шльондра | noun | `vulgar` | `general` | offensive | немає | образа |
+| 7 | *komad* | красуня; «шматочок» | noun | `vulgar` | `general` | offensive | є з іншим значенням — A0: «шматок, штука» → додати значення до наявної лексеми | зневажливо, про жінку; нз (шматок) |
+| 8 | *treba* | дівчина (зневажливо) | noun | `vulgar` | `general` | offensive | немає → одна лема з обома значеннями (стандартне першим) | зневажливо; нз (треба) |
 | 9 | *u kurac* | до біса; пропало | phrase | `vulgar` | `general` | {} | немає |  |
 | 10 | *u pičku materinu* | до біса; хай йому | phrase | `vulgar` | `general` | {} | немає |  |
 | 11 | *jebe mi se* | мені пох | phrase | `vulgar` | `general` | {} | немає |  |
@@ -542,6 +542,6 @@
 | 18 | *lizati dupe* | підлизуватися | phrase | `vulgar` | `general` | idiom | немає |  |
 | 19 | *pun mi je kurac* | мене дістало | phrase | `vulgar` | `general` | idiom | немає |  |
 | 20 | *boli me ona stvar* | мені по цимбалах | phrase | `colloquial` | `general` | {} | немає | ? замінник |
-| 21 | *mamlaz* | бовдур; йолоп | noun | `colloquial` | `general` | {} | немає | образа, легка |
-| 22 | *tikvan* | йолоп; бевзь | noun | `colloquial` | `general` | {} | немає | образа, легка |
+| 21 | *mamlaz* | бовдур; йолоп | noun | `colloquial` | `general` | offensive | немає | образа, легка |
+| 22 | *tikvan* | йолоп; бевзь | noun | `colloquial` | `general` | offensive | немає | образа, легка |
 | 23 | *smotan* | недотепа; незграбний | adjective | `colloquial` | `general` | {} | немає |  |

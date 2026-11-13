@@ -31,7 +31,7 @@ SNAP = ROOT / 'scripts' / 'live_lexicon_20261113_snapshot.json'
 REGISTERS = {'standard', 'formal', 'informal', 'colloquial', 'slang', 'vulgar'}
 REGIONS = {'general', 'Zagreb', 'Zagorje', 'Dalmatia', 'Istria', 'Kvarner', 'Slavonia', 'Lika', 'Dubrovnik'}
 TAGS = {'youth_slang', 'internet_slang', 'professional_jargon', 'anglicism', 'italianism', 'germanism',
-        'turkism', 'idiom', 'kajkavian', 'chakavian'}
+        'turkism', 'idiom', 'kajkavian', 'chakavian', 'offensive'}
 POS = {'noun', 'verb', 'adjective', 'adverb', 'pronoun', 'preposition', 'conjunction', 'particle',
        'interjection', 'number', 'phrase'}
 
@@ -101,7 +101,7 @@ DATA: dict[str, list[tuple]] = {
     ('frajer', 'крутий хлопець; хлопець', 'noun', 'colloquial', G, ('germanism',), ''),
     ('faca', 'важна персона; «фейс»', 'noun', 'colloquial', G, ('italianism',), ''),
     ('štreber', 'зубрила; ботанік', 'noun', 'colloquial', G, ('germanism',), ''),
-    ('papak', 'лох; селюк', 'noun', 'slang', Z, (), 'образливе'),
+    ('papak', 'лох; селюк', 'noun', 'slang', Z, ('offensive',), 'образливе'),
     ('papučar', 'підкаблучник', 'noun', 'colloquial', G, (), ''),
     ('šminker', 'модник; мажор', 'noun', 'slang', Z, ('germanism',), ''),
     ('gazda', 'хазяїн; бос', 'noun', 'colloquial', G, (), ''),
@@ -384,7 +384,7 @@ DATA: dict[str, list[tuple]] = {
     ('ne pitaj', 'краще не питай', 'phrase', 'colloquial', G, (), ''),
     ('ajd bok', 'ну все, бувай', 'phrase', 'informal', G, (), ''),
     # вулиця й безпека — для текстів B2
-    ('drogaš', 'наркоман', 'noun', 'slang', G, (), 'образливе'),
+    ('drogaš', 'наркоман', 'noun', 'slang', G, ('offensive',), 'образливе'),
     ('trava', 'трава (марихуана)', 'noun', 'slang', G, (), 'нз (трава)'),
     ('džoint', 'косяк', 'noun', 'slang', G, ('anglicism',), ''),
     ('buksna', 'косяк', 'noun', 'slang', Z, (), 'у списку власника — «схованка»: ні, це косяк'),
@@ -464,30 +464,30 @@ DATA: dict[str, list[tuple]] = {
     ('kvragu sve', 'до біса все', 'phrase', 'colloquial', G, (), 'замінник'),
 ],
 'X3': [
-    ('budala', 'дурень', 'noun', 'colloquial', G, (), 'образа, легка'),
-    ('glupan', 'дурень; тупак', 'noun', 'colloquial', G, (), 'образа'),
-    ('kreten', 'кретин', 'noun', 'colloquial', G, (), 'образа'),
-    ('debil', 'дебіл', 'noun', 'vulgar', G, (), 'образа; зачіпає людей з інвалідністю'),
-    ('konj', 'бовдур; дурень', 'noun', 'colloquial', G, (), 'образа; нз (кінь)'),
-    ('đubre', 'покидьок', 'noun', 'vulgar', G, (), 'образа'),
-    ('šupak', 'мудак', 'noun', 'vulgar', G, (), 'образа'),
-    ('seronja', 'пустобрех; мудак', 'noun', 'vulgar', G, (), 'образа'),
-    ('kurva', 'повія; шльондра', 'noun', 'vulgar', G, (), 'образа; і як вигук'),
-    ('kurvin sin', 'сучий син', 'phrase', 'vulgar', G, (), 'образа'),
-    ('jebi se', 'пішов ти', 'phrase', 'vulgar', G, (), 'образа'),
+    ('budala', 'дурень', 'noun', 'colloquial', G, ('offensive',), 'образа, легка'),
+    ('glupan', 'дурень; тупак', 'noun', 'colloquial', G, ('offensive',), 'образа'),
+    ('kreten', 'кретин', 'noun', 'colloquial', G, ('offensive',), 'образа'),
+    ('debil', 'дебіл', 'noun', 'vulgar', G, ('offensive',), 'образа; зачіпає людей з інвалідністю'),
+    ('konj', 'бовдур; дурень', 'noun', 'colloquial', G, ('offensive',), 'образа; нз (кінь)'),
+    ('đubre', 'покидьок', 'noun', 'vulgar', G, ('offensive',), 'образа'),
+    ('šupak', 'мудак', 'noun', 'vulgar', G, ('offensive',), 'образа'),
+    ('seronja', 'пустобрех; мудак', 'noun', 'vulgar', G, ('offensive',), 'образа'),
+    ('kurva', 'повія; шльондра', 'noun', 'vulgar', G, ('offensive',), 'образа; і як вигук'),
+    ('kurvin sin', 'сучий син', 'phrase', 'vulgar', G, ('offensive',), 'образа'),
+    ('jebi se', 'пішов ти', 'phrase', 'vulgar', G, ('offensive',), 'образа'),
     ('marš', 'геть!; марш!', 'interjection', 'colloquial', G, (), 'грубо'),
     ('gubi se', 'забирайся; зникни', 'phrase', 'colloquial', G, (), 'грубо'),
     # образливі слова про групи людей (рішення власника 2026-11-13: включаємо, лише впізнавання)
-    ('peder', 'педик', 'noun', 'vulgar', G, (), 'образа за орієнтацією; нейтрально — gej'),
-    ('lezba', 'образливо про лесбійку', 'noun', 'vulgar', G, (), 'образа за орієнтацією; нейтрально — lezbijka'),
-    ('Cigan', 'образливо про рома', 'noun', 'vulgar', G, (), 'образа за національністю; нейтрально — Rom'),
-    ('Šiptar', 'образливо про албанця', 'noun', 'vulgar', G, (), 'образа за національністю; нейтрально — Albanac'),
-    ('balija', 'образливо про босняка-мусульманина', 'noun', 'vulgar', G, (), 'образа за національністю й релігією; нейтрально — Bošnjak'),
-    ('četnik', 'четник (образа для серба)', 'noun', 'vulgar', G, (), 'образа; історичне слово — ?'),
-    ('ustaša', 'усташ (образа для хорвата)', 'noun', 'vulgar', G, (), 'образа; історичне слово — ?'),
-    ('crnčuga', 'образливо про темношкірого', 'noun', 'vulgar', G, (), 'расистська образа; нейтрально — crnac (застаріває), tamnoput'),
-    ('retardiran', 'відсталий (образа)', 'adjective', 'vulgar', G, (), 'образа людей з інвалідністю'),
-    ('seljačina', 'селюк; бидло', 'noun', 'vulgar', G, (), 'образа'),
+    ('peder', 'педик', 'noun', 'vulgar', G, ('offensive',), 'образа за орієнтацією; нейтрально — gej'),
+    ('lezba', 'образливо про лесбійку', 'noun', 'vulgar', G, ('offensive',), 'образа за орієнтацією; нейтрально — lezbijka'),
+    ('Cigan', 'образливо про рома', 'noun', 'vulgar', G, ('offensive',), 'образа за національністю; нейтрально — Rom'),
+    ('Šiptar', 'образливо про албанця', 'noun', 'vulgar', G, ('offensive',), 'образа за національністю; нейтрально — Albanac'),
+    ('balija', 'образливо про босняка-мусульманина', 'noun', 'vulgar', G, ('offensive',), 'образа за національністю й релігією; нейтрально — Bošnjak'),
+    ('četnik', 'четник (образа для серба)', 'noun', 'vulgar', G, ('offensive',), 'образа; історичне слово — ?'),
+    ('ustaša', 'усташ (образа для хорвата)', 'noun', 'vulgar', G, ('offensive',), 'образа; історичне слово — ?'),
+    ('crnčuga', 'образливо про темношкірого', 'noun', 'vulgar', G, ('offensive',), 'расистська образа; нейтрально — crnac (застаріває), tamnoput'),
+    ('retardiran', 'відсталий (образа)', 'adjective', 'vulgar', G, ('offensive',), 'образа людей з інвалідністю'),
+    ('seljačina', 'селюк; бидло', 'noun', 'vulgar', G, ('offensive',), 'образа'),
 ],
 'X4': [
     ('jebem ti boga', 'найгрубіша блюзнірська лайка', 'phrase', 'vulgar', G, (), 'ображає вірян'),
@@ -511,13 +511,13 @@ DATA: dict[str, list[tuple]] = {
 ],
 'X5': [
     ('jebem ti mater', 'класична лайка «про матір»', 'phrase', 'vulgar', G, (), 'між друзями — вигук, до незнайомого — тяжка образа'),
-    ('pasji sin', 'собачий син', 'phrase', 'vulgar', G, (), 'образа'),
-    ('glupača', 'дурепа', 'noun', 'colloquial', G, (), 'образа'),
-    ('majmun', 'бовдур; мавпа (образа)', 'noun', 'colloquial', G, (), 'образа; нз (мавпа)'),
-    ('krava', 'корова (образа для жінки)', 'noun', 'vulgar', G, (), 'образа; нз (корова)'),
-    ('drolja', 'шльондра', 'noun', 'vulgar', G, (), 'образа'),
-    ('komad', 'красуня; «шматочок»', 'noun', 'vulgar', G, (), 'зневажливо, про жінку; нз (шматок)'),
-    ('treba', 'дівчина (зневажливо)', 'noun', 'vulgar', G, (), 'зневажливо; нз (треба)'),
+    ('pasji sin', 'собачий син', 'phrase', 'vulgar', G, ('offensive',), 'образа'),
+    ('glupača', 'дурепа', 'noun', 'colloquial', G, ('offensive',), 'образа'),
+    ('majmun', 'бовдур; мавпа (образа)', 'noun', 'colloquial', G, ('offensive',), 'образа; нз (мавпа)'),
+    ('krava', 'корова (образа для жінки)', 'noun', 'vulgar', G, ('offensive',), 'образа; нз (корова)'),
+    ('drolja', 'шльондра', 'noun', 'vulgar', G, ('offensive',), 'образа'),
+    ('komad', 'красуня; «шматочок»', 'noun', 'vulgar', G, ('offensive',), 'зневажливо, про жінку; нз (шматок)'),
+    ('treba', 'дівчина (зневажливо)', 'noun', 'vulgar', G, ('offensive',), 'зневажливо; нз (треба)'),
     ('u kurac', 'до біса; пропало', 'phrase', 'vulgar', G, (), ''),
     ('u pičku materinu', 'до біса; хай йому', 'phrase', 'vulgar', G, (), ''),
     ('jebe mi se', 'мені пох', 'phrase', 'vulgar', G, (), ''),
@@ -530,8 +530,8 @@ DATA: dict[str, list[tuple]] = {
     ('lizati dupe', 'підлизуватися', 'phrase', 'vulgar', G, ('idiom',), ''),
     ('pun mi je kurac', 'мене дістало', 'phrase', 'vulgar', G, ('idiom',), ''),
     ('boli me ona stvar', 'мені по цимбалах', 'phrase', 'colloquial', G, (), '? замінник'),
-    ('mamlaz', 'бовдур; йолоп', 'noun', 'colloquial', G, (), 'образа, легка'),
-    ('tikvan', 'йолоп; бевзь', 'noun', 'colloquial', G, (), 'образа, легка'),
+    ('mamlaz', 'бовдур; йолоп', 'noun', 'colloquial', G, ('offensive',), 'образа, легка'),
+    ('tikvan', 'йолоп; бевзь', 'noun', 'colloquial', G, ('offensive',), 'образа, легка'),
     ('smotan', 'недотепа; незграбний', 'adjective', 'colloquial', G, (), ''),
 ],
 }
@@ -670,7 +670,7 @@ def main() -> int:
 - **DEPRECATED у базі** (*Kužiš?*, *nemam pojma* — колись прибрані як речення): повертаємо новою версією наявного рядка, а не новою лемою. У *Kužiš?* поле `normalized` з діакритиками й «?» (`kužiš?`) — помилка даних, виправити тим самим пакетом.
 - **«?»** у примітці — {q} слів: перевірити носієм (чи вживають, значення, написання). Група «Сумнівні» — кальки з англійської з прикладу власника; у модулі — лише після «так» носія.
 - Розмітка — модель §4.1 (`register` / `regionality` / `usage_tags`); `vulgar` — лише в модулі «18+», який видно після ввімкнення «Показувати контент 18+».
-- Образливі слова про групи людей (урок X3) — лише впізнавання: позначка «образа», чому образливо, нейтральний відповідник у примітці.
+- Образи (тег `offensive`, затверджено 2026-11-13) — лише впізнавання: позначка «образа» на картці, чому образливо, нейтральний відповідник у примітці.
 - Що змінено проти прикладу власника: прибрано стандартні слова (*žlica, kapa, kafić, dečko, teta, smijati se, kupanje, kartica, blokirati*); виправлено *Purger, katrida, buksna, kompir, pomidor*; додано розмовні слова, яких у прикладі не було (*fuš, rintati, nacvrcan, gablec, cajt…*), і лексику «18+».
 - Далі: власник і носій переглядають список → батч слів (`croatian-lexeme-batch`: приклади, пояснення, форми) → уроки модулів (`lesson-topic-rebuild` / `level-build-croatia`).
 '''
