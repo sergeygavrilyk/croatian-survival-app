@@ -1,0 +1,87 @@
+# Наявні фрази робочої бази (text_hr), знімок 2026-11-13 (лише читання) — щоб нові фрази A2 не повторювали їх
+Bavim se IT uslugama.
+Bilo je jako ukusno.
+Bojler ne radi.
+Boli me glava.
+Dajte mi jednu vrećicu.
+Drago mi je.
+Gdje je autobusni kolodvor?
+Gdje je blagajna?
+Gdje je dežurna ljekarna?
+Gdje je najbliža benzinska postaja?
+Gdje je prekidač za struju?
+Gdje mogu naći voće?
+Hvala lijepa.
+Idem na odmor.
+Imam alergiju na penicilin.
+Imam jake bolove.
+Imam mali auto.
+Imam visoku temperaturu.
+Imamo li blokada za ovaj sprint?
+Imamo li problem s memorijom na poslužitelju?
+Imate li hranu bez žitarica?
+imate li ovo u drugoj veličini
+Imate li sitnog?
+Imate li slobodan stol?
+Internet je jako spor.
+Izgubio sam ključ.
+Izvolite dokumente.
+Jednu kartu u jednom smjeru.
+Kada mogu doći?
+Kada možete doći popraviti?
+Kada polazi autobus?
+Kako doći do centra?
+Kako se kaže... na hrvatskom?
+Kako se zove...
+Kavu s mlijekom, molim.
+Klima uređaj curi.
+Koja je mjesečna naknada?
+Koji broj trebam uzeti za MUP?
+Koji je status ovog zadatka?
+Koliko puta dnevno?
+Kužiš?
+laku noć i sanjajte lijepo
+Mislim...
+Mogu li dobiti jelovnik?
+Mogu li platiti odvojeno?
+Moj pas treba godišnje cjepivo.
+Možete li mi pokazati na karti?
+Možete li mi pomoći s ugovorom?
+Ne osjećam se dobro.
+Nema tople vode.
+Nemam ništa za prijaviti.
+Oprostite, ne razumijem.
+Otvaram paušalni obrt.
+Ovo je hitan slučaj.
+Ovo je moja zdravstvena iskaznica.
+Ovo je rješenje o obrtu.
+Ovo nije ono što sam naručio.
+Ovo su moje osobne stvari.
+Ovo su papiri od auta.
+Pa...
+Pečat mi ne treba.
+Plaćam gotovinom.
+Pozovite hitnu pomoć!
+Predao sam zahtjev online.
+Putujem u Zadar.
+Račun, molim vas.
+Radim od kuće.
+Samo smo u tranzitu.
+Skrenite desno na semaforu.
+Što preporučujete?
+To je preskupo.
+Treba mi bolovanje.
+Trebam hranu za psa.
+Trebam ići doktoru.
+Trebam li recept za ovo?
+Trebam mehaničara za auto.
+Trebam nešto protiv prehlade.
+Trebam platiti račune za režije.
+Trebam račun, molim.
+Trebam termin kod doktora.
+Trebam uputnicu za specijalista.
+Trebam zamjenu ulja u mjenjaču.
+Zadržite ostatak.
+Želim naručiti.
+Želim otvoriti poslovni račun.
+Znači...
