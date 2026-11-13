@@ -240,7 +240,7 @@ Database повинна мати окремі типи:
 
 **Маркування живої лексики** (рішення власника 2026-11-12: «Мені подобається ідея з додаванням категорії лексики»; модель — документ власника від 2026-11-12 з уточненнями, `docs/proposals/2026-11-12_b1_b2_dialogues_reading_situations.md` §4; схема — міграція M24, PROPOSE). Незалежні виміри, а не одна категорія:
 
-- `register` — **як** уживають: `standard`, `formal`, `informal` (літературне, але неофіційне), `colloquial` (розмовне, нелітературне), `slang` (мова групи), `vulgar` (лише впізнавати, B2);
+- `register` — **як** уживають: `standard`, `formal`, `informal` (літературне, але неофіційне), `colloquial` (розмовне, нелітературне), `slang` (мова групи), `vulgar` (нецензурне — модуль «18+», лише впізнавати, рішення 2026-11-13);
 - `regionality` — **де**: `general` (загальне), `Zagreb`, `Zagorje`, `Dalmatia`, `Istria`, `Kvarner`, `Slavonia`, `Lika`, `Dubrovnik`;
 - `usage_tags` — **додаткові ознаки** (кілька; `{}` — ознак немає): `youth_slang`, `internet_slang`, `professional_jargon`, `anglicism`, `italianism`, `germanism`, `turkism`, `idiom`, `kajkavian`, `chakavian`;
 - `vocabulary_type` — структура (вище), **без змін**; стандартний відповідник — зв'язок з іншою лексемою (`standard_lexeme_id`);
