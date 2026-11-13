@@ -163,4 +163,5 @@ run $A/migrations/20261113120000_m25_lexeme_labels_lock.sql
 # борг контенту 2026-11-13: učitelj в уроці A1 99; типові помилки v2 (вид, артиклі, вимова) — після M25
 run $A/data_fixes/20261113_ucitelj_lesson.sql
 run $A/data_fixes/20261113_interference_v2.sql
+run $A/data_fixes/20261113_ucitelj_explanation_fix.sql
 echo "Готово. Тести: for t in supabase/tests/*.sql; do psql -h /tmp -p $P -U postgres -q -v ON_ERROR_STOP=1 -f \$t | tail -1; done"

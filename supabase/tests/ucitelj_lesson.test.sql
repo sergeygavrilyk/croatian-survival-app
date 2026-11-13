@@ -38,6 +38,9 @@ select pg_temp.ok((select ukrainian_translation = 'учитель (в основ
 select pg_temp.ok(pg_temp.n($q$select 1 from public.content_versions v join public.lexemes l on l.id = v.entity_id
   where v.entity_type = 'lexeme' and l.lemma = 'učitelj' and v.change_reason like 'ucitelj_lesson 2026-11-13:%'$q$) = 1,
   'стара версія слова — у content_versions');
+select pg_temp.ok((select register = 'standard' and regionality = 'general' and usage_tags is not null and part_of_speech = 'noun'
+    and forms->>'gender' = 'm' and normalized = 'ucitelj' and cefr = 'A1' and status = 'PUBLISHED'
+  from public.lexemes where lemma = 'učitelj'), 'učitelj: мітки (standard / general), іменник ч. р., normalized без діакритики, A1');
 select pg_temp.ok(pg_temp.n($q$select l.id from public.lessons l join public.lesson_items i on i.lesson_id = l.id and i.item_type = 'lexeme'
   join public.lexemes x on x.id = i.item_id where x.lemma = 'učitelj' and l.status = 'PUBLISHED'$q$) >= 1,
   'učitelj є хоча б в одному опублікованому уроці');
