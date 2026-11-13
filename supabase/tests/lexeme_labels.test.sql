@@ -40,9 +40,10 @@ select pg_temp.ok((select count(*) from pg_constraint where convalidated and con
                      ('lexemes_regionality_check', 'lexemes_usage_tags_check', 'lexemes_standard_not_self_check',
                       'phrases_register_check', 'phrases_regionality_check', 'phrases_usage_tags_check')) = 6,
   'решта перевірок — чинні для всіх рядків');
-select pg_temp.ok((select count(*) from public.lexemes where usage_tags is not null or standard_lexeme_id is not null) = 0
-  and (select count(*) from public.phrases where register is not null or regionality is not null or usage_tags is not null) = 0,
-  'міграція наявних даних не змінює: нові поля порожні (= ще не розмічено)');
+-- Перевірку «міграція наявних даних не змінює: нові поля порожні» замінено 2026-11-13: після пакета розмітки
+-- (20261113_lexeme_labels.sql) поля заповнені — це перевіряє supabase/tests/lexeme_labels_fill.test.sql
+select pg_temp.ok((select count(*) from public.lexemes where standard_lexeme_id is not null and standard_lexeme_id = id) = 0,
+  'жодне слово не посилається на себе як на стандартний відповідник');
 
 -- ---------------------------------------------------------------- lexemes: переліки
 select pg_temp.ok(not pg_temp.raises(pg_temp.lex('standard', 'general', '{}')), 'standard / general / {} — можна');
