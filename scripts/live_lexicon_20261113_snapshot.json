@@ -1,0 +1,293 @@
+{
+ "taken_at": "2026-11-13 16:49",
+ "rows": [
+  {
+   "lemma": "ae",
+   "normalized": "ae",
+   "cefr": "A2",
+   "status": "PUBLISHED",
+   "register": "slang",
+   "regionality": "Dalmatia",
+   "ukrainian_translation": "так, ага (регіонально: Далмація; сленг)"
+  },
+  {
+   "lemma": "bevanda",
+   "normalized": "bevanda",
+   "cefr": "A0",
+   "status": "PUBLISHED",
+   "register": null,
+   "regionality": null,
+   "ukrainian_translation": "беванда (вино зі звичайною водою; Далмація)"
+  },
+  {
+   "lemma": "bura",
+   "normalized": "bura",
+   "cefr": "A0",
+   "status": "PUBLISHED",
+   "register": null,
+   "regionality": "Dalmatia",
+   "ukrainian_translation": "бура (сильний північний вітер)"
+  },
+  {
+   "lemma": "cura",
+   "normalized": "cura",
+   "cefr": "A0",
+   "status": "PUBLISHED",
+   "register": "colloquial",
+   "regionality": null,
+   "ukrainian_translation": "дівчина (романтично)"
+  },
+  {
+   "lemma": "evo",
+   "normalized": "evo",
+   "cefr": "B1",
+   "status": "PUBLISHED",
+   "register": null,
+   "regionality": null,
+   "ukrainian_translation": "ось; ось тут"
+  },
+  {
+   "lemma": "fjaka",
+   "normalized": "fjaka",
+   "cefr": "A1",
+   "status": "PUBLISHED",
+   "register": "colloquial",
+   "regionality": "Dalmatia",
+   "ukrainian_translation": "фяка (стан ліні через спеку)"
+  },
+  {
+   "lemma": "gablec",
+   "normalized": "gablec",
+   "cefr": "A1",
+   "status": "PUBLISHED",
+   "register": "colloquial",
+   "regionality": null,
+   "ukrainian_translation": "гарячий обід на роботі (загреб.)"
+  },
+  {
+   "lemma": "gemišt",
+   "normalized": "gemist",
+   "cefr": "A0",
+   "status": "PUBLISHED",
+   "register": null,
+   "regionality": null,
+   "ukrainian_translation": "гемішт (біле вино з газованою мінеральною водою)"
+  },
+  {
+   "lemma": "gust",
+   "normalized": "gust",
+   "cefr": "A1",
+   "status": "PUBLISHED",
+   "register": null,
+   "regionality": null,
+   "ukrainian_translation": "густий"
+  },
+  {
+   "lemma": "gušt",
+   "normalized": "gust",
+   "cefr": "A0",
+   "status": "PUBLISHED",
+   "register": "colloquial",
+   "regionality": "Dalmatia",
+   "ukrainian_translation": "задоволення / кайф"
+  },
+  {
+   "lemma": "hodati",
+   "normalized": "hodati",
+   "cefr": "A1",
+   "status": "PUBLISHED",
+   "register": null,
+   "regionality": null,
+   "ukrainian_translation": "ходити"
+  },
+  {
+   "lemma": "jugo",
+   "normalized": "jugo",
+   "cefr": "A0",
+   "status": "PUBLISHED",
+   "register": null,
+   "regionality": "Dalmatia",
+   "ukrainian_translation": "юго (південний вітер)"
+  },
+  {
+   "lemma": "kapula",
+   "normalized": "kapula",
+   "cefr": "A2",
+   "status": "PUBLISHED",
+   "register": "regional",
+   "regionality": "Dalmatia",
+   "ukrainian_translation": "цибуля (регіонально: Далмація, діалект; стандартно — luk)"
+  },
+  {
+   "lemma": "komad",
+   "normalized": "komad",
+   "cefr": "A0",
+   "status": "PUBLISHED",
+   "register": null,
+   "regionality": null,
+   "ukrainian_translation": "шматок, штука"
+  },
+  {
+   "lemma": "konj",
+   "normalized": "konj",
+   "cefr": "A1",
+   "status": "PUBLISHED",
+   "register": null,
+   "regionality": null,
+   "ukrainian_translation": "кінь"
+  },
+  {
+   "lemma": "krava",
+   "normalized": "krava",
+   "cefr": "A1",
+   "status": "PUBLISHED",
+   "register": null,
+   "regionality": null,
+   "ukrainian_translation": "корова"
+  },
+  {
+   "lemma": "Kužiš?",
+   "normalized": "kužiš?",
+   "cefr": "A0",
+   "status": "DEPRECATED",
+   "register": null,
+   "regionality": null,
+   "ukrainian_translation": "Січеш? / Розумієш?"
+  },
+  {
+   "lemma": "kvart",
+   "normalized": "kvart",
+   "cefr": "A0",
+   "status": "PUBLISHED",
+   "register": "colloquial",
+   "regionality": null,
+   "ukrainian_translation": "район (міста)"
+  },
+  {
+   "lemma": "marenda",
+   "normalized": "marenda",
+   "cefr": "A1",
+   "status": "PUBLISHED",
+   "register": "colloquial",
+   "regionality": "Dalmatia",
+   "ukrainian_translation": "перекус / пізній сніданок"
+  },
+  {
+   "lemma": "markirati",
+   "normalized": "markirati",
+   "cefr": "A2",
+   "status": "PUBLISHED",
+   "register": "colloquial",
+   "regionality": null,
+   "ukrainian_translation": "прогулювати (уроки)"
+  },
+  {
+   "lemma": "nemam pojma",
+   "normalized": "nemam pojma",
+   "cefr": "A1",
+   "status": "DEPRECATED",
+   "register": null,
+   "regionality": null,
+   "ukrainian_translation": "Я не маю гадки / По без поняття"
+  },
+  {
+   "lemma": "ono",
+   "normalized": "ono",
+   "cefr": "A0",
+   "status": "PUBLISHED",
+   "register": null,
+   "regionality": null,
+   "ukrainian_translation": "воно"
+  },
+  {
+   "lemma": "pomalo",
+   "normalized": "pomalo",
+   "cefr": "A0",
+   "status": "PUBLISHED",
+   "register": null,
+   "regionality": "Dalmatia",
+   "ukrainian_translation": "помаленьку / не поспішай"
+  },
+  {
+   "lemma": "pomidor",
+   "normalized": "pomidor",
+   "cefr": "A2",
+   "status": "PUBLISHED",
+   "register": "regional",
+   "regionality": "Dalmatia",
+   "ukrainian_translation": "помідор (регіонально: Далмація, діалект; стандартно — rajčica)"
+  },
+  {
+   "lemma": "postati",
+   "normalized": "postati",
+   "cefr": "A1",
+   "status": "PUBLISHED",
+   "register": null,
+   "regionality": null,
+   "ukrainian_translation": "стати (кимось, чимось)"
+  },
+  {
+   "lemma": "riba",
+   "normalized": "riba",
+   "cefr": "A0",
+   "status": "PUBLISHED",
+   "register": null,
+   "regionality": null,
+   "ukrainian_translation": "риба"
+  },
+  {
+   "lemma": "riva",
+   "normalized": "riva",
+   "cefr": "A0",
+   "status": "PUBLISHED",
+   "register": null,
+   "regionality": "Dalmatia",
+   "ukrainian_translation": "набережна"
+  },
+  {
+   "lemma": "šlag",
+   "normalized": "slag",
+   "cefr": "A0",
+   "status": "PUBLISHED",
+   "register": null,
+   "regionality": null,
+   "ukrainian_translation": "збиті вершки"
+  },
+  {
+   "lemma": "spiza",
+   "normalized": "spiza",
+   "cefr": "A0",
+   "status": "PUBLISHED",
+   "register": "colloquial",
+   "regionality": "Dalmatia",
+   "ukrainian_translation": "продукти / їжа"
+  },
+  {
+   "lemma": "stari",
+   "normalized": "stari",
+   "cefr": "A1",
+   "status": "PUBLISHED",
+   "register": null,
+   "regionality": null,
+   "ukrainian_translation": "старий"
+  },
+  {
+   "lemma": "šugaman",
+   "normalized": "sugaman",
+   "cefr": "A2",
+   "status": "PUBLISHED",
+   "register": "regional",
+   "regionality": "Dalmatia",
+   "ukrainian_translation": "рушник (регіонально: Далмація, діалект; стандартно — ručnik)"
+  },
+  {
+   "lemma": "trenirka",
+   "normalized": "trenirka",
+   "cefr": "A1",
+   "status": "PUBLISHED",
+   "register": "colloquial",
+   "regionality": null,
+   "ukrainian_translation": "спортивний костюм"
+  }
+ ]
+}

@@ -240,12 +240,13 @@ Database повинна мати окремі типи:
 
 **Маркування живої лексики** (рішення власника 2026-11-12: «Мені подобається ідея з додаванням категорії лексики»; модель — документ власника від 2026-11-12 з уточненнями, `docs/proposals/2026-11-12_b1_b2_dialogues_reading_situations.md` §4; схема — міграція M24, PROPOSE). Незалежні виміри, а не одна категорія:
 
-- `register` — **як** уживають: `standard`, `formal`, `informal` (літературне, але неофіційне), `colloquial` (розмовне, нелітературне), `slang` (мова групи), `vulgar` (лише впізнавати, B2);
+- `register` — **як** уживають: `standard`, `formal`, `informal` (літературне, але неофіційне), `colloquial` (розмовне, нелітературне), `slang` (мова групи), `vulgar` (нецензурне — модуль «18+», лише впізнавати, рішення 2026-11-13);
 - `regionality` — **де**: `general` (загальне), `Zagreb`, `Zagorje`, `Dalmatia`, `Istria`, `Kvarner`, `Slavonia`, `Lika`, `Dubrovnik`;
-- `usage_tags` — **додаткові ознаки** (кілька; `{}` — ознак немає): `youth_slang`, `internet_slang`, `professional_jargon`, `anglicism`, `italianism`, `germanism`, `turkism`, `idiom`, `kajkavian`, `chakavian`;
+- `usage_tags` — **додаткові ознаки** (кілька; `{}` — ознак немає): `youth_slang`, `internet_slang`, `professional_jargon`, `anglicism`, `italianism`, `germanism`, `turkism`, `idiom`, `kajkavian`, `chakavian`, `offensive` (образа людини чи групи — рішення 2026-11-13);
 - `vocabulary_type` — структура (вище), **без змін**; стандартний відповідник — зв'язок з іншою лексемою (`standard_lexeme_id`);
 - «вживати чи лише впізнавати» — властивість **уроку**, не слова: `lesson_items.target_skill = 'recognition'`; дата перевірки актуальності сленгу — `content_reviews`;
-- ті самі `register`, `regionality`, `usage_tags` — і для речень у `phrases`;
+- ті самі `register`, `regionality`, `usage_tags` — і для речень у `phrases`; сталий вираз (*nema frke*) — у `lexemes`, речення для ситуацій — у `phrases`;
+- регіони — з великої літери (`Zagreb`, `Dalmatia`); наріччя — у `usage_tags` (`kajkavian`, `chakavian`), окремого тегу «регіоналізм» немає (регіон видно з `regionality`); уточнення затверджено власником 2026-11-13;
 - **явні значення в кожному слові й реченні** (рішення власника 2026-11-13): порожнє — лише «ще не розмічено» на час переходу; після розмітки всіх наявних слів (до B1) поля **обов'язкові, без значення за замовчуванням**; стара версія кожної позначки — `content_versions`.
 
 ## 19. Ukrainian Interference Engine
