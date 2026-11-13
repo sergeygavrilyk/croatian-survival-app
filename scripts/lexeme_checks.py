@@ -8,8 +8,16 @@
   python3 -B scripts/lexeme_checks.py <batch.json>   # перевірити JSON-масив рядків lexemes
   python3 -B scripts/lexeme_checks.py --selftest     # самоперевірка правил
 
-Рядок (dict): lemma, normalized, ukrainian_translation, part_of_speech, cefr, vocabulary_type, forms, examples, register.
-Регістр (register) — scripts/lexeme_register.py (визначення — docs/CONTENT_PIPELINE.md → «Регістр лексем»).
+Рядок (dict): lemma, normalized, ukrainian_translation, part_of_speech, cefr, vocabulary_type, forms, examples,
+register, regionality, usage_tags; необов'язково — standard_lemma (стандартний відповідник → lexemes.standard_lexeme_id).
+
+Мітки (з 2026-11-13, рішення власника; модель — docs/LEARNING_SPEC.md §18, переліки — CHECK міграції M24):
+  register    — standard | formal | informal | colloquial | slang | vulgar (scripts/lexeme_register.py);
+  regionality — general | Zagreb | Zagorje | Dalmatia | Istria | Kvarner | Slavonia | Lika | Dubrovnik;
+  usage_tags  — список (може бути порожнім [] — ознак немає) з youth_slang, internet_slang, professional_jargon,
+                anglicism, italianism, germanism, turkism, idiom, kajkavian, chakavian, offensive.
+  Мітка без значення (немає поля, null, "") або з невідомим значенням — ПОМИЛКА, не попередження: стандартне слово
+  теж позначається явно (standard / general / []).
 """
 import json
 import re
@@ -22,6 +30,10 @@ GENDERS = ('m', 'f', 'n', 'm_pl', 'f_pl', 'n_pl')
 ASPECTS = ('ipfv', 'pfv', 'biasp')
 VOCAB_TYPES = ('core', 'function_word', 'formulaic', 'collocation', 'chunk')
 CEFR = ('A0', 'A1', 'A2', 'B1', 'B2')
+# Переліки міток — ті самі, що в CHECK міграції M24 (supabase/migrations/20261113100000_m24_lexeme_labels.sql)
+REGIONS = ('general', 'Zagreb', 'Zagorje', 'Dalmatia', 'Istria', 'Kvarner', 'Slavonia', 'Lika', 'Dubrovnik')
+USAGE_TAGS = ('youth_slang', 'internet_slang', 'professional_jargon', 'anglicism', 'italianism', 'germanism', 'turkism',
+              'idiom', 'kajkavian', 'chakavian', 'offensive')
 
 CYR = re.compile(r'[Ѐ-ӿ]')
 LATIN_WORD = re.compile(r'[a-zčćđšž]{3,}', re.I)
@@ -64,6 +76,49 @@ def check_example(lemma: str, sentence: str, strict_lemma: bool = False) -> list
     if strict_lemma and not example_has_lemma(lemma, sentence):
         errors.append('у прикладі немає слова-леми')
     return errors
+
+
+def _empty(value) -> bool:
+    return value is None or (isinstance(value, str) and not value.strip())
+
+
+def check_labels(row: dict) -> tuple[list[str], list[str]]:
+    """(помилки, попередження) для міток register / regionality / usage_tags / standard_lemma.
+    Значення register з переліку перевіряє check_register() (scripts/lexeme_register.py)."""
+    e, w = [], []
+    if _empty(row.get('register')):
+        e.append('немає мітки register — значення обов’язкове (стандартне слово — "standard")')
+
+    region = row.get('regionality')
+    if _empty(region):
+        e.append('немає мітки regionality — значення обов’язкове (загальне слово — "general")')
+    elif region not in REGIONS:
+        hint = next((r for r in REGIONS if r.lower() == str(region).lower()), None)
+        e.append(f'regionality «{region}» — дозволено: {", ".join(REGIONS)}'
+                 + (f' (регіон з великої літери: «{hint}»)' if hint and hint != 'general' else ''))
+
+    tags = row.get('usage_tags')
+    if tags is None:
+        e.append('немає мітки usage_tags — значення обов’язкове (якщо ознак немає — порожній список [])')
+    elif not isinstance(tags, list) or not all(isinstance(t, str) for t in tags):
+        e.append('usage_tags має бути списком рядків ([] — ознак немає)')
+    else:
+        unknown = [t for t in tags if t not in USAGE_TAGS]
+        if unknown:
+            e.append(f'usage_tags: невідомі ознаки {unknown} — дозволено: {", ".join(USAGE_TAGS)}'
+                     + (' (регіон — у regionality, не в ознаках)' if any(t in REGIONS for t in unknown) else ''))
+        if len(set(tags)) != len(tags):
+            e.append('usage_tags: ознака повторюється')
+
+    std = row.get('standard_lemma')
+    if std is not None:
+        if not isinstance(std, str) or not std.strip():
+            e.append('standard_lemma — непорожній рядок (лема стандартного відповідника) або поле відсутнє')
+        elif std.strip().lower() == (row.get('lemma') or '').strip().lower():
+            e.append('standard_lemma — інша лема, не саме слово')
+        elif row.get('register') == 'standard':
+            w.append('standard_lemma у слова з register = standard — точно стандартне?')
+    return e, w
 
 
 def check_row(row: dict) -> tuple[list[str], list[str]]:
@@ -114,6 +169,11 @@ def check_row(row: dict) -> tuple[list[str], list[str]]:
     if row.get('cefr') not in CEFR:
         e.append(f'cefr ∈ {CEFR}')
 
+    # Мітки (з 2026-11-13): усі три — з явним значенням і з переліку M24
+    le, lw = check_labels(row)
+    e += le
+    w += lw
+
     # Регістр (з 2026-11-12): значення — з переліку; якщо слово є в правилах — попередження про очікуваний регістр
     if str(HERE) not in sys.path:
         sys.path.insert(0, str(HERE))
@@ -158,8 +218,32 @@ def check_batch(rows: list[dict], existing: dict[str, str] | None = None) -> tup
 
 def _selftest():
     good = {'lemma': 'kutlača', 'normalized': 'kutlaca', 'ukrainian_translation': 'ополоник', 'part_of_speech': 'noun',
-            'cefr': 'A1', 'vocabulary_type': 'core', 'forms': {'gender': 'f'}, 'examples': ['Uzmi kutlaču i nalij juhu.']}
+            'cefr': 'A1', 'vocabulary_type': 'core', 'forms': {'gender': 'f'}, 'examples': ['Uzmi kutlaču i nalij juhu.'],
+            'register': 'standard', 'regionality': 'general', 'usage_tags': []}
     assert check_batch([good]) == ([], []), check_batch([good])
+    # Мітки: без значення або з невідомим значенням — помилка
+    for field in ('register', 'regionality', 'usage_tags'):
+        assert any(field in m for m in check_row({k: v for k, v in good.items() if k != field})[0]), field
+        assert any(field in m for m in check_row(dict(good, **{field: None}))[0]), field
+    assert any('register' in m for m in check_row(dict(good, register=''))[0])
+    assert any('regionality' in m for m in check_row(dict(good, regionality=' '))[0])
+    assert any('register' in m for m in check_row(dict(good, register='regional'))[0])          # старе значення
+    assert any('«Dalmatia»' in m for m in check_row(dict(good, regionality='dalmatia'))[0])     # з малої
+    assert any('regionality' in m for m in check_row(dict(good, regionality='Split'))[0])
+    assert any('невідомі' in m for m in check_row(dict(good, usage_tags=['regionalism']))[0])
+    assert any('у regionality' in m for m in check_row(dict(good, usage_tags=['Zagreb']))[0])
+    assert any('повторюється' in m for m in check_row(dict(good, usage_tags=['idiom', 'idiom']))[0])
+    assert any('списком' in m for m in check_row(dict(good, usage_tags='anglicism'))[0])
+    frend = dict(good, lemma='frend', normalized='frend', ukrainian_translation='друг', forms={'gender': 'm'},
+                 examples=['Idem na kavu s frendom.'], register='slang', usage_tags=['youth_slang', 'anglicism'],
+                 standard_lemma='prijatelj')
+    assert check_row(frend)[0] == [], check_row(frend)[0]
+    assert check_row(dict(frend, register='vulgar', usage_tags=['offensive'], standard_lemma=None))[0] == []
+    assert any('інша лема' in m for m in check_row(dict(frend, standard_lemma='Frend'))[0])
+    assert any('standard_lemma' in m for m in check_row(dict(frend, register='standard'))[1])
+    fjaka = dict(good, lemma='fjaka', normalized='fjaka', ukrainian_translation='млявість, ліньки (від спеки)',
+                 examples=['Danas me uhvatila fjaka.'], register='colloquial', regionality='Dalmatia')
+    assert check_row(fjaka)[0] == [], check_row(fjaka)[0]
     bad = dict(good, examples=['Vidimo se! (Побачимось)'])
     assert any('кирилиця' in m for m in check_row(bad)[0])
     assert any('normalized' in m for m in check_row(dict(good, normalized='kutlača'))[0])

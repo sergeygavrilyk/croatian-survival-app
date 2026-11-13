@@ -19,7 +19,7 @@ sleep 1
 run() { psql -h /tmp -p $P -U postgres -q -v ON_ERROR_STOP=1 -f "$1" >/dev/null || { echo "FAILED: $1"; exit 1; }; echo "applied $(basename "$1")"; }
 run $S/supabase_stub.sql
 for f in $A/migrations/*.sql; do
-  case "$f" in *m10_*|*m11_*|*m12_*|*m13_*) continue;; esac
+  case "$f" in *m10_*|*m11_*|*m12_*|*m13_*|*m24_*) continue;; esac
   run "$f"
 done
 run $S/seed_curr.sql
@@ -154,4 +154,6 @@ run $A/data_fixes/20261112_listening_pilot.sql
 for f in $A/data_fixes/20261112_curriculum_a2_v2_*.sql; do run "$f"; done
 # регістр наявних слів (informal / colloquial / slang), 2026-11-12 — після всіх пакетів слів
 run $A/data_fixes/20261112_lexeme_register.sql
+# M24 (маркування слів, 2026-11-13) — після всіх пакетів слів: старі пакети пишуть register regional / non_standard
+run $A/migrations/20261113100000_m24_lexeme_labels.sql
 echo "Готово. Тести: for t in supabase/tests/*.sql; do psql -h /tmp -p $P -U postgres -q -v ON_ERROR_STOP=1 -f \$t | tail -1; done"
