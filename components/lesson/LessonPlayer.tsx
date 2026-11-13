@@ -9,6 +9,7 @@ import SessionDone from '@/components/ui/SessionDone';
 import Mascot, { useStoredMascot } from '@/components/ui/Mascot';
 import StatTile from '@/components/ui/StatTile';
 import Hr from '@/components/ui/Hr';
+import WordLabels from '@/components/ui/WordLabels';
 import AudioButton from '@/components/ui/AudioButton';
 import IconButton from '@/components/ui/IconButton';
 import ProgressBar from '@/components/ui/ProgressBar';
@@ -292,6 +293,7 @@ export default function LessonPlayer({
                     {w.hr_text}
                   </Hr>
                   <p className="text-body text-ink-muted">{w.ua_translation}</p>
+                  {w.labels && <WordLabels labels={w.labels} standardLemma={w.standard_lemma} className="mt-1" />}
                 </div>
                 <AudioButton text={w.hr_text} label={`Прослухати «${w.hr_text}»`} />
               </Card>

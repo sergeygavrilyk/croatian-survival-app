@@ -7,6 +7,9 @@ import { saveDictionaryWord } from '@/app/actions/dictionary';
 import PracticeTabs from '@/components/ui/PracticeTabs';
 import { dictionarySearchTerm, posLabelUk } from '@/lib/format';
 import { LEVEL_CODES, levelStyle } from '@/lib/levels';
+import {
+  WORD_CATEGORIES, categoryFilter, emptyCategoryText, labelChips, readLabels, type LexemeLabels, type WordCategory,
+} from '@/lib/lexeme-labels';
 import { cn } from '@/lib/ui';
 import { WORD_THEME_SELECT, wordThemes, type WordTheme } from '@/lib/word-theme';
 import { wordExamples } from '@/lib/word-save';
@@ -18,6 +21,7 @@ import Hr from '@/components/ui/Hr';
 import IconButton from '@/components/ui/IconButton';
 import LevelBadge from '@/components/ui/LevelBadge';
 import Skeleton from '@/components/ui/Skeleton';
+import WordLabels from '@/components/ui/WordLabels';
 import WordTile from '@/components/ui/WordTile';
 
 const PAGE_SIZE = 30; // Розмір однієї порції слів
@@ -32,15 +36,20 @@ interface Word {
   level: string | null;
   explanation: string | null;
   examples: string[];
+  /** Мітки живої лексики (M24 / M25): регістр, регіон, ознаки */
+  labels: LexemeLabels;
+  /** Стандартний відповідник (`standard_lexeme_id`), якщо слово розмовне / регіональне */
+  standardId: string | null;
 }
 
 /** Стан кнопки «Додати в повторення» в картці слова: текст — помилка. */
 type SaveState = 'idle' | 'saving' | 'saved' | string;
 
 /**
- * Словник (розділ «Практика»): пошук по всьому словнику, фільтр за рівнем.
- * Біля слова — емодзі теми уроку в кольорі рівня, бейдж рівня, частина мови, «Вчу» (DESIGN_SYSTEM §3.4).
- * Натиск на слово — картка знизу: переклад, пояснення, приклади й «Додати в повторення» (тренажер).
+ * Словник (розділ «Практика»): пошук по всьому словнику, фільтри за рівнем і категорією (розмовне, сленг, регіональне…).
+ * Біля слова — емодзі теми уроку в кольорі рівня, бейдж рівня, частина мови, «Вчу», позначка категорії (DESIGN_SYSTEM §3.4).
+ * Натиск на слово — картка знизу: переклад, позначка категорії й «стандартно: …», пояснення, приклади й «Додати в повторення».
+ * Слова `vulgar` (модуль «18+») не показуємо: перемикача «Показувати контент 18+» у профілі ще немає.
  */
 export default function DictionaryPage() {
   const supabase = createClient();
@@ -53,27 +62,31 @@ export default function DictionaryPage() {
   // Пошук іде в базі по всьому словнику, із затримкою 300 мс
   const [term, setTerm] = useState<string | null>(null);
   const [level, setLevel] = useState<Level>('ALL');
+  const [category, setCategory] = useState<WordCategory>('all');
   const requestRef = useRef(0); // відповідь старішого запиту (попередній пошук) не перезаписує новішу
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   // Доповнення до слів (не критичні: без них — літера замість емодзі й без позначки «Вчу»)
   const [themes, setThemes] = useState<Map<string, WordTheme>>(new Map());
   const [learning, setLearning] = useState<Set<string>>(new Set());
+  const [standardLemmas, setStandardLemmas] = useState<Map<string, string>>(new Map()); // id відповідника → лема
   const userIdRef = useRef<string | null | undefined>(undefined);
   // Картка слова (натиск на слово) і стан кнопки «Додати в повторення»
   const [selected, setSelected] = useState<Word | null>(null);
   const [saveState, setSaveState] = useState<SaveState>('idle');
 
-  /** Тема (емодзі модуля) і «Вчу» для нової порції слів. */
-  const enrich = useCallback(async (ids: string[]) => {
-    if (ids.length === 0) return;
+  /** Тема (емодзі модуля), «Вчу» і стандартні відповідники для нової порції слів. */
+  const enrich = useCallback(async (batch: Word[]) => {
+    if (batch.length === 0) return;
+    const ids = batch.map(w => w.id);
+    const standardIds = [...new Set(batch.map(w => w.standardId).filter((id): id is string => !!id))];
     try {
       if (userIdRef.current === undefined) {
         const { data: { user } } = await supabase.auth.getUser();
         userIdRef.current = user?.id ?? null;
       }
       const userId = userIdRef.current;
-      const [links, progress] = await Promise.all([
+      const [links, progress, standards] = await Promise.all([
         supabase
           .from('lesson_items')
           .select(WORD_THEME_SELECT)
@@ -82,6 +95,9 @@ export default function DictionaryPage() {
           .in('item_id', ids),
         userId
           ? supabase.from('user_progress').select('lexeme_id').eq('user_id', userId).in('lexeme_id', ids)
+          : Promise.resolve({ data: [], error: null }),
+        standardIds.length
+          ? supabase.from('lexemes').select('id, lemma').eq('status', 'PUBLISHED').in('id', standardIds)
           : Promise.resolve({ data: [], error: null }),
       ]);
       if (!links.error) {
@@ -92,8 +108,12 @@ export default function DictionaryPage() {
         const mine = (progress.data as { lexeme_id: string }[]).map(p => p.lexeme_id);
         setLearning(prev => new Set([...prev, ...mine]));
       }
+      if (!standards.error && standards.data && standards.data.length > 0) {
+        const found = (standards.data as { id: string; lemma: string }[]).map(r => [r.id, r.lemma] as const);
+        setStandardLemmas(prev => new Map([...prev, ...found]));
+      }
     } catch (err) {
-      console.warn('Тема слів / «Вчу» не завантажились:', err);
+      console.warn('Тема слів / «Вчу» / стандартні відповідники не завантажились:', err);
     }
   }, [supabase]);
 
@@ -107,19 +127,28 @@ export default function DictionaryPage() {
   }, []);
 
   /** Запит однієї порції слів (лише читання з бази, стан не змінює). Помилка бази — виняток. */
-  const queryWords = useCallback(async (pageIndex: number, search: string | null, lvl: Level): Promise<Word[]> => {
+  const queryWords = useCallback(async (pageIndex: number, search: string | null, lvl: Level, cat: WordCategory): Promise<Word[]> => {
     const from = pageIndex * PAGE_SIZE;
     const to = from + PAGE_SIZE - 1;
     let request = supabase
       .from('lexemes')
-      .select('id, lemma, ukrainian_translation, part_of_speech, cefr, ukrainian_explanation, examples')
+      .select('id, lemma, ukrainian_translation, part_of_speech, cefr, ukrainian_explanation, examples, register, regionality, usage_tags, standard_lexeme_id')
       .eq('status', 'PUBLISHED')
+      .neq('register', 'vulgar') // контент 18+ — лише з перемикачем у профілі (його ще немає)
       .not('lemma', 'like', '%:%'); // без реплік діалогів («Konobar: …»)
     if (search) {
       // лема, лема без діакритики (macka → mačka) або переклад
       request = request.or(`lemma.ilike.%${search}%,normalized.ilike.%${search}%,ukrainian_translation.ilike.%${search}%`);
     }
     if (lvl !== 'ALL') request = request.eq('cefr', lvl);
+    const filter = categoryFilter(cat);
+    if (filter) {
+      if (filter.method === 'or') request = request.or(filter.value);
+      else if (filter.method === 'eq') request = request.eq(filter.column, filter.value);
+      else if (filter.method === 'neq') request = request.neq(filter.column, filter.value);
+      else if (filter.method === 'overlaps') request = request.overlaps(filter.column, filter.value);
+      else request = request.contains(filter.column, filter.value);
+    }
     const { data, error } = await request
       .order('cefr', { ascending: true, nullsFirst: false }) // спершу A0, потім A1…
       .order('frequency_rank', { ascending: true, nullsFirst: false })
@@ -134,6 +163,8 @@ export default function DictionaryPage() {
       level: lex.cefr,
       explanation: lex.ukrainian_explanation ?? null,
       examples: wordExamples(lex.examples),
+      labels: readLabels(lex),
+      standardId: typeof lex.standard_lexeme_id === 'string' ? lex.standard_lexeme_id : null,
     }));
   }, [supabase]);
 
@@ -148,7 +179,7 @@ export default function DictionaryPage() {
       const mapped = result.words;
       setHasMore(mapped.length === PAGE_SIZE); // менше за порцію — кінець словника чи результатів
       setWords(prev => (isReset ? mapped : [...prev, ...mapped]));
-      void enrich(mapped.map(w => w.id));
+      void enrich(mapped);
     }
     setLoading(false);
     setLoadingMore(false);
@@ -158,7 +189,7 @@ export default function DictionaryPage() {
   const loadPage = (pageIndex: number, isReset: boolean) => {
     beginLoad(pageIndex, isReset);
     const requestId = ++requestRef.current;
-    queryWords(pageIndex, term, level).then(
+    queryWords(pageIndex, term, level, category).then(
       (found) => applyPage(requestId, isReset, { words: found }),
       (error: unknown) => applyPage(requestId, isReset, { error }),
     );
@@ -179,16 +210,22 @@ export default function DictionaryPage() {
   // стан змінюємо лише в колбеці відповіді — як радить React для синхронізації із зовнішньою системою.
   useEffect(() => {
     const requestId = ++requestRef.current;
-    queryWords(0, term, level).then(
+    queryWords(0, term, level, category).then(
       (found) => applyPage(requestId, true, { words: found }),
       (error: unknown) => applyPage(requestId, true, { error }),
     );
-  }, [queryWords, applyPage, term, level]);
+  }, [queryWords, applyPage, term, level, category]);
 
   const selectLevel = (lvl: Level) => {
     if (lvl === level) return;
     beginLoad(0, true);
     setLevel(lvl);
+  };
+
+  const selectCategory = (cat: WordCategory) => {
+    if (cat === category) return;
+    beginLoad(0, true);
+    setCategory(cat);
   };
 
   const loadMore = () => {
@@ -216,7 +253,7 @@ export default function DictionaryPage() {
   const saveWord = async (word: Word) => {
     setSaveState('saving');
     try {
-      const res = await saveDictionaryWord(word.id);
+      const res = await saveDictionaryWord(word.id, category);
       if (res.ok) {
         setSaveState('saved');
         setLearning(prev => new Set(prev).add(word.id));
@@ -289,9 +326,34 @@ export default function DictionaryPage() {
       </div>
 
       <main className="mx-auto max-w-2xl px-5 pt-4">
+        {/* Категорія: розмовне, сленг, регіональне… (рішення власника 2026-11-13) — гортається вбік */}
+        <div className="-mx-5 mb-4 overflow-x-auto px-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div role="group" aria-label="Категорія слів" className="flex w-max gap-2">
+            {WORD_CATEGORIES.map((c) => {
+              const active = category === c.id;
+              return (
+                <button
+                  key={c.id}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => selectCategory(c.id)}
+                  className={cn(
+                    'flex min-h-11 items-center gap-1 rounded-full border px-4 text-label whitespace-nowrap transition-colors duration-150',
+                    active ? 'border-primary bg-primary text-white shadow-sm' : 'border-line bg-surface text-ink-muted hover:text-ink',
+                  )}
+                >
+                  {active && c.id !== 'all' && <Check className="size-4" strokeWidth={3} aria-hidden="true" />}
+                  {c.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         <div className="mb-3 flex items-baseline justify-between gap-3">
           <h2 className="font-heading text-h3">
             {term ? 'Результати пошуку' : level === 'ALL' ? 'Усі слова' : `${level} · ${levelStyle(level).name}`}
+            {category !== 'all' && <span className="text-ink-muted"> · {categoryName(category)}</span>}
           </h2>
           {!loading && words.length > 0 && <p className="text-caption text-ink-subtle">Показано {words.length}</p>}
         </div>
@@ -324,7 +386,11 @@ export default function DictionaryPage() {
               </Button>
             ) : (
               <p className="mt-6 text-center text-label font-normal text-ink-muted">
-                {term ? 'Це всі слова за вашим пошуком.' : level === 'ALL' ? 'Ви переглянули весь словник 🎉' : `Це всі слова рівня ${level} 🎉`}
+                {term
+                  ? 'Це всі слова за вашим пошуком.'
+                  : category !== 'all'
+                    ? `Це всі слова категорії «${categoryName(category)}» 🎉`
+                    : level === 'ALL' ? 'Ви переглянули весь словник 🎉' : `Це всі слова рівня ${level} 🎉`}
               </p>
             )}
           </>
@@ -333,12 +399,18 @@ export default function DictionaryPage() {
             icon={<Search className="size-6" aria-hidden="true" />}
             title="Слів не знайдено"
             text={
-              level !== 'ALL'
-                ? `На рівні ${level} такого слова немає. Спробуйте «Усі» рівні.`
-                : 'Спробуйте інше написання — можна без хорватських літер (macka → mačka) або українською.'
+              category !== 'all'
+                ? emptyCategoryText(category)
+                : level !== 'ALL'
+                  ? `На рівні ${level} такого слова немає. Спробуйте «Усі» рівні.`
+                  : 'Спробуйте інше написання — можна без хорватських літер (macka → mačka) або українською.'
             }
             action={
-              level !== 'ALL' ? (
+              category !== 'all' ? (
+                <Button variant="secondary" onClick={() => selectCategory('all')}>
+                  Показати всі категорії
+                </Button>
+              ) : level !== 'ALL' ? (
                 <Button variant="secondary" onClick={() => selectLevel('ALL')}>
                   Шукати на всіх рівнях
                 </Button>
@@ -352,6 +424,7 @@ export default function DictionaryPage() {
         <WordSheet
           word={selected}
           theme={themes.get(selected.id)}
+          standardLemma={selected.standardId ? standardLemmas.get(selected.standardId) ?? null : null}
           isLearning={learning.has(selected.id)}
           saveState={saveState}
           onSave={() => void saveWord(selected)}
@@ -362,13 +435,19 @@ export default function DictionaryPage() {
   );
 }
 
+function categoryName(category: WordCategory): string {
+  return WORD_CATEGORIES.find((c) => c.id === category)?.label ?? '';
+}
+
 function WordRow({ word, theme, isLearning, onOpen }: { word: Word; theme?: WordTheme; isLearning: boolean; onOpen: (word: Word) => void }) {
+  // aria-label кнопки замінює її вміст для читача з екрана — тож категорію називаємо в ньому
+  const labelsText = labelChips(word.labels).map((c) => c.text).join(', ');
   return (
     <li className="flex items-center gap-1 rounded-card border border-line bg-surface shadow-sm transition-colors duration-150 hover:border-primary">
       <button
         type="button"
         onClick={() => onOpen(word)}
-        aria-label={`${word.lemma} — ${word.translation}${isLearning ? ", вчу" : ""}. Відкрити картку слова`}
+        aria-label={`${word.lemma} — ${word.translation}${labelsText ? `, ${labelsText}` : ''}${isLearning ? ', вчу' : ''}. Відкрити картку слова`}
         className="flex min-w-0 flex-1 items-center gap-3 rounded-card p-4 text-left"
       >
         <WordTile lemma={word.lemma} level={word.level} theme={theme} />
@@ -380,6 +459,7 @@ function WordRow({ word, theme, isLearning, onOpen }: { word: Word; theme?: Word
             {word.pos && <span className="text-caption text-ink-subtle">{word.pos}</span>}
             {isLearning && <LearningBadge />}
           </span>
+          <WordLabels labels={word.labels} className="mt-1.5" />
         </span>
       </button>
       <AudioButton text={word.lemma} label={`Прослухати: ${word.lemma}`} className="mr-3" />
@@ -400,6 +480,7 @@ function LearningBadge() {
 function WordSheet({
   word,
   theme,
+  standardLemma,
   isLearning,
   saveState,
   onSave,
@@ -407,6 +488,7 @@ function WordSheet({
 }: {
   word: Word;
   theme?: WordTheme;
+  standardLemma: string | null;
   isLearning: boolean;
   saveState: SaveState;
   onSave: () => void;
@@ -440,6 +522,7 @@ function WordSheet({
           </IconButton>
         </div>
 
+        <WordLabels labels={word.labels} standardLemma={standardLemma} className="mt-3" />
         <p className="mt-3 text-body-lg break-words">{word.translation}</p>
         {word.explanation && <p className="mt-1 text-label font-normal break-words text-ink-muted">{word.explanation}</p>}
 

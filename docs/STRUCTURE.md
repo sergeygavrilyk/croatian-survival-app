@@ -12,7 +12,7 @@ components/         MascotPicker (вибір талісмана), lesson/LessonS
                     AssessmentListView + AssessmentPlayer + AssessmentResult (перевірки рівня §60),
                     grammar/GrammarLevelView + GrammarTopicView + GrammarReview + GrammarPractice (граматика рівня, тема, підсумок, серія вправ),
                     features/RoleplaySimulator (сценарний діалог в уроці, без AI)
-components/ui/      примітиви дизайн-системи: Button, Card, Hr, AudioButton, FeedbackBanner, BottomNav, WordTile (плитка слова: емодзі теми в кольорі рівня), SessionDone (кінець сесії з підбадьоренням і свято після уроку), StatTile (плитка підсумку), Confetti, Mascot (талісман-далматинець)… (docs/DESIGN_SYSTEM.md §8)
+components/ui/      примітиви дизайн-системи: Button, Card, Hr, AudioButton, FeedbackBanner, BottomNav, WordTile (плитка слова: емодзі теми в кольорі рівня), WordLabels (позначка категорії слова: «розмовне», «регіонально · Далмація», «стандартно: …»), SessionDone (кінець сесії з підбадьоренням і свято після уроку), StatTile (плитка підсумку), Confetti, Mascot (талісман-далматинець)… (docs/DESIGN_SYSTEM.md §8)
 lib/               логіка без БД: srs.ts (повторення), analytics.ts (події §71), learning.ts (сценарії VS-001/002),
                    answer.ts (перевірка введення), navigation.ts (вкладки), situations.ts (довідник і зведення ситуацій),
                    placement.ts (оцінка тесту рівня), onboarding.ts, progress.ts, speaking.ts (оцінка мовлення),

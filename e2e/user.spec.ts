@@ -104,6 +104,30 @@ test('словник: пошук → картка слова → «Додати 
   await expect(page.getByRole('button', { name: /^pomidor — .*вчу\. Відкрити картку слова/ })).toBeVisible();
 });
 
+test('словник: позначка категорії на картці й фільтр «Категорія»', async ({ page }) => {
+  await page.goto('/dictionary');
+  const categories = page.getByRole('group', { name: 'Категорія слів' });
+  await expect(categories.getByRole('button', { name: 'Усі', pressed: true })).toBeVisible();
+
+  // Сленг + пошук: обидві умови разом (два «or» у запиті до бази)
+  await categories.getByRole('button', { name: 'Сленг' }).click();
+  await expect(categories.getByRole('button', { name: 'Сленг', pressed: true })).toBeVisible();
+  await page.getByLabel('Пошук слова').fill('onak');
+  const row = page.getByRole('button', { name: /^onak — .*сленг.*Відкрити картку слова/ });
+  await expect(row).toBeVisible();
+  await row.click();
+  const sheet = page.getByRole('dialog', { name: 'onak' });
+  await expect(sheet.getByRole('list', { name: /Категорія: сленг, регіонально · Загреб/ })).toBeVisible();
+  await page.keyboard.press('Escape');
+
+  // Інша категорія — слова немає, кнопка повертає всі категорії
+  await categories.getByRole('button', { name: 'Ідіоми' }).click();
+  await expect(page.getByRole('heading', { name: 'Слів не знайдено' })).toBeVisible();
+  await page.getByRole('button', { name: 'Показати всі категорії' }).click();
+  await expect(categories.getByRole('button', { name: 'Усі', pressed: true })).toBeVisible();
+  await expect(row).toBeVisible();
+});
+
 test('офлайн (§76): відкриті раз урок і текст відкриваються без інтернету', async ({ page, context, request }) => {
   test.slow();
   const sw = await request.get('/sw.js');

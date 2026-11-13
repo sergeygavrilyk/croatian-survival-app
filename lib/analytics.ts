@@ -88,6 +88,8 @@ export interface EventProps {
   slow_used?: boolean;
   /** «Граматика рівня»: тема, яку тренують (lib/grammar.ts) */
   grammar_topic_id?: string;
+  /** «Словник»: фільтр «Категорія», з якого додали слово (lib/lexeme-labels.ts WORD_CATEGORIES; `all` — без фільтра) */
+  category?: string;
   device?: string;
   app_version?: string;
 }

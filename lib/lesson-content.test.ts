@@ -76,6 +76,27 @@ test('buildLessonContent: урок, слова й вправи в порядку
   assert.deepEqual(c.exercises.map((e) => e.id), ['e2', 'e1']);
 });
 
+test('buildLessonContent: мітки слова — лише в незвичайних слів, «стандартно: …» — з відповідника', () => {
+  const c = buildLessonContent({
+    ...rows(),
+    lexemes: [
+      { id: 'w1', lemma: 'kava', ukrainian_translation: 'кава', register: 'standard', regionality: 'general', usage_tags: [] },
+      { id: 'w2', lemma: 'pomidor', ukrainian_translation: 'помідор', register: 'colloquial', regionality: 'Dalmatia', usage_tags: ['italianism'], standard_lexeme_id: 's1' },
+    ],
+    standardLemmas: [{ id: 's1', lemma: 'rajčica' }],
+  });
+  assert.deepEqual(c.words, [
+    {
+      id: 'w2', hr_text: 'pomidor', ua_translation: 'помідор',
+      labels: { register: 'colloquial', regionality: 'Dalmatia', usage_tags: ['italianism'] }, standard_lemma: 'rajčica',
+    },
+    { id: 'w1', hr_text: 'kava', ua_translation: 'кава' },
+  ]);
+  // відповідник не завантажився — слово з мітками, але без «стандартно»
+  const noStd = buildLessonContent({ ...rows(), lexemes: [{ id: 'w1', lemma: 'kava', ukrainian_translation: 'кава', register: 'informal', standard_lexeme_id: 's9' }] });
+  assert.deepEqual(noStd.words, [{ id: 'w1', hr_text: 'kava', ua_translation: 'кава', labels: { register: 'informal', regionality: 'general', usage_tags: [] } }]);
+});
+
 test('buildLessonContent: модуль уроку — номер і назва для емодзі теми; без номера — null', () => {
   assert.deepEqual(buildLessonContent({ ...rows(), module: { order_index: 7, title_ua: 'Їжа', title_hr: 'Hrana' } }).lesson.module, {
     order: 7,
