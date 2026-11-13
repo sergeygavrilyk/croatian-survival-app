@@ -13,7 +13,21 @@ Your ultimate goal is to lead the user from zero to independent use of Croatian 
 - `docs/README.md` — зміст ТЗ і який файл під яку задачу. `docs/STRUCTURE.md` — де що в коді.
 - `docs/DATABASE.md` §112–132 — нормативна модель даних (пріоритет щодо бази). `docs/AI_RULES.md` — правила агента.
 - `docs/DESIGN_SYSTEM.md` — UI (перед новим екраном). `docs/TESTING.md` — тести й чеклісти. `docs/CONTENT_PIPELINE.md` — контент, статуси, формат SQL-батчів.
-- Skills проєкту: `pr-workflow-croatia` (гілка → PR → мерж власником; замінює `device-sync-croatia`), `content-sql-pack` (SQL-пакети контенту), `lesson-topic-rebuild` (уроки за темою), `croatian-lexeme-batch`, `croatian-content-review`.
+
+## Skills — завантажити ДО першої зміни (рішення 2026-11-13)
+
+Визнач тип задачі й завантаж **усі** skills з рядка (Skill tool), ще до першої правки файлу; кілька рядків — усі їхні skills. **У першому повідомленні власнику назви, які skills завантажено** (тоді пропуск видно одразу).
+
+| Задача | Skills |
+|---|---|
+| будь-яка зміна в репозиторії (код, SQL, документи) | `pr-workflow-croatia` |
+| SQL-пакет контенту (`supabase/data_fixes/`): слова, уроки, тексти, перевірки, типові помилки | + `content-sql-pack`, `croatian-content-review` |
+| нові слова в `lexemes` | + `croatian-lexeme-batch` |
+| уроки A0 / A1 за темою | + `lesson-topic-rebuild` |
+| новий рівень / аудит рівня | + `level-build-croatia` / `level-audit-croatia` |
+| новий екран чи фіча | + `feature-slice-croatia` |
+
+- **Перед правкою наявного SQL-файлу** — перевірити, чи PR ще не змерджено (`gh api …/pulls/<N>`) і чи файла немає в `ops.sql_journal`; змерджено / запущено — виправлення новим файлом і новим PR.
 
 ## Спілкування з власником
 
@@ -76,7 +90,7 @@ npm run e2e        # Playwright (e2e/): збірка + :3100; з входом �
 
 ## Як працювати (§80, §83)
 
-1. `PROJECT_STATE.md` + потрібні файли `docs/`, код і схема.
+1. Skills за таблицею вище (назвати власнику) + `PROJECT_STATE.md`, потрібні файли `docs/`, код і схема.
 2. Нетривіальне — короткий план; PROPOSE / HUMAN — чекати «ок». Класи: **AUTO** (реалізація), **PROPOSE** (архітектура, залежності, таблиці, UX), **HUMAN** (продукт, методика, рівні, видалення даних).
 3. Вертикальний зріз: БД + логіка + UI + контент + SRS + аналітика + тести.
 4. Перевірка: тести, типи, збірка (CI на PR), сценарій у браузері (власник після мержу).
