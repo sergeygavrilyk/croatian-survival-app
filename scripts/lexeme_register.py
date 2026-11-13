@@ -6,8 +6,10 @@
   informal   — літературне, але неофіційне: bok, ćao, Kako si? (замість Kako ste?);
   colloquial — розмовне, нелітературне: kužiti, frka;
   slang      — мова групи: frend, fora.
-  Порожньо (null) — стандартне / нейтральне слово. Регіон (`regionality`) — окремий вимір: регіональне слово
-  отримує регістр за тими самими визначеннями (fjaka — colloquial + Dalmatia).
+  Повний перелік (M24, docs/LEARNING_SPEC.md §18): standard, formal, informal, colloquial, slang, vulgar. З 2026-11-13
+  (рішення власника) значення явне в кожному слові: стандартне — `standard`; порожньо (null) у базі — лише «ще не
+  розмічено» на час переходу, у новому батчі — помилка (scripts/lexeme_checks.py). Регіон (`regionality`) — окремий
+  вимір: регіональне слово отримує регістр за тими самими визначеннями (fjaka — colloquial + Dalmatia).
 
 Модуль використовують:
   * scripts/gen_lexeme_register_20261112.py — позначки для наявних слів робочої бази;
@@ -22,9 +24,11 @@ import sys
 
 # Значення, які пише цей модуль (визначення — вище)
 REGISTERS = ('informal', 'colloquial', 'slang')
-# Повний перелік майбутнього CHECK (M24, docs/LEARNING_SPEC.md §18): ще formal і vulgar — їх цей модуль не ставить
-ALLOWED = REGISTERS + ('formal', 'vulgar')
-# Старі значення в базі — нормалізує пакет M24 (regional → colloquial + regionality, non_standard → colloquial)
+# Повний перелік CHECK lexemes_register_check (M24, docs/LEARNING_SPEC.md §18): ще standard, formal і vulgar —
+# їх словник правил не ставить
+ALLOWED = ('standard', 'formal') + REGISTERS + ('vulgar',)
+# Старі значення в базі (4 слова) — нормалізує пакет розмітки (крок 2 плану маркування): regional → colloquial +
+# regionality + italianism, non_standard → colloquial. У новому батчі — помилка (CHECK M24 їх не пропускає)
 LEGACY = ('regional', 'non_standard')
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -220,12 +224,14 @@ def suggest_register(row: dict) -> tuple[str | None, str, str]:
 
 
 def check_register(row: dict) -> tuple[list[str], list[str]]:
-    """(помилки, попередження) для поля register у новому батчі слів."""
+    """(помилки, попередження) для значення поля register у новому батчі слів. Порожнє значення — помилка
+    в scripts/lexeme_checks.py (check_labels), тут лише перевірка переліку й словника правил."""
     e, w = [], []
     reg = row.get('register')
     if reg is not None and reg not in ALLOWED:
-        (w if reg in LEGACY else e).append(
-            f'register «{reg}» — дозволено: порожньо або {", ".join(ALLOWED)} (docs/CONTENT_PIPELINE.md → «Регістр лексем»)')
+        e.append(f'register «{reg}» — дозволено: {", ".join(ALLOWED)}'
+                 + (' (старе значення: regional → colloquial + regionality, non_standard → colloquial)' if reg in LEGACY else '')
+                 + ' (docs/CONTENT_PIPELINE.md → «Регістр лексем»)')
     sug, why, src = suggest_register(row)
     if src in ('rule', 'ti') and reg != sug and reg not in ('formal', 'vulgar'):
         w.append(f'register: очікується «{sug}» ({why}), а стоїть «{reg or "порожньо"}»')
@@ -275,7 +281,9 @@ def _selftest() -> None:
     assert suggest_register(row('dućan', 'магазин (розмовно)', 'noun', 'core'))[2] == 'doubt'
     assert suggest_register(row('kuća', 'дім (розм.)', 'noun', 'core'))[2] == 'mark'
     assert check_register({'lemma': 'kuća', 'register': 'casual'})[0]
-    assert not check_register({'lemma': 'pomidor', 'register': 'regional'})[0]           # старе — попередження
+    assert check_register({'lemma': 'pomidor', 'register': 'regional'})[0]               # старе — помилка (CHECK M24)
+    assert not check_register({'lemma': 'kuća', 'register': 'standard'})[0]              # стандартне — явне значення
+    assert check_register({'lemma': 'bok', 'register': 'standard', 'ukrainian_translation': 'привіт'})[1]  # правило: informal
     assert check_register({'lemma': 'bok', 'register': None, 'ukrainian_translation': 'привіт'})[1]
     for rx in (TI_LEMMA, TI_VERB, TI_TRANSLATION, VI_LEMMA, MARK_TRANSLATION):
         re.compile(rx)

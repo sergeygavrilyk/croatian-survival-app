@@ -462,8 +462,12 @@ lexemes
 - frequency_score
 - register
 - regionality
+- usage_tags
+- standard_lexeme_id
 - status
 - version
+
+`register`, `regionality`, `usage_tags` — маркування живої лексики (переліки — `LEARNING_SPEC.md` §18, `CHECK` — міграція M24; ті самі три поля — у `phrases`); `standard_lexeme_id` — стандартний відповідник, посилання на іншу лексему (`on delete set null`). Після розмітки всіх слів (до B1) три мітки — `NOT NULL` без значення за замовчуванням (рішення власника 2026-11-13).
 
 ## 70. User Lexeme Schema
 
