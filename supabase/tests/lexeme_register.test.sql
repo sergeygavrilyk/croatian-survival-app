@@ -27,6 +27,11 @@ select pg_temp.ok(pg_temp.reg('odakle si') = 'informal' and pg_temp.reg('oprosti
 select pg_temp.ok(pg_temp.reg('nikad ne reci nikad') is null, 'прислів''я з «ти» в загальному значенні — порожньо');
 select pg_temp.ok(pg_temp.reg('kila') = 'colloquial' and pg_temp.reg('fjaka') = 'colloquial', 'kila, fjaka — colloquial');
 select pg_temp.ok(pg_temp.reg('dućan') is null and pg_temp.reg('pauk') is null, 'сумнівні (dućan, pauk) — не позначено');
+-- Повний перегляд 2026-11-13: наказовий спосіб на «ти» без займенника, розмовні слова поза першим списком
+select pg_temp.ok(pg_temp.reg('drži se') = 'informal' and pg_temp.reg('pozdravi') = 'informal' and pg_temp.reg('zdravo') = 'informal',
+  'drži se, pozdravi, zdravo — informal');
+select pg_temp.ok(pg_temp.reg('klima') = 'colloquial' and pg_temp.reg('kvart') = 'colloquial', 'klima, kvart — colloquial');
+select pg_temp.ok(pg_temp.reg('doktor') is null and pg_temp.reg('pumpa') is null, 'сумнівні (doktor, pumpa) — не позначено');
 -- Наявні значення не змінено
 select pg_temp.ok(pg_temp.reg('ae') = 'slang' and pg_temp.reg('onak') = 'slang', 'ae, onak — slang, як і було');
 select pg_temp.ok(pg_temp.reg('pomidor') = 'regional', 'pomidor — regional (нормалізує пакет M24)');
@@ -34,8 +39,8 @@ select pg_temp.ok((select regionality from public.lexemes where lower(lemma) = '
 -- Лише дозволені значення
 select pg_temp.ok(not exists (select 1 from public.lexemes where status = 'PUBLISHED' and register is not null
   and register not in ('informal', 'colloquial', 'slang', 'formal', 'vulgar', 'regional', 'non_standard')), 'register — лише з переліку');
-select pg_temp.ok((select count(*) from public.lexemes where status = 'PUBLISHED' and register in ('informal', 'colloquial')) >= 20,
-  'позначено щонайменше 20 слів informal / colloquial');
+select pg_temp.ok((select count(*) from public.lexemes where status = 'PUBLISHED' and register in ('informal', 'colloquial')) >= 50,
+  'позначено щонайменше 50 слів informal / colloquial');
 -- Стара версія й запис перевірки
 select pg_temp.ok(not exists (select 1 from public.lexemes x where x.status = 'PUBLISHED' and x.register in ('informal', 'colloquial')
   and lower(x.lemma) in ('bok', 'kako si', 'kila')

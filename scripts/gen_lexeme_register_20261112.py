@@ -184,8 +184,10 @@ def report(rows: list[dict], g: dict) -> str:
         '',
         '## Підсумок',
         '',
-        f'- Опублікованих слів у базі: **{PUBLISHED_TOTAL}**; скрипт переглянув **{len(rows)}** — ті, яких стосуються правила, '
-        'ознака «звертання на ти», позначки стилю в перекладі, а також усі з `register` чи `regionality`. Решта — стандартні (порожньо).',
+        f'- Опублікованих слів у базі: **{PUBLISHED_TOTAL}**. **Перевірено всі** (2026-11-13, на питання власника): ті, яких стосуються '
+        'правила, ознака «ти» й позначки в перекладі, — скриптом; решту — переглядом кожного слова з перекладом (іменники, дієслова, '
+        'прикметники, прислівники, вирази). Знайдене вручну внесено в правила, тож знімок містить '
+        f'**{len(rows)}** слів, яких стосується хоч одне правило; решта — стандартні (порожньо).',
         f'- **Позначити: {len(g["apply"])}** — informal {c["informal"]}, colloquial {c["colloquial"]}, slang {c["slang"]}.',
         f'- Уже позначено правильно: {len(g["same"])}; старі значення (нормалізує пакет M24): {len(g["legacy"])}; '
         f'сумнівні (не позначаю, питання носію): {len(g["doubt"]) + len(g["mark"])}.',
@@ -221,11 +223,20 @@ def report(rows: list[dict], g: dict) -> str:
     for reg in REGISTERS:
         ws = [l for l in future if RULES[l][0] == reg]
         lines.append(f"- `{reg}`: " + (', '.join(f'*{w}*' for w in ws) if ws else '—'))
+    lines += ['', '## 7. Інші знахідки під час перегляду (не регістр — окремим пакетом)', '',
+              '- *pijesok* — такого слова немає (є правильне *pijesak*, теж у словнику) → DEPRECATED.',
+              '- *taoc* — неправильна форма, правильно *talac* («заручник»).',
+              '- *suhozid* — перекладено «сухостій», а це «суха кам\'яна стіна (кладка без розчину)».',
+              '- форми дієслів як окремі слова: *hoćemo, je, jesi, moram, trebam, vidimo, vidio, volim, želim, želiš, znam, znaš* '
+              '(разом із вже відомими *restoranu, novom, budilika* — відкрите рішення «Словник» у `PROJECT_STATE.md`).',
+              '- Пари «розмовне — стандартне» вже обидві в словнику: *pegla — glačalo*, *tastatura — tipkovnica*, *tegla — staklenka*, '
+              '*advokat — odvjetnik*, *aerodrom — zračna luka*, *parking — parkiralište*: зв\'язок `standard_lexeme_id` (M24) їх поєднає.',
+              '']
     lines += ['', '## Що варто глянути носію', '',
-              '1. Розділ 1: чи справді *super*, *kila*, *cura*, *cimerica*, *gušt* — розмовні (а не нейтральні); '
-              'чи *vidimo se*, *čujemo se*, *može* — неофіційні.',
-              '2. Розділ 4: *pauk*, *kvadrat* (омоніми), *dečko*, *pomalo*, *ne da mi se*; і чи прибрати «(розм.)» з перекладу '
-              '*dućan*, *bilježnik*; *kesa* — регіон і стандартний відповідник.',
+              '1. Розділ 1: чи справді *super*, *kila*, *cura*, *cimerica*, *gušt*, *klima*, *kvart*, *mail*, *deka* — розмовні (а не нейтральні); '
+              'чи *vidimo se*, *čujemo se*, *može*, *zdravo*, *tako-tako* — неофіційні.',
+              '2. Розділ 4: омоніми (*pauk*, *kvadrat*, *pumpa*, *skoro*, *slikati*), звичні в мовленні (*doktor*, *zubar*, *parking*, '
+              '*aerodrom*, *hitna*, *dečko*); і чи прибрати «(розм.)» з перекладу *dućan*, *bilježnik*; *kesa* — регіон і відповідник.',
               '3. Ввічливі вирази (*Kako ste?, molim vas, izvolite, oprostite*) зараз порожні (стандартні). Позначати їх `formal` — '
               'окреме рішення (визначення `formal` ще немає).',
               '']

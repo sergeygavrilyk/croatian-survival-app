@@ -45,6 +45,17 @@ RULES: dict[str, tuple[str, str]] = {
     'javi se': ('informal', 'наказовий спосіб на «ти» (офіційно — javite se)'),
     'pazi': ('informal', 'наказовий спосіб на «ти» (офіційно — pazite)'),
     'nedostaješ mi': ('informal', 'звертання на «ти», близька людина'),
+    'stani': ('informal', 'наказовий спосіб на «ти» (офіційно — stanite)'),
+    'drži se': ('informal', 'наказовий спосіб на «ти» (офіційно — držite se)'),
+    'brzo ozdravi': ('informal', 'наказовий спосіб на «ти» (офіційно — brzo ozdravite)'),
+    'lijepo se provedi': ('informal', 'наказовий спосіб на «ти» (офіційно — lijepo se provedite)'),
+    'ne propusti': ('informal', 'наказовий спосіб на «ти» (офіційно — ne propustite)'),
+    'nemoj mi otkriti kraj': ('informal', 'наказовий спосіб на «ти» (офіційно — nemojte)'),
+    'piši mi': ('informal', 'наказовий спосіб на «ти» (офіційно — pišite mi)'),
+    'potvrdi mi': ('informal', 'наказовий спосіб на «ти» (офіційно — potvrdite mi)'),
+    'pozdravi': ('informal', '«передавай вітання» — на «ти» (офіційно — pozdravite)'),
+    'zdravo': ('informal', 'неофіційне привітання (у Хорватії частіше bok)'),
+    'tako-tako': ('informal', 'неофіційна відповідь «так собі»'),
     # colloquial — розмовне, нелітературне (у словниках — «razg.»); регіональні діалектні слова — теж сюди
     'kužiti': ('colloquial', 'розмовне «розуміти» (стандартно — razumjeti); приклад власника'),
     'frka': ('colloquial', 'розмовне «паніка, проблема»; приклад власника'),
@@ -72,6 +83,33 @@ RULES: dict[str, tuple[str, str]] = {
     'fjaka': ('colloquial', 'регіональне розмовне (Далмація); приклад власника'),
     'gušt': ('colloquial', 'розмовне «задоволення, кайф» (з італ. gusto), найчастіше в Далмації'),
     'spiza': ('colloquial', 'регіональне розмовне «продукти» (Далмація; стандартно — namirnice)'),
+    'pola kile': ('colloquial', 'розмовне «пів кілограма» (стандартно — pola kilograma)'),
+    'pegla': ('colloquial', 'розмовне «праска» (з нім.; стандартно — glačalo)'),
+    'peglati': ('colloquial', 'розмовне «прасувати» (стандартно — glačati)'),
+    'čika': ('colloquial', 'розмовне, дитяче «дядько» до старшого чоловіка'),
+    'benzinac': ('colloquial', 'розмовне «бензинове авто»'),
+    'buvljak': ('colloquial', 'розмовне «барахолка» (стандартно — buvlja tržnica)'),
+    'crtić': ('colloquial', 'розмовне «мультфільм» (стандартно — crtani film)'),
+    'crtići': ('colloquial', 'розмовне «мультики» (стандартно — crtani filmovi)'),
+    'deka': ('colloquial', 'розмовне «десять грамів» (стандартно — dekagram)'),
+    'klima': ('colloquial', 'розмовне «кондиціонер» (стандартно — klimatizacijski uređaj, klima-uređaj)'),
+    'kemijska': ('colloquial', 'розмовне «кулькова ручка» (стандартно — kemijska olovka)'),
+    'kontrolni': ('colloquial', 'шкільне розмовне «контрольна» (стандартно — kontrolni rad, ispit)'),
+    'kusur': ('colloquial', 'розмовне «решта» (туркізм; стандартно — ostatak)'),
+    'kvart': ('colloquial', 'розмовне «район» (стандартно — četvrt)'),
+    'mikrovalna': ('colloquial', 'розмовне «мікрохвильовка» (стандартно — mikrovalna pećnica)'),
+    'mušterija': ('colloquial', 'розмовне «клієнт» (туркізм; стандартно — kupac, klijent)'),
+    'papirologija': ('colloquial', 'розмовне, іронічне «паперова тяганина»'),
+    'šalabahter': ('colloquial', 'шкільне розмовне «шпаргалка»'),
+    'trenirka': ('colloquial', 'розмовне «спортивний костюм» (стандартно — trenerka)'),
+    'tastatura': ('colloquial', 'розмовне «клавіатура» (стандартно — tipkovnica)'),
+    'tegla': ('colloquial', 'розмовне «скляна банка» (стандартно — staklenka)'),
+    'šprica': ('colloquial', 'розмовне «шприц» (стандартно — štrcaljka)'),
+    'žmigavac': ('colloquial', 'розмовне «поворотник» (стандартно — pokazivač smjera)'),
+    'mail': ('colloquial', 'розмовне «імейл» (стандартно — e-pošta, e-poruka)'),
+    'dernjati se': ('colloquial', 'розмовне «верещати, горлати»'),
+    'markirati': ('colloquial', 'шкільне розмовне «прогулювати уроки»'),
+    'skitati se': ('colloquial', 'розмовне «вештатися, тинятися»'),
     'marenda': ('colloquial', 'регіональне розмовне «перекус, пізній сніданок» (Далмація, Істрія; стандартно — užina)'),
     # slang — мова групи (молодь, інтернет, професія)
     'frend': ('slang', 'молодіжне «друг» (з англ. friend; стандартно — prijatelj); приклад власника'),
@@ -98,11 +136,30 @@ DOUBT: dict[str, str] = {
     'dućan': 'у перекладі «(розмовно)», але dućan — стандартне слово; прибрати позначку з перекладу? носію',
     'bilježnik': 'у перекладі «(розм.)», але (javni) bilježnik — офіційний термін; прибрати позначку? носію',
     'kesa': 'у перекладі «(регіонально)»; стандартно — vrećica; яке регіон і регістр? носію',
+    'doktor': '«лікар» — у мовленні звичайне, стандартно liječnik; розмовне? носію',
+    'zubar': '«стоматолог» — у мовленні звичайне, стандартно stomatolog; розмовне? носію',
+    'šlag': '«збиті вершки» — стандартно tučeno vrhnje; розмовне? носію',
+    'skoro': 'омонім: «скоро» — стандартне, «майже» — розмовне (стандартно gotovo)',
+    'hitna': 'скорочення від hitna pomoć — розмовне? носію',
+    'za van': '«навинос» — стандартно za ponijeti; розмовне? носію',
+    'advokat': 'стандартно odvjetnik (теж є в словнику); розмовне чи сербізм? носію',
+    'aerodrom': 'стандартно zračna luka (теж є в словнику); у мовленні звичайне — розмовне? носію',
+    'klamerica': '«степлер» — стандартно spajalica / klamarica? носію',
+    'kofer': '«валіза» — стандартно kovčeg; розмовне? носію',
+    'link': 'англіцизм, стандартно poveznica; розмовне? носію',
+    'pumpa': 'омонім: «заправка» — розмовне, «насос» — стандартне',
+    'parking': 'стандартно parkiralište (теж є в словнику); розмовне? носію',
+    'pekara': 'стандартно pekarnica; розмовне? носію',
+    'štand': '«ятка» (з нім.) — розмовне? носію',
+    'slikati': 'омонім: «малювати» — стандартне, «фотографувати» — розмовне',
+    'persirati': '«звертатися на Ви» — розмовне? (поруч tikati) носію',
 }
 
 # 3. Ознака «звертання на ти» для виразів (part_of_speech = phrase або vocabulary_type formulaic / chunk):
 #    за визначенням informal (Kako si? замість Kako ste?). Регулярні вирази — спільні для Python і Postgres (~*).
-TI_LEMMA = r"(^|[ ,])(ti|te|tebi|tobom|tvoj|tvoja|tvoje|tvoju|tvog|tvoga|si|nisi|jesi|izvoli|oprosti|molim te)([ ,!?.]|$)"
+TI_LEMMA = (r"(^|[ ,])(ti|te|tebi|tobom|tvoj|tvoja|tvoje|tvoju|tvog|tvoga|si|nisi|jesi|izvoli|oprosti|molim te|nemoj"
+            r"|stani|drži|piši|potvrdi|pozdravi|čekaj|pričekaj|pazi|reci|dođi|uzmi|idi|slušaj|gledaj|pogledaj|sjedni"
+            r"|zovi|nazovi|javi|ozdravi|provedi|propusti|pošalji|vrati|zaboravi)([ ,!?.]|$)")
 # 2-га особа однини теперішнього часу в багатослівному виразі: imaš, zoveš, osjećaš, nedostaješ…
 TI_VERB = r"(^|[ ,])[a-zčćđšž]{2,}(aš|eš|iš)([ ,!?.]|$)"
 NOT_TI_WORDS = ('još', 'naš', 'vaš', 'baš', 'koš', 'loš', 'miš', 'tuš', 'keš', 'krš', 'paprikaš', 'salaš', 'sitniš',
@@ -207,6 +264,8 @@ def _selftest() -> None:
     assert suggest_register(row('odakle si', 'звідки ти'))[0] == 'informal'
     assert suggest_register(row('koliko imaš godina', 'скільки тобі років', vt='chunk'))[0] == 'informal'
     assert suggest_register(row('kako se zoveš', 'як тебе звати', vt='chunk'))[0] == 'informal'
+    assert suggest_register(row('pošalji mi poruku', 'надішли мені повідомлення', vt='chunk'))[0] == 'informal'  # наказовий на «ти»
+    assert suggest_register(row('pošaljite mi poruku', 'надішліть мені повідомлення', vt='chunk'))[0] is None
     assert suggest_register(row('fiš paprikaš', 'рибна юшка', vt='chunk'))[0] is None    # -š, але не дієслово
     assert suggest_register(row('još jedan', 'ще один', vt='chunk'))[0] is None
     assert suggest_register(row('nikad ne reci nikad', 'ніколи не кажи «ніколи»', vt='chunk'))[0] is None
