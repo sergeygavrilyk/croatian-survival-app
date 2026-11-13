@@ -34,8 +34,8 @@ insert into public.profiles (id, email) values
   ('bbbbbbbb-0000-4000-8000-000000000002', 'rls-test-b@example.invalid')
 on conflict (id) do nothing;
 insert into public.lessons (id, title_ua) values ('cccccccc-0000-4000-8000-000000000003', 'RLS test lesson');
-insert into public.lexemes (id, lemma, normalized, ukrainian_translation, cefr)
-  values ('dddddddd-0000-4000-8000-000000000004', 'rlstestlemma', 'rlstestlemma', 'тест', 'A0');
+insert into public.lexemes (id, lemma, normalized, ukrainian_translation, cefr, register, regionality, usage_tags)
+  values ('dddddddd-0000-4000-8000-000000000004', 'rlstestlemma', 'rlstestlemma', 'тест', 'A0', 'standard', 'general', '{}');
 
 -- ---------------------------------------------------------------- користувач A
 set local role authenticated;

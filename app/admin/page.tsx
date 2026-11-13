@@ -11,6 +11,10 @@ import IconButton from '@/components/ui/IconButton';
 import LevelBadge from '@/components/ui/LevelBadge';
 import Skeleton from '@/components/ui/Skeleton';
 import { levelStyle, moduleIcon } from '@/lib/levels';
+import {
+  DEFAULT_LABELS, REGIONS, REGION_LABELS, REGISTERS, REGISTER_LABELS, USAGE_TAGS, USAGE_TAG_LABELS, toggleTag, validateLabels,
+  type LexemeLabels, type Region, type Register,
+} from '@/lib/lexeme-labels';
 import { cn } from '@/lib/ui';
 
 const CEFR_LEVELS = ['A0', 'A1', 'A2', 'B1', 'B2'];
@@ -57,6 +61,8 @@ export default function AdminDashboard() {
     details_forms: '',
     details_examples: ''
   });
+  // Мітки слова (LEARNING_SPEC §18): з M25 обов'язкові — звичайне слово «стандартне» / «загальне» / без ознак
+  const [newLabels, setNewLabels] = useState<LexemeLabels>(DEFAULT_LABELS);
 
   // Стан змінюємо лише після відповіді бази; «завантаження…» вмикає обробник вкладки (openTab)
   const fetchWords = useCallback(async () => {
@@ -76,6 +82,11 @@ export default function AdminDashboard() {
     if (!newWord.hr_text || !newWord.ua_translation) return;
 
     const cleanHrText = newWord.hr_text.trim();
+    const labelErrors = validateLabels(newLabels);
+    if (labelErrors.length > 0) {
+      setNotice({ ok: false, text: labelErrors.join(' ') });
+      return;
+    }
 
     // Лема унікальна без урахування регістру (індекс unique_lower_lemma)
     const { data: existingWords } = await supabase
@@ -100,6 +111,9 @@ export default function AdminDashboard() {
       vocabulary_type: newWord.part_of_speech === 'phrase' ? 'chunk' : 'core',
       forms: inflections.length > 0 ? { inflections } : {},
       examples,
+      register: newLabels.register,
+      regionality: newLabels.regionality,
+      usage_tags: newLabels.usage_tags,
       // Слово вносить адмін вручну (не AI), тому одразу PUBLISHED.
       // AI-батчі отримують AI_GENERATED за замовчуванням і йдуть через перевірку (§64).
       status: 'PUBLISHED',
@@ -111,6 +125,7 @@ export default function AdminDashboard() {
     } else {
       setNotice({ ok: true, text: `Слово «${cleanHrText}» додано!` });
       setNewWord({ ...newWord, hr_text: '', ua_translation: '', details_forms: '', details_examples: '' });
+      setNewLabels(DEFAULT_LABELS);
       fetchWords();
     }
   };
@@ -475,6 +490,32 @@ export default function AdminDashboard() {
                   </select>
                 </div>
               </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label htmlFor="admin-register" className={labelClass}>Регістр</label>
+                  <select id="admin-register" value={newLabels.register} onChange={(e) => setNewLabels({ ...newLabels, register: e.target.value as Register })} className={fieldClass}>
+                    {REGISTERS.map((r) => <option key={r} value={r}>{REGISTER_LABELS[r]}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="admin-region" className={labelClass}>Регіон</label>
+                  <select id="admin-region" value={newLabels.regionality} onChange={(e) => setNewLabels({ ...newLabels, regionality: e.target.value as Region })} className={fieldClass}>
+                    {REGIONS.map((r) => <option key={r} value={r}>{REGION_LABELS[r]}</option>)}
+                  </select>
+                </div>
+              </div>
+              <fieldset>
+                <legend className={labelClass}>Ознаки (якщо немає — нічого не позначати)</legend>
+                <div className="flex flex-wrap gap-2">
+                  {USAGE_TAGS.map((t) => (
+                    <label key={t} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line px-3 text-body">
+                      <input type="checkbox" checked={newLabels.usage_tags.includes(t)} onChange={() => setNewLabels({ ...newLabels, usage_tags: toggleTag(newLabels.usage_tags, t) })} />
+                      {USAGE_TAG_LABELS[t]}
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
 
               <div className="border-t border-line pt-4">
                 <label htmlFor="admin-forms" className={labelClass}>Інші форми (через кому)</label>

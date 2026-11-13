@@ -7,8 +7,8 @@
   colloquial — розмовне, нелітературне: kužiti, frka;
   slang      — мова групи: frend, fora.
   Повний перелік (M24, docs/LEARNING_SPEC.md §18): standard, formal, informal, colloquial, slang, vulgar. З 2026-11-13
-  (рішення власника) значення явне в кожному слові: стандартне — `standard`; порожньо (null) у базі — лише «ще не
-  розмічено» на час переходу, у новому батчі — помилка (scripts/lexeme_checks.py). Регіон (`regionality`) — окремий
+  (рішення власника) значення явне в кожному слові: стандартне — `standard`; з M25 у базі мітки обов'язкові (NOT NULL),
+  у новому батчі порожнє значення — помилка (scripts/lexeme_checks.py). Регіон (`regionality`) — окремий
   вимір: регіональне слово отримує регістр за тими самими визначеннями (fjaka — colloquial + Dalmatia).
 
 Модуль використовують:

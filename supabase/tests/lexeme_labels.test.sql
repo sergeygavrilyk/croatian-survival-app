@@ -32,9 +32,10 @@ select pg_temp.ok((select count(*) from information_schema.columns where table_s
                      and (table_name, column_name) in (('lexemes', 'usage_tags'), ('lexemes', 'standard_lexeme_id'),
                                                        ('phrases', 'register'), ('phrases', 'regionality'), ('phrases', 'usage_tags'))) = 5,
   'нові колонки: lexemes.usage_tags, lexemes.standard_lexeme_id, phrases.register / regionality / usage_tags');
-select pg_temp.ok((select not convalidated from pg_constraint where conname = 'lexemes_register_check'
+-- З M25 (2026-11-13) перевірка чинна для всіх рядків (було: NOT VALID до нормалізації старих значень)
+select pg_temp.ok((select convalidated from pg_constraint where conname = 'lexemes_register_check'
                      and conrelid = 'public.lexemes'::regclass),
-  'lexemes_register_check — NOT VALID (старі regional / non_standard нормалізує крок 2)');
+  'lexemes_register_check — чинна для всіх рядків (VALIDATE, M25)');
 select pg_temp.ok((select count(*) from pg_constraint where convalidated and conname in
                      ('lexemes_regionality_check', 'lexemes_usage_tags_check', 'lexemes_standard_not_self_check',
                       'phrases_register_check', 'phrases_regionality_check', 'phrases_usage_tags_check')) = 6,
@@ -47,7 +48,7 @@ select pg_temp.ok((select count(*) from public.lexemes where usage_tags is not n
 select pg_temp.ok(not pg_temp.raises(pg_temp.lex('standard', 'general', '{}')), 'standard / general / {} — можна');
 select pg_temp.ok(not pg_temp.raises(pg_temp.lex('slang', 'Zagreb', '{youth_slang,anglicism}')), 'slang / Zagreb / дві ознаки — можна');
 select pg_temp.ok(not pg_temp.raises(pg_temp.lex('vulgar', 'general', '{offensive}')), 'vulgar / offensive — можна');
-select pg_temp.ok(not pg_temp.raises(pg_temp.lex(null, null, null)), 'порожні мітки поки можна (ще не розмічено, до кроку 3)');
+select pg_temp.ok(pg_temp.raises(pg_temp.lex(null, null, null)), 'порожні мітки — ні (M25: NOT NULL; було «поки можна»)');
 select pg_temp.ok(pg_temp.raises(pg_temp.lex('regional', 'Dalmatia', '{}')), 'старе regional у новому рядку — ні');
 select pg_temp.ok(pg_temp.raises(pg_temp.lex('non_standard', 'general', '{}')), 'старе non_standard у новому рядку — ні');
 select pg_temp.ok(pg_temp.raises(pg_temp.lex('casual', 'general', '{}')), 'невідомий register — ні');
@@ -78,12 +79,12 @@ select pg_temp.ok((select standard_lexeme_id is null from public.lexemes where i
 select pg_temp.ok(not pg_temp.raises($q$insert into public.phrases (text_hr, normalized, ukrainian_translation, status,
   register, regionality, usage_tags) values ('Ma daj, ne zezaj m24test!', 'ma daj, ne zezaj m24test!', 'Та ну, не жартуй!', 'DRAFT',
   'colloquial', 'general', '{}')$q$), 'речення з мітками — можна');
-select pg_temp.ok(pg_temp.raises($q$insert into public.phrases (text_hr, normalized, ukrainian_translation, status, register)
-  values ('M24 test jedan.', 'm24 test jedan.', 'тест', 'DRAFT', 'regional')$q$), 'речення: старе regional — ні');
-select pg_temp.ok(pg_temp.raises($q$insert into public.phrases (text_hr, normalized, ukrainian_translation, status, regionality)
-  values ('M24 test dva.', 'm24 test dva.', 'тест', 'DRAFT', 'zagreb')$q$), 'речення: регіон з малої — ні');
-select pg_temp.ok(pg_temp.raises($q$insert into public.phrases (text_hr, normalized, ukrainian_translation, status, usage_tags)
-  values ('M24 test tri.', 'm24 test tri.', 'тест', 'DRAFT', '{slang}')$q$), 'речення: невідома ознака — ні');
+select pg_temp.ok(pg_temp.raises($q$insert into public.phrases (text_hr, normalized, ukrainian_translation, status, register, regionality, usage_tags)
+  values ('M24 test jedan.', 'm24 test jedan.', 'тест', 'DRAFT', 'regional', 'general', '{}')$q$), 'речення: старе regional — ні');
+select pg_temp.ok(pg_temp.raises($q$insert into public.phrases (text_hr, normalized, ukrainian_translation, status, register, regionality, usage_tags)
+  values ('M24 test dva.', 'm24 test dva.', 'тест', 'DRAFT', 'standard', 'zagreb', '{}')$q$), 'речення: регіон з малої — ні');
+select pg_temp.ok(pg_temp.raises($q$insert into public.phrases (text_hr, normalized, ukrainian_translation, status, register, regionality, usage_tags)
+  values ('M24 test tri.', 'm24 test tri.', 'тест', 'DRAFT', 'standard', 'general', '{slang}')$q$), 'речення: невідома ознака — ні');
 
 select 'ALL TESTS PASSED';
 rollback;

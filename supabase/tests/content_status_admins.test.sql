@@ -36,11 +36,12 @@ insert into auth.users (id, email) values
 insert into public.app_admins (user_id, note) values ('ad000000-0000-4000-8000-0000000000ad', 'test admin');
 insert into public.levels (code, title_ua, title_hr, order_index, status) values ('ZZ', 'M2 тест', 'M2 test', 9999, 'DRAFT');
 
-insert into public.lexemes (id, lemma, normalized, ukrainian_translation, cefr, status) values
-  ('e1000000-0000-4000-8000-000000000001', 'm2testpublished', 'm2testpublished', 'тест', 'A0', 'PUBLISHED'),
-  ('e1000000-0000-4000-8000-000000000002', 'm2testdraft', 'm2testdraft', 'тест', 'A0', 'NEEDS_REVIEW');
-insert into public.lexemes (id, lemma, normalized, ukrainian_translation, cefr)
-  values ('e1000000-0000-4000-8000-000000000003', 'm2testdefault', 'm2testdefault', 'тест', 'A0');
+-- Мітки слова з M25 обов'язкові — standard / general / {} (2026-11-13)
+insert into public.lexemes (id, lemma, normalized, ukrainian_translation, cefr, status, register, regionality, usage_tags) values
+  ('e1000000-0000-4000-8000-000000000001', 'm2testpublished', 'm2testpublished', 'тест', 'A0', 'PUBLISHED', 'standard', 'general', '{}'),
+  ('e1000000-0000-4000-8000-000000000002', 'm2testdraft', 'm2testdraft', 'тест', 'A0', 'NEEDS_REVIEW', 'standard', 'general', '{}');
+insert into public.lexemes (id, lemma, normalized, ukrainian_translation, cefr, register, regionality, usage_tags)
+  values ('e1000000-0000-4000-8000-000000000003', 'm2testdefault', 'm2testdefault', 'тест', 'A0', 'standard', 'general', '{}');
 
 insert into public.conversations (id, title_ua, status) values
   ('c2000000-0000-4000-8000-000000000001', 'M2 published', 'PUBLISHED'),
@@ -59,7 +60,7 @@ insert into public.lesson_items (lesson_id, item_type, item_id, order_index) val
 -- ---------------------------------------------------------------- схема M2
 select pg_temp.ok((select status from public.lexemes where id = 'e1000000-0000-4000-8000-000000000003') = 'AI_GENERATED',
   'нове слово без статусу отримує AI_GENERATED');
-select pg_temp.ok(pg_temp.raises($q$insert into public.lexemes (lemma, normalized, ukrainian_translation, status) values ('m2bad', 'm2bad', 'x', 'Published')$q$),
+select pg_temp.ok(pg_temp.raises($q$insert into public.lexemes (lemma, normalized, ukrainian_translation, status, register, regionality, usage_tags) values ('m2bad', 'm2bad', 'x', 'Published', 'standard', 'general', '{}')$q$),
   'невідомий статус відхиляється (CHECK)');
 select pg_temp.ok(pg_temp.raises($q$update public.lessons set status = null where id = 'b3000000-0000-4000-8000-000000000001'$q$),
   'статус уроку не може бути порожнім');
@@ -95,7 +96,7 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons where id in ('b30000
   'користувач не бачить чернетку уроку');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lesson_items where lesson_id in ('b3000000-0000-4000-8000-000000000001', 'b3000000-0000-4000-8000-000000000002')$q$) = 1,
   'користувач не бачить кроки чернетки уроку');
-select pg_temp.ok(pg_temp.raises($q$insert into public.lexemes (lemma, normalized, ukrainian_translation) values ('m2hack', 'm2hack', 'x')$q$),
+select pg_temp.ok(pg_temp.raises($q$insert into public.lexemes (lemma, normalized, ukrainian_translation, register, regionality, usage_tags) values ('m2hack', 'm2hack', 'x', 'standard', 'general', '{}')$q$),
   'користувач не може додати слово');
 update public.lexemes set ukrainian_translation = 'зламано' where id = 'e1000000-0000-4000-8000-000000000001';
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lexemes where ukrainian_translation = 'зламано'$q$) = 0,
@@ -128,7 +129,7 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.lexemes where lemma like 'm2
   'адмін бачить усі статуси');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lesson_items where lesson_id in ('b3000000-0000-4000-8000-000000000001', 'b3000000-0000-4000-8000-000000000002')$q$) = 2,
   'адмін бачить кроки чернетки уроку');
-select pg_temp.ok(not pg_temp.raises($q$insert into public.lexemes (lemma, normalized, ukrainian_translation, cefr) values ('m2adminword', 'm2adminword', 'адмін', 'A0')$q$),
+select pg_temp.ok(not pg_temp.raises($q$insert into public.lexemes (lemma, normalized, ukrainian_translation, cefr, register, regionality, usage_tags) values ('m2adminword', 'm2adminword', 'адмін', 'A0', 'standard', 'general', '{}')$q$),
   'адмін додає слово');
 select pg_temp.ok(not pg_temp.raises($q$insert into public.modules (level_code, title_ua, order_index) values ('ZZ', 'M2 test module', 1)$q$),
   'адмін створює модуль (раніше не працювало)');
