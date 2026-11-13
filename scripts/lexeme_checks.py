@@ -8,11 +8,13 @@
   python3 -B scripts/lexeme_checks.py <batch.json>   # перевірити JSON-масив рядків lexemes
   python3 -B scripts/lexeme_checks.py --selftest     # самоперевірка правил
 
-Рядок (dict): lemma, normalized, ukrainian_translation, part_of_speech, cefr, vocabulary_type, forms, examples.
+Рядок (dict): lemma, normalized, ukrainian_translation, part_of_speech, cefr, vocabulary_type, forms, examples, register.
+Регістр (register) — scripts/lexeme_register.py (визначення — docs/CONTENT_PIPELINE.md → «Регістр лексем»).
 """
 import json
 import re
 import sys
+from pathlib import Path
 
 POS = ('noun', 'verb', 'adjective', 'adverb', 'pronoun', 'preposition', 'conjunction', 'particle',
        'interjection', 'number', 'phrase')
@@ -30,6 +32,7 @@ PLACEHOLDER = re.compile(
 # Українська глоса в дужках у прикладі: «Vidimo se! (Побачимось)» — заборонено (переклад — окреме поле)
 GLOSS = re.compile(r'\([^)]*[Ѐ-ӿ][^)]*\)')
 FOLD = str.maketrans('čćđšž', 'ccdsz')
+HERE = Path(__file__).resolve().parent
 
 
 def normalize(text: str) -> str:
@@ -111,6 +114,14 @@ def check_row(row: dict) -> tuple[list[str], list[str]]:
     if row.get('cefr') not in CEFR:
         e.append(f'cefr ∈ {CEFR}')
 
+    # Регістр (з 2026-11-12): значення — з переліку; якщо слово є в правилах — попередження про очікуваний регістр
+    if str(HERE) not in sys.path:
+        sys.path.insert(0, str(HERE))
+    from lexeme_register import check_register  # noqa: E402 (модуль поруч)
+    re_, rw = check_register(row)
+    e += re_
+    w += rw
+
     if not isinstance(examples, list) or not all(isinstance(x, str) for x in examples):
         e.append('examples — масив рядків')
         examples = []
@@ -158,6 +169,8 @@ def _selftest():
     assert any('без роду' in m for m in check_row(dict(good, forms={}))[0])
     assert any('повтор' in m for m in check_batch([good, good])[0])
     assert any('заглушку' in m for m in check_row(dict(good, examples=['Važno je kutlača u ovoj situaciji.']))[0])
+    assert any('register' in m for m in check_row(dict(good, register='casual'))[0])
+    assert any('informal' in m for m in check_row(dict(good, lemma='bok', normalized='bok', part_of_speech='interjection'))[1])
     assert normalize(' Hitna pomoć ') == 'hitna pomoc' and normalize('događaj') == 'dogadaj'
     assert example_has_lemma('kuća', 'Moja kuća je blizu mora.') is True
     assert example_has_lemma('plakati', 'Dijete plače.') is False  # чергування — лише попередження

@@ -9,6 +9,10 @@
 #    Перша помилка зупиняє все: решта файлів не запускається, журнал фіксує лише успішні.
 # 3. Файл, уже записаний у журнал, не запускається вдруге, навіть якщо його змінили (лише попередження).
 # 4. Тести з аргументів (supabase/tests/*.test.sql, транзакція + ROLLBACK) — кожен має вивести «ALL TESTS PASSED».
+# 5. Наприкінці (і після помилки), якщо запускався хоч один файл, — очищення статистики запитів
+#    (extensions.pg_stat_statements_reset()): довгі тексти контентних пакетів у ній змушували моніторинг Supabase
+#    щохвилини писати тимчасові файли на диск і вичерпали бюджет Disk IO (2026-11-12). Дані й схему не зачіпає;
+#    не вдалося — лише попередження.
 #
 # SQL_ROOT — інша тека supabase/ (для самоперевірки скрипта на локальній базі).
 set -euo pipefail
@@ -26,6 +30,18 @@ say() { echo "$*"; echo "$*" >> "$SUMMARY"; }
 show_log() { echo '```' >> "$SUMMARY"; grep -E "NOTICE|WARNING|ERROR|DETAIL|HINT|CONTEXT" "$LOG" | sed 's/^psql:[^ ]* //' | head -40 | tee -a "$SUMMARY" || true; echo '```' >> "$SUMMARY"; }
 
 say "## Застосування SQL у робочій базі"
+
+# 5. Очищення статистики запитів після запуску файлів (див. шапку). Спрацьовує й тоді, коли файл упав.
+touched=0
+reset_stats() {
+  [ "$touched" -eq 1 ] || return 0
+  if psql_db -c "select extensions.pg_stat_statements_reset()" >/dev/null 2>&1; then
+    say "🧹 Статистику запитів (pg_stat_statements) очищено — щоб моніторинг Supabase не витрачав Disk IO."
+  else
+    say "⚠️ Не вдалося очистити статистику запитів (pg_stat_statements) — на дані це не впливає."
+  fi
+}
+trap reset_stats EXIT
 
 # 1. Журнал і baseline
 psql_db -f "$ROOT/migrations/20261107120000_m20_sql_journal.sql" > "$LOG" 2>&1 || { cat "$LOG"; say "❌ Не вдалося створити журнал ops.sql_journal (адреса бази / доступ?)."; exit 1; }
@@ -56,6 +72,7 @@ for dir in migrations data_fixes; do
     fi
     say ""
     say "### ▶ \`$name\`"
+    touched=1
     if grep -qiE '^[[:space:]]*(begin|commit)[[:space:]]*;' "$path"; then mode=(); else mode=(--single-transaction); fi
     if psql_db "${mode[@]}" -f "$path" > "$LOG" 2>&1; then
       show_log
