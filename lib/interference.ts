@@ -56,6 +56,18 @@ export function isSpoken(category: string): boolean {
   return category === 'pronunciation' || category === 'stress';
 }
 
+/**
+ * Хорватське слово з підказки вимови («kuća — м’якше «ч»…» → «kuća»), щоб його можна було прослухати 🔊:
+ * кирилична підказка — лише наближення. Не підказка вимови або перед « — » кирилиця — порожній рядок.
+ */
+export function spokenSample(e: Pick<TypicalError, 'category' | 'correct_text'>): string {
+  if (!isSpoken(e.category)) return '';
+  const at = e.correct_text.indexOf(' — ');
+  if (at <= 0) return '';
+  const word = e.correct_text.slice(0, at).trim();
+  return word && !/[Ѐ-ӿ]/.test(word) ? word : '';
+}
+
 export function quizQuestion(category: string): string {
   return isSpoken(category) ? 'Як правильно вимовляти?' : 'Яке речення правильне?';
 }

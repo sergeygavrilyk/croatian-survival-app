@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   canPractiseAsSentence, categoryLabel, countByCategory, errorTypeFor, examplesFrom, INTERFERENCE_CATEGORIES,
-  isSpoken, lessonPitfalls, pickQuiz, quizOptions, quizQuestion, shortExplanation, upToLevel,
+  isSpoken, lessonPitfalls, pickQuiz, quizOptions, quizQuestion, shortExplanation, spokenSample, upToLevel,
 } from './interference.ts';
 
 const seq = (...xs: number[]) => {
@@ -23,6 +23,17 @@ test('вимова й наголос — окреме питання і без �
   assert.equal(canPractiseAsSentence({ category: 'pronunciation', correct_text: 'Hrvatska — «Хрватська»' }), false);
   assert.equal(canPractiseAsSentence({ category: 'cases', correct_text: 'Idem u školu.' }), true);
   assert.equal(canPractiseAsSentence({ category: 'cases', correct_text: 'Bobice.' }), false);
+});
+
+test('вимова: хорватське слово з підказки — для кнопки 🔊', () => {
+  assert.equal(spokenSample({ category: 'pronunciation', correct_text: 'kuća — м’якше «ч» (між «ч» і «ть»)' }), 'kuća');
+  assert.equal(spokenSample({ category: 'stress', correct_text: 'Ukrajina — «У́країна»' }), 'Ukrajina');
+  assert.equal(spokenSample({ category: 'pronunciation', correct_text: 'grad — «ґрад» (як «ґанок»)' }), 'grad');
+  // не підказка вимови, без « — » або кирилиця перед « — » — нічого не озвучуємо
+  assert.equal(spokenSample({ category: 'cases', correct_text: 'Idem u školu — sutra.' }), '');
+  assert.equal(spokenSample({ category: 'pronunciation', correct_text: 'Hrvatska' }), '');
+  assert.equal(spokenSample({ category: 'pronunciation', correct_text: '«Хрватська» — Hrvatska' }), '');
+  assert.equal(spokenSample({ category: 'pronunciation', correct_text: ' — «ц»' }), '');
 });
 
 test('тип особистої помилки за категорією', () => {

@@ -2,7 +2,7 @@ import { CircleCheck, CircleX, Lightbulb } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import Hr from '@/components/ui/Hr';
 import AudioButton from '@/components/ui/AudioButton';
-import { categoryIcon, categoryLabel, isSpoken, type TypicalError } from '@/lib/interference';
+import { categoryIcon, categoryLabel, isSpoken, spokenSample, type TypicalError } from '@/lib/interference';
 import { cn } from '@/lib/ui';
 
 /**
@@ -23,6 +23,8 @@ export default function TypicalErrorCard({
   className?: string;
 }) {
   const spoken = isSpoken(error.category);
+  // Кирилична підказка — лише наближення: саме слово можна прослухати (озвучення hr-HR)
+  const sample = spokenSample(error);
   // Для вимови й наголосу «неправильно / правильно» — підказка кирилицею, а не хорватське речення
   const text = (value: string, c: string) => (spoken ? <p className={c}>{value}</p> : <Hr as="p" className={c}>{value}</Hr>);
 
@@ -53,6 +55,7 @@ export default function TypicalErrorCard({
           <span className="sr-only">Правильно:</span>
           {text(error.correct_text, 'min-w-0 flex-1 text-body font-semibold')}
           {!spoken && <AudioButton text={error.correct_text} label={`Прослухати «${error.correct_text}»`} className="-my-2 -mr-2" />}
+          {sample && <AudioButton text={sample} label={`Прослухати «${sample}»`} className="-my-2 -mr-2" />}
         </div>
       </div>
 
