@@ -85,3 +85,140 @@ export function toggleTag(tags: readonly UsageTag[], tag: UsageTag): UsageTag[] 
   else set.add(tag);
   return USAGE_TAGS.filter((t) => set.has(t));
 }
+
+// ---------------------------------------------------------------- позначка категорії (DESIGN_SYSTEM.md §3.4)
+
+/** Чип позначки слова: текст і тон (`warning` — «образа», «грубо»: увага, не помилка). */
+export interface LabelChip {
+  key: string;
+  text: string;
+  tone: 'neutral' | 'warning';
+}
+
+/**
+ * Мітки з рядка бази. Невідомі значення (старі пакети, помилка даних) відкидаємо, а не показуємо сирими:
+ * регістр → `standard`, регіон → `general`, невідомі ознаки — без них.
+ */
+export function readLabels(row: { register?: unknown; regionality?: unknown; usage_tags?: unknown }): LexemeLabels {
+  const tags = Array.isArray(row.usage_tags) ? row.usage_tags : [];
+  return {
+    register: includes(REGISTERS, row.register) ? row.register : 'standard',
+    regionality: includes(REGIONS, row.regionality) ? row.regionality : 'general',
+    usage_tags: USAGE_TAGS.filter((t) => tags.includes(t)),
+  };
+}
+
+/**
+ * Чипи категорії слова: регістр (крім «стандартне»), «регіонально · Далмація» (крім «загальне»), ознаки в порядку переліку.
+ * Звичайне слово — порожній список (нічого не показуємо).
+ */
+export function labelChips(labels: LexemeLabels): LabelChip[] {
+  const chips: LabelChip[] = [];
+  if (labels.register !== 'standard') {
+    chips.push({ key: `register:${labels.register}`, text: REGISTER_LABELS[labels.register], tone: labels.register === 'vulgar' ? 'warning' : 'neutral' });
+  }
+  if (labels.regionality !== 'general') {
+    chips.push({ key: `region:${labels.regionality}`, text: `регіонально · ${REGION_LABELS[labels.regionality]}`, tone: 'neutral' });
+  }
+  for (const tag of labels.usage_tags) {
+    chips.push({ key: `tag:${tag}`, text: USAGE_TAG_LABELS[tag], tone: tag === 'offensive' ? 'warning' : 'neutral' });
+  }
+  return chips;
+}
+
+/** Текст для читача з екрана: «Категорія: розмовне, італізм» (порожньо — звичайне слово). */
+export function labelsAriaText(chips: readonly LabelChip[]): string {
+  return chips.length ? `Категорія: ${chips.map((c) => c.text).join(', ')}` : '';
+}
+
+/** Фільтр «Категорія» у «Словнику» (рішення власника 2026-11-13). Порядок — як на екрані. */
+export const WORD_CATEGORIES = [
+  { id: 'all', label: 'Усі' },
+  { id: 'informal', label: 'Неофіційне' },
+  { id: 'colloquial', label: 'Розмовне' },
+  { id: 'slang', label: 'Сленг' },
+  { id: 'regional', label: 'Регіональне' },
+  { id: 'dialect', label: 'Наріччя' },
+  { id: 'loanword', label: 'Запозичення' },
+  { id: 'idiom', label: 'Ідіоми' },
+  { id: 'offensive', label: 'Образа' },
+] as const;
+
+export type WordCategory = (typeof WORD_CATEGORIES)[number]['id'];
+
+export function isWordCategory(v: unknown): v is WordCategory {
+  return typeof v === 'string' && WORD_CATEGORIES.some((c) => c.id === v);
+}
+
+/** Запозичення — ознаки походження (LEARNING_SPEC.md §18). */
+export const LOANWORD_TAGS: readonly UsageTag[] = ['anglicism', 'italianism', 'germanism', 'turkism'];
+
+/**
+ * Умова запиту до `lexemes` для категорії — у вигляді методів supabase-js (`eq`, `neq`, `overlaps`, `contains`, `or`).
+ * `null` — без умови («Усі»). Сленг — регістр `slang` або ознака молодіжного / інтернет-сленгу.
+ */
+export type CategoryFilter =
+  | { method: 'eq' | 'neq'; column: 'register' | 'regionality'; value: string }
+  | { method: 'overlaps' | 'contains'; column: 'usage_tags'; value: UsageTag[] }
+  | { method: 'or'; value: string };
+
+export function categoryFilter(category: WordCategory): CategoryFilter | null {
+  switch (category) {
+    case 'all':
+      return null;
+    case 'informal':
+      return { method: 'eq', column: 'register', value: 'informal' };
+    case 'colloquial':
+      return { method: 'eq', column: 'register', value: 'colloquial' };
+    case 'slang':
+      return { method: 'or', value: 'register.eq.slang,usage_tags.ov.{youth_slang,internet_slang}' };
+    case 'regional':
+      return { method: 'neq', column: 'regionality', value: 'general' };
+    case 'dialect':
+      return { method: 'overlaps', column: 'usage_tags', value: ['kajkavian', 'chakavian'] };
+    case 'loanword':
+      return { method: 'overlaps', column: 'usage_tags', value: [...LOANWORD_TAGS] };
+    case 'idiom':
+      return { method: 'contains', column: 'usage_tags', value: ['idiom'] };
+    case 'offensive':
+      return { method: 'contains', column: 'usage_tags', value: ['offensive'] };
+  }
+}
+
+/** Чи підходить слово під категорію — та сама умова, що й `categoryFilter` (для тесту й перевірки на клієнті). */
+export function matchesCategory(labels: LexemeLabels, category: WordCategory): boolean {
+  const has = (tags: readonly UsageTag[]) => tags.some((t) => labels.usage_tags.includes(t));
+  switch (category) {
+    case 'all':
+      return true;
+    case 'informal':
+    case 'colloquial':
+      return labels.register === category;
+    case 'slang':
+      return labels.register === 'slang' || has(['youth_slang', 'internet_slang']);
+    case 'regional':
+      return labels.regionality !== 'general';
+    case 'dialect':
+      return has(['kajkavian', 'chakavian']);
+    case 'loanword':
+      return has(LOANWORD_TAGS);
+    case 'idiom':
+      return has(['idiom']);
+    case 'offensive':
+      return has(['offensive']);
+  }
+}
+
+/**
+ * Слова `vulgar` бачить лише той, хто ввімкнув «Показувати контент 18+» (DESIGN_SYSTEM.md §3.4).
+ * Перемикача в профілі ще немає (модуль «18+» — пізніше), тому зараз їх не бачить ніхто. `offensive` — видно всім, з позначкою.
+ */
+export function isVisibleWord(labels: LexemeLabels, adultContent = false): boolean {
+  return adultContent || labels.register !== 'vulgar';
+}
+
+/** Порожній список у категорії: що сказати людині. */
+export function emptyCategoryText(category: WordCategory): string {
+  const name = WORD_CATEGORIES.find((c) => c.id === category)?.label ?? '';
+  return `У категорії «${name}» таких слів поки немає. Спробуйте «Усі» категорії або інший рівень.`;
+}

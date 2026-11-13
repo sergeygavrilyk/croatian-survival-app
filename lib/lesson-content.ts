@@ -4,11 +4,16 @@
  * До 2026-10-21 це жило всередині client-сторінки уроку; копія в app/actions/lesson.ts (getLessonData) — видалена.
  */
 import { examplesFrom, lessonPitfalls, type TypicalError } from './interference.ts';
+import { labelChips, readLabels, type LexemeLabels } from './lexeme-labels.ts';
 
 export interface LessonWord {
   id: string;
   hr_text: string;
   ua_translation: string;
+  /** Мітки живої лексики — лише в незвичайних слів (розмовне, регіональне, італізм…); звичайне слово — без поля */
+  labels?: LexemeLabels;
+  /** Стандартний відповідник (`standard_lexeme_id` → лема), якщо є */
+  standard_lemma?: string;
 }
 
 export interface DialogueLine {
@@ -87,7 +92,17 @@ export interface LessonRows {
   /** Модуль уроку (lessons.unit_id → units.module_id → modules); необов'язковий — збій не ламає урок */
   module?: { order_index: number | null; title_ua: string | null; title_hr?: string | null } | null;
   items: ReadonlyArray<{ item_type: string; item_id: string }>;
-  lexemes: ReadonlyArray<{ id: string; lemma: string; ukrainian_translation: string | null }>;
+  lexemes: ReadonlyArray<{
+    id: string;
+    lemma: string;
+    ukrainian_translation: string | null;
+    register?: unknown;
+    regionality?: unknown;
+    usage_tags?: unknown;
+    standard_lexeme_id?: string | null;
+  }>;
+  /** Леми стандартних відповідників слів уроку (необов'язково: збій запиту — без «стандартно: …») */
+  standardLemmas?: ReadonlyArray<{ id: string; lemma: string }>;
   exercises: ReadonlyArray<LessonExerciseRow>;
   conversations: ReadonlyArray<{ id: string; title_ua: string | null; title_hr: string | null; situation: string | null }>;
   turns: ReadonlyArray<DialogueLine & { conversation_id: string }>;
@@ -146,9 +161,17 @@ export function buildLessonContent(rows: LessonRows): LessonContent {
         : null,
   };
 
+  const standardLemma = new Map((rows.standardLemmas ?? []).map((s) => [s.id, s.lemma]));
   const words: LessonWord[] = inOrder(
     lexemeIds,
-    rows.lexemes.map((l) => ({ id: l.id, hr_text: l.lemma, ua_translation: l.ukrainian_translation ?? '' })),
+    rows.lexemes.map((l) => {
+      const word: LessonWord = { id: l.id, hr_text: l.lemma, ua_translation: l.ukrainian_translation ?? '' };
+      const labels = readLabels(l);
+      if (labelChips(labels).length > 0) word.labels = labels;
+      const standard = l.standard_lexeme_id ? standardLemma.get(l.standard_lexeme_id) : undefined;
+      if (standard) word.standard_lemma = standard;
+      return word;
+    }),
   );
 
   const dialogues: LessonDialogue[] = rows.conversations

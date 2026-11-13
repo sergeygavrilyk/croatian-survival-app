@@ -2,13 +2,15 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { trackEvent } from '@/app/actions/analytics';
+import { isWordCategory } from '@/lib/lexeme-labels';
 import { isUuid, newWordProgress } from '@/lib/word-save';
 
 /**
  * Словник: слово → у повторення (тренажер), як «Зберегти в тренажер» у читанні.
  * Лише опубліковане слово; уже збережене не скидаємо. Права — RLS (лише свої рядки user_progress).
+ * `category` — фільтр «Категорія», з якого додали слово (лише для аналітики; невідоме значення не записуємо).
  */
-export async function saveDictionaryWord(lexemeId: string): Promise<{ ok: true } | { ok: false; error: string }> {
+export async function saveDictionaryWord(lexemeId: string, category?: string): Promise<{ ok: true } | { ok: false; error: string }> {
   if (!isUuid(lexemeId)) return { ok: false, error: 'Слово не знайдено.' };
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -29,6 +31,11 @@ export async function saveDictionaryWord(lexemeId: string): Promise<{ ok: true }
     console.error('saveDictionaryWord:', error.message);
     return { ok: false, error: 'Не вдалося додати слово. Перевірте інтернет.' };
   }
-  await trackEvent('word_saved', { lexeme_id: lexemeId, source: 'dictionary', level: (lexeme.cefr as string) ?? undefined });
+  await trackEvent('word_saved', {
+    lexeme_id: lexemeId,
+    source: 'dictionary',
+    level: (lexeme.cefr as string) ?? undefined,
+    category: isWordCategory(category) ? category : undefined,
+  });
   return { ok: true };
 }

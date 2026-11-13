@@ -50,7 +50,11 @@ async function loadLesson(lessonId: string): Promise<{ content: LessonContent | 
 
     const [lexemesRes, exercisesRes, grammarRes, turnsRes, errorsRes, moduleRes] = await Promise.all([
       lexemeIds.length
-        ? supabase.from('lexemes').select('id, lemma, ukrainian_translation').in('id', lexemeIds).eq('status', 'PUBLISHED')
+        ? supabase
+            .from('lexemes')
+            .select('id, lemma, ukrainian_translation, register, regionality, usage_tags, standard_lexeme_id')
+            .in('id', lexemeIds)
+            .eq('status', 'PUBLISHED')
         : none,
       exerciseIds.length
         ? supabase
@@ -102,10 +106,21 @@ async function loadLesson(lessonId: string): Promise<{ content: LessonContent | 
     const moduleRaw = moduleRes.error ? null : (moduleRes.data as { module?: unknown } | null)?.module;
     const moduleRow = (Array.isArray(moduleRaw) ? moduleRaw[0] : moduleRaw) as LessonRows['module'] | undefined;
 
+    // Стандартні відповідники слів уроку («стандартно: razumjeti», DESIGN_SYSTEM §3.4) — необов'язкові
+    const lexemes = (lexemesRes.data ?? []) as LessonRows['lexemes'];
+    const standardIds = [...new Set(lexemes.map((l) => l.standard_lexeme_id).filter((id): id is string => !!id))];
+    let standardLemmas: LessonRows['standardLemmas'] = [];
+    if (standardIds.length) {
+      const res = await supabase.from('lexemes').select('id, lemma').in('id', standardIds).eq('status', 'PUBLISHED');
+      if (res.error) console.warn('Стандартні відповідники не завантажились:', res.error.message);
+      else standardLemmas = (res.data ?? []) as { id: string; lemma: string }[];
+    }
+
     const content = buildLessonContent({
       lesson: lessonRes.data as LessonRows['lesson'],
       items,
-      lexemes: (lexemesRes.data ?? []) as LessonRows['lexemes'],
+      lexemes,
+      standardLemmas,
       exercises: (exercisesRes.data ?? []) as LessonRows['exercises'],
       conversations,
       turns: (turnsRes.data ?? []) as LessonRows['turns'],
