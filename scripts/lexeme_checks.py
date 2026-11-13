@@ -18,6 +18,9 @@ register, regionality, usage_tags; необов'язково — standard_lemma 
                 anglicism, italianism, germanism, turkism, idiom, kajkavian, chakavian, offensive.
   Мітка без значення (немає поля, null, "") або з невідомим значенням — ПОМИЛКА, не попередження: стандартне слово
   теж позначається явно (standard / general / []).
+  Переклад — лише значення (з 2026-11-13): позначка, що дублює мітки («(регіонально: Далмація; сленг)», «(розм.)»,
+  «стандартно — rajčica»), — ПОМИЛКА; регістр і регіон — у мітках, відповідник — standard_lemma. Позначку одного зі
+  значень багатозначного слова («квадратний метр (розмовно); квадрат») і уточнення змісту («(Загреб)») можна.
 """
 import json
 import re
@@ -43,6 +46,9 @@ PLACEHOLDER = re.compile(
     r'|\btodo\b|\bxxx\b|\.\.\.|базовий термін|переклад слова|приклад речення|osnovni_pojam)', re.I)
 # Українська глоса в дужках у прикладі: «Vidimo se! (Побачимось)» — заборонено (переклад — окреме поле)
 GLOSS = re.compile(r'\([^)]*[Ѐ-ӿ][^)]*\)')
+# Позначки в перекладі, що дублюють мітки (translation_markers)
+MARK_ALWAYS = re.compile(r'регіональн|стандартно|хорватською —|сербськ|сленг|^(загреб|далм|істр)\.$', re.I)
+MARK_REGISTER = re.compile(r'^(розм\.?|розмовн[оеаий]|неформ\.?|неофіційн[оеаий])$', re.I)
 FOLD = str.maketrans('čćđšž', 'ccdsz')
 HERE = Path(__file__).resolve().parent
 
@@ -76,6 +82,23 @@ def check_example(lemma: str, sentence: str, strict_lemma: bool = False) -> list
     if strict_lemma and not example_has_lemma(lemma, sentence):
         errors.append('у прикладі немає слова-леми')
     return errors
+
+
+def translation_markers(ua: str) -> list[str]:
+    """Позначки в дужках, що дублюють мітки register / regionality / standard_lemma (порожньо — немає).
+
+    «(регіонально…)», «(…сленг)», «(…стандартно — X)», «(сербська конструкція; хорватською — X)», «(загреб.)» — завжди; «(розм.)», «(розмовно)» — якщо це позначка
+    всього слова, а не одного зі значень (у перекладі поза дужками немає «;»: «евакуатор (розм.); павук» — можна).
+    """
+    ua = ua or ''
+    groups = re.findall(r'\(([^)]*)\)', ua)
+    several_meanings = ';' in re.sub(r'\([^)]*\)', '', ua)
+    found = []
+    for g in groups:
+        g = g.strip()
+        if MARK_ALWAYS.search(g) or (MARK_REGISTER.match(g) and not several_meanings):
+            found.append(f'({g})')
+    return found
 
 
 def _empty(value) -> bool:
@@ -147,6 +170,8 @@ def check_row(row: dict) -> tuple[list[str], list[str]]:
         w.append('у перекладі латиниця поза дужками — перевірити')
     if PLACEHOLDER.search(ua):
         e.append('переклад-заглушка')
+    for m in translation_markers(ua):
+        e.append(f'позначка в перекладі {m} — у мітки register / regionality (стандартний відповідник — standard_lemma)')
 
     if pos not in POS:
         e.append(f'part_of_speech «{pos}» — дозволено: {", ".join(POS)}')
@@ -244,6 +269,15 @@ def _selftest():
     fjaka = dict(good, lemma='fjaka', normalized='fjaka', ukrainian_translation='млявість, ліньки (від спеки)',
                  examples=['Danas me uhvatila fjaka.'], register='colloquial', regionality='Dalmatia')
     assert check_row(fjaka)[0] == [], check_row(fjaka)[0]
+    # Позначки в перекладі (з 2026-11-13): дублюють мітки — помилка; значення багатозначного слова, уточнення змісту — можна
+    for ua in ('помідор (регіонально: Далмація, діалект; стандартно — rajčica)', 'так, ага (регіонально: Далмація; сленг)',
+               'кілограм (розм.)', 'магазин (розмовно)', 'гарячий обід на роботі (загреб.)', 'аптека (розмовне; стандартно — ljekarna)',
+               'чи розмовляєте ви англійською (сербська конструкція; хорватською — Govorite li engleski?)'):
+        assert translation_markers(ua), ua
+        assert any('позначка в перекладі' in m for m in check_row(dict(fjaka, ukrainian_translation=ua))[0]), ua
+    for ua in ('квадратний метр (розмовно); квадрат', 'евакуатор (розм.); павук', 'Нижнє місто (Загреб)',
+               'кайкавський (діалект)', 'фужі (істрійська паста)', 'млявість, ліньки (від спеки)'):
+        assert translation_markers(ua) == [], ua
     bad = dict(good, examples=['Vidimo se! (Побачимось)'])
     assert any('кирилиця' in m for m in check_row(bad)[0])
     assert any('normalized' in m for m in check_row(dict(good, normalized='kutlača'))[0])

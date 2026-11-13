@@ -27,19 +27,23 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.lexemes
     and ukrainian_translation ~ '[Ѐ-ӿ]' and jsonb_array_length(examples) = 1 and forms ? 'gender'$q$) = 8,
   '8 колишніх заглушок: переклад, приклад, рід, normalized без діакритики');
 -- 2026-11-12 (рішення власника за аудитом A2, питання 5): apoteka, kompjuter, «da li govorite engleski» — DEPRECATED
--- (є стандартні ljekarna, računalo, govorite li engleski; пакет 20261112_vocab_a2_fix); решта 5 — опубліковані з позначкою «регіонально».
+-- (є стандартні ljekarna, računalo, govorite li engleski; пакет 20261112_vocab_a2_fix); решта 5 — опубліковані, регіональні.
+-- 2026-11-13 (рішення власника «Ок, замінюй»): позначка з перекладу переїхала в мітки (register ≠ standard) і зв'язок
+-- standard_lexeme_id (пакет 20261113_lexeme_standard_links.sql); пояснення зі стандартним словом лишилось.
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lexemes
   where lower(lemma) in ('pomidor', 'kapula', 'šugaman', 'ae', 'onak')
     and status = 'PUBLISHED' and cefr = 'A2' and register is not null and ukrainian_explanation is not null
-    and ukrainian_translation ~ '(діалект|розмовне|сербська|сленг)'$q$) = 5
+    and register <> 'standard'$q$) = 5
   and pg_temp.n($q$select 1 from public.lexemes
   where lower(lemma) in ('apoteka', 'kompjuter', 'da li govorite engleski')
     and status = 'DEPRECATED' and cefr = 'A2' and register is not null and ukrainian_explanation is not null
-    and ukrainian_translation ~ '(діалект|розмовне|сербська|сленг)'$q$) = 3,
-  '8 діалектних / розмовних / сербських слів: позначка в перекладі, register, пояснення, рівень A2 (не A0); 3 з них — DEPRECATED з 2026-11-12');
-select pg_temp.ok(pg_temp.n($q$select 1 from public.lexemes where lower(lemma) in ('pomidor', 'kapula', 'šugaman', 'apoteka', 'kompjuter')
-  and ukrainian_translation !~ '(rajčica|luk|ručnik|ljekarna|računalo)'$q$) = 0,
-  'у перекладі названо стандартне хорватське слово (rajčica, luk, ručnik, ljekarna, računalo)');
+    and register <> 'standard'$q$) = 3,
+  '8 діалектних / розмовних / сербських слів: нестандартний register, пояснення, рівень A2 (не A0); 3 з них — DEPRECATED з 2026-11-12');
+select pg_temp.ok(pg_temp.n($q$select 1 from public.lexemes l left join public.lexemes s on s.id = l.standard_lexeme_id
+  where lower(l.lemma) in ('pomidor', 'kapula', 'šugaman', 'apoteka', 'kompjuter')
+    and s.lemma is distinct from (case lower(l.lemma) when 'pomidor' then 'rajčica' when 'kapula' then 'luk'
+                                  when 'šugaman' then 'ručnik' when 'apoteka' then 'ljekarna' else 'računalo' end)$q$) = 0,
+  'стандартне хорватське слово (rajčica, luk, ručnik, ljekarna, računalo) — зв''язок standard_lexeme_id');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lexemes where lemma = 'Onak'$q$) = 0
   and pg_temp.n($q$select 1 from public.lexemes where lemma = 'onak' and regionality = 'Zagreb'$q$) = 1, '«Onak» → «onak» (лема з малої), Загреб');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.content_versions

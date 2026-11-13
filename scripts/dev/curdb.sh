@@ -164,4 +164,6 @@ run $A/migrations/20261113120000_m25_lexeme_labels_lock.sql
 run $A/data_fixes/20261113_ucitelj_lesson.sql
 run $A/data_fixes/20261113_interference_v2.sql
 run $A/data_fixes/20261113_ucitelj_explanation_fix.sql
+# стандартні відповідники (standard_lexeme_id) і переклади без позначок, 2026-11-13 — після M25
+run $A/data_fixes/20261113_lexeme_standard_links.sql
 echo "Готово. Тести: for t in supabase/tests/*.sql; do psql -h /tmp -p $P -U postgres -q -v ON_ERROR_STOP=1 -f \$t | tail -1; done"

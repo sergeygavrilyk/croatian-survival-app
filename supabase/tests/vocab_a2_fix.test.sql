@@ -27,9 +27,13 @@ select pg_temp.ok((select count(*) from public.lexemes where lower(lemma) in ('a
   'dijaloz -> dijalog', 'podaci', 'usluge', 'družiti', 'navići', 'smijeti', 'posati') and status = 'PUBLISHED') = 0, '11 дублікатів — не опубліковані');
 select pg_temp.ok(pg_temp.pub('ljekarna') and pg_temp.pub('računalo') and pg_temp.pub('sustav') and pg_temp.pub('usluga')
   and pg_temp.pub('družiti se') and pg_temp.pub('smjeti'), 'стандартні слова лишаються опублікованими');
+-- 2026-11-13 (рішення власника «Ок, замінюй»): позначка «регіонально» й «стандартно — rajčica» переїхали з перекладу
+-- в мітки (register, regionality) і зв'язок standard_lexeme_id (пакет 20261113_lexeme_standard_links.sql)
 select pg_temp.ok((select count(*) from public.lexemes where lower(lemma) in ('pomidor', 'kapula', 'šugaman', 'ae', 'onak')
-  and status = 'PUBLISHED' and ukrainian_translation like '%регіонально%') = 5, 'pomidor, kapula, šugaman, ae, onak — «регіонально»');
-select pg_temp.ok((select ukrainian_translation from public.lexemes where lemma = 'pomidor') like '%стандартно — rajčica%', 'pomidor: стандартно — rajčica');
+  and status = 'PUBLISHED' and register in ('colloquial', 'slang') and regionality <> 'general') = 5,
+  'pomidor, kapula, šugaman, ae, onak — розмовні / сленг, регіональні (мітки)');
+select pg_temp.ok((select s.lemma from public.lexemes l join public.lexemes s on s.id = l.standard_lexeme_id
+                    where l.lemma = 'pomidor') = 'rajčica', 'pomidor: стандартно — rajčica (standard_lexeme_id)');
 select pg_temp.ok(not exists (select 1 from public.lexemes x where x.status = 'DEPRECATED' and lower(x.lemma) in ('apoteka', 'kompjuter', 'sistem')
   and not exists (select 1 from public.content_versions v where v.entity_type = 'lexeme' and v.entity_id = x.id)), 'стара версія — у content_versions');
 select pg_temp.ok(not exists (select 1 from public.lexemes x where x.lemma = 'dojam'
