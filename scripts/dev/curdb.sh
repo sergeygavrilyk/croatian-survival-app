@@ -156,4 +156,6 @@ for f in $A/data_fixes/20261112_curriculum_a2_v2_*.sql; do run "$f"; done
 run $A/data_fixes/20261112_lexeme_register.sql
 # M24 (маркування слів, 2026-11-13) — після всіх пакетів слів: старі пакети пишуть register regional / non_standard
 run $A/migrations/20261113100000_m24_lexeme_labels.sql
+# розмітка всіх слів і речень (крок 2 плану маркування), 2026-11-13 — після M24
+run $A/data_fixes/20261113_lexeme_labels.sql
 echo "Готово. Тести: for t in supabase/tests/*.sql; do psql -h /tmp -p $P -U postgres -q -v ON_ERROR_STOP=1 -f \$t | tail -1; done"
