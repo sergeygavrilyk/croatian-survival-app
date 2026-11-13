@@ -3,6 +3,7 @@
 Генератор SQL: типові помилки українців, пакет v2 · 2026-11-13.
 
   python3 -B scripts/gen_interference_v2_20261113.py           →  supabase/data_fixes/20261113_interference_v2.sql
+                                                                (файл уже є — лише перевірка; перезаписати до мержу: --force)
   python3 -B scripts/gen_interference_v2_20261113.py --review  →  таблиця нових записів (для звіту)
 
 Дані: scripts/interference_data_v2.py (нові записи + виправлення v1). v1 (interference_data.py) не змінюється.
@@ -215,5 +216,11 @@ if __name__ == '__main__':
         print(review_table())
         sys.exit(0)
     sql = build()
+    if OUT.exists() and '--force' not in sys.argv:
+        # Пакет у PR / уже запущений: файл не перезаписуємо (журнал ops.sql_journal запускає файл один раз).
+        # Зміни після запуску — новим пакетом за різницею; свідомо перезаписати до мержу — --force.
+        same = OUT.read_text(encoding='utf-8') == sql
+        print(f'{OUT.relative_to(ROOT)} уже є — не перезаписую (дані {"збігаються" if same else "ВІДРІЗНЯЮТЬСЯ — потрібен новий пакет або --force до мержу"}).')
+        sys.exit(0 if same else 1)
     OUT.write_text(sql, encoding='utf-8')
     print(f'OK → {OUT.relative_to(ROOT)}: +{len(D.ERRORS)} помилок, виправлень {len(D.FIXES)}, {len(sql.encode()) // 1024} КБ')
