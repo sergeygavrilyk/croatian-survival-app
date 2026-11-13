@@ -19,7 +19,7 @@ sleep 1
 run() { psql -h /tmp -p $P -U postgres -q -v ON_ERROR_STOP=1 -f "$1" >/dev/null || { echo "FAILED: $1"; exit 1; }; echo "applied $(basename "$1")"; }
 run $S/supabase_stub.sql
 for f in $A/migrations/*.sql; do
-  case "$f" in *m10_*|*m11_*|*m12_*|*m13_*|*m24_*) continue;; esac
+  case "$f" in *m10_*|*m11_*|*m12_*|*m13_*|*m24_*|*m25_*) continue;; esac
   run "$f"
 done
 run $S/seed_curr.sql
@@ -158,4 +158,6 @@ run $A/data_fixes/20261112_lexeme_register.sql
 run $A/migrations/20261113100000_m24_lexeme_labels.sql
 # розмітка всіх слів і речень (крок 2 плану маркування), 2026-11-13 — після M24
 run $A/data_fixes/20261113_lexeme_labels.sql
+# M25 «замок» (мітки обов'язкові) — після пакета розмітки 20261113_lexeme_labels.sql
+run $A/migrations/20261113120000_m25_lexeme_labels_lock.sql
 echo "Готово. Тести: for t in supabase/tests/*.sql; do psql -h /tmp -p $P -U postgres -q -v ON_ERROR_STOP=1 -f \$t | tail -1; done"
