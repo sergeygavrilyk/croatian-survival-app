@@ -7,7 +7,7 @@
 project: Croatia survival
 release: pre-MVP (з 2026-11-07 — робота через PR: Claude готує гілку й PR, власник мерджить; SQL — «Apply SQL» після Approve)
 supabase_project: "New app for learning" (ref mhdgozragkkogvxpjksp, eu-west-2)
-active_work: 2026-11-12 — регістр наявних слів (informal / colloquial / slang) — PR, SQL після Approve; B1 — аудит і програма v1 (PR #21); A2 v2 у базі (PR #19, #20)
+active_work: 2026-11-13 — регістр наявних слів (informal / colloquial / slang) — PR #22, SQL після Approve; B1 — аудит і програма v1 (PR #21); Disk IO: «Apply SQL» очищає статистику запитів після запуску; A2 v2 і мовна перевірка — у робочій базі (PR #19, #20, SQL 2026-11-12); далі — письмо й переказ A0 / A1 партіями, перевірки A0 / A1 за новою схемою
 completed_slices: [VS-001, VS-002, VS-003, VS-004]
 content:                      # перевірено в робочій базі 2026-10-20; уроки, модулі й граматика — 2026-10-27
   lexemes: {published: 6192}   # робоча база 2026-11-12, після A2 v2 (+1 502 нових слова A2)
@@ -19,7 +19,7 @@ content:                      # перевірено в робочій базі 
   assessments: {placement: 1, A0: 12, A1: 15, A2: 16}   # A2 — нова схема: модуль 2 на урок (12–20), середина 30, фінал 48 (258)
   songs: 7                    # «Ситуації» → «Пісні», статичний каталог lib/songs.ts
 tests: {unit: 283, sql_files: 45, failing: 0}   # npm test; supabase/tests/*.test.sql — усі «ALL TESTS PASSED» (локально 2026-11-12)
-last_updated: 2026-11-12 (регістр слів; історія — docs/HISTORY.md)
+last_updated: 2026-11-13 (регістр слів — PR #22; Disk IO — очищення pg_stat_statements в «Apply SQL»; історія — docs/HISTORY.md)
 ```
 
 ## Чинні рішення власника (коротко)
@@ -79,7 +79,8 @@ last_updated: 2026-11-12 (регістр слів; історія — docs/HISTO
   - типові помилки: вимова — підказки кирилицею; мало «артиклів» і «виду дієслова»;
   - регістр слів: 8 сумнівних (*pauk, kvadrat, dućan…*) — носію (`content/reviews/2026-11-12_lexeme_register.md`); `regional` у *pomidor, kapula, šugaman* — пакет M24.
 - **Озвучення** — неофіційний Google Translate TTS (паузи в довгих текстах); з 2026-11-11 — лише після входу, ≤ 300 символів, ≤ 300 запитів на добу на користувача (M22).
-- **Безпека:** захист від злитих паролів — лише тариф Pro (прийнятий ризик).
+- **База** (Advisor, 2026-11-13, не терміново): RLS → `(select auth.uid())` (14), дублі політик адмін/користувач, 24 FK без індексу.
+- **Безпека:** захист від злитих паролів — лише тариф Pro (прийнятий ризик; мін. довжина пароля ≥ 10).
 - **Залежності (2026-11-11):** next 16.4.6; без виправлення лишились `deepmerge`, `serialize-javascript` (збірка next-pwa) і `minimatch` (ESLint) — `npm audit` раз на місяць.
 
 ## Рекомендовані наступні 3 задачі
