@@ -8,6 +8,8 @@
 
 AI must:
 
+0\. Load the project skills for the task type before the first change — table «Skills — завантажити ДО першої зміни» in `CLAUDE.md` — and name them in the first message to the owner; before editing an existing SQL file, check that its PR is not merged and the file is not in `ops.sql_journal` (owner decision 2026-11-13).
+
 1\. Read relevant specifications.
 
 2\. Inspect existing code.
