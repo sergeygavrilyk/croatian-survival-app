@@ -304,3 +304,18 @@ async function waitForServiceWorker(page: Page) {
     return Boolean(reg.active);
   });
 }
+
+test('ARCH-03: рівні з опублікованими перевірками видно в «Перевірках» і на «Уроках» (A2)', async ({ page }) => {
+  // Рівні беруться з бази, а не з переліку в коді: опубліковані перевірки A2 мають бути видні без правки коду
+  await page.goto('/lessons/tests?level=A2');
+  await expect(page.getByRole('heading', { level: 1, name: 'Перевірки рівня' })).toBeVisible();
+  const levels = page.getByRole('navigation', { name: 'Рівень' });
+  for (const l of ['A0', 'A1', 'A2']) await expect(levels.getByRole('link', { name: l, exact: true })).toBeVisible();
+  await expect(levels.getByRole('link', { name: 'A2', exact: true })).toHaveAttribute('aria-current', 'page');
+  await expect(page.getByText('Фінальна перевірка рівня A2')).toBeVisible();
+
+  await page.goto('/lessons?level=A2');
+  await expect(page.getByRole('link', { name: /Перевірки рівня A2/ })).toHaveAttribute('href', '/lessons/tests?level=A2');
+  await expect(page.locator('a[href="/assessment/a2-m01"]')).toBeVisible();
+  await expect(page.locator('a[href="/assessment/a2-final"]')).toBeVisible();
+});

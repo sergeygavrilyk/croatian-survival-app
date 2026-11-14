@@ -14,7 +14,7 @@ import AiPanel from '@/components/ui/AiPanel';
 import ProgressBar from '@/components/ui/ProgressBar';
 import SessionDone from '@/components/ui/SessionDone';
 import StatTile from '@/components/ui/StatTile';
-import { levelStyle } from '@/lib/levels';
+import { isLevelAtMost, levelStyle } from '@/lib/levels';
 import { roleplayCheer, roleplayTiles } from '@/lib/celebration';
 import { browserSpeech, micHelpHere } from '@/utils/speech-recognition';
 import { speakCroatian } from '@/utils/speech';
@@ -65,7 +65,7 @@ export default function RoleplayChat({
   const [userTurns, setUserTurns] = useState(0);
   const [finished, setFinished] = useState(false);
   const [autoSpeak, setAutoSpeak] = useState(true);
-  const [showTranslations, setShowTranslations] = useState(level === 'A0' || level === 'A1');
+  const [showTranslations, setShowTranslations] = useState(isLevelAtMost(level, 'A1'));
   const [showPhrases, setShowPhrases] = useState(false);
   const [confirmExit, setConfirmExit] = useState(false);
   const [result, setResult] = useState<{ assessment: RoleplayAssessment | null; goalReached: boolean; errorsSaved: number } | null>(null);

@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { BookOpen, Check, ChevronDown, ChevronRight, ClipboardCheck, Dumbbell, Play, Puzzle, Sparkles } from 'lucide-react';
-import { ASSESSED_LEVELS, assessmentSlug } from '@/lib/assessment';
+import { assessmentSlug, type LevelTestLinks } from '@/lib/assessment';
 import { lessonsHref } from '@/lib/curriculum';
 import { grammarLevelHref, grammarReviewHref } from '@/lib/grammar';
 import { LEVEL_CODES, assessmentIcon, levelStyle, moduleIcon } from '@/lib/levels';
@@ -53,6 +53,7 @@ export default function LessonsView({
   unitsByModule,
   lessonsByUnit,
   completedIds: completed,
+  tests,
   failed,
 }: {
   level: string;
@@ -60,6 +61,8 @@ export default function LessonsView({
   unitsByModule: Record<string, CurriculumUnit[]>;
   lessonsByUnit: Record<string, CurriculumLesson[]>;
   completedIds: string[];
+  /** Опубліковані перевірки рівня (з бази) */
+  tests: LevelTestLinks;
   failed: boolean;
 }) {
   const router = useRouter();
@@ -68,7 +71,7 @@ export default function LessonsView({
   const [expandedModuleId, setExpandedModuleId] = useState<string | null>(modules[0]?.id ?? null);
   const completedIds = new Set(completed);
 
-  const assessed = (ASSESSED_LEVELS as readonly string[]).includes(activeLevel);
+  const assessed = tests.any;
   const lv = levelStyle(activeLevel);
 
   return (
@@ -284,7 +287,7 @@ export default function LessonsView({
                         </div>
                       )}
 
-                      {(ASSESSED_LEVELS as readonly string[]).includes(mod.level_code) && moduleUnits.length > 0 && (
+                      {tests.moduleIds.includes(mod.id) && moduleUnits.length > 0 && (
                         <Link
                           href={`/assessment/${assessmentSlug(mod.level_code, 'module', mod.order_index)}`}
                           className={cn(
@@ -327,7 +330,7 @@ export default function LessonsView({
               </span>
               <ChevronRight className={cn('size-5 shrink-0', lv.ink)} aria-hidden="true" />
             </Link>
-            {assessed && (
+            {tests.final && (
               <Link
                 href={`/assessment/${assessmentSlug(activeLevel, 'final')}`}
                 className="flex min-h-16 items-center gap-3 rounded-card border border-line bg-surface p-4 shadow-sm transition-colors duration-150 hover:bg-surface-muted"

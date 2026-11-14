@@ -12,7 +12,7 @@ import LevelBadge from '@/components/ui/LevelBadge';
 import Confetti from '@/components/ui/Confetti';
 import MascotPicker from '@/components/MascotPicker';
 import { storeMascot, type MascotKind } from '@/lib/mascot';
-import { levelStyle } from '@/lib/levels';
+import { LEVEL_CODES, levelStyle } from '@/lib/levels';
 import { track } from '@/lib/analytics-client';
 import { DAILY_GOALS, LEARNING_GOALS, SELF_LEVELS } from '@/lib/onboarding';
 import type { Confidence, LevelScore, PlacementAnswer } from '@/lib/placement';
@@ -27,7 +27,6 @@ import {
 
 type Step = 'goals' | 'daily' | 'level' | 'test-intro' | 'test' | 'result';
 const MAIN_STEPS: Step[] = ['goals', 'daily', 'level'];
-const START_LEVELS = ['A0', 'A1', 'A2', 'B1', 'B2'] as const;
 
 const CONFIDENCE_TEXT: Record<Confidence, string> = {
   high: 'Оцінка досить надійна.',
@@ -518,7 +517,7 @@ function PlacementResultView({
         <h3 className="font-heading text-h3">З чого почнемо?</h3>
         <p className="mt-1 text-body text-ink-muted">Рекомендуємо {outcome.recommendedStart}. Можна обрати інший рівень.</p>
         <div className="mt-3 grid grid-cols-5 gap-2" role="radiogroup" aria-label="Рівень, з якого почати">
-          {START_LEVELS.map((l) => (
+          {LEVEL_CODES.map((l) => (
             <button
               key={l}
               type="button"

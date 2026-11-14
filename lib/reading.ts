@@ -9,6 +9,7 @@
  */
 
 import { labelChips, readLabels, type LexemeLabels } from './lexeme-labels.ts';
+import { isLevelCode, nearestLowerLevel, type LevelCode } from './levels.ts';
 
 export const TEXT_TYPES = [
   'message', 'chat', 'email', 'notice', 'ad', 'menu', 'instruction', 'form', 'story', 'article', 'news', 'dialogue', 'sign',
@@ -31,25 +32,18 @@ export const TEXT_TYPE_LABEL: Record<TextType, string> = {
   sign: 'Вивіски',
 };
 
-/** Рівні, для яких є тексти (§6, §55): A0 — вивіски, A1 — мікротексти, A2 — короткі історії, листи, новини. */
-export const READING_LEVELS = ['A0', 'A1', 'A2'] as const;
-export type ReadingLevel = (typeof READING_LEVELS)[number];
-
-export function isReadingLevel(v: unknown): v is ReadingLevel {
-  return typeof v === 'string' && (READING_LEVELS as readonly string[]).includes(v);
-}
+/** Рівень текстів (§6, §55): A0 — вивіски, A1 — мікротексти, A2 — короткі історії, листи, новини; далі — B1, B2. */
+export type ReadingLevel = LevelCode;
 
 /**
- * Який рівень показати: з адреси (?level=A2), інакше — за рівнем користувача (B1 і B2 → A2, найвищий наявний),
- * інакше A1. available — рівні, для яких є опубліковані тексти: якщо вибраного немає, беремо найближчий нижчий / перший.
+ * Який рівень показати: з адреси (?level=A2), інакше — рівень користувача, інакше A1.
+ * available — рівні з опублікованими текстами (levelsPresent() за `cefr` з бази; ARCH-03 — без зашитого списку):
+ * якщо вибраного немає, беремо найближчий нижчий (B1 без текстів B1 → A2), інакше перший наявний.
  */
-export function pickReadingLevel(requested: unknown, currentLevel: unknown, available: readonly ReadingLevel[] = READING_LEVELS): ReadingLevel {
-  const fromProfile: ReadingLevel | null =
-    currentLevel === 'A0' || currentLevel === 'A1' ? currentLevel : currentLevel === 'A2' || currentLevel === 'B1' || currentLevel === 'B2' ? 'A2' : null;
-  const wanted: ReadingLevel = isReadingLevel(requested) ? requested : fromProfile ?? 'A1';
+export function pickReadingLevel(requested: unknown, currentLevel: unknown, available: readonly ReadingLevel[]): ReadingLevel {
+  const wanted: ReadingLevel = isLevelCode(requested) ? requested : isLevelCode(currentLevel) ? currentLevel : 'A1';
   if (available.length === 0 || available.includes(wanted)) return wanted;
-  const lower = [...available].reverse().find((l) => READING_LEVELS.indexOf(l) < READING_LEVELS.indexOf(wanted));
-  return lower ?? available[0];
+  return nearestLowerLevel(wanted, available) ?? available[0];
 }
 
 // Назви модулів A2 v2 (програма 2026-11-12) — запасний варіант, якщо назву модуля не завантажено

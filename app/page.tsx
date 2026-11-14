@@ -4,11 +4,10 @@ import { DEFAULT_TIME_ZONE, LEARNING_EVENTS, activityWeek, learningStreak } from
 import { displayName, greetingFor, nextLesson, suggestAssessment, todayLevel, type TodayAssessment, type TodayLesson } from '@/lib/today';
 import { midLastModule } from '@/lib/assessment';
 import { parseMascot } from '@/lib/mascot';
+import { levelsPresent } from '@/lib/levels';
 import TodayView from '@/components/TodayView';
 
 export const metadata = { title: 'Сьогодні · Croatian Survival App' };
-
-const LESSON_LEVELS = ['A0', 'A1'];
 
 type ModuleRef = { id: string; order_index: number | null; title_ua: string | null };
 type UnitRef = { order_index: number | null; modules: ModuleRef | ModuleRef[] | null };
@@ -31,17 +30,18 @@ export default async function TodayPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect('/login');
 
-  const { data: profile, error: profileError } = await supabase
-    .from('profiles')
-    .select('onboarding_completed, current_level, timezone')
-    .eq('id', user.id)
-    .maybeSingle();
+  // Профіль і рівні з уроками — паралельно. Рівні — з опублікованих модулів, а не з переліку в коді (ARCH-03)
+  const [{ data: profile, error: profileError }, levelsRes] = await Promise.all([
+    supabase.from('profiles').select('onboarding_completed, current_level, timezone').eq('id', user.id).maybeSingle(),
+    supabase.from('modules').select('level_code').eq('status', 'PUBLISHED').limit(500),
+  ]);
   // Новий користувач → онбординг (M7). Якщо полів ще немає в БД — не заважаємо.
   if (!profileError && profile && profile.onboarding_completed === false) redirect('/onboarding');
 
   const now = new Date();
   const timeZone = (!profileError && profile?.timezone) || DEFAULT_TIME_ZONE;
-  const level = todayLevel(!profileError ? profile?.current_level : null, LESSON_LEVELS);
+  const lessonLevels = levelsPresent(((levelsRes.data ?? []) as Array<{ level_code: string | null }>).map((m) => m.level_code));
+  const level = todayLevel(!profileError ? profile?.current_level : null, lessonLevels);
   const since = new Date(now.getTime() - 120 * 24 * 60 * 60 * 1000).toISOString();
 
   const [dueRes, lessonsRes, doneRes, eventsRes, reviewsRes, mascotRes, testsRes, attemptsRes] = await Promise.all([

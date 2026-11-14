@@ -2,9 +2,9 @@
  * Рольова гра з AI (VS-004, §50–52, §87): сценарії, правила під рівень, інструкції для AI
  * і перевірка його відповідей. Чиста логіка — без SDK і БД (тестується в lib/roleplay.test.ts).
  */
-import { CEFR_ORDER } from './situations.ts';
+import { LEVEL_CODES } from './levels.ts';
 
-export type Cefr = (typeof CEFR_ORDER)[number];
+export type Cefr = (typeof LEVEL_CODES)[number];
 
 export interface RoleplayScenario {
   situation: string;
@@ -79,7 +79,7 @@ export interface RoleplayAssessment {
 }
 
 export function isCefr(level: unknown): level is Cefr {
-  return typeof level === 'string' && (CEFR_ORDER as readonly string[]).includes(level);
+  return typeof level === 'string' && (LEVEL_CODES as readonly string[]).includes(level);
 }
 
 /** Текст користувача: обрізаний, без керівних символів. */

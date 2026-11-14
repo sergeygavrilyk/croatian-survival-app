@@ -4,8 +4,59 @@
  * Класи записані повністю (не склеюються з частин), щоб Tailwind їх знайшов.
  */
 
+/**
+ * ЄДИНИЙ список рівнів застосунку, у порядку (ARCH-03, 2026-11-14). Інших списків рівнів у коді немає:
+ * які рівні показувати («Сьогодні», «Перевірки», «Читання», кнопки модулів) — вирішує опублікований контент у базі
+ * (`levelsPresent()`), а не перелік у файлі. Тест `lib/levels-source.test.ts` падає, якщо десь з'явиться новий перелік.
+ */
 export const LEVEL_CODES = ['A0', 'A1', 'A2', 'B1', 'B2'] as const;
 export type LevelCode = (typeof LEVEL_CODES)[number];
+
+/** Чи це відомий рівень (A0–B2, точний запис). */
+export function isLevelCode(v: unknown): v is LevelCode {
+  return typeof v === 'string' && (LEVEL_CODES as readonly string[]).includes(v);
+}
+
+/** Місце рівня в порядку (A0 = 0); невідомий — -1. */
+export function levelRank(level: string | null | undefined): number {
+  return (LEVEL_CODES as readonly string[]).indexOf(level ?? '');
+}
+
+/** Наступний рівень (A1 → A2); для останнього чи невідомого — null. */
+export function nextLevelCode(level: string | null | undefined): LevelCode | null {
+  const i = levelRank(level);
+  return i >= 0 && i < LEVEL_CODES.length - 1 ? LEVEL_CODES[i + 1] : null;
+}
+
+/** Попередній рівень (A2 → A1); для першого чи невідомого — null. */
+export function previousLevelCode(level: string | null | undefined): LevelCode | null {
+  const i = levelRank(level);
+  return i > 0 ? LEVEL_CODES[i - 1] : null;
+}
+
+/** Чи рівень відомий і не вищий за `max` (A0 і A1 при max = 'A1'); невідомий — false. */
+export function isLevelAtMost(level: string | null | undefined, max: LevelCode): boolean {
+  const i = levelRank(level);
+  return i >= 0 && i <= levelRank(max);
+}
+
+/**
+ * Рівні, що трапляються в рядках з бази (напр. `level_code` опублікованих модулів чи `cefr` перевірок), —
+ * без повторів, у порядку LEVEL_CODES; невідомі значення й null пропускаються.
+ */
+export function levelsPresent(values: Iterable<string | null | undefined>): LevelCode[] {
+  const seen = new Set<string>();
+  for (const v of values) if (v) seen.add(v);
+  return LEVEL_CODES.filter((l) => seen.has(l));
+}
+
+/** Найближчий наявний рівень, нижчий за `level` (B1 при наявних A0–A2 → A2); немає — null. */
+export function nearestLowerLevel(level: string | null | undefined, available: ReadonlyArray<string>): LevelCode | null {
+  const max = levelRank(level);
+  if (max < 0) return null;
+  for (let i = max - 1; i >= 0; i--) if (available.includes(LEVEL_CODES[i])) return LEVEL_CODES[i];
+  return null;
+}
 
 export interface LevelStyle {
   /** Коротка назва рівня українською */

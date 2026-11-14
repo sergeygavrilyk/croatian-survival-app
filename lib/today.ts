@@ -2,6 +2,7 @@
  * Екран «Сьогодні» (docs/DESIGN_SYSTEM.md §7.1: одна головна дія «Продовжити», повторення, «Що сказати?»).
  * Чиста логіка без БД — тестується в today.test.ts.
  */
+import { LEVEL_CODES } from './levels.ts';
 
 export type Greeting = 'Dobro jutro' | 'Dobar dan' | 'Dobra večer';
 
@@ -54,9 +55,12 @@ export function nextLesson(lessons: ReadonlyArray<TodayLesson>, completed: Reado
   return { lesson: ordered.find((l) => !completed.has(l.id)) ?? null, done, total: ordered.length };
 }
 
-/** Рівень для «Продовжити»: рівень з профілю, якщо для нього вже є уроки, інакше A0. */
+/**
+ * Рівень для «Продовжити»: рівень з профілю, якщо для нього вже є уроки, інакше перший рівень (A0).
+ * levelsWithLessons — рівні з опублікованими модулями з бази (levelsPresent(); ARCH-03 — без зашитого списку).
+ */
 export function todayLevel(currentLevel: string | null | undefined, levelsWithLessons: ReadonlyArray<string>): string {
-  return currentLevel && levelsWithLessons.includes(currentLevel) ? currentLevel : 'A0';
+  return currentLevel && levelsWithLessons.includes(currentLevel) ? currentLevel : LEVEL_CODES[0];
 }
 
 /** Ім'я для привітання: з профілю акаунта або частина email до «@». */

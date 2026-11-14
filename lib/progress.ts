@@ -3,7 +3,7 @@
  * Слова: user_progress; активність: srs_reviews; уроки: lesson_progress.
  * «Сьогодні»: activityWeek / learningStreak — усе навчання (analytics_events + srs_reviews).
  */
-import { CEFR_ORDER } from './situations.ts';
+import { LEVEL_CODES } from './levels.ts';
 
 export interface ProgressCard {
   interval_days: number | null;
@@ -96,7 +96,7 @@ export function summarizeProgress(input: ProgressInput): ProgressSummary {
     learned,
     longTerm,
     lessonsCompleted: input.lessonsCompleted,
-    byLevel: (CEFR_ORDER as readonly string[]).filter((l) => levels.has(l)).map((l) => ({ level: l, count: levels.get(l)! })),
+    byLevel: (LEVEL_CODES as readonly string[]).filter((l) => levels.has(l)).map((l) => ({ level: l, count: levels.get(l)! })),
     activity,
     activeDays: activity.filter((d) => d.count > 0).length,
     reviews7: activity.reduce((s, d) => s + d.count, 0),

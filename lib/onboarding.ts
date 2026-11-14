@@ -2,7 +2,7 @@
  * Онбординг: варіанти відповідей і перевірка введених даних (§44–45, §116).
  * Значення збігаються з CHECK-обмеженнями в міграціях M7 і M21 (мета «Навчання», 2026-11-08).
  */
-import { CEFR_ORDER } from './situations.ts';
+import { LEVEL_CODES } from './levels.ts';
 import type { Cefr } from './placement.ts';
 
 /** Мети навчання; emoji — знак, як у відповідних «Ситуаціях» (DESIGN_SYSTEM §3.4) */
@@ -63,7 +63,7 @@ export function validateOnboarding(input: OnboardingInput): { ok: true; data: On
     return { ok: false, error: 'Оберіть щоденну ціль.' };
   }
   const level = input.level;
-  if (typeof level !== 'string' || !(CEFR_ORDER as readonly string[]).includes(level)) {
+  if (typeof level !== 'string' || !(LEVEL_CODES as readonly string[]).includes(level)) {
     return { ok: false, error: 'Невідомий рівень.' };
   }
   const tz = typeof input.timezone === 'string' && TZ_RE.test(input.timezone) ? input.timezone : null;

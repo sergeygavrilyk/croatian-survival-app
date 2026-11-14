@@ -4,8 +4,7 @@
  * Назви й знаки ситуацій живуть лише тут, а не в компонентах.
  */
 import { countUk } from './format.ts';
-
-export const CEFR_ORDER = ['A0', 'A1', 'A2', 'B1', 'B2'] as const;
+import { LEVEL_CODES } from './levels.ts';
 
 export interface SituationInfo {
   code: string;
@@ -79,7 +78,7 @@ export function summarizeSituations(
   return codes.map((code) => {
     const b = acc.get(code)!;
     const levels = [...b.levels].sort(
-      (x, y) => (CEFR_ORDER as readonly string[]).indexOf(x) - (CEFR_ORDER as readonly string[]).indexOf(y),
+      (x, y) => (LEVEL_CODES as readonly string[]).indexOf(x) - (LEVEL_CODES as readonly string[]).indexOf(y),
     );
     return { ...situationInfo(code), phrases: b.phrases, dialogues: b.dialogues, levels };
   });
@@ -105,7 +104,7 @@ export function situationCounts(s: Pick<SituationSummary, 'phrases' | 'dialogues
 
 /** Рівні з рядків (фрази, діалоги) — без повторів, від нижчого до вищого; невідомі й порожні пропускаємо. */
 export function sortedLevels(levels: ReadonlyArray<string | null | undefined>): string[] {
-  const order = CEFR_ORDER as readonly string[];
+  const order = LEVEL_CODES as readonly string[];
   return [...new Set(levels.filter((l): l is string => Boolean(l) && order.includes(l as string)))].sort(
     (a, b) => order.indexOf(a) - order.indexOf(b),
   );

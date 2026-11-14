@@ -10,14 +10,13 @@ import Hr from '@/components/ui/Hr';
 import IconButton from '@/components/ui/IconButton';
 import LevelBadge from '@/components/ui/LevelBadge';
 import Skeleton from '@/components/ui/Skeleton';
-import { levelStyle, moduleIcon } from '@/lib/levels';
+import { LEVEL_CODES, levelStyle, moduleIcon } from '@/lib/levels';
 import {
   DEFAULT_LABELS, REGIONS, REGION_LABELS, REGISTERS, REGISTER_LABELS, USAGE_TAGS, USAGE_TAG_LABELS, toggleTag, validateLabels,
   type LexemeLabels, type Region, type Register,
 } from '@/lib/lexeme-labels';
 import { cn } from '@/lib/ui';
 
-const CEFR_LEVELS = ['A0', 'A1', 'A2', 'B1', 'B2'];
 const PARTS_OF_SPEECH: [string, string][] = [
   ['noun', 'Іменник'], ['verb', 'Дієслово'], ['adjective', 'Прикметник'], ['adverb', 'Прислівник'],
   ['pronoun', 'Займенник'], ['preposition', 'Прийменник'], ['conjunction', 'Сполучник'],
@@ -486,7 +485,7 @@ export default function AdminDashboard() {
                 <div>
                   <label htmlFor="admin-cefr" className={labelClass}>Рівень</label>
                   <select id="admin-cefr" value={newWord.cefr} onChange={(e) => setNewWord({ ...newWord, cefr: e.target.value })} className={fieldClass}>
-                    {CEFR_LEVELS.map((level) => <option key={level} value={level}>{level} · {levelStyle(level).name}</option>)}
+                    {LEVEL_CODES.map((level) => <option key={level} value={level}>{level} · {levelStyle(level).name}</option>)}
                   </select>
                 </div>
               </div>

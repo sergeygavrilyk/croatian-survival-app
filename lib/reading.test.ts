@@ -87,10 +87,13 @@ test('підписи: вид тексту, хвилини, знайомі сло
 });
 
 test('рівень читання: з адреси, з профілю (B1/B2 → A2), інакше A1; лише наявні рівні', () => {
-  assert.equal(pickReadingLevel('A2', 'A0'), 'A2');
-  assert.equal(pickReadingLevel(undefined, 'A0'), 'A0');
-  assert.equal(pickReadingLevel(null, 'B1'), 'A2');
-  assert.equal(pickReadingLevel('x', null), 'A1');
+  // ARCH-03: наявні рівні тепер завжди передаються (з бази); раніше A0–A2 були значенням за замовчуванням
+  const published = ['A0', 'A1', 'A2'] as const;
+  assert.equal(pickReadingLevel('A2', 'A0', published), 'A2');
+  assert.equal(pickReadingLevel(undefined, 'A0', published), 'A0');
+  assert.equal(pickReadingLevel(null, 'B1', published), 'A2');
+  assert.equal(pickReadingLevel('x', null, published), 'A1');
+  assert.equal(pickReadingLevel(null, 'B1', [...published, 'B1']), 'B1'); // тексти B1 опубліковано — видно одразу
   assert.equal(pickReadingLevel('A2', 'A2', ['A0', 'A1']), 'A1'); // A2 ще не опубліковано — найближчий нижчий
   assert.equal(pickReadingLevel('A0', null, ['A1', 'A2']), 'A1');
   assert.equal(pickReadingLevel('A2', null, []), 'A2');
