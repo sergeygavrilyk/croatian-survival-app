@@ -17,6 +17,7 @@ import { authErrorUk } from '@/lib/auth';
 import { cn } from '@/lib/ui';
 import MascotPicker from '@/components/MascotPicker';
 import { setMascot as saveMascot } from '@/app/actions/mascot';
+import { setAdultContent } from '@/app/actions/adult-content';
 import { DEFAULT_MASCOT, MASCOTS, storeMascot, type MascotKind } from '@/lib/mascot';
 
 interface ProfileData {
@@ -44,6 +45,7 @@ export default function ProfileView({
   placement,
   mascot: initialMascot,
   mascotAvailable,
+  adultContent,
 }: {
   email: string;
   /** Ім'я для привітання (displayName: з акаунта або частина email) */
@@ -56,6 +58,8 @@ export default function ProfileView({
   mascot: MascotKind | null;
   /** false — у базі ще немає колонки (міграція M18): вибір не показуємо */
   mascotAvailable: boolean;
+  /** Перемикач «Показувати контент 18+» (M26); null — колонки ще немає, перемикач не показуємо */
+  adultContent: boolean | null;
 }) {
   const router = useRouter();
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
@@ -207,6 +211,9 @@ export default function ProfileView({
         {/* ------------------------------------------------ талісман */}
         {mascotAvailable && <MascotSection initial={initialMascot} />}
 
+        {/* ------------------------------------------------ контент 18+ */}
+        {adultContent !== null && <AdultContentSection initial={adultContent} />}
+
         {/* ------------------------------------------------ акаунт */}
         <section aria-labelledby="account-title" className="flex flex-col gap-3">
           <h2 id="account-title" className="font-heading text-h2">
@@ -316,6 +323,97 @@ function MascotSection({ initial }: { initial: MascotKind | null }) {
           {value === null && `Поки що — ${MASCOTS[DEFAULT_MASCOT].name}.`}
         </p>
         <MascotPicker value={value} onChange={(k) => void choose(k)} disabled={saving} />
+        {note && (
+          <p role={note.ok ? 'status' : 'alert'} className={cn('text-label', note.ok ? 'text-success-ink' : 'text-danger-ink')}>
+            {note.text}
+          </p>
+        )}
+      </Card>
+    </section>
+  );
+}
+
+/**
+ * «Показувати контент 18+» (рішення власника 2026-11-13; DESIGN_SYSTEM.md §10): за замовчуванням вимкнено.
+ * Увімкнути — лише після підтвердження «мені 18+»; вимкнути — одним натиском. Зберігається одразу (profiles.adult_content).
+ */
+function AdultContentSection({ initial }: { initial: boolean }) {
+  const [enabled, setEnabled] = useState(initial);
+  const [confirming, setConfirming] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [note, setNote] = useState<{ ok: boolean; text: string } | null>(null);
+
+  const save = async (next: boolean) => {
+    setSaving(true);
+    setNote(null);
+    const res = await setAdultContent(next);
+    setSaving(false);
+    setConfirming(false);
+    if (res.ok) {
+      setEnabled(next);
+      setNote({ ok: true, text: next ? 'Контент 18+ увімкнено.' : 'Контент 18+ приховано.' });
+    } else {
+      setNote({ ok: false, text: res.error });
+    }
+  };
+
+  const toggle = () => {
+    if (saving) return;
+    if (enabled) void save(false);
+    else setConfirming(true);
+  };
+
+  return (
+    <section aria-labelledby="adult-title" className="flex flex-col gap-3">
+      <h2 id="adult-title" className="font-heading text-h2">
+        Контент 18+
+      </h2>
+      <Card className="flex flex-col gap-3">
+        <button
+          type="button"
+          role="switch"
+          aria-checked={enabled}
+          aria-label="Показувати контент 18+"
+          aria-describedby="adult-hint"
+          disabled={saving}
+          onClick={toggle}
+          className="flex min-h-11 w-full items-center gap-3 text-left disabled:opacity-60"
+        >
+          <span className="flex-1 text-body font-semibold">Показувати контент 18+</span>
+          <span className="text-label text-ink-muted">{enabled ? 'увімкнено' : 'вимкнено'}</span>
+          <span
+            aria-hidden="true"
+            className={cn(
+              'relative inline-flex h-7 w-12 shrink-0 items-center rounded-full transition-colors duration-150',
+              enabled ? 'bg-primary' : 'bg-line-strong',
+            )}
+          >
+            <span
+              className={cn(
+                'absolute size-5 rounded-full bg-surface shadow-sm transition-transform duration-150',
+                enabled ? 'translate-x-6' : 'translate-x-1',
+              )}
+            />
+          </span>
+        </button>
+        <p id="adult-hint" className="text-label font-normal text-ink-muted">
+          Модуль «18+» у кінці B1 і грубі слова (позначка «грубо (18+)»): лайка й образи, щоб розуміти живу мову. За замовчуванням — приховано.
+        </p>
+        {confirming && (
+          <div role="alertdialog" aria-labelledby="adult-confirm" className="flex flex-col gap-3 rounded-card border border-warning-line bg-warning-soft p-4">
+            <p id="adult-confirm" className="text-body text-warning-ink">
+              Підтвердьте, що вам уже виповнилося 18 років.
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              <Button variant="tertiary" size="sm" onClick={() => setConfirming(false)} disabled={saving}>
+                Скасувати
+              </Button>
+              <Button size="sm" loading={saving} onClick={() => void save(true)}>
+                Так, мені 18+
+              </Button>
+            </div>
+          </div>
+        )}
         {note && (
           <p role={note.ok ? 'status' : 'alert'} className={cn('text-label', note.ok ? 'text-success-ink' : 'text-danger-ink')}>
             {note.text}

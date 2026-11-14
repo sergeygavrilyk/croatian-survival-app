@@ -4,6 +4,7 @@ import { LEARNING_EVENTS, summarizeProgress, type ProgressCard } from '@/lib/pro
 import ProfileView from '@/components/ProfileView';
 import { displayName } from '@/lib/today';
 import { parseMascot } from '@/lib/mascot';
+import { adultContentFrom } from '@/lib/lexeme-labels';
 import { daysAgoIso } from '@/lib/clock';
 
 export const metadata = { title: 'Профіль · Croatian Survival App' };
@@ -15,7 +16,7 @@ export default async function ProfilePage() {
   if (!user) redirect('/login');
 
   const since = daysAgoIso(8);
-  const [profileRes, cardsRes, reviewsRes, lessonsRes, attemptRes, eventsRes, mascotRes] = await Promise.all([
+  const [profileRes, cardsRes, reviewsRes, lessonsRes, attemptRes, eventsRes, mascotRes, adultRes] = await Promise.all([
     supabase
       .from('profiles')
       .select('learning_goals, daily_goal_minutes, current_level, timezone')
@@ -45,6 +46,8 @@ export default async function ProfilePage() {
       .limit(5000),
     // Талісман — окремим запитом (міграція M18): якщо колонки ще немає, решта профілю показується
     supabase.from('profiles').select('mascot').eq('id', user.id).maybeSingle(),
+    // Контент 18+ — окремим запитом (міграція M26): без колонки перемикач не показуємо, решта профілю працює
+    supabase.from('profiles').select('adult_content').eq('id', user.id).maybeSingle(),
   ]);
 
   // Якщо міграцію M7 ще не застосовано, полів профілю немає — показуємо прогрес без них
@@ -84,6 +87,7 @@ export default async function ProfilePage() {
       placement={attemptRes.error || !attemptRes.data ? null : attemptRes.data}
       mascot={mascotRes.error ? null : parseMascot((mascotRes.data as { mascot?: string | null } | null)?.mascot)}
       mascotAvailable={!mascotRes.error}
+      adultContent={adultRes.error ? null : adultContentFrom(adultRes.data)}
     />
   );
 }
