@@ -1,6 +1,6 @@
 import { createClient } from '@/utils/supabase/server';
 import GrammarReview from '@/components/grammar/GrammarReview';
-import { ASSESSED_LEVELS, assessmentSlug } from '@/lib/assessment';
+import { assessmentSlug } from '@/lib/assessment';
 import { pickLessonsLevel } from '@/lib/curriculum';
 import { pickTopicExercises, type PracticeExercise, type ReviewTopic } from '@/lib/grammar';
 import { loadLessonExercises, loadLevelGrammar } from '@/lib/grammar-repo-supabase';
@@ -23,9 +23,16 @@ export default async function GrammarReviewPage({ searchParams }: { searchParams
 
   let topics: ReviewTopic[] | null = null;
   let exercisesByTopic: Record<string, PracticeExercise[]> = {};
+  let finalHref: string | null = null;
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const finalSlug = assessmentSlug(level, 'final');
+    const [{ data: { user } }, finalRes] = await Promise.all([
+      supabase.auth.getUser(),
+      // Кнопка фіналу — якщо фінальну перевірку рівня опубліковано (з бази, а не з переліку рівнів; ARCH-03)
+      supabase.from('assessments').select('slug').eq('slug', finalSlug).eq('status', 'PUBLISHED').maybeSingle(),
+    ]);
+    if (finalRes.data) finalHref = `/assessment/${finalSlug}`;
     const data = await loadLevelGrammar(supabase, level, user?.id ?? null);
     topics = data.reviewTopics;
     const lessonIds = [...new Set(Object.values(data.lessonsOfTopic).flat())];
@@ -40,6 +47,5 @@ export default async function GrammarReviewPage({ searchParams }: { searchParams
     console.error('Помилка завантаження підсумку граматики:', err instanceof Error ? err.message : err);
   }
 
-  const finalHref = (ASSESSED_LEVELS as readonly string[]).includes(level) ? `/assessment/${assessmentSlug(level, 'final')}` : null;
   return <GrammarReview key={level} level={level} topics={topics} exercisesByTopic={exercisesByTopic} seed={seed} finalHref={finalHref} />;
 }

@@ -5,6 +5,7 @@
  * Поширені властивості винесені в окремі колонки analytics_events
  * (lesson_id, lexeme_id, level, success, duration_ms…), решта — у jsonb `properties`.
  */
+import { isLevelCode } from './levels.ts';
 
 /** Назви подій з §71 (+ тести рівня §60). Додавати нові — лише разом з оновленням docs/ANALYTICS.md. */
 export const EVENT_NAMES = [
@@ -39,7 +40,6 @@ export const EVENT_NAMES = [
 
 export type EventName = (typeof EVENT_NAMES)[number];
 
-const LEVELS = ['A0', 'A1', 'A2', 'B1', 'B2'] as const;
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const MAX_PROPERTIES_BYTES = 4000;
 
@@ -129,7 +129,7 @@ export function buildAnalyticsRow(name: unknown, props: EventProps = {}, now: Da
   if (!isEventName(name)) return null;
   if (props === null || typeof props !== 'object' || Array.isArray(props)) return null;
 
-  const level = typeof props.level === 'string' && (LEVELS as readonly string[]).includes(props.level) ? props.level : null;
+  const level = isLevelCode(props.level) ? props.level : null;
 
   // Усе, що не винесено в колонки, — у properties (лише прості значення, з обмеженням розміру)
   const extra: Record<string, unknown> = {};

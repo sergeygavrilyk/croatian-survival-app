@@ -2,9 +2,9 @@
  * Тест рівня (§59): оцінка відповідей. Чиста логіка — рахується на сервері.
  * Результат — завжди «оцінка застосунку», не офіційний сертифікат CEFR.
  */
-import { CEFR_ORDER } from './situations.ts';
+import { LEVEL_CODES } from './levels.ts';
 
-export type Cefr = (typeof CEFR_ORDER)[number];
+export type Cefr = (typeof LEVEL_CODES)[number];
 export type Confidence = 'low' | 'medium' | 'high';
 
 export interface PlacementItem {
@@ -39,7 +39,7 @@ export const PASS_RATIO = 0.75;
 /** Найвищий рівень, з якого можна почати (B2 — верхній рівень програми) */
 export const MAX_START: Cefr = 'B2';
 
-const rank = (level: string) => (CEFR_ORDER as readonly string[]).indexOf(level);
+const rank = (level: string) => (LEVEL_CODES as readonly string[]).indexOf(level);
 const isCefr = (level: string): level is Cefr => rank(level) >= 0;
 
 /** Зупиняти тест після рівня, якщо правильно не більше чверті: далі буде лише складніше. */
@@ -81,7 +81,7 @@ export function scorePlacement(items: ReadonlyArray<PlacementItem>, answers: Rea
   const passedAboveFail = firstFailed !== undefined && levels.some((l) => rank(l) > rank(firstFailed) && passed(l));
 
   const estimated: Cefr = highest ?? 'A0';
-  let recommendedStart: Cefr = highest ? CEFR_ORDER[Math.min(rank(highest) + 1, CEFR_ORDER.length - 1)] : 'A0';
+  let recommendedStart: Cefr = highest ? LEVEL_CODES[Math.min(rank(highest) + 1, LEVEL_CODES.length - 1)] : 'A0';
   if (rank(recommendedStart) > rank(MAX_START)) recommendedStart = MAX_START;
 
   let confidence: Confidence;

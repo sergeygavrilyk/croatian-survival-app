@@ -5,6 +5,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { examplesFrom, type TypicalError } from './interference.ts';
 import type { GrammarRule } from './lesson-content.ts';
+import { levelRank } from './levels.ts';
 import { buildLevelGrammar, type LevelGrammar, type PracticeExercise, type ReviewTopic } from './grammar.ts';
 
 type Row = Record<string, unknown>;
@@ -241,7 +242,6 @@ export async function loadGrammarTopic(supabase: SupabaseClient, topicId: string
 
   const done = new Set(completed);
   const one = <T,>(v: unknown): T | null => ((Array.isArray(v) ? v[0] : v) as T | null) ?? null;
-  const levelRank = (l: string | null) => ['A0', 'A1', 'A2', 'B1', 'B2'].indexOf(l ?? '');
   const lessons = ((lessonsRes.data ?? []) as Row[])
     .map((l) => {
       const unit = one<{ order_index: number | null; status: string | null; module: unknown }>(l.unit);

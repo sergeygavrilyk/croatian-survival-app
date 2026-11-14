@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   assessmentSlug, attemptMeta, displayOrder, gradeItem, isLevelAssessmentSlug, kindTitle, levelStatus, levelTestSubtitle, midLastModule,
   mistakesToSave, nextLevel, percent,
-  pickAssessmentLevel, scoreAssessment, summarizeAttempts, type GradableItem, type ItemResponse,
+  levelTestLinks, pickAssessmentLevel, scoreAssessment, summarizeAttempts, type GradableItem, type ItemResponse,
 } from './assessment.ts';
 
 const mc = (id: string, area: string, correct = 1, lesson: string | null = null): GradableItem => ({
@@ -213,4 +213,33 @@ test('середина й фінал за рівнем: A0 — 1–5 з 10, A1 �
     { kind: 'final', order: 100 }, { kind: 'module', order: 7 }, { kind: 'mid', order: 50 }, { kind: 'module', order: 6 }, { kind: 'module', order: 13 },
   ].sort((a, b) => displayOrder(a.kind, a.order, 6) - displayOrder(b.kind, b.order, 6));
   assert.deepEqual(a1.map((x) => `${x.kind}${x.order}`), ['module6', 'mid50', 'module7', 'module13', 'final100']);
+});
+
+test('ARCH-03: кнопки перевірок на «Уроках» — за опублікованими перевірками, а не за переліком рівнів', () => {
+  assert.deepEqual(levelTestLinks([]), { any: false, final: false, moduleIds: [] });
+  assert.deepEqual(
+    levelTestLinks([
+      { kind: 'module', module_id: 'm1' },
+      { kind: 'module', module_id: 'm2' },
+      { kind: 'module', module_id: 'm1' },
+      { kind: 'mid', module_id: null },
+      { kind: 'final', module_id: null },
+      { kind: 'placement', module_id: null },
+    ]),
+    { any: true, final: true, moduleIds: ['m1', 'm2'] },
+  );
+  // лише тест розміщення — не перевірка рівня
+  assert.deepEqual(levelTestLinks([{ kind: 'placement', module_id: null }]), { any: false, final: false, moduleIds: [] });
+  // модулі є, фіналу ще немає
+  assert.deepEqual(levelTestLinks([{ kind: 'module', module_id: 'm3' }]), { any: true, final: false, moduleIds: ['m3'] });
+});
+
+test('ARCH-03: адреса перевірки — для будь-якого рівня з lib/levels.ts', () => {
+  assert.ok(isLevelAssessmentSlug('a2-m14'));
+  assert.ok(isLevelAssessmentSlug('b1-final'));
+  assert.ok(isLevelAssessmentSlug('b2-mid'));
+  assert.ok(!isLevelAssessmentSlug('c1-final'));
+  assert.ok(!isLevelAssessmentSlug('a2-m1'));
+  assert.equal(nextLevel('A2'), 'B1');
+  assert.equal(nextLevel('B2'), null);
 });

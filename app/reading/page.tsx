@@ -4,14 +4,14 @@ import PracticeTabs from '@/components/ui/PracticeTabs';
 import SegmentedLinks from '@/components/ui/SegmentedLinks';
 import ErrorState from '@/components/ui/ErrorState';
 import ReadingListView, { type ReadingListItem, type ReadingModule } from '@/components/ReadingListView';
-import { pickReadingLevel, READING_LEVELS, type ReadingLevel } from '@/lib/reading';
-import { levelStyle } from '@/lib/levels';
+import { pickReadingLevel, type ReadingLevel } from '@/lib/reading';
+import { levelStyle, levelsPresent } from '@/lib/levels';
 
 export const metadata = { title: 'Читання · Croatian Survival App' };
 export const dynamic = 'force-dynamic';
 
 /**
- * «Практика» → «Читання» (§6 ТЗ «Extensive Reading»): перемикач рівнів A0 · A1 · A2,
+ * «Практика» → «Читання» (§6 ТЗ «Extensive Reading»): перемикач рівнів, для яких є опубліковані тексти,
  * тексти рівня за модулями й що вже прочитано. Рівень — з адреси (?level=A2) або з профілю.
  * Сторінка бере дані, ReadingListView — малює.
  */
@@ -34,7 +34,8 @@ export default async function ReadingPage({ searchParams }: { searchParams: Prom
   ]);
 
   const all = (textsRes.data ?? []) as Array<Omit<ReadingListItem, 'known_ratio'> & { cefr: string; known_ratio: number | string | null }>;
-  const available = READING_LEVELS.filter((l) => all.some((t) => t.cefr === l));
+  // Рівні — з опублікованих текстів, а не з переліку в коді (ARCH-03)
+  const available = levelsPresent(all.map((t) => t.cefr));
   const level: ReadingLevel = pickReadingLevel(requested, profileRes.data?.current_level, available);
 
   const modulesRes = await supabase

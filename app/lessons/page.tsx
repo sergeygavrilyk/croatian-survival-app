@@ -1,6 +1,7 @@
 import { createClient } from '@/utils/supabase/server';
 import LessonsView, { type CurriculumLesson, type CurriculumModule, type CurriculumUnit } from '@/components/LessonsView';
 import { groupByParent, pickLessonsLevel } from '@/lib/curriculum';
+import { levelTestLinks, type LevelTestLinks } from '@/lib/assessment';
 
 export const metadata = { title: 'Уроки · Croatian Survival App' };
 export const dynamic = 'force-dynamic';
@@ -18,11 +19,12 @@ export default async function LessonsPage({ searchParams }: { searchParams: Prom
   let unitsByModule: Record<string, CurriculumUnit[]> = {};
   let lessonsByUnit: Record<string, CurriculumLesson[]> = {};
   let completedIds: string[] = [];
+  let tests: LevelTestLinks = { any: false, final: false, moduleIds: [] };
   let failed = false;
 
   try {
     const supabase = await createClient();
-    const [{ data: { user } }, modulesRes] = await Promise.all([
+    const [{ data: { user } }, modulesRes, testsRes] = await Promise.all([
       supabase.auth.getUser(),
       supabase
         .from('modules')
@@ -30,8 +32,19 @@ export default async function LessonsPage({ searchParams }: { searchParams: Prom
         .eq('level_code', level)
         .eq('status', 'PUBLISHED') // адмін бачить і чернетки (RLS), але в застосунку — лише опубліковане
         .order('order_index', { ascending: true }),
+      // Перевірки рівня (§60) — які опубліковано; кнопки показуємо за базою, а не за переліком рівнів (ARCH-03)
+      supabase
+        .from('assessments')
+        .select('kind, module_id')
+        .eq('cefr', level)
+        .in('kind', ['module', 'mid', 'final'])
+        .eq('status', 'PUBLISHED')
+        .limit(100),
     ]);
     if (modulesRes.error) throw modulesRes.error;
+    // Збій запиту перевірок не ховає уроки — просто без кнопок перевірок
+    if (testsRes.error) console.error('Помилка завантаження перевірок рівня:', testsRes.error.message);
+    else tests = levelTestLinks((testsRes.data ?? []) as Array<{ kind: string | null; module_id: string | null }>);
     modules = (modulesRes.data ?? []) as CurriculumModule[];
     const moduleIds = modules.map((m) => m.id);
 
@@ -81,6 +94,7 @@ export default async function LessonsPage({ searchParams }: { searchParams: Prom
       unitsByModule={unitsByModule}
       lessonsByUnit={lessonsByUnit}
       completedIds={completedIds}
+      tests={tests}
       failed={failed}
     />
   );

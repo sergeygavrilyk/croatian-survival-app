@@ -4,9 +4,9 @@ import PageHeader from '@/components/ui/PageHeader';
 import SegmentedLinks from '@/components/ui/SegmentedLinks';
 import ErrorState from '@/components/ui/ErrorState';
 import AssessmentListView, { type AssessmentListItem } from '@/components/AssessmentListView';
-import { levelStyle } from '@/lib/levels';
+import { levelStyle, levelsPresent } from '@/lib/levels';
 import {
-  ASSESSED_LEVELS, displayOrder, kindTitle, levelStatus, levelTestSubtitle, midLastModule, pickAssessmentLevel, summarizeAttempts,
+  displayOrder, kindTitle, levelStatus, levelTestSubtitle, midLastModule, pickAssessmentLevel, summarizeAttempts,
   type AttemptRow,
 } from '@/lib/assessment';
 
@@ -28,7 +28,6 @@ export default async function AssessmentsPage({ searchParams }: { searchParams: 
       .from('assessments')
       .select('id, slug, kind, cefr, order_index, estimated_minutes, module_id')
       .in('kind', ['module', 'mid', 'final'])
-      .in('cefr', [...ASSESSED_LEVELS])
       .eq('status', 'PUBLISHED')
       .limit(200),
     supabase.from('profiles').select('current_level').eq('id', user.id).maybeSingle(),
@@ -41,7 +40,8 @@ export default async function AssessmentsPage({ searchParams }: { searchParams: 
   ]);
 
   const all = testsRes.data ?? [];
-  const available = ASSESSED_LEVELS.filter((l) => all.some((t) => t.cefr === l));
+  // Рівні — з опублікованих перевірок, а не з переліку в коді (ARCH-03): новий рівень з'являється сам
+  const available = levelsPresent(all.map((t) => t.cefr as string | null));
   const level = pickAssessmentLevel(requested, profileRes.data?.current_level, available);
   const levelTests = all.filter((t) => t.cefr === level);
   // Скільки модулів у рівні — за перевірками модулів (A0 — 10, A1 v3 — 13); середина — після 5 / 6 модулів

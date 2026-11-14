@@ -1,6 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { LEVEL_CODES, LEVEL_STYLES, assessmentIcon, levelStyle, moduleIcon } from './levels.ts';
+import {
+  LEVEL_CODES, LEVEL_STYLES, assessmentIcon, isLevelAtMost, isLevelCode, levelRank, levelStyle, levelsPresent, moduleIcon,
+  nearestLowerLevel, nextLevelCode, previousLevelCode,
+} from './levels.ts';
 
 test('кожен рівень має свій колір', () => {
   const solids = LEVEL_CODES.map((l) => LEVEL_STYLES[l].solid);
@@ -49,4 +52,42 @@ test('assessmentIcon: модуль — емодзі модуля, середин
   assert.equal(assessmentIcon('module', 'A0', 7), moduleIcon('A0', 7));
   assert.equal(assessmentIcon('mid', 'A1', null), '🚩');
   assert.equal(assessmentIcon('final', 'A0'), '🏆');
+});
+
+test('ARCH-03: порядок рівнів, наступний і попередній — з одного списку', () => {
+  assert.deepEqual([...LEVEL_CODES], ['A0', 'A1', 'A2', 'B1', 'B2']);
+  assert.ok(isLevelCode('B1'));
+  assert.ok(!isLevelCode('b1'));
+  assert.ok(!isLevelCode('C1'));
+  assert.ok(!isLevelCode(null));
+  assert.equal(levelRank('A0'), 0);
+  assert.equal(levelRank('B2'), 4);
+  assert.equal(levelRank('C1'), -1);
+  assert.equal(levelRank(null), -1);
+  assert.equal(nextLevelCode('A1'), 'A2');
+  assert.equal(nextLevelCode('B2'), null);
+  assert.equal(nextLevelCode('x'), null);
+  assert.equal(previousLevelCode('A2'), 'A1');
+  assert.equal(previousLevelCode('B1'), 'A2');
+  assert.equal(previousLevelCode('A0'), null);
+  assert.equal(previousLevelCode('x'), null);
+  assert.ok(isLevelAtMost('A0', 'A1'));
+  assert.ok(isLevelAtMost('A1', 'A1'));
+  assert.ok(!isLevelAtMost('A2', 'A1'));
+  assert.ok(!isLevelAtMost(null, 'A1'));
+});
+
+test('ARCH-03: рівні з бази — без повторів, у порядку, невідомі пропущено; новий рівень видно одразу', () => {
+  assert.deepEqual(levelsPresent(['A1', 'A0', 'A1', null, 'C1', undefined, 'A2']), ['A0', 'A1', 'A2']);
+  assert.deepEqual(levelsPresent([]), []);
+  // опублікували перевірки B1 — рівень з'являється без правки коду
+  assert.deepEqual(levelsPresent(['A0', 'A1', 'A2', 'B1']), ['A0', 'A1', 'A2', 'B1']);
+});
+
+test('ARCH-03: найближчий нижчий наявний рівень', () => {
+  assert.equal(nearestLowerLevel('B1', ['A0', 'A1', 'A2']), 'A2');
+  assert.equal(nearestLowerLevel('B2', ['A0', 'A1']), 'A1');
+  assert.equal(nearestLowerLevel('A0', ['A0', 'A1']), null);
+  assert.equal(nearestLowerLevel('A2', ['B1']), null);
+  assert.equal(nearestLowerLevel('C1', ['A0']), null);
 });

@@ -7,6 +7,7 @@
  *  - «Практика» → «Помилки» → «Типові помилки»: вправа «Яке речення правильне?».
  *    Неправильна відповідь додає помилку в особисті (user_errors) — вона повториться в «Моїх помилках».
  */
+import { isLevelCode, levelRank } from './levels.ts';
 
 export const INTERFERENCE_CATEGORIES = [
   'cases', 'gender', 'aspect', 'word_order', 'prepositions', 'false_friends',
@@ -112,13 +113,11 @@ export function quizOptions(e: Pick<TypicalError, 'incorrect_text' | 'correct_te
   );
 }
 
-const LEVEL_ORDER = ['A0', 'A1', 'A2', 'B1', 'B2'];
-
 /** Помилки до рівня користувача включно (невідомий рівень — A1). */
 export function upToLevel<T extends Pick<TypicalError, 'cefr'>>(items: readonly T[], level: string | null | undefined): T[] {
-  const max = LEVEL_ORDER.indexOf(level && LEVEL_ORDER.includes(level) ? level : 'A1');
+  const max = levelRank(isLevelCode(level) ? level : 'A1');
   return items.filter((e) => {
-    const i = LEVEL_ORDER.indexOf(e.cefr);
+    const i = levelRank(e.cefr);
     return i >= 0 && i <= max;
   });
 }

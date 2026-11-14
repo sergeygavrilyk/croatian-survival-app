@@ -2,6 +2,7 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { trackEvent } from '@/app/actions/analytics';
+import { previousLevelCode } from '@/lib/levels';
 import {
   attemptMeta, isLevelAssessmentSlug, mistakesToSave, nextLevel, optionsOf, scoreAssessment,
   type Area, type AreaScore, type GradableItem, type ItemResponse,
@@ -210,9 +211,9 @@ export async function submitAssessment(
  * справді пройдено (спроба в базі), і лише тоді змінюємо profiles.current_level.
  */
 export async function moveToLevel(level: string): Promise<{ ok: true } | { ok: false; error: string }> {
-  const LEVELS = ['A1', 'A2', 'B1', 'B2'];
-  if (!LEVELS.includes(level)) return { ok: false, error: 'Невідомий рівень.' };
-  const prev = ['A0', 'A1', 'A2', 'B1'][LEVELS.indexOf(level)];
+  // Перейти можна на будь-який рівень після першого (A1…B2) — порядок з lib/levels.ts
+  const prev = previousLevelCode(level);
+  if (!prev) return { ok: false, error: 'Невідомий рівень.' };
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { ok: false, error: 'Увійдіть, щоб змінити рівень.' };

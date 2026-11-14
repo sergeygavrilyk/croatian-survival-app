@@ -12,6 +12,7 @@ import { checkTypedAnswer } from './answer.ts';
 import { checkSentence } from './mistakes.ts';
 import { evaluateSpeech } from './speaking.ts';
 import { countUk } from './format.ts';
+import { LEVEL_CODES, isLevelCode, nextLevelCode } from './levels.ts';
 
 export const AREAS = ['understand', 'produce', 'interact', 'mediate'] as const;
 export type Area = (typeof AREAS)[number];
@@ -33,7 +34,6 @@ export type ItemType = (typeof ITEM_TYPES)[number];
 export const DEFAULT_PASS_RATIO = 0.7;
 export const DEFAULT_AREA_MIN_RATIO = 0.5;
 
-const LEVEL_ORDER = ['A0', 'A1', 'A2', 'B1', 'B2'] as const;
 const EPS = 1e-9;
 
 /** Завдання з правильною відповіддю (лише на сервері). */
@@ -247,13 +247,12 @@ export function percent(ratio: number | null | undefined): number {
 }
 
 export function nextLevel(cefr: string): string | null {
-  const i = (LEVEL_ORDER as readonly string[]).indexOf(cefr);
-  return i >= 0 && i < LEVEL_ORDER.length - 1 ? LEVEL_ORDER[i + 1] : null;
+  return nextLevelCode(cefr);
 }
 
 /** Поля assessment_attempts, обов'язкові з M7 (оцінка застосунку, не сертифікат). */
 export function attemptMeta(kind: string, cefr: string, result: Pick<AssessmentScore, 'passed' | 'total'>) {
-  const level = (LEVEL_ORDER as readonly string[]).includes(cefr) ? cefr : 'A0';
+  const level = isLevelCode(cefr) ? cefr : LEVEL_CODES[0];
   const confidence = result.total >= 25 ? 'high' : result.total >= 10 ? 'medium' : 'low';
   const recommended = kind === 'final' && result.passed ? nextLevel(level) ?? level : level;
   return { estimated_cefr: level, confidence, recommended_start: recommended } as const;
@@ -266,7 +265,7 @@ export function assessmentSlug(cefr: string, kind: AssessmentKind, moduleOrder?:
   return `${lv}-${kind}`;
 }
 
-const SLUG_RE = /^(a0|a1|a2|b1|b2)-(m\d{2}|mid|final)$/;
+const SLUG_RE = new RegExp(`^(${LEVEL_CODES.map((l) => l.toLowerCase()).join('|')})-(m\\d{2}|mid|final)$`);
 
 export function isLevelAssessmentSlug(v: unknown): v is string {
   return typeof v === 'string' && SLUG_RE.test(v);
@@ -309,10 +308,26 @@ export function summarizeAttempts(rows: ReadonlyArray<AttemptRow>): Map<string, 
   return out;
 }
 
-/** Рівні, для яких є тести модулів (у порядку). Для списку перевірок і перемикача рівнів. */
-export const ASSESSED_LEVELS = ['A0', 'A1'] as const;
+/** Які перевірки рівня опубліковано — для карток і кнопок на «Уроках» (ARCH-03: з бази, а не з переліку рівнів). */
+export interface LevelTestLinks {
+  /** Є хоч одна перевірка рівня (модуль, середина чи фінал) — показати «Перевірки рівня» */
+  any: boolean;
+  /** Є фінальна перевірка — показати «Фінальна перевірка» */
+  final: boolean;
+  /** Модулі, для яких є перевірка модуля — кнопка «Перевірка модуля» лише в них */
+  moduleIds: string[];
+}
 
-/** Рівень списку перевірок: з адреси, інакше з профілю, інакше перший доступний. */
+export function levelTestLinks(rows: ReadonlyArray<{ kind: string | null; module_id: string | null }>): LevelTestLinks {
+  const levelRows = rows.filter((r) => r.kind === 'module' || r.kind === 'mid' || r.kind === 'final');
+  const moduleIds = [...new Set(levelRows.filter((r) => r.kind === 'module' && r.module_id).map((r) => r.module_id as string))];
+  return { any: levelRows.length > 0, final: levelRows.some((r) => r.kind === 'final'), moduleIds };
+}
+
+/**
+ * Рівень списку перевірок: з адреси, інакше з профілю, інакше перший доступний.
+ * available — рівні з опублікованими перевірками (levelsPresent() за `cefr` з бази; ARCH-03 — без зашитого списку).
+ */
 export function pickAssessmentLevel(requested: unknown, profileLevel: unknown, available: ReadonlyArray<string>): string | null {
   if (typeof requested === 'string' && available.includes(requested)) return requested;
   if (typeof profileLevel === 'string' && available.includes(profileLevel)) return profileLevel;
