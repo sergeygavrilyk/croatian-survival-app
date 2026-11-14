@@ -144,6 +144,26 @@ test('ситуація: діалоги фільтруються за рівне�
   await expect(page.getByText(/ · рівень A1$/)).toBeHidden();
 });
 
+test('ситуація: фрази фільтруються за рівнем, «Перевір себе» — лише вибрані', async ({ page }) => {
+  await page.goto('/situations/basics');
+  await expect(page.getByRole('tab', { name: /^Фрази/, selected: true })).toBeVisible();
+  const levels = page.getByRole('group', { name: 'Рівень фраз' });
+  await expect(levels.getByRole('button', { name: /^Усі · \d+$/, pressed: true })).toBeVisible();
+
+  const a1 = levels.getByRole('button', { name: /^A1 · \d+$/ });
+  const count = Number((await a1.textContent())?.split('·')[1]?.trim());
+  await a1.click();
+  await expect(levels.getByRole('button', { name: /^A1 · \d+$/, pressed: true })).toBeVisible();
+  await expect(page.getByText(new RegExp(`^${count} фраз.* · рівень A1$`))).toBeVisible();
+
+  await page.getByRole('button', { name: 'Перевір себе' }).click();
+  await expect(page.getByText(`1 / ${count}`, { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Завершити' }).click();
+
+  await levels.getByRole('button', { name: /^Усі · \d+$/ }).click();
+  await expect(page.getByText(/ · рівень A1$/)).toBeHidden();
+});
+
 test('офлайн (§76): відкриті раз урок і текст відкриваються без інтернету', async ({ page, context, request }) => {
   test.slow();
   const sw = await request.get('/sw.js');

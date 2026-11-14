@@ -111,7 +111,7 @@ export function sortedLevels(levels: ReadonlyArray<string | null | undefined>): 
   );
 }
 
-/** Фільтр за рівнем на екрані ситуації (діалоги): ключ «усі рівні». */
+/** Фільтр за рівнем на екрані ситуації (фрази й діалоги): ключ «усі рівні». */
 export const ALL_LEVELS = 'all';
 
 export interface LevelFilterOption {
@@ -123,7 +123,8 @@ export interface LevelFilterOption {
 }
 
 /**
- * Кнопки фільтра за рівнем (запит власника 2026-11-14 — «щоб не скролити довго»): «Усі» + кожен рівень, від нижчого.
+ * Кнопки фільтра за рівнем (запит власника 2026-11-14 — «щоб не скролити довго»; спершу діалоги, потім і фрази):
+ * «Усі» + кожен рівень, від нижчого.
  * Порожньо, якщо рівень лише один (фільтр нічого не дає). Рядки без рівня — лише в «Усі».
  */
 export function levelFilterOptions(levels: ReadonlyArray<string | null | undefined>): LevelFilterOption[] {
