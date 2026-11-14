@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { BookmarkPlus, Check, CircleCheck, Search, X } from 'lucide-react';
+import { BookmarkPlus, Check, CircleCheck, Loader2, Search, X } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
 import { saveDictionaryWord } from '@/app/actions/dictionary';
 import PracticeTabs from '@/components/ui/PracticeTabs';
@@ -69,6 +69,9 @@ export default function DictionaryPage() {
   // Доповнення до слів (не критичні: без них — літера замість емодзі й без позначки «Вчу»)
   const [themes, setThemes] = useState<Map<string, WordTheme>>(new Map());
   const [learning, setLearning] = useState<Set<string>>(new Set());
+  // Слова, для яких уже відомо, чи людина їх вчить (запит «Вчу» завершився — успішно чи ні).
+  // Поки не відомо, у картці не показуємо «Додати в повторення»: інакше кнопка зникає під пальцем, коли приходить «Вчу».
+  const [checked, setChecked] = useState<Set<string>>(new Set());
   const [standardLemmas, setStandardLemmas] = useState<Map<string, string>>(new Map()); // id відповідника → лема
   const userIdRef = useRef<string | null | undefined>(undefined);
   // «Показувати контент 18+» з профілю: читаємо раз перед першим запитом; немає входу / колонки / збій — вимкнено
@@ -130,6 +133,8 @@ export default function DictionaryPage() {
     } catch (err) {
       console.warn('Тема слів / «Вчу» / стандартні відповідники не завантажились:', err);
     }
+    // і після збою: кнопку «Додати» показуємо (сервер сам скаже «вже вчите»), а не вічне «Перевіряємо…»
+    setChecked(prev => new Set([...prev, ...ids]));
   }, [supabase]);
 
   /** Початок завантаження: індикатори й номер сторінки. Викликають обробники (зміна пошуку / рівня, «Ще»),
@@ -442,6 +447,7 @@ export default function DictionaryPage() {
           theme={themes.get(selected.id)}
           standardLemma={selected.standardId ? standardLemmas.get(selected.standardId) ?? null : null}
           isLearning={learning.has(selected.id)}
+          learningKnown={checked.has(selected.id)}
           saveState={saveState}
           onSave={() => void saveWord(selected)}
           onClose={closeWord}
@@ -498,6 +504,7 @@ function WordSheet({
   theme,
   standardLemma,
   isLearning,
+  learningKnown,
   saveState,
   onSave,
   onClose,
@@ -506,6 +513,8 @@ function WordSheet({
   theme?: WordTheme;
   standardLemma: string | null;
   isLearning: boolean;
+  /** false — ще не відомо, чи слово вже в повтореннях (запит «Вчу» не завершився) */
+  learningKnown: boolean;
   saveState: SaveState;
   onSave: () => void;
   onClose: () => void;
@@ -563,6 +572,11 @@ function WordSheet({
             <p className="flex items-center gap-2 text-label text-success-ink" role="status">
               <CircleCheck className="size-5" aria-hidden="true" />
               Ви вже вчите це слово — воно в «Тренажері»
+            </p>
+          ) : !learningKnown ? (
+            <p className="flex min-h-12 items-center justify-center gap-2 text-label font-normal text-ink-muted">
+              <Loader2 className="size-5 animate-spin" aria-hidden="true" />
+              Перевіряємо, чи ви вже вчите це слово…
             </p>
           ) : (
             <>
