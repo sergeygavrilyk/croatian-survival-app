@@ -7,7 +7,7 @@
 project: Croatia survival
 release: pre-MVP (з 2026-11-07 — робота через PR: Claude готує гілку й PR, власник мерджить; SQL — «Apply SQL» після Approve)
 supabase_project: "New app for learning" (ref mhdgozragkkogvxpjksp, eu-west-2)
-active_work: 2026-11-14 — документи короткі (журнал, DECISIONS, архів) — PR; PR #35–#38 у main, M26 у базі; далі — recognition, програма B1 v2
+active_work: 2026-11-14 — виправлення словника (гонка «Додати» / «Вчу», червоний CI на main) — PR #40; документи короткі (PR #39) і PR #35–#38 у main, M26 у базі; далі — recognition, програма B1 v2
 completed_slices: [VS-001, VS-002, VS-003, VS-004]
 content:                      # робоча база; уроки, модулі й граматика — 2026-10-27, решта — дати нижче
   lexemes: {published: 6192}   # 2026-11-12, після A2 v2; vulgar — 0
@@ -21,7 +21,7 @@ content:                      # робоча база; уроки, модулі 
   songs: 7                    # «Ситуації» → «Пісні», lib/songs.ts
 tests: {unit: 299, sql_files: 54, e2e_user: 12, failing: 0}   # npm test; supabase/tests/*.test.sql; e2e/user.spec.ts
 docs_limits: {PROJECT_STATE: 15 KB, HISTORY: 30 KB, SPEC_CHANGELOG: 30 KB, ТЗ і довідники: 60 KB, DECISIONS: без ліміту}   # рішення 2026-11-14
-last_updated: 2026-11-14 (документи короткі — PR; M26 застосовано 2026-11-14)
+last_updated: 2026-11-14 (словник — PR #40; PR #39 у main; M26 застосовано 2026-11-14)
 ```
 
 ## Чинні рішення власника (коротко)
@@ -67,7 +67,7 @@ last_updated: 2026-11-14 (документи короткі — PR; M26 заст
 ## Технічний борг і ризики
 
 - **Запуск для інших людей** — `docs/SCALING.md`: AI для ЄС, SMTP, видалення акаунта, політика конфіденційності, згода на AI, резервні копії, регіон Vercel, офіційний TTS.
-- **Перевірки:** CI на кожному PR ✅ (lint, unit, збірка, типи, smoke E2E, SQL-тести, E2E з входом); інколи «flaky» — тест офлайн і словник (проходять з другої спроби).
+- **Перевірки:** CI на кожному PR ✅ (lint, unit, збірка, типи, smoke E2E, SQL-тести, E2E з входом); тест словника падав через гонку «Додати» / «Вчу» — виправлено (PR #40); інколи «flaky» — тест офлайн.
 - **Код:** офлайн перевірити на телефоні; мін. пароль 10 — звірити з Supabase Auth; відповіді перевірок рівня (`correct_index`, `answer_text`) видно через API — PROPOSE закрити.
 - **Документи:** `DESIGN_SYSTEM.md` 67 КБ (> 60) — історію «реалізовано…» винести в архів окремою задачею.
 - **Контент:**

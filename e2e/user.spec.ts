@@ -91,13 +91,15 @@ test('словник: пошук → картка слова → «Додати 
   const sheet = page.getByRole('dialog', { name: 'pomidor' });
   await expect(sheet).toBeVisible();
   await expect(sheet).toContainText('регіонально');
-  // тестовий акаунт міг додати слово в минулому запуску
+  // тестовий акаунт міг додати слово в минулому запуску; кнопка з'являється, лише коли відомо, що слова ще немає в повтореннях
   const add = sheet.getByRole('button', { name: 'Додати в повторення' });
+  const status = sheet.getByRole('status');
+  await expect(add.or(status)).toBeVisible();
   if (await add.isVisible()) {
     await add.click();
-    await expect(sheet.getByRole('status')).toContainText('Додано в повторення');
+    await expect(status).toContainText('Додано в повторення');
   } else {
-    await expect(sheet.getByRole('status')).toContainText('вже вчите');
+    await expect(status).toContainText('вже вчите');
   }
   await page.keyboard.press('Escape');
   await expect(sheet).toBeHidden();
