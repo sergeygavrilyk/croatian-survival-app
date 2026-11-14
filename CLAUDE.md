@@ -48,10 +48,10 @@ npm run dev        # http://localhost:3000
 npm run build      # у хмарі недоступно — перевіряє CI на кожному PR
 npm run lint && npm run typecheck
 npm test           # node --test, Node 22.6+: lib/*.test.ts
-npm run e2e        # Playwright (e2e/): збірка + :3100; з входом — лише в власника (E2E_EMAIL/E2E_PASSWORD у .env.local)
+npm run e2e        # Playwright (e2e/): збірка + :3100; з входом — E2E_EMAIL/E2E_PASSWORD (.env.local власника; у CI — секрети GitHub)
 ```
 
-- CI (`.github/workflows/ci.yml`) на кожному PR і push: lint, unit, збірка, типи, smoke E2E, SQL-тести (`scripts/dev/sqltests.sh`); PR — лише з зеленим CI. Нова сторінка / сценарій → E2E у `e2e/` (без входу — `smoke.spec.ts`). Новий SQL-пакет → рядок у `scripts/dev/curdb.sh`, інакше його тест у CI впаде.
+- CI (`.github/workflows/ci.yml`) на кожному PR і push: lint, unit, збірка, типи, smoke E2E, SQL-тести (`scripts/dev/sqltests.sh`); на PR — ще **E2E з тестовим акаунтом** (робота `e2e-user`, рішення 2026-11-14); PR — лише з зеленим CI, і робота `e2e-user` має реально пройти, а не бути пропущеною. Нова сторінка / сценарій → E2E у `e2e/` (без входу — `smoke.spec.ts`, з входом — `user.spec.ts`). Новий SQL-пакет → рядок у `scripts/dev/curdb.sh`, інакше його тест у CI впаде.
 - Логіка — у `lib/` (без БД, імпорти з `.ts`), server actions лише авторизують і викликають її; нова логіка → тест у `lib/*.test.ts` + у скрипт `test`.
 - SQL-тести — `supabase/tests/*.test.sql` (транзакція + `ROLLBACK`); нова таблиця з даними користувача → тест ізоляції. Локальна БД і перевірка типів без `node_modules` — `scripts/dev/README.md`.
 - **Наявні тести не послаблювати** (знизити поріг, прибрати перевірку, додати виняток, «рівно N» → «щонайменше N») — лише з дозволу власника щоразу: старе → нове і чому (рішення 2026-11-07). Точні кількості, що змінились за погодженим планом (уроків A0 47 → 51), — оновлювати й називати в описі PR.

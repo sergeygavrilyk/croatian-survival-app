@@ -84,7 +84,7 @@ Claude проганяє ці тести також на локальній ко�
 
 ## 3. E2E — Playwright (з 2026-10-21) і ручний чекліст
 
-Рішення власника 2026-10-21: E2E з тестовим акаунтом — **лише на комп'ютері власника**; у CI — лише сценарії без входу.
+Рішення власника 2026-10-21: E2E з тестовим акаунтом — на комп'ютері власника. **З 2026-11-14** (рішення власника: секрети додано, «Додав») — ще й у CI на кожному PR: робота `e2e-user` (§4) з репозиторних секретів GitHub.
 
 | Файл | Що перевіряє |
 |---|---|
@@ -859,12 +859,13 @@ SQL Editor: `supabase/migrations/20261014100000_m15_reading.sql` → `supabase/d
 
 ## 4. CI — GitHub Actions (з 2026-10-21)
 
-`.github/workflows/ci.yml` запускається після кожного push і pull request (і вручну: GitHub → Actions → CI → Run workflow). Секретів немає: збірка й smoke — з підставними адресами Supabase, SQL-тести — на чистій Postgres у GitHub.
+`.github/workflows/ci.yml` запускається після кожного push і pull request (і вручну: GitHub → Actions → CI → Run workflow). Збірка й smoke — з підставними адресами Supabase, SQL-тести — на чистій Postgres у GitHub; E2E з входом (`e2e-user`) — з репозиторних секретів.
 
 | Робота | Кроки |
 |---|---|
 | `app` | `npm ci` → `npm run lint` → `npm test` → `npm run build` → `npm run typecheck` (після збірки: потрібні `next-env.d.ts` і `.next/types`) → `npm run e2e:smoke`; якщо впало — звіт Playwright у «Artifacts» запуску |
 | `sql` | PostgreSQL 16 → `sudo bash scripts/dev/curdb.sh` (міграції й пакети контенту) → `bash scripts/dev/sqltests.sh` (усі `supabase/tests/*.test.sql`) |
+| `e2e-user` (з 2026-11-14) | Після `app`, лише для PR, ручного запуску й `main` (push у гілку з PR не дублює). Перевіряє секрети → `npm ci` → `npm run build` зі справжньою адресою Supabase → `npx playwright test --project=setup --project=user`. Секрети — **Repository secrets** (Settings → Secrets and variables → Actions): `E2E_EMAIL`, `E2E_PASSWORD`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`; **не** в середовищі `production` (там лише `SUPABASE_DB_URL` для «Apply SQL» з Approve). Немає секретів (PR із форку чи ще не додано) — кроки пропущено, у підсумку — примітка. Запуски по черзі (`concurrency: e2e-test-account`): один акаунт. Пише в робочу базу лише прогрес і події тестового акаунта. Звіт Playwright **не вивантажується** (запис кроків містить пароль, репозиторій публічний; GitHub ховає значення секретів у лозі) — що впало, видно в лозі кроку, повний звіт — `npm run e2e` локально |
 
 Результат — ✅ / ❌ біля коміту на GitHub; лист про ❌ — за налаштуваннями сповіщень GitHub. Новий пакет контенту — рядок у `curdb.sh` (як і раніше), інакше SQL-тест пакета впаде в CI.
 
@@ -872,4 +873,4 @@ SQL Editor: `supabase/migrations/20261014100000_m15_reading.sql` → `supabase/d
 
 ## Перед релізом (§96)
 
-`npm run lint` · `npm run typecheck` · `npm test` · `npm run build` · інтеграційні SQL-тести · `npm run e2e` · ручні чеклісти, яких не покрито E2E (CI робить усе, крім E2E з входом).
+`npm run lint` · `npm run typecheck` · `npm test` · `npm run build` · інтеграційні SQL-тести · `npm run e2e` · ручні чеклісти, яких не покрито E2E (з 2026-11-14 CI робить і E2E з входом).

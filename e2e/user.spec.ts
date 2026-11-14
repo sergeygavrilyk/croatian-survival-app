@@ -2,7 +2,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { HAS_USER, NO_USER_REASON, TEST_LESSON_ID } from './env';
 
 /**
- * Сценарії з тестовим акаунтом — лише на комп'ютері власника (`npm run e2e`), не в CI.
+ * Сценарії з тестовим акаунтом: у власника — `npm run e2e`, у CI — робота `e2e-user` на кожному PR (з 2026-11-14).
  * Пишуть у робочу базу лише прогрес тестового акаунта (lesson_progress, повторення, події).
  */
 test.skip(!HAS_USER, NO_USER_REASON);
