@@ -25,6 +25,7 @@ import {
   matchesLevel,
   situationCounts,
   sortedLevels,
+  type LevelFilterOption,
   type SituationInfo,
 } from '@/lib/situations';
 
@@ -80,6 +81,11 @@ export default function SituationView({
     () => sortedLevels([...phrases.map((p) => p.cefr), ...dialogues.map((d) => d.level)]),
     [phrases, dialogues],
   );
+
+  // Фільтр фраз за рівнем (запит власника 2026-11-14): «Перевір себе» і «Говорити» — лише вибрані фрази
+  const [phraseLevel, setPhraseLevel] = useState<string>(ALL_LEVELS);
+  const phraseLevelOptions = useMemo(() => levelFilterOptions(phrases.map((p) => p.cefr)), [phrases]);
+  const visiblePhrases = useMemo(() => phrases.filter((p) => matchesLevel(p.cefr, phraseLevel)), [phrases, phraseLevel]);
 
   const tabs: Array<{ key: Tab; label: string; count: number }> = [
     { key: 'phrases', label: 'Фрази', count: phrases.length },
@@ -161,17 +167,24 @@ export default function SituationView({
 
         {tab === 'phrases' &&
           (practice === 'recall' ? (
-            <PhrasePractice situation={situation.code} phrases={phrases} seed={practiceSeed} onExit={() => setPractice(null)} />
+            <PhrasePractice situation={situation.code} phrases={visiblePhrases} seed={practiceSeed} onExit={() => setPractice(null)} />
           ) : practice === 'speak' ? (
             <SpeakingPractice
               situation={situation.code}
-              phrases={phrases}
+              phrases={visiblePhrases}
               seed={practiceSeed}
               onExit={() => setPractice(null)}
               onFallback={() => setPractice('recall')}
             />
           ) : (
-            <PhraseList phrases={phrases} onPractice={setPractice} />
+            <PhraseList
+              phrases={visiblePhrases}
+              total={phrases.length}
+              levelOptions={phraseLevelOptions}
+              level={phraseLevel}
+              onLevel={setPhraseLevel}
+              onPractice={setPractice}
+            />
           ))}
 
         {tab === 'dialogues' && <DialogueList dialogues={dialogues} />}
@@ -180,15 +193,81 @@ export default function SituationView({
   );
 }
 
+// ---------------------------------------------------------------- Фільтр за рівнем (фрази й діалоги)
+/**
+ * Кнопки «Усі · N», «A0 · N», «A1 · N»… (запити власника 2026-11-14 — діалоги, потім фрази): вибраний рівень — у кольорі рівня,
+ * `aria-pressed`, ≥ 44 px, гортаються вбік. Порожній список варіантів (рівень лише один) — нічого не показуємо.
+ */
+function LevelFilter({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label: string;
+  options: LevelFilterOption[];
+  value: string;
+  onChange: (level: string) => void;
+}) {
+  if (options.length === 0) return null;
+  return (
+    <div className="-mx-5 mb-3 flex gap-2 overflow-x-auto px-5 pb-1" role="group" aria-label={label}>
+      {options.map((o) => {
+        const active = o.key === value;
+        const s = o.key === ALL_LEVELS ? null : levelStyle(o.key);
+        return (
+          <button
+            key={o.key}
+            type="button"
+            aria-pressed={active}
+            onClick={() => onChange(o.key)}
+            className={cn(
+              'flex min-h-11 shrink-0 items-center gap-1.5 rounded-full border px-4 text-label transition-colors duration-150',
+              active
+                ? s
+                  ? cn(s.line, s.soft, s.ink, 'font-semibold')
+                  : 'border-primary bg-primary-soft font-semibold text-primary-ink'
+                : 'border-line bg-surface text-ink-muted hover:text-ink',
+            )}
+          >
+            {o.label} · {o.count}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 // ---------------------------------------------------------------- Фрази: список
-function PhraseList({ phrases, onPractice }: { phrases: SituationPhrase[]; onPractice: (mode: 'recall' | 'speak') => void }) {
-  if (phrases.length === 0) {
+function PhraseList({
+  phrases,
+  total,
+  levelOptions,
+  level,
+  onLevel,
+  onPractice,
+}: {
+  /** Фрази за вибраним рівнем */
+  phrases: SituationPhrase[];
+  /** Усього фраз у ситуації (без фільтра) */
+  total: number;
+  levelOptions: LevelFilterOption[];
+  level: string;
+  onLevel: (level: string) => void;
+  onPractice: (mode: 'recall' | 'speak') => void;
+}) {
+  if (total === 0) {
     return <EmptyState title="Фраз поки немає" text="Перегляньте діалоги цієї ситуації." />;
   }
   return (
     <>
+      <LevelFilter label="Рівень фраз" options={levelOptions} value={level} onChange={onLevel} />
+
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <p className="text-label text-ink-muted">{countUk(phrases.length, ['фраза', 'фрази', 'фраз'])}</p>
+        <p className="text-label text-ink-muted" aria-live="polite">
+          {countUk(phrases.length, ['фраза', 'фрази', 'фраз'])}
+          {level !== ALL_LEVELS && ` · рівень ${level}`}
+        </p>
         <div className="flex gap-2">
           <Button variant="secondary" size="sm" onClick={() => onPractice('recall')}>
             <ListChecks className="size-5" aria-hidden="true" />
@@ -362,32 +441,7 @@ function DialogueList({ dialogues }: { dialogues: SituationDialogue[] }) {
 
   return (
     <>
-      {options.length > 0 && (
-        <div className="-mx-5 mb-3 flex gap-2 overflow-x-auto px-5 pb-1" role="group" aria-label="Рівень діалогів">
-          {options.map((o) => {
-            const active = o.key === level;
-            const s = o.key === ALL_LEVELS ? null : levelStyle(o.key);
-            return (
-              <button
-                key={o.key}
-                type="button"
-                aria-pressed={active}
-                onClick={() => setLevel(o.key)}
-                className={cn(
-                  'flex min-h-11 shrink-0 items-center gap-1.5 rounded-full border px-4 text-label transition-colors duration-150',
-                  active
-                    ? s
-                      ? cn(s.line, s.soft, s.ink, 'font-semibold')
-                      : 'border-primary bg-primary-soft font-semibold text-primary-ink'
-                    : 'border-line bg-surface text-ink-muted hover:text-ink',
-                )}
-              >
-                {o.label} · {o.count}
-              </button>
-            );
-          })}
-        </div>
-      )}
+      <LevelFilter label="Рівень діалогів" options={options} value={level} onChange={setLevel} />
 
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <p className="text-label text-ink-muted" aria-live="polite">
