@@ -19,7 +19,14 @@ import { countUk } from '@/lib/format';
 import { levelStyle } from '@/lib/levels';
 import { cn, shuffle } from '@/lib/ui';
 import { seededRandom } from '@/lib/random';
-import { situationCounts, sortedLevels, type SituationInfo } from '@/lib/situations';
+import {
+  ALL_LEVELS,
+  levelFilterOptions,
+  matchesLevel,
+  situationCounts,
+  sortedLevels,
+  type SituationInfo,
+} from '@/lib/situations';
 
 export interface SituationPhrase {
   id: string;
@@ -344,6 +351,10 @@ function PhrasePractice({
 // ---------------------------------------------------------------- Діалоги
 function DialogueList({ dialogues }: { dialogues: SituationDialogue[] }) {
   const [showTranslation, setShowTranslation] = useState(true);
+  // Фільтр за рівнем (2026-11-14): кнопки «Усі · A0 · A1 · A2…», лише коли рівнів ≥ 2
+  const [level, setLevel] = useState<string>(ALL_LEVELS);
+  const options = useMemo(() => levelFilterOptions(dialogues.map((d) => d.level)), [dialogues]);
+  const visible = useMemo(() => dialogues.filter((d) => matchesLevel(d.level, level)), [dialogues, level]);
 
   if (dialogues.length === 0) {
     return <EmptyState title="Діалогів поки немає" text="Перегляньте фрази цієї ситуації." />;
@@ -351,7 +362,38 @@ function DialogueList({ dialogues }: { dialogues: SituationDialogue[] }) {
 
   return (
     <>
-      <div className="mb-4 flex justify-end">
+      {options.length > 0 && (
+        <div className="-mx-5 mb-3 flex gap-2 overflow-x-auto px-5 pb-1" role="group" aria-label="Рівень діалогів">
+          {options.map((o) => {
+            const active = o.key === level;
+            const s = o.key === ALL_LEVELS ? null : levelStyle(o.key);
+            return (
+              <button
+                key={o.key}
+                type="button"
+                aria-pressed={active}
+                onClick={() => setLevel(o.key)}
+                className={cn(
+                  'flex min-h-11 shrink-0 items-center gap-1.5 rounded-full border px-4 text-label transition-colors duration-150',
+                  active
+                    ? s
+                      ? cn(s.line, s.soft, s.ink, 'font-semibold')
+                      : 'border-primary bg-primary-soft font-semibold text-primary-ink'
+                    : 'border-line bg-surface text-ink-muted hover:text-ink',
+                )}
+              >
+                {o.label} · {o.count}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <p className="text-label text-ink-muted" aria-live="polite">
+          {countUk(visible.length, ['діалог', 'діалоги', 'діалогів'])}
+          {level !== ALL_LEVELS && ` · рівень ${level}`}
+        </p>
         <Button variant="tertiary" size="sm" aria-pressed={!showTranslation} onClick={() => setShowTranslation((v) => !v)}>
           {showTranslation ? <EyeOff className="size-5" aria-hidden="true" /> : <Eye className="size-5" aria-hidden="true" />}
           {showTranslation ? 'Сховати переклад' : 'Показати переклад'}
@@ -359,7 +401,7 @@ function DialogueList({ dialogues }: { dialogues: SituationDialogue[] }) {
       </div>
 
       <div className="flex flex-col gap-4">
-        {dialogues.map((d) => {
+        {visible.map((d) => {
           const speakers = [...new Set(d.turns.map((t) => t.speaker_name))];
           return (
             <Card key={d.id}>

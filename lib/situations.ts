@@ -111,6 +111,35 @@ export function sortedLevels(levels: ReadonlyArray<string | null | undefined>): 
   );
 }
 
+/** Фільтр за рівнем на екрані ситуації (діалоги): ключ «усі рівні». */
+export const ALL_LEVELS = 'all';
+
+export interface LevelFilterOption {
+  /** 'all' або код рівня (A0 … B2) */
+  key: string;
+  /** Підпис кнопки: «Усі» або код рівня */
+  label: string;
+  count: number;
+}
+
+/**
+ * Кнопки фільтра за рівнем (запит власника 2026-11-14 — «щоб не скролити довго»): «Усі» + кожен рівень, від нижчого.
+ * Порожньо, якщо рівень лише один (фільтр нічого не дає). Рядки без рівня — лише в «Усі».
+ */
+export function levelFilterOptions(levels: ReadonlyArray<string | null | undefined>): LevelFilterOption[] {
+  const present = sortedLevels(levels);
+  if (present.length < 2) return [];
+  return [
+    { key: ALL_LEVELS, label: 'Усі', count: levels.length },
+    ...present.map((l) => ({ key: l, label: l, count: levels.filter((x) => x === l).length })),
+  ];
+}
+
+/** Чи показувати рядок за вибраним фільтром. */
+export function matchesLevel(level: string | null | undefined, filter: string): boolean {
+  return filter === ALL_LEVELS || level === filter;
+}
+
 /** Групи ситуацій на екрані «Ситуації» (радісний стиль 2026-10-20): щодня → дім і здоров’я → дорога → документи й робота. */
 export const SITUATION_GROUPS: ReadonlyArray<{ key: string; label: string; codes: readonly string[] }> = [
   { key: 'everyday', label: 'Щодня', codes: ['basics', 'shopping', 'cafe_restaurant', 'small_talk'] },
