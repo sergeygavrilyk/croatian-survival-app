@@ -164,6 +164,31 @@ test('ситуація: фрази фільтруються за рівнем, �
   await expect(page.getByText(/ · рівень A1$/)).toBeHidden();
 });
 
+test('профіль: «Показувати контент 18+» — вимкнено, увімкнути лише з підтвердженням 18+', async ({ page }) => {
+  await page.goto('/profile');
+  const toggle = page.getByRole('switch', { name: 'Показувати контент 18+' });
+  test.skip((await toggle.count()) === 0, 'колонки profiles.adult_content ще немає — M26 запуститься після мержу');
+
+  const startOn = (await toggle.getAttribute('aria-checked')) === 'true';
+  if (startOn) {
+    await toggle.click(); // залишок попереднього прогону — повертаємо «вимкнено»
+    await expect(toggle).toHaveAttribute('aria-checked', 'false');
+  }
+  await toggle.click();
+  await expect(page.getByText('Підтвердьте, що вам уже виповнилося 18 років.')).toBeVisible();
+  await page.getByRole('button', { name: 'Скасувати' }).click();
+  await expect(toggle).toHaveAttribute('aria-checked', 'false');
+
+  await toggle.click();
+  await page.getByRole('button', { name: 'Так, мені 18+' }).click();
+  await expect(toggle).toHaveAttribute('aria-checked', 'true');
+  await expect(page.getByText('Контент 18+ увімкнено.')).toBeVisible();
+
+  await toggle.click(); // тестовий акаунт лишаємо з вимкненим 18+
+  await expect(toggle).toHaveAttribute('aria-checked', 'false');
+  await expect(page.getByText('Контент 18+ приховано.')).toBeVisible();
+});
+
 test('офлайн (§76): відкриті раз урок і текст відкриваються без інтернету', async ({ page, context, request }) => {
   test.slow();
   const sw = await request.get('/sw.js');

@@ -210,11 +210,19 @@ export function matchesCategory(labels: LexemeLabels, category: WordCategory): b
 }
 
 /**
- * Слова `vulgar` бачить лише той, хто ввімкнув «Показувати контент 18+» (DESIGN_SYSTEM.md §3.4).
- * Перемикача в профілі ще немає (модуль «18+» — пізніше), тому зараз їх не бачить ніхто. `offensive` — видно всім, з позначкою.
+ * Слова `vulgar` бачить лише той, хто ввімкнув «Показувати контент 18+» у профілі (`profiles.adult_content`, M26;
+ * DESIGN_SYSTEM.md §3.4). `offensive` — видно всім, з позначкою.
  */
 export function isVisibleWord(labels: LexemeLabels, adultContent = false): boolean {
   return adultContent || labels.register !== 'vulgar';
+}
+
+/**
+ * Перемикач «Показувати контент 18+» з рядка `profiles` (M26). Лише явне `true` вмикає 18+:
+ * немає рядка, немає колонки (M26 ще не запущено), помилка — вимкнено.
+ */
+export function adultContentFrom(row: unknown): boolean {
+  return !!row && typeof row === 'object' && (row as { adult_content?: unknown }).adult_content === true;
 }
 
 /** Порожній список у категорії: що сказати людині. */

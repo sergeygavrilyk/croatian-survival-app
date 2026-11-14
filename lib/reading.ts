@@ -8,6 +8,8 @@
  *  - speechChunks: текст → шматки до 180 символів для озвучення (сервіс TTS не приймає довгих рядків).
  */
 
+import { labelChips, readLabels, type LexemeLabels } from './lexeme-labels.ts';
+
 export const TEXT_TYPES = [
   'message', 'chat', 'email', 'notice', 'ad', 'menu', 'instruction', 'form', 'story', 'article', 'news', 'dialogue', 'sign',
 ] as const;
@@ -98,6 +100,10 @@ export interface GlossaryEntry {
   pos?: string;
   /** що це за форма в тексті: відмінок і число, особа й час («знахідний відмінок (кого? що?), однина») */
   gram?: string;
+  /** Позначка категорії слова з `lexemes` за лемою (DESIGN_SYSTEM.md §3.4); звичайне слово — без неї */
+  labels?: LexemeLabels;
+  /** Стандартний відповідник (`standard_lexeme_id` → лема): «стандартно: razumjeti» */
+  standard_lemma?: string;
 }
 
 const HINT_MAX = 200;
@@ -159,16 +165,69 @@ export function glossaryIndex(v: unknown): Map<string, GlossaryEntry> {
   if (!Array.isArray(v)) return map;
   for (const x of v) {
     if (!x || typeof x !== 'object') continue;
-    const { form, lemma, ua, lesson, pos, gram } = x as Record<string, unknown>;
+    const { form, lemma, ua, lesson, pos, gram, labels, standard_lemma } = x as Record<string, unknown>;
     if (typeof form !== 'string' || typeof lemma !== 'string' || typeof ua !== 'string' || !form) continue;
     const entry: GlossaryEntry = { form: form.toLowerCase(), lemma, ua, lesson: lesson === true };
     const p = hint(pos);
     const g = hint(gram);
     if (p) entry.pos = p;
     if (g) entry.gram = g;
+    // мітки додає сервер (withGlossaryLabels); офлайн-копія тексту зберігає їх — невідомі значення відкидаємо
+    if (labels && typeof labels === 'object') {
+      const l = readLabels(labels as Record<string, unknown>);
+      if (labelChips(l).length > 0) entry.labels = l;
+    }
+    const std = hint(standard_lemma);
+    if (std) entry.standard_lemma = std;
     map.set(entry.form, entry);
   }
   return map;
+}
+
+/** Леми словничка тексту без повторів — для запиту міток до `lexemes` (глосарій — JSON без `lexeme_id`). */
+export function glossaryLemmas(glossary: readonly GlossaryEntry[]): string[] {
+  return [...new Set(glossary.map((g) => g.lemma).filter((l) => l.trim() !== ''))];
+}
+
+/** Рядок `lexemes` для міток словничка (лише потрібні колонки). */
+export interface GlossaryLexemeRow {
+  lemma: string;
+  register?: unknown;
+  regionality?: unknown;
+  usage_tags?: unknown;
+  standard_lexeme_id?: string | null;
+}
+
+/**
+ * Позначка категорії в словничку тексту (рішення власника 2026-11-13, DESIGN_SYSTEM.md §3.4): мітки слова з `lexemes`
+ * за лемою + «стандартно: …». Звичайне слово — без міток. Якщо одній лемі відповідає кілька слів з різними мітками
+ * чи відповідниками (омоніми) — не вгадуємо, лишаємо без позначки.
+ */
+export function withGlossaryLabels(
+  glossary: readonly GlossaryEntry[],
+  lexemes: readonly GlossaryLexemeRow[],
+  standards: ReadonlyArray<{ id: string; lemma: string }> = [],
+): GlossaryEntry[] {
+  const standardLemma = new Map(standards.map((r) => [r.id, r.lemma]));
+  const byLemma = new Map<string, { labels: LexemeLabels; standard?: string }[]>();
+  for (const row of lexemes) {
+    const list = byLemma.get(row.lemma) ?? [];
+    const standard = row.standard_lexeme_id ? standardLemma.get(row.standard_lexeme_id) : undefined;
+    list.push({ labels: readLabels(row), standard });
+    byLemma.set(row.lemma, list);
+  }
+  const key = (v: { labels: LexemeLabels; standard?: string }) =>
+    JSON.stringify([labelChips(v.labels).map((c) => c.key), v.standard ?? null]);
+
+  return glossary.map((entry) => {
+    const found = byLemma.get(entry.lemma);
+    if (!found || new Set(found.map(key)).size !== 1) return entry; // немає в словнику або омоніми з різними мітками
+    const { labels, standard } = found[0];
+    const next: GlossaryEntry = { ...entry };
+    if (labelChips(labels).length > 0) next.labels = labels;
+    if (standard) next.standard_lemma = standard;
+    return next;
+  });
 }
 
 /** Питання з БД (jsonb) → лише коректні (відповідь серед варіантів). */

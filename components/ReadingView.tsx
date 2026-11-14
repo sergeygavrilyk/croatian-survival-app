@@ -7,6 +7,8 @@ import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import Hr from '@/components/ui/Hr';
 import AudioButton from '@/components/ui/AudioButton';
+import WordLabels from '@/components/ui/WordLabels';
+import { DEFAULT_LABELS } from '@/lib/lexeme-labels';
 import IconButton from '@/components/ui/IconButton';
 import LevelBadge from '@/components/ui/LevelBadge';
 import SessionDone from '@/components/ui/SessionDone';
@@ -287,6 +289,13 @@ export default function ReadingView({
               </Hr>
               {selected.pos && <p className="text-caption text-ink-muted">{selected.pos}</p>}
               <p className="mt-1 text-body-lg">{selected.ua}</p>
+              {(selected.labels || selected.standard_lemma) && (
+                <WordLabels
+                  labels={selected.labels ?? DEFAULT_LABELS}
+                  standardLemma={selected.standard_lemma}
+                  className="mt-1.5"
+                />
+              )}
             </div>
             <AudioButton text={selected.lemma} label={`Прослухати «${selected.lemma}»`} />
             <IconButton label="Закрити переклад" onClick={() => setSelected(null)}>

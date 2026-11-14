@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  glossaryIndex, isCroatianOption, isReadingText, readingTextFrom, knownLabel, levelIntro, moduleCardTitles, moduleHeading, moduleTitle, paragraphs, pickReadingLevel, questionsFrom, readingMinutes,
+  glossaryIndex, glossaryLemmas, withGlossaryLabels, isCroatianOption, isReadingText, readingTextFrom, knownLabel, levelIntro, moduleCardTitles, moduleHeading, moduleTitle, paragraphs, pickReadingLevel, questionsFrom, readingMinutes,
   scoreAnswers, seededShuffle, speechChunks, textTypeLabel, tokenize,
 } from './reading.ts';
 
@@ -158,4 +158,46 @@ test('isReadingText: свіжий текст — так; старий кеш і 
   assert.equal(isReadingText({ ...t, cachedAt: 1 }), true);
   assert.equal(isReadingText({ id: 't1', cefr: 'A0', title_hr: 'Bok', body_hr: 'Bok!', glossary: {} }), false);
   assert.equal(isReadingText(null), false);
+});
+
+test('словничок тексту: мітки слова з lexemes за лемою і «стандартно: …» (рішення 2026-11-13)', () => {
+  const glossary = [
+    { form: 'fjaka', lemma: 'fjaka', ua: 'ліньки' },
+    { form: 'kužiš', lemma: 'kužiti', ua: 'розуміти', lesson: true },
+    { form: 'kuća', lemma: 'kuća', ua: 'дім' },
+    { form: 'luk', lemma: 'luk', ua: 'цибуля; лук' },
+    { form: 'ništa', lemma: 'ništa', ua: 'нічого' },
+  ];
+  assert.deepEqual(glossaryLemmas([...glossary, { form: 'kuće', lemma: 'kuća', ua: 'дім' }]), ['fjaka', 'kužiti', 'kuća', 'luk', 'ništa']);
+
+  const out = withGlossaryLabels(
+    glossary,
+    [
+      { lemma: 'fjaka', register: 'colloquial', regionality: 'Dalmatia', usage_tags: ['italianism'] },
+      { lemma: 'kužiti', register: 'colloquial', regionality: 'general', usage_tags: [], standard_lexeme_id: 's1' },
+      { lemma: 'kuća', register: 'standard', regionality: 'general', usage_tags: [] },
+      // омоніми з різними мітками — не вгадуємо
+      { lemma: 'luk', register: 'standard', regionality: 'general', usage_tags: [] },
+      { lemma: 'luk', register: 'slang', regionality: 'general', usage_tags: [] },
+    ],
+    [{ id: 's1', lemma: 'razumjeti' }],
+  );
+  assert.deepEqual(out[0].labels, { register: 'colloquial', regionality: 'Dalmatia', usage_tags: ['italianism'] });
+  assert.equal(out[0].standard_lemma, undefined);
+  assert.deepEqual(out[1].labels, { register: 'colloquial', regionality: 'general', usage_tags: [] });
+  assert.equal(out[1].standard_lemma, 'razumjeti');
+  assert.equal(out[1].lesson, true);
+  assert.deepEqual(out[2], glossary[2]); // звичайне слово — без міток
+  assert.deepEqual(out[3], glossary[3]); // омоніми
+  assert.deepEqual(out[4], glossary[4]); // немає в словнику
+});
+
+test('словничок тексту: мітки переживають офлайн-копію, невідомі значення відкидаємо', () => {
+  const idx = glossaryIndex([
+    { form: 'Fjaka', lemma: 'fjaka', ua: 'ліньки', labels: { register: 'colloquial', regionality: 'Dalmatia', usage_tags: ['italianism', 'oops'] }, standard_lemma: 'lijenost' },
+    { form: 'kuća', lemma: 'kuća', ua: 'дім', labels: { register: 'weird', regionality: 'Mars', usage_tags: [] } },
+  ]);
+  assert.deepEqual(idx.get('fjaka')?.labels, { register: 'colloquial', regionality: 'Dalmatia', usage_tags: ['italianism'] });
+  assert.equal(idx.get('fjaka')?.standard_lemma, 'lijenost');
+  assert.equal(idx.get('kuća')?.labels, undefined); // після readLabels — звичайне слово, без позначки
 });

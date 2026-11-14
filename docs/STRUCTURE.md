@@ -5,7 +5,7 @@
 ```
 app/
   page.tsx, lessons/ (+ tests/ — перевірки рівня, grammar/ — граматика рівня, grammar/[id] — тема, grammar/review — підсумок граматики), assessment/[slug]/ (тест §60), (main)/lesson/[id]/ (урок: дані на сервері → LessonScreen), trainer/, mistakes/ (+ typical/), reading/ (+ [id]), dictionary/, situations/ (+ [code]), onboarding/, profile/, login/, admin/
-  actions/          server actions: srs (оцінка картки), progress (completeLesson), analytics (trackEvent), onboarding (тест рівня, профіль), speaking, roleplay (AI), interference (типові помилки), reading (читання), assessment (перевірки рівня), writing (спроби письма й переказу), chat, translate
+  actions/          server actions: srs (оцінка картки), progress (completeLesson), analytics (trackEvent), onboarding (тест рівня, профіль), mascot (талісман), adult-content (перемикач «Показувати контент 18+»), speaking, roleplay (AI), interference (типові помилки), reading (читання), assessment (перевірки рівня), writing (спроби письма й переказу), chat, translate
   api/tts/          TTS-проксі
 components/         MascotPicker (вибір талісмана), lesson/LessonScreen (офлайн-копія, завершення) + lesson/LessonPlayer + lesson/LessonExercise (урок) + lesson/WritingExercise («Напишіть повідомлення», «Перекажіть другу») + lesson/ListeningDialogueExercise («Прослухайте діалог чи оголошення»), LessonsView («Уроки»), useOfflineCopy (офлайн-копія сторінки §76), FlashcardTrainer, WriteTrainer, TrainerSessionDone (кінець сесії тренажера), AuthShell (вхід і новий пароль), SituationView, SpeakingPractice, RoleplayChat (AI), OnboardingFlow, ProfileView,
                     TypicalErrorCard + TypicalErrorsQuiz (типові помилки), ReadingListView + ReadingScreen + ReadingView (читання),

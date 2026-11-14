@@ -8,7 +8,7 @@ import PracticeTabs from '@/components/ui/PracticeTabs';
 import { dictionarySearchTerm, posLabelUk } from '@/lib/format';
 import { LEVEL_CODES, levelStyle } from '@/lib/levels';
 import {
-  WORD_CATEGORIES, categoryFilter, emptyCategoryText, labelChips, readLabels, type LexemeLabels, type WordCategory,
+  WORD_CATEGORIES, adultContentFrom, categoryFilter, emptyCategoryText, labelChips, readLabels, type LexemeLabels, type WordCategory,
 } from '@/lib/lexeme-labels';
 import { cn } from '@/lib/ui';
 import { WORD_THEME_SELECT, wordThemes, type WordTheme } from '@/lib/word-theme';
@@ -49,7 +49,7 @@ type SaveState = 'idle' | 'saving' | 'saved' | string;
  * Словник (розділ «Практика»): пошук по всьому словнику, фільтри за рівнем і категорією (розмовне, сленг, регіональне…).
  * Біля слова — емодзі теми уроку в кольорі рівня, бейдж рівня, частина мови, «Вчу», позначка категорії (DESIGN_SYSTEM §3.4).
  * Натиск на слово — картка знизу: переклад, позначка категорії й «стандартно: …», пояснення, приклади й «Додати в повторення».
- * Слова `vulgar` (модуль «18+») не показуємо: перемикача «Показувати контент 18+» у профілі ще немає.
+ * Слова `vulgar` (модуль «18+») — лише тим, хто ввімкнув «Показувати контент 18+» у профілі (`profiles.adult_content`, M26).
  */
 export default function DictionaryPage() {
   const supabase = createClient();
@@ -71,6 +71,21 @@ export default function DictionaryPage() {
   const [learning, setLearning] = useState<Set<string>>(new Set());
   const [standardLemmas, setStandardLemmas] = useState<Map<string, string>>(new Map()); // id відповідника → лема
   const userIdRef = useRef<string | null | undefined>(undefined);
+  // «Показувати контент 18+» з профілю: читаємо раз перед першим запитом; немає входу / колонки / збій — вимкнено
+  const adultRef = useRef<Promise<boolean> | null>(null);
+  const adultContent = useCallback(() => {
+    adultRef.current ??= (async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return false;
+        const { data, error } = await supabase.from('profiles').select('adult_content').eq('id', user.id).maybeSingle();
+        return error ? false : adultContentFrom(data);
+      } catch {
+        return false;
+      }
+    })();
+    return adultRef.current;
+  }, [supabase]);
   // Картка слова (натиск на слово) і стан кнопки «Додати в повторення»
   const [selected, setSelected] = useState<Word | null>(null);
   const [saveState, setSaveState] = useState<SaveState>('idle');
@@ -130,12 +145,13 @@ export default function DictionaryPage() {
   const queryWords = useCallback(async (pageIndex: number, search: string | null, lvl: Level, cat: WordCategory): Promise<Word[]> => {
     const from = pageIndex * PAGE_SIZE;
     const to = from + PAGE_SIZE - 1;
+    const adult = await adultContent();
     let request = supabase
       .from('lexemes')
       .select('id, lemma, ukrainian_translation, part_of_speech, cefr, ukrainian_explanation, examples, register, regionality, usage_tags, standard_lexeme_id')
       .eq('status', 'PUBLISHED')
-      .neq('register', 'vulgar') // контент 18+ — лише з перемикачем у профілі (його ще немає)
       .not('lemma', 'like', '%:%'); // без реплік діалогів («Konobar: …»)
+    if (!adult) request = request.neq('register', 'vulgar'); // контент 18+ — лише з перемикачем у профілі
     if (search) {
       // лема, лема без діакритики (macka → mačka) або переклад
       request = request.or(`lemma.ilike.%${search}%,normalized.ilike.%${search}%,ukrainian_translation.ilike.%${search}%`);
@@ -166,7 +182,7 @@ export default function DictionaryPage() {
       labels: readLabels(lex),
       standardId: typeof lex.standard_lexeme_id === 'string' ? lex.standard_lexeme_id : null,
     }));
-  }, [supabase]);
+  }, [supabase, adultContent]);
 
   /** Відповідь бази → стан. Відповідь старішого запиту (попередній пошук) ігноруємо. */
   const applyPage = useCallback((requestId: number, isReset: boolean, result: { words: Word[] } | { error: unknown }) => {

@@ -3,7 +3,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   DEFAULT_LABELS, REGIONS, REGION_LABELS, REGISTERS, REGISTER_LABELS, USAGE_TAGS, USAGE_TAG_LABELS, toggleTag, validateLabels,
-  WORD_CATEGORIES, categoryFilter, emptyCategoryText, isVisibleWord, isWordCategory, labelChips, labelsAriaText, matchesCategory, readLabels,
+  WORD_CATEGORIES, adultContentFrom, categoryFilter, emptyCategoryText, isVisibleWord, isWordCategory, labelChips, labelsAriaText, matchesCategory, readLabels,
   type LexemeLabels,
 } from './lexeme-labels.ts';
 
@@ -108,6 +108,15 @@ test('Контент 18+: vulgar — лише з увімкненим перем
   assert.ok(isVisibleWord(w18('vulgar'), true));
   assert.ok(isVisibleWord({ register: 'colloquial', regionality: 'general', usage_tags: ['offensive'] }));
   assert.ok(isVisibleWord(DEFAULT_LABELS));
+});
+
+test('Перемикач 18+ (profiles.adult_content, M26): вмикає лише явне true', () => {
+  assert.equal(adultContentFrom({ adult_content: true }), true);
+  assert.equal(adultContentFrom({ adult_content: false }), false);
+  assert.equal(adultContentFrom({ adult_content: 'true' }), false);
+  assert.equal(adultContentFrom({}), false); // колонки ще немає (M26 не запущено)
+  assert.equal(adultContentFrom(null), false); // немає рядка профілю / помилка
+  assert.equal(adultContentFrom(undefined), false);
 });
 
 function w18(register: LexemeLabels['register']): LexemeLabels {
