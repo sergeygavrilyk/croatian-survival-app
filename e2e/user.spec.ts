@@ -162,6 +162,8 @@ test('ситуація: фрази фільтруються за рівнем, �
 
   await levels.getByRole('button', { name: /^Усі · \d+$/ }).click();
   await expect(page.getByText(/ · рівень A1$/)).toBeHidden();
+});
+
 test('профіль: «Показувати контент 18+» — вимкнено, увімкнути лише з підтвердженням 18+', async ({ page }) => {
   await page.goto('/profile');
   const toggle = page.getByRole('switch', { name: 'Показувати контент 18+' });
