@@ -1,6 +1,8 @@
 # Автоматичні перевірки після кожного push і pull request (docs/TESTING.md §4).
-# Секретів не потрібно: збірка й тести без входу працюють з підставними адресами Supabase,
-# SQL-тести — на чистій локальній Postgres у GitHub (scripts/dev/curdb.sh), без доступу до робочої бази.
+# Збірка й тести без входу — з підставними адресами Supabase, SQL-тести — на чистій локальній Postgres у GitHub
+# (scripts/dev/curdb.sh), без доступу до робочої бази. E2E з тестовим акаунтом (робота e2e-user, рішення власника
+# 2026-11-14) — з репозиторних секретів E2E_EMAIL, E2E_PASSWORD, NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY;
+# немає секретів (ще не додано або PR із форку) — робота пропускає кроки й лишається зеленою.
 name: CI
 
 on:
@@ -76,3 +78,55 @@ jobs:
         run: sudo bash scripts/dev/curdb.sh
       - name: SQL-тести
         run: bash scripts/dev/sqltests.sh
+
+  e2e-user:
+    name: E2E з тестовим акаунтом
+    needs: app
+    # Лише PR, ручний запуск і main: push у гілку з відкритим PR інакше запускав би ті самі сценарії двічі
+    if: github.event_name != 'push' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    # Один тестовий акаунт — запуски по черзі, не паралельно
+    concurrency:
+      group: e2e-test-account
+      cancel-in-progress: false
+    env:
+      # Справжні адреси Supabase (перекривають підставні вище): NEXT_PUBLIC_* вшиваються в збірку
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      E2E_EMAIL: ${{ secrets.E2E_EMAIL }}
+      E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
+    steps:
+      - name: Чи є секрети тестового акаунта
+        id: secrets
+        run: |
+          if [ -n "$E2E_EMAIL" ] && [ -n "$E2E_PASSWORD" ] && [ -n "$NEXT_PUBLIC_SUPABASE_URL" ] && [ -n "$NEXT_PUBLIC_SUPABASE_ANON_KEY" ]; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::E2E з входом пропущено: немає репозиторних секретів E2E_EMAIL / E2E_PASSWORD / NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY (docs/TESTING.md §3)"
+          fi
+      - uses: actions/checkout@v7
+        if: steps.secrets.outputs.ok == 'true'
+      - uses: actions/setup-node@v7
+        if: steps.secrets.outputs.ok == 'true'
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+        if: steps.secrets.outputs.ok == 'true'
+      - name: Збірка з адресою робочої бази
+        if: steps.secrets.outputs.ok == 'true'
+        run: npm run build
+      - name: Браузер для E2E
+        if: steps.secrets.outputs.ok == 'true'
+        run: |
+          npx playwright install chromium
+          timeout --kill-after=15 300 npx playwright install-deps chromium \
+            || echo "::warning::Системні пакети для Playwright не встановились (дзеркала Ubuntu?) — E2E запускаємо з тим, що є на сервері"
+      # Пишуть у робочу базу лише прогрес і події тестового акаунта (як npm run e2e у власника)
+      - name: E2E з входом (setup + user)
+        if: steps.secrets.outputs.ok == 'true'
+        run: npx playwright test --project=setup --project=user
+      # Звіт Playwright тут не вивантажуємо: запис кроків (trace) містить пароль тестового акаунта, а репозиторій публічний.
+      # Що впало — видно в лозі кроку; повний звіт — локально: npm run e2e і npx playwright show-report.

@@ -3,10 +3,10 @@ import { AUTH_FILE, HAS_USER } from './e2e/env';
 
 /**
  * E2E (docs/TESTING.md §3). Запуск: `npm run e2e` (збірка + сервер на :3100 + усі сценарії)
- * або `npm run e2e:smoke` (лише без входу — так запускає CI).
+ * або `npm run e2e:smoke` (лише без входу). CI: робота `app` — smoke, робота `e2e-user` — setup + user.
  *
- * Тестовий акаунт — лише на комп'ютері власника: E2E_EMAIL і E2E_PASSWORD у .env.local
- * (файл у git не потрапляє). Без них сценарії з входом пропускаються.
+ * Тестовий акаунт: E2E_EMAIL і E2E_PASSWORD — у .env.local на комп'ютері власника (у git не потрапляє)
+ * і в репозиторних секретах GitHub для CI (рішення власника 2026-11-14). Без них сценарії з входом пропускаються.
  * Офлайн перевіряємо лише у збірці: у `npm run dev` PWA вимкнено.
  */
 const PORT = Number(process.env.E2E_PORT ?? 3100);
