@@ -32,6 +32,6 @@ e2e/                E2E Playwright: smoke.spec.ts (без входу, і в CI),
 .github/workflows/  ci.yml — CI після кожного push: lint, unit, збірка, типи, smoke E2E, SQL-тести
 supabase/functions/ Edge Functions (generate-audio)
 proxy.ts            захист маршрутів і оновлення сесії Supabase
-docs/               ТЗ і стан проєкту
+docs/               ТЗ і стан проєкту; docs/audits/ — аудити архітектури (раз на місяць, «до / після»); docs/adr/ — архітектурні рішення (ADR)
 scripts/legacy/     скрипти першої версії (check.py, data.json, generate_*.py; перенесено з кореня 2026-11-03, ніде не використовуються)
 ```
