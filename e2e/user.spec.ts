@@ -128,6 +128,22 @@ test('словник: позначка категорії на картці й �
   await expect(row).toBeVisible();
 });
 
+test('ситуація: діалоги фільтруються за рівнем', async ({ page }) => {
+  await page.goto('/situations/basics');
+  await page.getByRole('tab', { name: /^Діалоги/ }).click();
+  const levels = page.getByRole('group', { name: 'Рівень діалогів' });
+  await expect(levels.getByRole('button', { name: /^Усі · \d+$/, pressed: true })).toBeVisible();
+
+  const a1 = levels.getByRole('button', { name: /^A1 · \d+$/ });
+  const count = Number((await a1.textContent())?.split('·')[1]?.trim());
+  await a1.click();
+  await expect(levels.getByRole('button', { name: /^A1 · \d+$/, pressed: true })).toBeVisible();
+  await expect(page.getByText(new RegExp(`^${count} діалог.* · рівень A1$`))).toBeVisible();
+
+  await levels.getByRole('button', { name: /^Усі · \d+$/ }).click();
+  await expect(page.getByText(/ · рівень A1$/)).toBeHidden();
+});
+
 test('офлайн (§76): відкриті раз урок і текст відкриваються без інтернету', async ({ page, context, request }) => {
   test.slow();
   const sw = await request.get('/sw.js');
