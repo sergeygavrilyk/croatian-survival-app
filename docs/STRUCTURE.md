@@ -25,7 +25,7 @@ supabase/migrations/ схема БД (baseline 2026-10-12 + наступні м�
 supabase/data_fixes/ разові виправлення даних (зокрема пакети програми curriculum_*.sql)
 scripts/            генератори програми: full_lessons.py (спільна логіка повного уроку), gen_curriculum_*.py + *_data.py (дані) + *_snapshot.json (знімок перекладів бази);
                     gen_writing.py + writing_data_<партія>.py (письмо й переказ в уроках, партії з 2026-11-07; пілот — gen_writing_pilot_20261105.py),
-                    gen_interference.py + interference_data.py (типові помилки), gen_reading.py + reading_data*.py (A0, A1, A2) + reading_lexicon.py + reading_grammar.py (тексти для читання, словничок, граматика);
+                    gen_interference.py + interference_data.py (типові помилки), gen_reading.py + reading_data*.py (A0, A1, A2) + reading_lexicon.py + reading_grammar.py (тексти для читання, словничок, граматика); gen_reading_a2_v2.py + reading_data_a2_v2.py + reading_lexicon_a2_v2.py + reading_a2_v2_snapshot.json (36 текстів A2 v2, 2026-11-13); gen_phrases_a2.py + phrases_a2_data.py (фрази A2);
                     gen_assessment.py + assessment_source_snapshot.json (перевірки рівня A0/A1 з опублікованих уроків); gen_assessment_a0_v4.py (перевірки модулів A0 і — режим level — середина й фінал A0 під уроки за темою)
 supabase/tests/     інтеграційні SQL-тести (RLS, обмеження), з ROLLBACK; усі разом — scripts/dev/sqltests.sh
 e2e/                E2E Playwright: smoke.spec.ts (без входу, і в CI), auth.setup.ts + user.spec.ts (тестовий акаунт, лише локально), env.ts; конфіг — playwright.config.ts

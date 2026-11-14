@@ -1,0 +1,4779 @@
+{
+"_note": "Слова словника застосунку (lexemes, PUBLISHED), які трапляються в 36 нових текстах A2 v2: лема, переклад, найнижчий рівень уроку (null — слова немає в уроках), модуль A2 (якщо слово є в уроках A2), код частини мови. Знімок робочої бази 2026-11-13 (лише читання). Потрібен scripts/gen_reading_a2_v2.py. Даних користувачів немає.",
+"lexemes": {
+"a": [
+"a",
+"а",
+null,
+null,
+"conj"
+],
+"agroturizam": [
+"agroturizam",
+"агротуризм, сільська садиба",
+"A2",
+11,
+"n.m"
+],
+"akademsko priznavanje": [
+"akademsko priznavanje",
+"академічне визнання",
+"A2",
+2,
+"phr"
+],
+"ambalaža": [
+"ambalaža",
+"упаковка",
+"A2",
+9,
+"n.f"
+],
+"amfiteatar": [
+"amfiteatar",
+"амфітеатр",
+"A2",
+11,
+"n.m"
+],
+"aplikacija grada": [
+"aplikacija grada",
+"міський застосунок",
+"A2",
+9,
+"phr"
+],
+"aplikacija za plaćanje": [
+"aplikacija za plaćanje",
+"платіжний застосунок",
+"A2",
+12,
+"phr"
+],
+"apostille": [
+"apostille",
+"апостиль",
+"A2",
+2,
+"n.n"
+],
+"atmosfera": [
+"atmosfera",
+"атмосфера",
+"A2",
+10,
+"n.f"
+],
+"auto": [
+"auto",
+"автомобіль",
+"A0",
+null,
+"n.m"
+],
+"autocesta": [
+"autocesta",
+"автомагістраль",
+"A0",
+null,
+"n.f"
+],
+"automobil": [
+"automobil",
+"автомобіль",
+null,
+null,
+"n.m"
+],
+"balkon": [
+"balkon",
+"балкон",
+"A0",
+null,
+"n.m"
+],
+"berba grožđa": [
+"berba grožđa",
+"збір винограду",
+"A2",
+11,
+"phr"
+],
+"besplatan": [
+"besplatan",
+"безкоштовний",
+"A2",
+2,
+"adj"
+],
+"bez": [
+"bez",
+"без",
+null,
+null,
+"прийменник"
+],
+"bez prevoditelja": [
+"bez prevoditelja",
+"без перекладача",
+"A2",
+14,
+"phr"
+],
+"bezbrižan": [
+"bezbrižan",
+"безтурботний",
+"A2",
+3,
+"adj"
+],
+"bicikl": [
+"bicikl",
+"велосипед",
+"A0",
+null,
+"n.m"
+],
+"bila bih vam zahvalna": [
+"bila bih Vam zahvalna",
+"я була б вам вдячна",
+"A2",
+14,
+"phr"
+],
+"bilježnik": [
+"bilježnik",
+"нотаріус",
+"A2",
+6,
+"n.m"
+],
+"biometrijska fotografija": [
+"biometrijska fotografija",
+"біометричне фото",
+"A2",
+12,
+"phr"
+],
+"biootpad": [
+"biootpad",
+"біовідходи",
+"A2",
+9,
+"n.m"
+],
+"birati": [
+"birati",
+"обирати",
+null,
+null,
+"v.ipf"
+],
+"boca": [
+"boca",
+"пляшка",
+"A0",
+9,
+"n.f"
+],
+"bogatstvo": [
+"bogatstvo",
+"багатство",
+null,
+null,
+"n.n"
+],
+"bojanje kose": [
+"bojanje kose",
+"фарбування волосся",
+"A2",
+6,
+"phr"
+],
+"bolji nego što sam očekivao": [
+"bolji nego što sam očekivao",
+"кращий, ніж я очікував",
+"A2",
+10,
+"phr"
+],
+"bolovanje radi njege djeteta": [
+"bolovanje radi njege djeteta",
+"лікарняний по догляду за дитиною",
+"A2",
+7,
+"phr"
+],
+"boravak u prirodi": [
+"boravak u prirodi",
+"перебування на природі",
+"A2",
+7,
+"phr"
+],
+"božićni sajam": [
+"božićni sajam",
+"різдвяний ярмарок",
+"A2",
+11,
+"phr"
+],
+"branik": [
+"branik",
+"бампер",
+"A2",
+8,
+"n.m"
+],
+"brdski gradić": [
+"brdski gradić",
+"містечко на пагорбі",
+"A2",
+11,
+"phr"
+],
+"broj za praćenje": [
+"broj za praćenje",
+"номер для відстеження",
+"A2",
+12,
+"phr"
+],
+"brz": [
+"brz",
+"швидкий",
+"A0",
+null,
+"adj"
+],
+"brzo": [
+"brzo",
+"швидко",
+"A0",
+null,
+"adv"
+],
+"brzo ozdravi": [
+"brzo ozdravi",
+"одужуй швидше",
+"A2",
+4,
+"phr"
+],
+"buditi se noću": [
+"buditi se noću",
+"прокидатися вночі",
+"A2",
+7,
+"phr"
+],
+"bura": [
+"bura",
+"бура (сильний північний вітер)",
+"A0",
+null,
+"n.f"
+],
+"carinska deklaracija": [
+"carinska deklaracija",
+"митна декларація",
+"A2",
+12,
+"phr"
+],
+"certifikat": [
+"certifikat",
+"сертифікат",
+"A1",
+13,
+"n.m"
+],
+"cijele dane": [
+"cijele dane",
+"цілими днями",
+"A2",
+3,
+"phr"
+],
+"cilj": [
+"cilj",
+"ціль",
+"A1",
+null,
+"n.m"
+],
+"cjelodnevni boravak": [
+"cjelodnevni boravak",
+"група продовженого дня (на цілий день)",
+"A2",
+2,
+"phr"
+],
+"crijevna viroza": [
+"crijevna viroza",
+"кишкова інфекція (вірусна)",
+"A2",
+7,
+"phr"
+],
+"crkva": [
+"crkva",
+"церква",
+"A0",
+null,
+"n.f"
+],
+"cvijeće": [
+"cvijeće",
+"квіти",
+"A2",
+9,
+"n.n"
+],
+"dan neovisnosti ukrajine": [
+"Dan neovisnosti Ukrajine",
+"День Незалежності України",
+"A2",
+12,
+"phr"
+],
+"dati": [
+"dati",
+"дати",
+"A0",
+null,
+"v.pf"
+],
+"davati": [
+"davati",
+"давати",
+null,
+null,
+"v.ipf"
+],
+"diploma": [
+"diploma",
+"диплом",
+"A1",
+null,
+"n.f"
+],
+"dirljiv": [
+"dirljiv",
+"зворушливий",
+"A2",
+10,
+"adj"
+],
+"djelatnost": [
+"djelatnost",
+"діяльність",
+"A2",
+5,
+"n.f"
+],
+"djetinjstvo": [
+"djetinjstvo",
+"дитинство",
+"A2",
+3,
+"n.n"
+],
+"djevojčica": [
+"djevojčica",
+"дівчинка",
+"A0",
+null,
+"n.f"
+],
+"do": [
+"do",
+"до",
+null,
+null,
+"прийменник"
+],
+"do kraja godine": [
+"do kraja godine",
+"до кінця року",
+"A2",
+13,
+"phr"
+],
+"dobar": [
+"dobar",
+"хороший; добрий",
+"A0",
+null,
+"adj"
+],
+"dobiti": [
+"dobiti",
+"отримати / здобути",
+null,
+null,
+"v.pf"
+],
+"dobro": [
+"dobro",
+"добре",
+"A0",
+null,
+"adv"
+],
+"dodatak diplomi": [
+"dodatak diplomi",
+"додаток до диплома",
+"A2",
+2,
+"phr"
+],
+"dodatna pitanja": [
+"dodatna pitanja",
+"додаткові питання",
+"A2",
+5,
+"phr"
+],
+"dogovor": [
+"dogovor",
+"домовленість",
+"A1",
+null,
+"n.m"
+],
+"dogovoriti se sa šefom": [
+"dogovoriti se sa šefom",
+"домовитися з шефом",
+"A2",
+14,
+"phr"
+],
+"dojam": [
+"dojam",
+"враження",
+"A2",
+10,
+"n.m"
+],
+"dok": [
+"dok",
+"поки; доки",
+"A1",
+null,
+"conj"
+],
+"dolaziti": [
+"dolaziti",
+"приходити",
+"A1",
+null,
+"v.ipf"
+],
+"dolina": [
+"dolina",
+"долина",
+"A1",
+11,
+"n.f"
+],
+"dom": [
+"dom",
+"дім, оселя; заклад",
+"A1",
+null,
+"n.m"
+],
+"domaća kobasica": [
+"domaća kobasica",
+"домашня ковбаса",
+"A2",
+11,
+"phr"
+],
+"domaćin": [
+"domaćin",
+"господар",
+"A0",
+null,
+"n.m"
+],
+"donji grad": [
+"Donji grad",
+"Нижнє місто (Загреб)",
+"A2",
+11,
+"phr"
+],
+"dopuniti": [
+"dopuniti",
+"доповнити",
+"A2",
+2,
+"v.pf"
+],
+"dopunska nastava": [
+"dopunska nastava",
+"додаткові заняття (для відстаючих)",
+"A2",
+2,
+"phr"
+],
+"doručak": [
+"doručak",
+"сніданок",
+"A0",
+null,
+"n.m"
+],
+"dovesti na pregled": [
+"dovesti na pregled",
+"пригнати на огляд",
+"A2",
+8,
+"phr"
+],
+"dozvola": [
+"dozvola",
+"дозвіл; посвідка",
+"A1",
+null,
+"n.f"
+],
+"dug": [
+"dug",
+"довгий",
+"A0",
+null,
+"adj"
+],
+"dugo": [
+"dugo",
+"довго",
+null,
+null,
+"adv"
+],
+"dugoročni plan": [
+"dugoročni plan",
+"довгостроковий план",
+"A2",
+13,
+"phr"
+],
+"dunav": [
+"Dunav",
+"Дунай",
+"A2",
+11,
+"n.m"
+],
+"duša": [
+"duša",
+"душа",
+null,
+null,
+"n.f"
+],
+"dvojezičan": [
+"dvojezičan",
+"двомовний",
+"A2",
+11,
+"adj"
+],
+"dvojezičnost": [
+"dvojezičnost",
+"двомовність",
+"A2",
+12,
+"n.f"
+],
+"dvorište": [
+"dvorište",
+"подвір'я",
+"A1",
+null,
+"n.n"
+],
+"e-dnevnik": [
+"e-Dnevnik",
+"електронний щоденник (журнал)",
+"A2",
+2,
+"n.m"
+],
+"elektronički otpad": [
+"elektronički otpad",
+"електронні відходи",
+"A2",
+9,
+"phr"
+],
+"europsko izvješće": [
+"europsko izvješće",
+"європротокол",
+"A2",
+8,
+"phr"
+],
+"evo": [
+"evo",
+"ось; ось тут",
+null,
+null,
+"part"
+],
+"feniranje": [
+"feniranje",
+"укладання феном",
+"A2",
+6,
+"n.n"
+],
+"fiskalizacija": [
+"fiskalizacija",
+"фіскалізація (реєстрація чеків)",
+"A2",
+5,
+"n.f"
+],
+"fiš paprikaš": [
+"fiš paprikaš",
+"фіш-паприкаш (рибна юшка з паприкою)",
+"A2",
+11,
+"phr"
+],
+"fotografija za dokumente": [
+"fotografija za dokumente",
+"фото на документи",
+"A2",
+8,
+"phr"
+],
+"fotografirati štetu": [
+"fotografirati štetu",
+"сфотографувати пошкодження",
+"A2",
+8,
+"phr"
+],
+"frizerka": [
+"frizerka",
+"перукарка",
+"A1",
+null,
+"n.f"
+],
+"fuži": [
+"fuži",
+"фужі (істрійська паста)",
+"A2",
+11,
+"n.pl.m"
+],
+"ga": [
+"ga",
+"його",
+null,
+null,
+"займенник"
+],
+"glasna glazba": [
+"glasna glazba",
+"гучна музика",
+"A2",
+4,
+"phr"
+],
+"glavni lik": [
+"glavni lik",
+"головний герой",
+"A2",
+10,
+"phr"
+],
+"glazba": [
+"glazba",
+"музика",
+null,
+null,
+"n.f"
+],
+"glazbena škola": [
+"glazbena škola",
+"музична школа",
+"A2",
+2,
+"phr"
+],
+"glomazni otpad": [
+"glomazni otpad",
+"великогабаритні відходи",
+"A2",
+9,
+"phr"
+],
+"glumica": [
+"glumica",
+"акторка",
+"A2",
+10,
+"n.f"
+],
+"glumiti": [
+"glumiti",
+"грати (в театрі)",
+"A2",
+10,
+"v.ipf"
+],
+"gornji grad": [
+"Gornji grad",
+"Верхнє місто (Загреб)",
+"A2",
+11,
+"phr"
+],
+"gramatika": [
+"gramatika",
+"граматика",
+"A2",
+2,
+"n.f"
+],
+"građanin": [
+"građanin",
+"громадянин",
+null,
+null,
+"n.m"
+],
+"grkokatolička crkva": [
+"grkokatolička crkva",
+"греко-католицька церква",
+"A2",
+12,
+"phr"
+],
+"haljina": [
+"haljina",
+"сукня",
+"A0",
+null,
+"n.f"
+],
+"hitne službe": [
+"hitne službe",
+"екстрені служби",
+"A2",
+9,
+"phr"
+],
+"hitno prodajem": [
+"hitno prodajem",
+"терміново продам",
+"A2",
+10,
+"phr"
+],
+"hrabrost": [
+"hrabrost",
+"сміливість",
+"A2",
+3,
+"n.f"
+],
+"hrđa": [
+"hrđa",
+"іржа",
+"A2",
+8,
+"n.f"
+],
+"i": [
+"i",
+"і / та",
+null,
+null,
+"conj"
+],
+"igra": [
+"igra",
+"гра",
+null,
+null,
+"n.f"
+],
+"igrati se": [
+"igrati se",
+"гратися",
+"A0",
+null,
+"v.ipf"
+],
+"ikad": [
+"ikad",
+"коли-небудь",
+"A1",
+null,
+"adv"
+],
+"individualna nastava": [
+"individualna nastava",
+"індивідуальні заняття",
+"A2",
+2,
+"phr"
+],
+"informacije": [
+"informacije",
+"зустріч з учителем (день консультацій)",
+"A2",
+2,
+"n.pl.f"
+],
+"inozemna kvalifikacija": [
+"inozemna kvalifikacija",
+"іноземна кваліфікація",
+"A2",
+2,
+"phr"
+],
+"instrukcije": [
+"instrukcije",
+"репетиторство",
+"A2",
+2,
+"n.pl.f"
+],
+"iskaznica": [
+"iskaznica",
+"посвідчення",
+null,
+null,
+"n.f"
+],
+"iskaznica stranca": [
+"iskaznica stranca",
+"посвідка іноземця",
+"A2",
+12,
+"phr"
+],
+"isključiti mobitel": [
+"isključiti mobitel",
+"вимкнути мобільний",
+"A2",
+7,
+"phr"
+],
+"iskoristiti": [
+"iskoristiti",
+"скористатися",
+null,
+null,
+"v.pf"
+],
+"iskrsnulo mi je nešto": [
+"iskrsnulo mi je nešto",
+"у мене дещо непередбачене",
+"A2",
+13,
+"phr"
+],
+"ispričati se": [
+"ispričati se",
+"вибачитися",
+"A1",
+null,
+"v.pf"
+],
+"ispričavam se zbog kašnjenja": [
+"ispričavam se zbog kašnjenja",
+"перепрошую за затримку",
+"A2",
+5,
+"phr"
+],
+"istek valjanosti": [
+"istek valjanosti",
+"закінчення строку дії",
+"A2",
+8,
+"phr"
+],
+"istek valjanosti iskaznice": [
+"istek valjanosti iskaznice",
+"закінчення строку дії посвідки",
+"A2",
+12,
+"phr"
+],
+"isti": [
+"isti",
+"той самий; однаковий",
+"A1",
+null,
+"adj"
+],
+"istok": [
+"istok",
+"схід",
+"A0",
+null,
+"n.m"
+],
+"istrošene baterije": [
+"istrošene baterije",
+"використані батарейки",
+"A2",
+9,
+"phr"
+],
+"izabrati": [
+"izabrati",
+"обрати",
+null,
+null,
+"v.pf"
+],
+"izaći iz vozila": [
+"izaći iz vozila",
+"вийти з авто",
+"A2",
+8,
+"phr"
+],
+"izbjegavati": [
+"izbjegavati",
+"уникати",
+"A2",
+9,
+"v.ipf"
+],
+"izdati": [
+"izdati",
+"видати, зрадити",
+null,
+null,
+"v.pf"
+],
+"izdati račun": [
+"izdati račun",
+"виписати рахунок",
+"A2",
+5,
+"phr"
+],
+"izgaranje na poslu": [
+"izgaranje na poslu",
+"професійне вигорання",
+"A2",
+7,
+"phr"
+],
+"izjava": [
+"izjava",
+"заява / свідчення",
+"A2",
+6,
+"n.f"
+],
+"izjava svjedoka": [
+"izjava svjedoka",
+"показання свідка",
+"A2",
+8,
+"phr"
+],
+"izlaziti": [
+"izlaziti",
+"виходити",
+"A1",
+null,
+"v.ipf"
+],
+"izlet razreda": [
+"izlet razreda",
+"класна екскурсія",
+"A2",
+2,
+"phr"
+],
+"iznenađujući kraj": [
+"iznenađujući kraj",
+"несподіваний фінал",
+"A2",
+10,
+"phr"
+],
+"izostanak": [
+"izostanak",
+"пропуск (заняття)",
+"A2",
+2,
+"n.m"
+],
+"izvanškolske aktivnosti": [
+"izvanškolske aktivnosti",
+"позашкільні гуртки",
+"A2",
+2,
+"phr"
+],
+"jadrolinija": [
+"Jadrolinija",
+"Ядролінія (хорватська поромна компанія)",
+"A2",
+1,
+"n.f"
+],
+"jak": [
+"jak",
+"сильний",
+null,
+null,
+"adj"
+],
+"javit ću ti": [
+"javit ću ti",
+"я тобі повідомлю",
+"A2",
+13,
+"phr"
+],
+"javni prijevoz": [
+"javni prijevoz",
+"громадський транспорт",
+"A0",
+null,
+"phr"
+],
+"javnobilježnička pristojba": [
+"javnobilježnička pristojba",
+"нотаріальний збір",
+"A2",
+6,
+"phr"
+],
+"javnobilježnički ured": [
+"javnobilježnički ured",
+"нотаріальна контора",
+"A2",
+6,
+"phr"
+],
+"jednog dana": [
+"jednog dana",
+"одного дня, колись",
+"A2",
+12,
+"phr"
+],
+"jednom": [
+"jednom",
+"один раз; колись",
+"A1",
+null,
+"adv"
+],
+"jednostavan": [
+"jednostavan",
+"простий",
+null,
+null,
+"adj"
+],
+"jedva čekam": [
+"jedva čekam",
+"не можу дочекатися",
+"A2",
+14,
+"phr"
+],
+"jesen": [
+"jesen",
+"осінь",
+"A0",
+null,
+"n.f"
+],
+"kamena kuća": [
+"kamena kuća",
+"кам’яний будинок",
+"A2",
+11,
+"phr"
+],
+"kanta": [
+"kanta",
+"відро",
+null,
+null,
+"n.f"
+],
+"karton": [
+"karton",
+"медична картка",
+"A2",
+7,
+"n.m"
+],
+"kasniti s rokom": [
+"kasniti s rokom",
+"не встигати в строк",
+"A2",
+5,
+"phr"
+],
+"katamaran": [
+"katamaran",
+"катамаран",
+"A1",
+1,
+"n.m"
+],
+"kauč": [
+"kauč",
+"диван",
+"A0",
+9,
+"n.m"
+],
+"kazati": [
+"kazati",
+"сказати",
+null,
+null,
+"v.bi"
+],
+"kazna za neodvajanje": [
+"kazna za neodvajanje",
+"штраф за несортування",
+"A2",
+9,
+"phr"
+],
+"kilogram": [
+"kilogram",
+"кілограм",
+"A0",
+null,
+"n.m"
+],
+"kilometar": [
+"kilometar",
+"кілометр",
+"A0",
+null,
+"n.m"
+],
+"kod": [
+"kod",
+"код",
+null,
+null,
+"n.m"
+],
+"kolegica": [
+"kolegica",
+"колега (жінка)",
+"A0",
+null,
+"n.f"
+],
+"koljeno": [
+"koljeno",
+"коліно",
+"A0",
+null,
+"n.n"
+],
+"komarac": [
+"komarac",
+"комар",
+"A2",
+1,
+"n.m"
+],
+"koncert": [
+"koncert",
+"концерт",
+"A1",
+null,
+"n.m"
+],
+"konj": [
+"konj",
+"кінь",
+null,
+null,
+"n.m"
+],
+"kontakt": [
+"kontakt",
+"контакт",
+"A2",
+10,
+"n.m"
+],
+"korijeni": [
+"korijeni",
+"коріння",
+"A2",
+12,
+"n.pl.m"
+],
+"koristiti": [
+"koristiti",
+"використовувати",
+null,
+null,
+"v.ipf"
+],
+"kotlić": [
+"kotlić",
+"казанок",
+"A2",
+11,
+"n.m"
+],
+"krajnji rok": [
+"krajnji rok",
+"кінцевий строк, дедлайн",
+"A2",
+5,
+"phr"
+],
+"kratak sažetak": [
+"kratak sažetak",
+"коротке резюме",
+"A2",
+5,
+"phr"
+],
+"krivac": [
+"krivac",
+"винуватець",
+"A2",
+8,
+"n.m"
+],
+"krov": [
+"krov",
+"дах",
+null,
+null,
+"n.m"
+],
+"kuhano vino": [
+"kuhano vino",
+"глінтвейн",
+"A2",
+11,
+"phr"
+],
+"kukuruz": [
+"kukuruz",
+"кукурудза",
+"A2",
+11,
+"n.m"
+],
+"kulen": [
+"kulen",
+"кулен (гостра славонська ковбаса)",
+"A1",
+null,
+"n.m"
+],
+"kulturno društvo": [
+"kulturno društvo",
+"культурне товариство",
+"A2",
+12,
+"phr"
+],
+"kum": [
+"kum",
+"хрещений батько; свідок на весіллі",
+"A0",
+null,
+"n.m"
+],
+"kurirska služba": [
+"kurirska služba",
+"кур’єрська служба",
+"A2",
+12,
+"phr"
+],
+"kuća": [
+"kuća",
+"будинок; дім",
+"A0",
+null,
+"n.f"
+],
+"kći": [
+"kći",
+"дочка",
+"A0",
+null,
+"n.f"
+],
+"lektira": [
+"lektira",
+"обов’язкова книжка для читання",
+"A2",
+2,
+"n.f"
+],
+"li": [
+"li",
+"чи (питальна частка)",
+null,
+null,
+"part"
+],
+"licitarsko srce": [
+"licitarsko srce",
+"ліцитарське серце (медяник)",
+"A2",
+11,
+"phr"
+],
+"lijep": [
+"lijep",
+"красивий",
+"A0",
+null,
+"adj"
+],
+"lijepo ponašanje": [
+"lijepo ponašanje",
+"гарна поведінка",
+"A2",
+11,
+"phr"
+],
+"liječnička ispričnica": [
+"liječnička ispričnica",
+"довідка від лікаря",
+"A2",
+2,
+"phr"
+],
+"liječničko uvjerenje": [
+"liječničko uvjerenje",
+"медична довідка",
+"A2",
+8,
+"phr"
+],
+"linija": [
+"linija",
+"лінія / маршрут",
+"A0",
+null,
+"n.f"
+],
+"lipicanac": [
+"lipicanac",
+"ліпіцанер (порода коней)",
+"A2",
+11,
+"n.m"
+],
+"lista ciljeva": [
+"lista ciljeva",
+"список цілей",
+"A2",
+13,
+"phr"
+],
+"ljetovanje": [
+"ljetovanje",
+"літній відпочинок; відпустка влітку",
+"A2",
+1,
+"n.n"
+],
+"lokacija": [
+"lokacija",
+"локація; місце",
+null,
+null,
+"n.f"
+],
+"lovice": [
+"lovice",
+"квач (гра)",
+"A2",
+3,
+"n.pl.f"
+],
+"loše": [
+"loše",
+"погано",
+"A0",
+null,
+"adv"
+],
+"loše spavati": [
+"loše spavati",
+"погано спати",
+"A2",
+7,
+"phr"
+],
+"luka": [
+"luka",
+"порт",
+null,
+null,
+"n.f"
+],
+"lučka kapetanija": [
+"lučka kapetanija",
+"портова капітанія",
+"A2",
+1,
+"phr"
+],
+"majica": [
+"majica",
+"футболка",
+"A0",
+null,
+"n.f"
+],
+"mala grupa": [
+"mala grupa",
+"мала група",
+"A2",
+2,
+"phr"
+],
+"mali": [
+"mali",
+"малий",
+"A0",
+null,
+"adj"
+],
+"malo korišten": [
+"malo korišten",
+"мало вживаний",
+"A2",
+10,
+"phr"
+],
+"maloljetno dijete": [
+"maloljetno dijete",
+"неповнолітня дитина",
+"A2",
+12,
+"phr"
+],
+"malvazija": [
+"malvazija",
+"мальвазія (біле вино)",
+"A2",
+11,
+"n.f"
+],
+"mana": [
+"mana",
+"недолік",
+"A2",
+4,
+"n.f"
+],
+"maneštra": [
+"maneštra",
+"манештра (густий овочевий суп)",
+"A2",
+11,
+"n.f"
+],
+"marenda": [
+"marenda",
+"перекус / пізній сніданок",
+"A1",
+2,
+"n.f"
+],
+"maslinovo ulje": [
+"maslinovo ulje",
+"оливкова олія",
+"A1",
+null,
+"phr"
+],
+"materijalna šteta": [
+"materijalna šteta",
+"матеріальна шкода",
+"A2",
+8,
+"phr"
+],
+"materinji jezik": [
+"materinji jezik",
+"рідна мова",
+"A2",
+12,
+"phr"
+],
+"mačić": [
+"mačić",
+"кошеня",
+"A1",
+null,
+"n.m"
+],
+"medicina rada": [
+"medicina rada",
+"медицина праці (огляд водіїв)",
+"A2",
+8,
+"phr"
+],
+"mehaničar": [
+"mehaničar",
+"механік",
+"A1",
+8,
+"n.m"
+],
+"metal": [
+"metal",
+"метал",
+"A2",
+9,
+"n.m"
+],
+"metar": [
+"metar",
+"метр",
+"A0",
+null,
+"n.m"
+],
+"miješani komunalni otpad": [
+"miješani komunalni otpad",
+"змішані побутові відходи",
+"A2",
+9,
+"phr"
+],
+"miješati jezike": [
+"miješati jezike",
+"змішувати мови",
+"A2",
+12,
+"phr"
+],
+"ministarstvo": [
+"ministarstvo",
+"міністерство",
+null,
+null,
+"n.n"
+],
+"mjesec": [
+"mjesec",
+"місяць",
+"A0",
+null,
+"n.m"
+],
+"mjesto za invalide": [
+"mjesto za invalide",
+"місце для людей з інвалідністю",
+"A2",
+8,
+"phr"
+],
+"mladenci": [
+"mladenci",
+"молодята",
+"A2",
+4,
+"n.pl.m"
+],
+"mladenka": [
+"mladenka",
+"наречена",
+"A2",
+4,
+"n.f"
+],
+"mladoženja": [
+"mladoženja",
+"наречений",
+"A2",
+4,
+"n.m"
+],
+"moguć": [
+"moguć",
+"можливий",
+null,
+null,
+"adj"
+],
+"molila bih": [
+"molila bih",
+"я б просила",
+"A2",
+14,
+"phr"
+],
+"motivacija": [
+"motivacija",
+"мотивація",
+"A2",
+13,
+"n.f"
+],
+"možda": [
+"možda",
+"можливо",
+"A0",
+null,
+"adv"
+],
+"mrežica protiv komaraca": [
+"mrežica protiv komaraca",
+"москітна сітка",
+"A2",
+1,
+"phr"
+],
+"na": [
+"na",
+"на",
+null,
+null,
+"прийменник"
+],
+"na licu mjesta": [
+"na licu mjesta",
+"на місці (події)",
+"A2",
+8,
+"phr"
+],
+"na početku": [
+"na početku",
+"на початку",
+"A2",
+10,
+"phr"
+],
+"naglasak": [
+"naglasak",
+"наголос; акцент",
+"A2",
+12,
+"n.m"
+],
+"naknada za prijenos": [
+"naknada za prijenos",
+"комісія за переказ",
+"A2",
+12,
+"phr"
+],
+"nakon": [
+"nakon",
+"після",
+null,
+null,
+"прийменник"
+],
+"napet": [
+"napet",
+"напружений",
+"A2",
+7,
+"adj"
+],
+"napetost": [
+"napetost",
+"напруга, інтрига",
+"A2",
+10,
+"n.f"
+],
+"napisati": [
+"napisati",
+"написати",
+null,
+null,
+"v.pf"
+],
+"napokon": [
+"napokon",
+"врешті-решт",
+"A2",
+3,
+"adv"
+],
+"napraviti": [
+"napraviti",
+"зробити",
+null,
+null,
+"v.pf"
+],
+"napredni tečaj": [
+"napredni tečaj",
+"курс для просунутих",
+"A2",
+2,
+"phr"
+],
+"napuniti baterije": [
+"napuniti baterije",
+"відновити сили («зарядити батарейки»)",
+"A2",
+7,
+"phr"
+],
+"napustiti": [
+"napustiti",
+"покинути, залишити",
+"A2",
+3,
+"v.pf"
+],
+"narančasto upozorenje": [
+"narančasto upozorenje",
+"помаранчевий рівень небезпеки",
+"A2",
+9,
+"phr"
+],
+"naručiti": [
+"naručiti",
+"замовити",
+"A0",
+null,
+"v.pf"
+],
+"nasmijati se": [
+"nasmijati se",
+"засміятися",
+"A2",
+3,
+"v.pf"
+],
+"nastup": [
+"nastup",
+"виступ",
+"A1",
+11,
+"n.m"
+],
+"naučiti iz pogrešaka": [
+"naučiti iz pogrešaka",
+"вчитися на помилках",
+"A2",
+14,
+"phr"
+],
+"ne funkcionira": [
+"ne funkcionira",
+"не працює, не функціонує",
+"A2",
+1,
+"phr"
+],
+"ne stižem": [
+"ne stižem",
+"я не встигаю",
+"A2",
+13,
+"phr"
+],
+"nedostajati": [
+"nedostajati",
+"бракувати; сумувати за",
+"A0",
+2,
+"v.ipf"
+],
+"nedostaješ mi": [
+"nedostaješ mi",
+"я сумую за тобою",
+"A2",
+14,
+"phr"
+],
+"neizvjesnost": [
+"neizvjesnost",
+"невизначеність",
+"A2",
+3,
+"n.f"
+],
+"nema problema": [
+"nema problema",
+"немає проблем",
+"A0",
+13,
+"phr"
+],
+"nepristojno": [
+"nepristojno",
+"нечемно, непристойно",
+"A2",
+11,
+"adv"
+],
+"nepropisno parkiran": [
+"nepropisno parkiran",
+"неправильно припаркований",
+"A2",
+8,
+"phr"
+],
+"nestašan": [
+"nestašan",
+"пустотливий, неслухняний",
+"A2",
+3,
+"adj"
+],
+"nevrijeme": [
+"nevrijeme",
+"негода",
+"A2",
+1,
+"n.n"
+],
+"nezaposlen": [
+"nezaposlen",
+"безробітний",
+"A0",
+null,
+"adj"
+],
+"njega djeteta": [
+"njega djeteta",
+"догляд за дитиною",
+"A2",
+7,
+"phr"
+],
+"njezin": [
+"njezin",
+"її",
+"A0",
+null,
+"займенник"
+],
+"njihov": [
+"njihov",
+"їхній",
+"A0",
+null,
+"займенник"
+],
+"novo poglavlje": [
+"novo poglavlje",
+"новий розділ (життя)",
+"A2",
+14,
+"phr"
+],
+"novopridošli": [
+"novopridošli",
+"новоприбулі",
+"A2",
+12,
+"n.pl.m"
+],
+"novosti": [
+"novosti",
+"новини (особисті)",
+"A2",
+14,
+"n.pl.f"
+],
+"noću": [
+"noću",
+"уночі",
+"A0",
+null,
+"adv"
+],
+"nudim": [
+"nudim",
+"пропоную",
+"A2",
+10,
+"phr"
+],
+"o": [
+"o",
+"про",
+null,
+null,
+"прийменник"
+],
+"obavijestiti": [
+"obavijestiti",
+"повідомити",
+"A2",
+12,
+"v.pf"
+],
+"obavještavati": [
+"obavještavati",
+"повідомляти",
+null,
+null,
+"v.ipf"
+],
+"obećavati": [
+"obećavati",
+"обіцяти",
+null,
+null,
+"v.ipf"
+],
+"obiteljski ručak": [
+"obiteljski ručak",
+"сімейний обід",
+"A2",
+11,
+"phr"
+],
+"obiteljsko pravilo": [
+"obiteljsko pravilo",
+"сімейне правило",
+"A2",
+12,
+"phr"
+],
+"običaj": [
+"običaj",
+"звичай",
+"A1",
+4,
+"n.m"
+],
+"običan": [
+"običan",
+"звичайний",
+null,
+null,
+"adj"
+],
+"oblik": [
+"oblik",
+"форма",
+null,
+null,
+"n.m"
+],
+"obrt": [
+"obrt",
+"ремесло; обрт (дрібне підприємництво, як ФОП)",
+"A2",
+5,
+"n.m"
+],
+"obrtni registar": [
+"obrtni registar",
+"реєстр підприємців",
+"A2",
+5,
+"phr"
+],
+"obrtnik": [
+"obrtnik",
+"ремісник; власник обрту (підприємець)",
+"A2",
+5,
+"n.m"
+],
+"ocjena": [
+"ocjena",
+"оцінка",
+"A1",
+null,
+"n.f"
+],
+"od": [
+"od",
+"від",
+null,
+null,
+"прийменник"
+],
+"odgovara li ti": [
+"odgovara li ti",
+"тобі підходить?",
+"A2",
+13,
+"phr"
+],
+"odijelo": [
+"odijelo",
+"костюм",
+null,
+null,
+"n.n"
+],
+"odjel za strance": [
+"odjel za strance",
+"відділ у справах іноземців",
+"A2",
+12,
+"phr"
+],
+"odličan": [
+"odličan",
+"відмінний",
+"A2",
+2,
+"adj"
+],
+"odmoriti se": [
+"odmoriti se",
+"відпочити",
+null,
+null,
+"v.pf"
+],
+"odnijeti": [
+"odnijeti",
+"віднести",
+"A1",
+null,
+"v.pf"
+],
+"odrastati": [
+"odrastati",
+"рости, дорослішати",
+"A2",
+3,
+"v.ipf"
+],
+"održati": [
+"održati",
+"провести; підтримати",
+null,
+null,
+"v.pf"
+],
+"održavati": [
+"održavati",
+"проводити; підтримувати",
+null,
+null,
+"v.ipf"
+],
+"odsutan": [
+"odsutan",
+"відсутній",
+"A1",
+null,
+"adj"
+],
+"odustati": [
+"odustati",
+"відмовитися",
+"A2",
+13,
+"v.pf"
+],
+"odvajanje otpada": [
+"odvajanje otpada",
+"сортування сміття",
+"A2",
+9,
+"phr"
+],
+"odvajati": [
+"odvajati",
+"відокремлювати",
+"A2",
+9,
+"v.ipf"
+],
+"odvesti auto": [
+"odvesti auto",
+"відвезти (евакуювати) авто",
+"A2",
+8,
+"phr"
+],
+"oglas": [
+"oglas",
+"оголошення",
+"A0",
+null,
+"n.m"
+],
+"oglas za auto": [
+"oglas za auto",
+"оголошення про продаж авто",
+"A2",
+8,
+"phr"
+],
+"oglasna ploča": [
+"oglasna ploča",
+"дошка оголошень",
+"A2",
+4,
+"phr"
+],
+"ogrebati se": [
+"ogrebati se",
+"подряпатися",
+"A2",
+3,
+"v.pf"
+],
+"ogrebotina na braniku": [
+"ogrebotina na braniku",
+"подряпина на бампері",
+"A2",
+8,
+"phr"
+],
+"oko": [
+"oko",
+"око",
+"A0",
+null,
+"n.n"
+],
+"okupljanje": [
+"okupljanje",
+"зустріч, збори",
+"A2",
+12,
+"n.n"
+],
+"olakšanje": [
+"olakšanje",
+"полегшення",
+"A2",
+3,
+"n.n"
+],
+"olujni vjetar": [
+"olujni vjetar",
+"штормовий вітер",
+"A2",
+9,
+"phr"
+],
+"omiljen": [
+"omiljen",
+"улюблений",
+"A0",
+null,
+"adj"
+],
+"omotnica s novcem": [
+"omotnica s novcem",
+"конверт з грошима",
+"A2",
+4,
+"phr"
+],
+"opasnost": [
+"opasnost",
+"небезпека",
+"A1",
+null,
+"n.f"
+],
+"opisati simptome": [
+"opisati simptome",
+"описати симптоми",
+"A2",
+14,
+"phr"
+],
+"opravdati": [
+"opravdati",
+"виправдати",
+"A2",
+2,
+"v.pf"
+],
+"organizator": [
+"organizator",
+"організатор",
+null,
+null,
+"n.m"
+],
+"osiguranje": [
+"osiguranje",
+"страхування",
+null,
+null,
+"n.n"
+],
+"osjetiti": [
+"osjetiti",
+"відчути",
+null,
+null,
+"v.pf"
+],
+"osjećati": [
+"osjećati",
+"відчувати",
+null,
+null,
+"v.ipf"
+],
+"osjećati se izgubljeno": [
+"osjećati se izgubljeno",
+"почуватися розгубленим",
+"A2",
+3,
+"phr"
+],
+"osjećati se kao kod kuće": [
+"osjećati se kao kod kuće",
+"почуватися як удома",
+"A2",
+12,
+"phr"
+],
+"osnovna škola": [
+"osnovna škola",
+"початкова школа",
+"A1",
+null,
+"phr"
+],
+"osobni": [
+"osobni",
+"особистий",
+"A0",
+null,
+"adj"
+],
+"ostaci hrane": [
+"ostaci hrane",
+"залишки їжі",
+"A2",
+9,
+"phr"
+],
+"ostaviti": [
+"ostaviti",
+"залишити",
+"A0",
+null,
+"v.pf"
+],
+"ostvariti cilj": [
+"ostvariti cilj",
+"досягти мети",
+"A2",
+13,
+"phr"
+],
+"otisak prsta": [
+"otisak prsta",
+"відбиток пальця",
+"A2",
+12,
+"phr"
+],
+"otkriti": [
+"otkriti",
+"відкрити (таємницю)",
+null,
+null,
+"v.pf"
+],
+"otvarati": [
+"otvarati",
+"відкривати",
+null,
+null,
+"v.ipf"
+],
+"otvoriti bolovanje": [
+"otvoriti bolovanje",
+"відкрити лікарняний",
+"A2",
+5,
+"phr"
+],
+"ovjera prijevoda": [
+"ovjera prijevoda",
+"засвідчення перекладу",
+"A2",
+6,
+"phr"
+],
+"ovjerena preslika": [
+"ovjerena preslika",
+"засвідчена копія",
+"A2",
+2,
+"phr"
+],
+"ovjereni prijevod": [
+"ovjereni prijevod",
+"засвідчений переклад",
+"A1",
+14,
+"phr"
+],
+"ovjeriti": [
+"ovjeriti",
+"засвідчити (печаткою, у нотаріуса)",
+"A0",
+null,
+"v.pf"
+],
+"ozbiljni kupci": [
+"ozbiljni kupci",
+"серйозні покупці",
+"A2",
+10,
+"phr"
+],
+"ozlijeđen": [
+"ozlijeđen",
+"поранений, травмований",
+"A0",
+null,
+"adj"
+],
+"očekivati": [
+"očekivati",
+"очікувати",
+null,
+null,
+"v.ipf"
+],
+"ošišati se": [
+"ošišati se",
+"підстригтися",
+"A2",
+6,
+"v.pf"
+],
+"pa": [
+"pa",
+"а, і, отже",
+null,
+null,
+"conj"
+],
+"papir": [
+"papir",
+"папір",
+"A1",
+null,
+"n.m"
+],
+"papuče za goste": [
+"papuče za goste",
+"капці для гостей",
+"A2",
+11,
+"phr"
+],
+"parkirati": [
+"parkirati",
+"паркуватися",
+"A0",
+null,
+"v.bi"
+],
+"parkirati se": [
+"parkirati se",
+"припаркуватися",
+"A2",
+4,
+"v.bi"
+],
+"parkirna karta": [
+"parkirna karta",
+"паркувальний талон",
+"A1",
+8,
+"phr"
+],
+"parkirna zona": [
+"parkirna zona",
+"паркувальна зона",
+"A2",
+8,
+"phr"
+],
+"pasti": [
+"pasti",
+"впасти",
+"A1",
+null,
+"v.pf"
+],
+"paušalni obrt": [
+"paušalni obrt",
+"обрт на фіксованому податку",
+"A2",
+5,
+"phr"
+],
+"paziti": [
+"paziti",
+"стежити; бути обережним",
+null,
+null,
+"v.ipf"
+],
+"pedijatrica": [
+"pedijatrica",
+"дитяча лікарка, педіатриня",
+"A2",
+7,
+"n.f"
+],
+"penjati se": [
+"penjati se",
+"лазити, підійматися",
+"A2",
+3,
+"v.ipf"
+],
+"persirati": [
+"persirati",
+"звертатися на «Ви»",
+"A1",
+11,
+"v.ipf"
+],
+"peti": [
+"peti",
+"п'ятий",
+"A0",
+null,
+"ord"
+],
+"pečat": [
+"pečat",
+"печатка",
+"A0",
+6,
+"n.m"
+],
+"pismo": [
+"pismo",
+"лист",
+"A1",
+null,
+"n.n"
+],
+"piti": [
+"piti",
+"пити",
+"A0",
+null,
+"v.ipf"
+],
+"pišem vam zbog": [
+"pišem Vam zbog",
+"пишу вам щодо",
+"A2",
+14,
+"phr"
+],
+"piši mi": [
+"piši mi",
+"пиши мені",
+"A2",
+14,
+"phr"
+],
+"pjesma": [
+"pjesma",
+"пісня / вірш",
+null,
+null,
+"n.f"
+],
+"plakati": [
+"plakati",
+"плакати",
+"A1",
+null,
+"v.ipf"
+],
+"planer": [
+"planer",
+"планер, щоденник планів",
+"A2",
+13,
+"n.m"
+],
+"plastika": [
+"plastika",
+"пластик",
+"A2",
+9,
+"n.f"
+],
+"platiti parking sms-om": [
+"platiti parking SMS-om",
+"оплатити паркування SMS-кою",
+"A2",
+8,
+"phr"
+],
+"plaćanje": [
+"plaćanje",
+"оплата / платіж",
+null,
+null,
+"n.n"
+],
+"plaćanje u ratama": [
+"plaćanje u ratama",
+"оплата частинами",
+"A2",
+2,
+"phr"
+],
+"ples": [
+"ples",
+"танець",
+null,
+null,
+"n.m"
+],
+"plesati": [
+"plesati",
+"танцювати",
+"A1",
+null,
+"v.ipf"
+],
+"po": [
+"po",
+"по",
+null,
+null,
+"прийменник"
+],
+"po dogovoru": [
+"po dogovoru",
+"за домовленістю",
+"A2",
+10,
+"phr"
+],
+"pod stresom": [
+"pod stresom",
+"у стресі",
+"A2",
+7,
+"phr"
+],
+"podići": [
+"podići",
+"підняти; зняти гроші",
+"A1",
+null,
+"v.pf"
+],
+"podići čašu": [
+"podići čašu",
+"підняти келих (за когось)",
+"A2",
+4,
+"phr"
+],
+"podne": [
+"podne",
+"полудень",
+"A0",
+null,
+"n.n"
+],
+"podrška": [
+"podrška",
+"підтримка",
+"A2",
+3,
+"n.f"
+],
+"pogađati se": [
+"pogađati se",
+"торгуватися",
+"A2",
+8,
+"v.ipf"
+],
+"pogledati": [
+"pogledati",
+"подивитися",
+"A2",
+1,
+"v.pf"
+],
+"poklanjam": [
+"poklanjam",
+"віддаю безкоштовно",
+"A2",
+10,
+"phr"
+],
+"poklon za domaćina": [
+"poklon za domaćina",
+"подарунок господарю",
+"A2",
+11,
+"phr"
+],
+"polagati": [
+"polagati",
+"складати (іспит)",
+"A1",
+2,
+"v.ipf"
+],
+"policijska uprava": [
+"policijska uprava",
+"поліцейське управління",
+"A2",
+8,
+"phr"
+],
+"poljubac": [
+"poljubac",
+"поцілунок",
+"A1",
+null,
+"n.m"
+],
+"poljubiti u obraz": [
+"poljubiti u obraz",
+"поцілувати в щоку",
+"A2",
+11,
+"phr"
+],
+"polugodište": [
+"polugodište",
+"півріччя",
+"A2",
+2,
+"n.n"
+],
+"pomaknuti dogovor": [
+"pomaknuti dogovor",
+"перенести зустріч",
+"A2",
+13,
+"phr"
+],
+"pomaknuti rok": [
+"pomaknuti rok",
+"перенести строк",
+"A2",
+5,
+"phr"
+],
+"pomoć": [
+"pomoć",
+"допомога",
+"A0",
+null,
+"n.f"
+],
+"pomoć u učenju": [
+"pomoć u učenju",
+"допомога в навчанні",
+"A2",
+2,
+"phr"
+],
+"pomoći": [
+"pomoći",
+"допомогти",
+"A0",
+null,
+"v.pf"
+],
+"ponosan": [
+"ponosan",
+"гордий; який пишається",
+"A0",
+3,
+"adj"
+],
+"ponoviti": [
+"ponoviti",
+"повторити",
+"A0",
+null,
+"v.pf"
+],
+"ponuditi": [
+"ponuditi",
+"запропонувати",
+"A0",
+null,
+"v.pf"
+],
+"popiti": [
+"popiti",
+"випити",
+null,
+null,
+"v.pf"
+],
+"popodne": [
+"popodne",
+"після обіду",
+null,
+null,
+"adv"
+],
+"porez": [
+"porez",
+"податок",
+"A1",
+null,
+"n.m"
+],
+"poseban": [
+"poseban",
+"особливий",
+null,
+null,
+"adj"
+],
+"posjetitelj": [
+"posjetitelj",
+"відвідувач",
+"A2",
+1,
+"n.m"
+],
+"poslati paket": [
+"poslati paket",
+"надіслати посилку",
+"A2",
+12,
+"phr"
+],
+"poslovni plan": [
+"poslovni plan",
+"бізнес-план",
+"A2",
+5,
+"phr"
+],
+"postaviti cilj": [
+"postaviti cilj",
+"поставити мету",
+"A2",
+13,
+"phr"
+],
+"posvuda": [
+"posvuda",
+"усюди",
+null,
+null,
+"adv"
+],
+"potpora": [
+"potpora",
+"грант, підтримка",
+"A2",
+5,
+"n.f"
+],
+"potreba": [
+"potreba",
+"потреба",
+null,
+null,
+"n.f"
+],
+"potreban": [
+"potreban",
+"потрібний",
+null,
+null,
+"adj"
+],
+"potrošnja goriva": [
+"potrošnja goriva",
+"витрата пального",
+"A2",
+8,
+"phr"
+],
+"potvrda o pohađanju": [
+"potvrda o pohađanju",
+"довідка про відвідування",
+"A2",
+2,
+"phr"
+],
+"povraćati": [
+"povraćati",
+"блювати",
+"A1",
+7,
+"v.ipf"
+],
+"pozdravi": [
+"pozdravi",
+"передавай вітання",
+"A2",
+14,
+"phr"
+],
+"pozivati": [
+"pozivati",
+"запрошувати",
+null,
+null,
+"v.ipf"
+],
+"poznat": [
+"poznat",
+"відомий",
+"A0",
+null,
+"adj"
+],
+"pozvati policiju": [
+"pozvati policiju",
+"викликати поліцію",
+"A2",
+8,
+"phr"
+],
+"početni tečaj": [
+"početni tečaj",
+"курс для початківців",
+"A2",
+2,
+"phr"
+],
+"poštovati": [
+"poštovati",
+"поважати",
+"A1",
+null,
+"v.ipf"
+],
+"pramenovi": [
+"pramenovi",
+"мелірування, пасма",
+"A2",
+6,
+"n.pl.m"
+],
+"pratiti": [
+"pratiti",
+"стежити, супроводжувати",
+"A1",
+null,
+"v.ipf"
+],
+"pravo na rad": [
+"pravo na rad",
+"право на роботу",
+"A2",
+12,
+"phr"
+],
+"prazan": [
+"prazan",
+"порожній",
+"A0",
+null,
+"adj"
+],
+"predati": [
+"predati",
+"здати, передати",
+"A0",
+null,
+"v.pf"
+],
+"predmet": [
+"predmet",
+"тема (листа); предмет",
+"A1",
+6,
+"n.m"
+],
+"predstavnik suvlasnika": [
+"predstavnik suvlasnika",
+"представник співвласників (голова будинку)",
+"A2",
+4,
+"phr"
+],
+"predujam": [
+"predujam",
+"передоплата, аванс",
+"A2",
+1,
+"n.m"
+],
+"prekid plovidbe": [
+"prekid plovidbe",
+"зупинка рейсів (на морі)",
+"A2",
+1,
+"phr"
+],
+"preko": [
+"preko",
+"через",
+null,
+null,
+"прийменник"
+],
+"prekretnica": [
+"prekretnica",
+"поворотний момент",
+"A2",
+3,
+"n.f"
+],
+"premjestiti": [
+"premjestiti",
+"переселити, перемістити",
+"A2",
+1,
+"v.pf"
+],
+"premoren": [
+"premoren",
+"перевтомлений",
+"A2",
+7,
+"adj"
+],
+"preseljenje": [
+"preseljenje",
+"переселення, переїзд (в іншу країну)",
+"A2",
+3,
+"n.n"
+],
+"prevoditelj volonter": [
+"prevoditelj volonter",
+"перекладач-волонтер",
+"A2",
+12,
+"phr"
+],
+"prihod": [
+"prihod",
+"дохід",
+"A2",
+5,
+"n.m"
+],
+"prijaviti adresu": [
+"prijaviti adresu",
+"зареєструвати адресу",
+"A2",
+12,
+"phr"
+],
+"prijedlog": [
+"prijedlog",
+"пропозиція",
+"A2",
+4,
+"n.m"
+],
+"prijepis ocjena": [
+"prijepis ocjena",
+"виписка оцінок (додаток)",
+"A2",
+2,
+"phr"
+],
+"prijevod": [
+"prijevod",
+"переклад",
+null,
+null,
+"n.m"
+],
+"prijeđeni kilometri": [
+"prijeđeni kilometri",
+"пробіг (пройдені кілометри)",
+"A2",
+8,
+"phr"
+],
+"priložiti": [
+"priložiti",
+"додати (документ)",
+"A2",
+2,
+"v.pf"
+],
+"primiti": [
+"primiti",
+"отримати",
+"A1",
+null,
+"v.pf"
+],
+"pristojba": [
+"pristojba",
+"мито / збір",
+"A0",
+null,
+"n.f"
+],
+"pristojno": [
+"pristojno",
+"чемно, пристойно",
+"A2",
+11,
+"adv"
+],
+"priviknuti se": [
+"priviknuti se",
+"звикнути",
+"A2",
+3,
+"v.pf"
+],
+"privremena potvrda": [
+"privremena potvrda",
+"тимчасова довідка",
+"A2",
+8,
+"phr"
+],
+"priznati": [
+"priznati",
+"зізнатися",
+null,
+null,
+"v.pf"
+],
+"priznavanje": [
+"priznavanje",
+"визнання",
+"A1",
+null,
+"n.n"
+],
+"priča": [
+"priča",
+"розповідь, історія",
+null,
+null,
+"n.f"
+],
+"priča za laku noć": [
+"priča za laku noć",
+"казка на ніч",
+"A2",
+3,
+"phr"
+],
+"pričati": [
+"pričati",
+"розповідати; розмовляти",
+null,
+null,
+"v.ipf"
+],
+"problem": [
+"problem",
+"проблема",
+"A0",
+null,
+"n.m"
+],
+"probna vožnja": [
+"probna vožnja",
+"тест-драйв",
+"A2",
+8,
+"phr"
+],
+"prodavati": [
+"prodavati",
+"продавати",
+"A0",
+null,
+"v.ipf"
+],
+"produženi vikend": [
+"produženi vikend",
+"довгі вихідні",
+"A1",
+5,
+"phr"
+],
+"projekt": [
+"projekt",
+"проєкт",
+null,
+null,
+"n.m"
+],
+"prometni redar": [
+"prometni redar",
+"інспектор з паркування",
+"A2",
+8,
+"phr"
+],
+"promijeniti": [
+"promijeniti",
+"змінити",
+"A1",
+null,
+"v.pf"
+],
+"promijeniti se": [
+"promijeniti se",
+"змінитися",
+"A2",
+3,
+"v.pf"
+],
+"protiv": [
+"protiv",
+"проти",
+null,
+null,
+"прийменник"
+],
+"provjeriti": [
+"provjeriti",
+"перевірити",
+"A1",
+null,
+"v.pf"
+],
+"provoditi": [
+"provoditi",
+"проводити",
+null,
+null,
+"v.ipf"
+],
+"prozor": [
+"prozor",
+"вікно",
+"A0",
+null,
+"n.m"
+],
+"proći": [
+"proći",
+"пройти; минути",
+"A2",
+8,
+"v.pf"
+],
+"pročitati": [
+"pročitati",
+"прочитати",
+"A1",
+null,
+"v.pf"
+],
+"prvi mjeseci": [
+"prvi mjeseci",
+"перші місяці",
+"A2",
+3,
+"phr"
+],
+"prvi vlasnik": [
+"prvi vlasnik",
+"перший власник",
+"A2",
+8,
+"phr"
+],
+"psihoterapeut": [
+"psihoterapeut",
+"психотерапевт",
+"A2",
+7,
+"n.m"
+],
+"puno": [
+"puno",
+"багато",
+"A0",
+null,
+"adv"
+],
+"punomoć": [
+"punomoć",
+"довіреність",
+"A2",
+6,
+"n.f"
+],
+"purica s mlincima": [
+"purica s mlincima",
+"індичка з млинцями",
+"A2",
+11,
+"phr"
+],
+"putovati": [
+"putovati",
+"подорожувати",
+"A0",
+null,
+"v.ipf"
+],
+"pučko otvoreno učilište": [
+"pučko otvoreno učilište",
+"народний відкритий навчальний заклад (освіта дорослих)",
+"A2",
+2,
+"phr"
+],
+"rad": [
+"rad",
+"праця",
+null,
+null,
+"n.m"
+],
+"raspored mi je pun": [
+"raspored mi je pun",
+"у мене щільний розклад",
+"A2",
+13,
+"phr"
+],
+"raspored odvoza": [
+"raspored odvoza",
+"графік вивезення сміття",
+"A2",
+9,
+"phr"
+],
+"rasti": [
+"rasti",
+"рости",
+null,
+null,
+"v.ipf"
+],
+"ravničarski": [
+"ravničarski",
+"рівнинний",
+"A2",
+11,
+"adj"
+],
+"ravnoteža posla i života": [
+"ravnoteža posla i života",
+"баланс роботи й життя",
+"A2",
+7,
+"phr"
+],
+"razdražljiv": [
+"razdražljiv",
+"дратівливий",
+"A2",
+7,
+"adj"
+],
+"razgovarati": [
+"razgovarati",
+"розмовляти",
+"A1",
+null,
+"v.ipf"
+],
+"različit": [
+"različit",
+"різний; відмінний",
+"A1",
+null,
+"adj"
+],
+"razlog": [
+"razlog",
+"причина; привід",
+"A1",
+null,
+"n.m"
+],
+"razrednik": [
+"razrednik",
+"класний керівник",
+"A2",
+2,
+"n.m"
+],
+"realan": [
+"realan",
+"реальний",
+"A2",
+13,
+"adj"
+],
+"reciklažno dvorište": [
+"reciklažno dvorište",
+"пункт приймання вторсировини",
+"A2",
+9,
+"phr"
+],
+"red vožnje": [
+"red vožnje",
+"розклад руху",
+"A2",
+1,
+"phr"
+],
+"registriran do": [
+"registriran do",
+"зареєстрований до",
+"A2",
+8,
+"phr"
+],
+"reći": [
+"reći",
+"сказати",
+"A0",
+null,
+"v.pf"
+],
+"rečenica": [
+"rečenica",
+"речення",
+null,
+null,
+"n.f"
+],
+"rijeka": [
+"rijeka",
+"річка",
+"A1",
+null,
+"n.f"
+],
+"riješiti problem": [
+"riješiti problem",
+"розв’язати проблему",
+"A2",
+1,
+"phr"
+],
+"rješenje": [
+"rješenje",
+"офіційне рішення",
+"A0",
+null,
+"n.n"
+],
+"roditelj": [
+"roditelj",
+"один із батьків; roditelji — батьки",
+"A0",
+null,
+"n.m"
+],
+"rodno mjesto": [
+"rodno mjesto",
+"рідне місце, рідне село",
+"A2",
+3,
+"phr"
+],
+"rok dostave": [
+"rok dostave",
+"строк доставки",
+"A2",
+12,
+"phr"
+],
+"rok važenja": [
+"rok važenja",
+"строк дії",
+"A2",
+12,
+"phr"
+],
+"rukomet": [
+"rukomet",
+"гандбол",
+"A1",
+2,
+"n.m"
+],
+"ručati": [
+"ručati",
+"обідати",
+"A0",
+null,
+"v.ipf"
+],
+"ručni rad": [
+"ručni rad",
+"ручна робота",
+"A2",
+11,
+"phr"
+],
+"s": [
+"s",
+"з / із",
+null,
+null,
+"прийменник"
+],
+"s poštovanjem": [
+"s poštovanjem",
+"з повагою",
+"A2",
+5,
+"phr"
+],
+"sadržaj paketa": [
+"sadržaj paketa",
+"вміст посилки",
+"A2",
+12,
+"phr"
+],
+"sam": [
+"sam",
+"поодинці",
+null,
+null,
+"займенник"
+],
+"samopouzdanje": [
+"samopouzdanje",
+"впевненість у собі",
+"A2",
+14,
+"n.n"
+],
+"samostalno": [
+"samostalno",
+"самостійно",
+"A2",
+14,
+"adv"
+],
+"samozapošljavanje": [
+"samozapošljavanje",
+"самозайнятість",
+"A2",
+5,
+"n.n"
+],
+"samoća": [
+"samoća",
+"самотність",
+"A2",
+3,
+"n.f"
+],
+"sastanak": [
+"sastanak",
+"зустріч / нарада",
+"A1",
+null,
+"n.m"
+],
+"sastanak stanara": [
+"sastanak stanara",
+"збори мешканців",
+"A2",
+4,
+"phr"
+],
+"sav": [
+"sav",
+"весь, увесь",
+null,
+null,
+"займенник"
+],
+"savjet": [
+"savjet",
+"порада",
+"A1",
+null,
+"n.m"
+],
+"savjetovalište": [
+"savjetovalište",
+"консультаційний центр",
+"A2",
+7,
+"n.n"
+],
+"savjetovati": [
+"savjetovati",
+"радити",
+"A2",
+12,
+"v.ipf"
+],
+"saznati": [
+"saznati",
+"довідатися",
+null,
+null,
+"v.pf"
+],
+"se": [
+"se",
+"ся / себе",
+null,
+null,
+"займенник"
+],
+"semestar": [
+"semestar",
+"семестр",
+"A2",
+2,
+"n.m"
+],
+"servisna knjižica": [
+"servisna knjižica",
+"сервісна книжка",
+"A2",
+8,
+"phr"
+],
+"sigurno": [
+"sigurno",
+"певно / напевно / безпечно",
+null,
+null,
+"adv"
+],
+"sigurno mjesto": [
+"sigurno mjesto",
+"безпечне місце",
+"A2",
+9,
+"phr"
+],
+"sir i vrhnje": [
+"sir i vrhnje",
+"сир зі сметаною",
+"A2",
+11,
+"phr"
+],
+"sit": [
+"sit",
+"ситий",
+"A0",
+null,
+"adj"
+],
+"sjedište": [
+"sjedište",
+"юридична адреса, осідок",
+"A2",
+5,
+"n.n"
+],
+"sjesti": [
+"sjesti",
+"сісти",
+null,
+null,
+"v.pf"
+],
+"skloniti se": [
+"skloniti se",
+"сховатися",
+"A2",
+9,
+"v.pf"
+],
+"skratiti": [
+"skratiti",
+"укоротити; скоротити",
+"A1",
+6,
+"v.pf"
+],
+"skrivača": [
+"skrivača",
+"хованки",
+"A2",
+3,
+"n.f"
+],
+"slavlje": [
+"slavlje",
+"святкування",
+"A2",
+4,
+"n.n"
+],
+"slučaj": [
+"slučaj",
+"випадок",
+null,
+null,
+"n.m"
+],
+"smeđa kanta": [
+"smeđa kanta",
+"коричневий бак (для біовідходів)",
+"A2",
+9,
+"phr"
+],
+"snalaziti se": [
+"snalaziti se",
+"давати собі раду, орієнтуватися",
+"A2",
+14,
+"v.ipf"
+],
+"spakirati": [
+"spakirati",
+"спакувати",
+"A2",
+3,
+"v.pf"
+],
+"sport": [
+"sport",
+"спорт",
+"A1",
+null,
+"n.m"
+],
+"spremnik": [
+"spremnik",
+"контейнер",
+"A2",
+9,
+"n.m"
+],
+"srdačan": [
+"srdačan",
+"сердечний, привітний",
+"A2",
+12,
+"adj"
+],
+"staklo": [
+"staklo",
+"скло",
+"A2",
+9,
+"n.n"
+],
+"star": [
+"star",
+"старий",
+"A0",
+null,
+"adj"
+],
+"status": [
+"status",
+"статус",
+null,
+null,
+"n.m"
+],
+"status privremene zaštite": [
+"status privremene zaštite",
+"статус тимчасового захисту",
+"A2",
+12,
+"phr"
+],
+"stići": [
+"stići",
+"прибути / доїхати",
+"A0",
+null,
+"v.pf"
+],
+"stojim na raspolaganju": [
+"stojim na raspolaganju",
+"я до ваших послуг (відповім на питання)",
+"A2",
+5,
+"phr"
+],
+"strana vozačka dozvola": [
+"strana vozačka dozvola",
+"іноземне посвідчення водія",
+"A2",
+8,
+"phr"
+],
+"strani jezik": [
+"strani jezik",
+"іноземна мова",
+"A2",
+2,
+"phr"
+],
+"stvar": [
+"stvar",
+"річ; предмет; справа",
+"A0",
+null,
+"n.f"
+],
+"subotnja škola": [
+"subotnja škola",
+"суботня школа",
+"A2",
+12,
+"phr"
+],
+"suglasnost roditelja": [
+"suglasnost roditelja",
+"згода батьків",
+"A2",
+2,
+"phr"
+],
+"suglasnost za putovanje djeteta": [
+"suglasnost za putovanje djeteta",
+"згода на виїзд дитини",
+"A2",
+6,
+"phr"
+],
+"suh": [
+"suh",
+"сухий",
+"A1",
+null,
+"adj"
+],
+"suncokret": [
+"suncokret",
+"соняшник",
+"A2",
+11,
+"n.m"
+],
+"susjed": [
+"susjed",
+"сусід",
+"A0",
+null,
+"n.m"
+],
+"suvlasnici": [
+"suvlasnici",
+"співвласники",
+"A2",
+4,
+"n.pl.m"
+],
+"svadba": [
+"svadba",
+"весілля (святкування)",
+"A2",
+4,
+"n.f"
+],
+"svaki": [
+"svaki",
+"кожен",
+"A1",
+null,
+"займенник"
+],
+"svakodnevna situacija": [
+"svakodnevna situacija",
+"повсякденна ситуація",
+"A2",
+14,
+"phr"
+],
+"svatovi": [
+"svatovi",
+"весільні гості",
+"A2",
+4,
+"n.pl.m"
+],
+"sve više": [
+"sve više",
+"дедалі більше",
+"A2",
+10,
+"phr"
+],
+"svinjokolja": [
+"svinjokolja",
+"свіжування свині (зимове свято)",
+"A2",
+11,
+"n.f"
+],
+"tada": [
+"tada",
+"тоді",
+"A2",
+3,
+"adv"
+],
+"taj": [
+"taj",
+"цей",
+"A0",
+null,
+"займенник"
+],
+"talijanski": [
+"talijanski",
+"італійська (мова); італійський",
+"A0",
+null,
+"adj"
+],
+"tamburaši": [
+"tamburaši",
+"тамбураші (музиканти)",
+"A2",
+11,
+"n.pl.m"
+],
+"tamburica": [
+"tamburica",
+"тамбуриця (струнний інструмент)",
+"A2",
+11,
+"n.f"
+],
+"tamnoplav": [
+"tamnoplav",
+"темно-синій",
+"A0",
+null,
+"adj"
+],
+"tartufi": [
+"tartufi",
+"трюфелі",
+"A2",
+11,
+"n.pl.m"
+],
+"tekst": [
+"tekst",
+"текст",
+null,
+null,
+"n.m"
+],
+"tema": [
+"tema",
+"тема",
+"A2",
+10,
+"n.f"
+],
+"teran": [
+"teran",
+"теран (червоне вино з Істрії)",
+"A2",
+11,
+"n.m"
+],
+"test razine": [
+"test razine",
+"тест на рівень",
+"A2",
+2,
+"phr"
+],
+"tetrapak": [
+"tetrapak",
+"тетрапак (упаковка з-під молока, соку)",
+"A2",
+9,
+"n.m"
+],
+"tečno": [
+"tečno",
+"вільно (про мову)",
+"A0",
+12,
+"adv"
+],
+"težina paketa": [
+"težina paketa",
+"вага посилки",
+"A2",
+12,
+"phr"
+],
+"tikati": [
+"tikati",
+"звертатися на «ти»",
+"A1",
+11,
+"v.ipf"
+],
+"to": [
+"to",
+"це (те, близько до співрозмовника)",
+null,
+null,
+"займенник"
+],
+"toplo preporučujem": [
+"toplo preporučujem",
+"щиро раджу",
+"A2",
+10,
+"phr"
+],
+"tradicionalan": [
+"tradicionalan",
+"традиційний",
+"A1",
+null,
+"adj"
+],
+"trajektna linija": [
+"trajektna linija",
+"поромна лінія",
+"A2",
+1,
+"phr"
+],
+"tražim": [
+"tražim",
+"шукаю",
+"A2",
+10,
+"phr"
+],
+"trideset": [
+"trideset",
+"тридцять",
+"A0",
+null,
+"num"
+],
+"trošak": [
+"trošak",
+"витрата",
+"A2",
+5,
+"n.m"
+],
+"tržnica dolac": [
+"tržnica Dolac",
+"ринок Долац",
+"A2",
+11,
+"phr"
+],
+"turist": [
+"turist",
+"турист",
+"A0",
+null,
+"n.m"
+],
+"tuš": [
+"tuš",
+"душ",
+"A1",
+null,
+"n.m"
+],
+"tuš kabina": [
+"tuš kabina",
+"душова кабіна",
+"A2",
+1,
+"phr"
+],
+"tvrtka": [
+"tvrtka",
+"компанія / фірма",
+"A0",
+null,
+"n.f"
+],
+"u": [
+"u",
+"в / у",
+null,
+null,
+"прийменник"
+],
+"u dobre ruke": [
+"u dobre ruke",
+"у добрі руки",
+"A2",
+10,
+"phr"
+],
+"u iščekivanju odgovora": [
+"u iščekivanju odgovora",
+"в очікуванні відповіді",
+"A2",
+14,
+"phr"
+],
+"u međuvremenu": [
+"u međuvremenu",
+"тим часом",
+"A2",
+10,
+"phr"
+],
+"u privitku": [
+"u privitku",
+"у вкладенні",
+"A2",
+5,
+"phr"
+],
+"u zadnji čas": [
+"u zadnji čas",
+"в останню хвилину",
+"A2",
+13,
+"phr"
+],
+"ubuduće": [
+"ubuduće",
+"надалі, в майбутньому",
+"A2",
+14,
+"adv"
+],
+"udaren": [
+"udaren",
+"битий (після аварії)",
+"A2",
+8,
+"adj"
+],
+"udariti straga": [
+"udariti straga",
+"вдарити ззаду",
+"A2",
+8,
+"phr"
+],
+"udobna obuća": [
+"udobna obuća",
+"зручне взуття",
+"A2",
+1,
+"phr"
+],
+"udruga": [
+"udruga",
+"асоціація, спілка",
+"A2",
+12,
+"n.f"
+],
+"udubljen": [
+"udubljen",
+"вм’ятий",
+"A2",
+8,
+"adj"
+],
+"uključen": [
+"uključen",
+"увімкнений; включений",
+"A0",
+null,
+"adj"
+],
+"ukrajinska putovnica": [
+"ukrajinska putovnica",
+"український паспорт",
+"A2",
+12,
+"phr"
+],
+"ukrajinska zajednica": [
+"ukrajinska zajednica",
+"українська громада",
+"A2",
+12,
+"phr"
+],
+"ukrasi": [
+"ukrasi",
+"прикраси",
+"A2",
+13,
+"n.pl.m"
+],
+"ukratko": [
+"ukratko",
+"коротко",
+"A2",
+14,
+"adv"
+],
+"ulaz u zgradu": [
+"ulaz u zgradu",
+"під’їзд",
+"A2",
+4,
+"phr"
+],
+"unaprijed zahvaljujem": [
+"unaprijed zahvaljujem",
+"заздалегідь дякую",
+"A2",
+5,
+"phr"
+],
+"upis": [
+"upis",
+"зарахування",
+"A1",
+null,
+"n.m"
+],
+"upisati se": [
+"upisati se",
+"записатися",
+"A2",
+2,
+"v.pf"
+],
+"upisivati": [
+"upisivati",
+"записувати(ся), набирати (на курс)",
+"A2",
+2,
+"v.ipf"
+],
+"upola manje": [
+"upola manje",
+"удвічі менше",
+"A2",
+8,
+"phr"
+],
+"upomoć": [
+"upomoć",
+"допоможіть!; на допомогу!",
+"A0",
+null,
+"interj"
+],
+"upoznati": [
+"upoznati",
+"познайомитися / пізнати",
+"A0",
+null,
+"v.pf"
+],
+"upozoravati": [
+"upozoravati",
+"попереджати",
+null,
+null,
+"v.ipf"
+],
+"upravna pristojba": [
+"upravna pristojba",
+"адміністративний збір",
+"A1",
+2,
+"phr"
+],
+"usluga": [
+"usluga",
+"послуга",
+null,
+null,
+"n.f"
+],
+"uspinjača": [
+"uspinjača",
+"фунікулер",
+"A2",
+11,
+"n.f"
+],
+"uspjeh": [
+"uspjeh",
+"успіх",
+"A1",
+null,
+"n.m"
+],
+"usredotočiti se": [
+"usredotočiti se",
+"зосередитися",
+"A2",
+7,
+"v.pf"
+],
+"ustrajnost": [
+"ustrajnost",
+"наполегливість",
+"A2",
+13,
+"n.f"
+],
+"utišati": [
+"utišati",
+"зробити тихіше, притишити",
+"A2",
+4,
+"v.pf"
+],
+"uvijek": [
+"uvijek",
+"завжди",
+"A0",
+null,
+"adv"
+],
+"uvjerenje": [
+"uvjerenje",
+"свідоцтво (про закінчення курсу); довідка",
+"A1",
+2,
+"n.n"
+],
+"uzak": [
+"uzak",
+"вузький",
+"A0",
+null,
+"adj"
+],
+"uzgajati": [
+"uzgajati",
+"вирощувати",
+"A2",
+9,
+"v.ipf"
+],
+"učenik": [
+"učenik",
+"учень",
+"A1",
+null,
+"n.m"
+],
+"učiniti": [
+"učiniti",
+"вчинити",
+null,
+null,
+"v.pf"
+],
+"uštedjeti": [
+"uštedjeti",
+"заощадити",
+"A2",
+13,
+"v.pf"
+],
+"val": [
+"val",
+"хвиля",
+"A1",
+null,
+"n.m"
+],
+"vaterpolo": [
+"vaterpolo",
+"водне поло",
+"A2",
+2,
+"n.n"
+],
+"vatra": [
+"vatra",
+"вогонь",
+null,
+null,
+"n.f"
+],
+"važan": [
+"važan",
+"важливий",
+"A0",
+null,
+"adj"
+],
+"važiti": [
+"važiti",
+"мати силу, бути чинним",
+"A2",
+8,
+"v.ipf"
+],
+"velik": [
+"velik",
+"великий",
+"A0",
+null,
+"adj"
+],
+"veseliti se": [
+"veseliti se",
+"радіти",
+"A2",
+13,
+"v.ipf"
+],
+"veseo": [
+"veseo",
+"веселий",
+"A0",
+null,
+"adj"
+],
+"vezano uz": [
+"vezano uz",
+"щодо, стосовно",
+"A2",
+5,
+"phr"
+],
+"večernji tečaj": [
+"večernji tečaj",
+"вечірній курс",
+"A2",
+2,
+"phr"
+],
+"vidimo se onda": [
+"vidimo se onda",
+"тоді побачимося",
+"A2",
+13,
+"phr"
+],
+"vidjet ćemo": [
+"vidjet ćemo",
+"побачимо",
+"A2",
+13,
+"phr"
+],
+"vinska cesta": [
+"vinska cesta",
+"винний маршрут",
+"A2",
+11,
+"phr"
+],
+"vjenčanje": [
+"vjenčanje",
+"весілля",
+"A0",
+null,
+"n.n"
+],
+"vjerovati": [
+"vjerovati",
+"вірити",
+"A1",
+null,
+"v.ipf"
+],
+"vlaga": [
+"vlaga",
+"вологість; сирість",
+"A1",
+null,
+"n.f"
+],
+"vlaga u stanu": [
+"vlaga u stanu",
+"вогкість у квартирі",
+"A2",
+4,
+"phr"
+],
+"vlasnik": [
+"vlasnik",
+"власник",
+"A0",
+null,
+"n.m"
+],
+"vlastiti posao": [
+"vlastiti posao",
+"власна справа",
+"A2",
+13,
+"phr"
+],
+"vlastoručno": [
+"vlastoručno",
+"власноруч",
+"A2",
+6,
+"adv"
+],
+"voditelj projekta": [
+"voditelj projekta",
+"керівник проєкту",
+"A2",
+5,
+"phr"
+],
+"volonter": [
+"volonter",
+"волонтер",
+"A2",
+9,
+"n.m"
+],
+"vozač": [
+"vozač",
+"водій",
+"A0",
+null,
+"n.m"
+],
+"vozilo": [
+"vozilo",
+"транспортний засіб",
+null,
+null,
+"n.n"
+],
+"vratiti": [
+"vratiti",
+"повернути",
+"A0",
+null,
+"v.pf"
+],
+"za": [
+"za",
+"для / за",
+null,
+null,
+"прийменник"
+],
+"zabrana loženja vatre": [
+"zabrana loženja vatre",
+"заборона розпалювати вогонь",
+"A2",
+9,
+"phr"
+],
+"zadaća": [
+"zadaća",
+"домашнє завдання",
+"A1",
+null,
+"n.f"
+],
+"zajednički prostor": [
+"zajednički prostor",
+"спільне приміщення",
+"A2",
+4,
+"phr"
+],
+"zajedno": [
+"zajedno",
+"разом",
+"A0",
+null,
+"adv"
+],
+"zamisliti": [
+"zamisliti",
+"уявити",
+null,
+null,
+"v.pf"
+],
+"zamoliti za pojašnjenje": [
+"zamoliti za pojašnjenje",
+"попросити роз’яснення",
+"A2",
+14,
+"phr"
+],
+"zapošljavanje": [
+"zapošljavanje",
+"працевлаштування",
+null,
+null,
+"n.n"
+],
+"zarazan": [
+"zarazan",
+"заразний",
+"A2",
+7,
+"adj"
+],
+"zatražiti pomoć": [
+"zatražiti pomoć",
+"попросити допомоги",
+"A2",
+7,
+"phr"
+],
+"zatvoren": [
+"zatvoren",
+"зачинений / закритий",
+null,
+null,
+"adj"
+],
+"zatvoriti": [
+"zatvoriti",
+"зачинити / закрити",
+"A0",
+null,
+"v.pf"
+],
+"zbog": [
+"zbog",
+"через (з причини)",
+null,
+null,
+"прийменник"
+],
+"zdrav": [
+"zdrav",
+"здоровий",
+"A0",
+null,
+"adj"
+],
+"zdravica": [
+"zdravica",
+"тост",
+"A2",
+4,
+"n.f"
+],
+"zemlja": [
+"zemlja",
+"земля, країна",
+"A0",
+null,
+"n.f"
+],
+"zgnječiti": [
+"zgnječiti",
+"зім’яти, сплющити",
+"A2",
+9,
+"v.pf"
+],
+"zgrada": [
+"zgrada",
+"будівля",
+"A0",
+null,
+"n.f"
+],
+"znak": [
+"znak",
+"знак",
+null,
+null,
+"n.m"
+],
+"značiti": [
+"značiti",
+"означати",
+null,
+null,
+"v.ipf"
+],
+"ćirilica": [
+"ćirilica",
+"кирилиця",
+"A2",
+12,
+"n.f"
+],
+"čast": [
+"čast",
+"честь",
+null,
+null,
+"n.f"
+],
+"čekati u koloni": [
+"čekati u koloni",
+"чекати в черзі (автомобілів)",
+"A2",
+1,
+"phr"
+],
+"često": [
+"često",
+"часто",
+"A1",
+null,
+"adv"
+],
+"četrdeset": [
+"četrdeset",
+"сорок",
+"A0",
+null,
+"num"
+],
+"čistiti": [
+"čistiti",
+"прибирати / чистити",
+"A1",
+null,
+"v.ipf"
+],
+"članarina": [
+"članarina",
+"членський внесок",
+"A2",
+2,
+"n.f"
+],
+"čokolada": [
+"čokolada",
+"шоколад",
+null,
+null,
+"n.f"
+],
+"šef": [
+"šef",
+"начальник / шеф",
+"A1",
+null,
+"n.m"
+],
+"šišanje": [
+"šišanje",
+"стрижка",
+"A2",
+6,
+"n.n"
+],
+"šiške": [
+"šiške",
+"чубчик",
+"A2",
+6,
+"n.pl.f"
+],
+"školarina": [
+"školarina",
+"плата за навчання",
+"A2",
+2,
+"n.f"
+],
+"školica": [
+"školica",
+"класики (гра)",
+"A2",
+3,
+"n.f"
+],
+"štednja": [
+"štednja",
+"заощадження",
+"A1",
+13,
+"n.f"
+],
+"šteta": [
+"šteta",
+"шкода / збиток",
+"A2",
+4,
+"n.f"
+],
+"što točno": [
+"što točno",
+"що саме",
+"A2",
+14,
+"phr"
+],
+"šuma": [
+"šuma",
+"ліс",
+"A1",
+9,
+"n.f"
+],
+"šumski požar": [
+"šumski požar",
+"лісова пожежа",
+"A2",
+9,
+"phr"
+],
+"žitna polja": [
+"žitna polja",
+"хлібні поля",
+"A2",
+11,
+"phr"
+],
+"žuta vreća": [
+"žuta vreća",
+"жовтий мішок (для пластику)",
+"A2",
+9,
+"phr"
+]
+}
+}
