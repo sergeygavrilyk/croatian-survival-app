@@ -1,0 +1,2729 @@
+{
+"_note": "Знімок робочої бази 2026-11-15 (лише читання) для scripts/gen_reading_a2_old_fix.py: lessons — леми 20 старих текстів A2 (RD-A2-001…020) і 6 переписаних, які є в опублікованих уроках: [найнижчий рівень уроку, модуль A2 або null]; lexemes — слова переписаних текстів, яких немає в reading_a2_v2_snapshot.json або без частини мови: [лема, переклад, рівень, модуль A2, частина мови]. Даних користувачів немає.",
+"lessons": {
+"adresa": [
+"A0",
+null
+],
+"ako": [
+"A0",
+null
+],
+"ali": [
+"A0",
+null
+],
+"antibiotik": [
+"A1",
+null
+],
+"apartman": [
+"A0",
+null
+],
+"autobus": [
+"A0",
+null
+],
+"avion": [
+"A1",
+null
+],
+"bakin": [
+"A2",
+11
+],
+"balkon": [
+"A0",
+null
+],
+"banka": [
+"A0",
+null
+],
+"barem": [
+"A0",
+null
+],
+"baš": [
+"A1",
+null
+],
+"besplatan": [
+"A2",
+2
+],
+"biti": [
+"A0",
+null
+],
+"blizu": [
+"A0",
+null
+],
+"blokirati": [
+"A0",
+null
+],
+"bok": [
+"A0",
+null
+],
+"bolestan": [
+"A0",
+null
+],
+"bolje": [
+"A0",
+null
+],
+"boljeti": [
+"A0",
+null
+],
+"bolnica": [
+"A0",
+null
+],
+"bolovanje": [
+"A0",
+null
+],
+"boravak": [
+"A0",
+null
+],
+"brod": [
+"A1",
+null
+],
+"broj": [
+"A0",
+null
+],
+"broj u redu": [
+"A2",
+6
+],
+"cijeli": [
+"A0",
+null
+],
+"crven": [
+"A0",
+null
+],
+"curiti": [
+"A1",
+null
+],
+"da": [
+"A0",
+null
+],
+"dalmacija": [
+"A1",
+null
+],
+"dan": [
+"A0",
+null
+],
+"danas": [
+"A0",
+null
+],
+"dati": [
+"A0",
+null
+],
+"datum": [
+"A0",
+null
+],
+"deset": [
+"A0",
+null
+],
+"dijete": [
+"A0",
+null
+],
+"djeca": [
+"A0",
+null
+],
+"dnevno": [
+"A0",
+null
+],
+"dobar": [
+"A0",
+null
+],
+"dobro": [
+"A0",
+null
+],
+"dogovoreno": [
+"A0",
+null
+],
+"dogovoriti se": [
+"A1",
+null
+],
+"dokument": [
+"A0",
+null
+],
+"dolaziti": [
+"A1",
+null
+],
+"dom": [
+"A1",
+null
+],
+"domaći": [
+"A0",
+null
+],
+"donijeti": [
+"A0",
+null
+],
+"dopuna zahtjeva": [
+"A2",
+6
+],
+"doseliti se": [
+"A1",
+null
+],
+"dovoljno": [
+"A0",
+null
+],
+"doći": [
+"A0",
+null
+],
+"drag": [
+"A0",
+null
+],
+"drago mi je": [
+"A0",
+null
+],
+"drugi": [
+"A0",
+null
+],
+"društvene igre": [
+"A1",
+13
+],
+"dug": [
+"A0",
+null
+],
+"dva": [
+"A0",
+null
+],
+"dvadeset": [
+"A0",
+null
+],
+"e-pošta": [
+"A0",
+null
+],
+"električar": [
+"A1",
+null
+],
+"engleski": [
+"A0",
+null
+],
+"euro": [
+"A0",
+null
+],
+"festival": [
+"A1",
+null
+],
+"film": [
+"A1",
+null
+],
+"fotografija": [
+"A0",
+null
+],
+"garaža": [
+"A0",
+null
+],
+"gdje": [
+"A0",
+null
+],
+"gledati": [
+"A1",
+null
+],
+"godina": [
+"A0",
+null
+],
+"godišnji odmor": [
+"A0",
+null
+],
+"gospodin": [
+"A0",
+null
+],
+"gospođa": [
+"A0",
+null
+],
+"govoriti": [
+"A0",
+null
+],
+"grad": [
+"A0",
+null
+],
+"gradilište": [
+"A1",
+null
+],
+"griješiti": [
+"A1",
+null
+],
+"gripa": [
+"A0",
+null
+],
+"grliti": [
+"A1",
+null
+],
+"grlo": [
+"A0",
+null
+],
+"gust": [
+"A1",
+null
+],
+"gužva": [
+"A0",
+null
+],
+"hitan": [
+"A1",
+null
+],
+"hitna intervencija": [
+"A2",
+6
+],
+"hladno": [
+"A0",
+null
+],
+"hotel": [
+"A0",
+null
+],
+"hrana": [
+"A0",
+null
+],
+"hrvatska": [
+"A0",
+null
+],
+"hrvatski": [
+"A0",
+null
+],
+"htjeti": [
+"A1",
+null
+],
+"hvala": [
+"A0",
+null
+],
+"iako": [
+"A2",
+10
+],
+"igrati": [
+"A1",
+null
+],
+"ili": [
+"A0",
+null
+],
+"imati": [
+"A0",
+null
+],
+"internetsko bankarstvo": [
+"A1",
+null
+],
+"ispit": [
+"A1",
+null
+],
+"ispod": [
+"A0",
+null
+],
+"istra": [
+"A1",
+null
+],
+"iz": [
+"A0",
+null
+],
+"iza": [
+"A0",
+null
+],
+"izabrani liječnik": [
+"A2",
+7
+],
+"izaći": [
+"A0",
+null
+],
+"ići": [
+"A0",
+null
+],
+"ja": [
+"A0",
+null
+],
+"javiti se": [
+"A1",
+null
+],
+"javni bilježnik": [
+"A1",
+null
+],
+"javni prijevoz": [
+"A0",
+null
+],
+"jedan": [
+"A0",
+null
+],
+"jeftin": [
+"A1",
+null
+],
+"jelo": [
+"A0",
+null
+],
+"jer": [
+"A1",
+null
+],
+"jesti": [
+"A0",
+null
+],
+"jezik": [
+"A0",
+null
+],
+"još": [
+"A0",
+null
+],
+"kada": [
+"A0",
+null
+],
+"kafić": [
+"A0",
+null
+],
+"kakav": [
+"A0",
+null
+],
+"kako": [
+"A0",
+null
+],
+"kamo": [
+"A0",
+null
+],
+"kao": [
+"A0",
+null
+],
+"kapati": [
+"A1",
+6
+],
+"kartica": [
+"A0",
+null
+],
+"kava": [
+"A0",
+null
+],
+"kašljati": [
+"A1",
+null
+],
+"kiša": [
+"A0",
+null
+],
+"klapa": [
+"A1",
+null
+],
+"klijent": [
+"A1",
+null
+],
+"kofer": [
+"A1",
+null
+],
+"koji": [
+"A0",
+null
+],
+"kolač": [
+"A0",
+null
+],
+"kolega": [
+"A0",
+null
+],
+"koliko": [
+"A0",
+null
+],
+"kolovoz": [
+"A0",
+null
+],
+"koncert": [
+"A1",
+null
+],
+"koštati": [
+"A0",
+null
+],
+"kraj": [
+"A0",
+null
+],
+"krevet": [
+"A0",
+null
+],
+"kupaonica": [
+"A0",
+null
+],
+"kupati": [
+"A1",
+null
+],
+"kupati se": [
+"A1",
+null
+],
+"kupiti": [
+"A0",
+null
+],
+"kutija": [
+"A0",
+null
+],
+"kuća": [
+"A0",
+null
+],
+"kvar": [
+"A0",
+null
+],
+"lak": [
+"A1",
+null
+],
+"ležati": [
+"A2",
+7
+],
+"lijek": [
+"A0",
+null
+],
+"lijep": [
+"A0",
+null
+],
+"liječnica": [
+"A1",
+null
+],
+"liječnik": [
+"A0",
+null
+],
+"listopad": [
+"A0",
+null
+],
+"ljekarna": [
+"A0",
+null
+],
+"ljeti": [
+"A0",
+null
+],
+"ljeto": [
+"A0",
+null
+],
+"ljubazan": [
+"A0",
+null
+],
+"ljudi": [
+"A0",
+null
+],
+"loš": [
+"A0",
+null
+],
+"mail": [
+"A1",
+null
+],
+"majstor": [
+"A0",
+null
+],
+"mali": [
+"A0",
+null
+],
+"mama": [
+"A0",
+null
+],
+"manje": [
+"A0",
+null
+],
+"maslinovo ulje": [
+"A1",
+null
+],
+"matematika": [
+"A0",
+null
+],
+"med": [
+"A0",
+null
+],
+"mi": [
+"A0",
+null
+],
+"miran": [
+"A0",
+null
+],
+"misliti": [
+"A1",
+null
+],
+"mjesec": [
+"A0",
+null
+],
+"mjesečno": [
+"A0",
+null
+],
+"mjesto": [
+"A0",
+null
+],
+"mobilno bankarstvo": [
+"A1",
+null
+],
+"moj": [
+"A0",
+null
+],
+"molim": [
+"A0",
+null
+],
+"morati": [
+"A1",
+null
+],
+"more": [
+"A0",
+null
+],
+"moći": [
+"A1",
+null
+],
+"muž": [
+"A0",
+null
+],
+"najbliži": [
+"A0",
+null
+],
+"najviše": [
+"A0",
+null
+],
+"naravno": [
+"A0",
+null
+],
+"naručiti se": [
+"A0",
+null
+],
+"nastava": [
+"A1",
+null
+],
+"navečer": [
+"A0",
+null
+],
+"naviknuti se": [
+"A1",
+null
+],
+"nazvati": [
+"A0",
+null
+],
+"naći": [
+"A0",
+null
+],
+"naš": [
+"A0",
+null
+],
+"nažalost": [
+"A0",
+null
+],
+"ne": [
+"A0",
+null
+],
+"nedjelja": [
+"A0",
+null
+],
+"nedostajati": [
+"A0",
+null
+],
+"nekad": [
+"A1",
+null
+],
+"nekoliko": [
+"A0",
+null
+],
+"nepoznat": [
+"A1",
+null
+],
+"nervozan": [
+"A0",
+null
+],
+"nešto": [
+"A1",
+null
+],
+"nikad": [
+"A1",
+null
+],
+"nitko": [
+"A1",
+null
+],
+"njegov": [
+"A0",
+null
+],
+"nogomet": [
+"A1",
+null
+],
+"nov": [
+"A0",
+null
+],
+"novac": [
+"A0",
+null
+],
+"novčanik": [
+"A0",
+null
+],
+"noć": [
+"A0",
+null
+],
+"obitelj": [
+"A0",
+null
+],
+"objasniti": [
+"A1",
+null
+],
+"obvezno": [
+"A0",
+null
+],
+"odgojiteljica": [
+"A0",
+null
+],
+"odgovor": [
+"A0",
+null
+],
+"odgovoriti": [
+"A0",
+null
+],
+"odjel": [
+"A1",
+null
+],
+"odličan": [
+"A2",
+2
+],
+"odmah": [
+"A0",
+null
+],
+"odobriti": [
+"A0",
+null
+],
+"odvajati": [
+"A2",
+9
+],
+"odvod": [
+"A1",
+null
+],
+"oib": [
+"A0",
+null
+],
+"omotnica": [
+"A1",
+null
+],
+"on": [
+"A0",
+null
+],
+"ona": [
+"A0",
+null
+],
+"onda": [
+"A0",
+null
+],
+"oni": [
+"A0",
+null
+],
+"opet": [
+"A1",
+null
+],
+"oporaviti se": [
+"A2",
+7
+],
+"oprostiti": [
+"A2",
+4
+],
+"organizirati": [
+"A2",
+13
+],
+"original": [
+"A2",
+6
+],
+"osam": [
+"A0",
+null
+],
+"osim toga": [
+"A2",
+10
+],
+"osjećati se": [
+"A0",
+null
+],
+"osoba": [
+"A0",
+null
+],
+"osobna iskaznica": [
+"A0",
+null
+],
+"osobno": [
+"A0",
+null
+],
+"ostati": [
+"A1",
+null
+],
+"otići": [
+"A1",
+null
+],
+"otok": [
+"A1",
+null
+],
+"otvoren": [
+"A0",
+null
+],
+"otvoriti": [
+"A0",
+null
+],
+"ovaj": [
+"A0",
+null
+],
+"ovdje": [
+"A0",
+null
+],
+"ovim putem": [
+"A2",
+6
+],
+"ovjeriti": [
+"A0",
+null
+],
+"papir": [
+"A1",
+null
+],
+"parkiralište": [
+"A0",
+null
+],
+"pedeset": [
+"A0",
+null
+],
+"perilica": [
+"A0",
+null
+],
+"perilica rublja": [
+"A1",
+null
+],
+"pet": [
+"A0",
+null
+],
+"petak": [
+"A0",
+null
+],
+"pin": [
+"A0",
+null
+],
+"pisarnica": [
+"A2",
+6
+],
+"pisati": [
+"A0",
+null
+],
+"pismo": [
+"A1",
+null
+],
+"pitanje": [
+"A0",
+null
+],
+"pitati": [
+"A0",
+null
+],
+"piti": [
+"A0",
+null
+],
+"piti puno tekućine": [
+"A2",
+7
+],
+"plan": [
+"A0",
+null
+],
+"planina": [
+"A1",
+null
+],
+"plav": [
+"A0",
+null
+],
+"plaća": [
+"A0",
+null
+],
+"plaža": [
+"A0",
+null
+],
+"plijesan": [
+"A1",
+null
+],
+"pod": [
+"A0",
+null
+],
+"podrum": [
+"A0",
+null
+],
+"pogled": [
+"A0",
+null
+],
+"pokazati": [
+"A0",
+null
+],
+"pokraj": [
+"A0",
+null
+],
+"pokvariti se": [
+"A1",
+null
+],
+"pola": [
+"A0",
+null
+],
+"polako": [
+"A0",
+null
+],
+"polaznik": [
+"A1",
+null
+],
+"položiti": [
+"A1",
+null
+],
+"pomagati": [
+"A1",
+null
+],
+"pomoć": [
+"A0",
+null
+],
+"ponekad": [
+"A0",
+null
+],
+"ponijeti": [
+"A1",
+null
+],
+"ponuditi": [
+"A0",
+null
+],
+"posao": [
+"A0",
+null
+],
+"posjetitelj": [
+"A2",
+1
+],
+"posjetiti": [
+"A0",
+null
+],
+"posjetnica": [
+"A0",
+null
+],
+"poslati": [
+"A1",
+null
+],
+"poslije": [
+"A0",
+null
+],
+"poslodavac": [
+"A1",
+5
+],
+"potpisati": [
+"A0",
+null
+],
+"potvrda": [
+"A0",
+null
+],
+"potvrda o oib-u": [
+"A2",
+6
+],
+"povrće": [
+"A0",
+null
+],
+"pozdrav": [
+"A0",
+null
+],
+"pozvati": [
+"A0",
+null
+],
+"početi": [
+"A1",
+null
+],
+"počinjati": [
+"A1",
+null
+],
+"pošta": [
+"A0",
+null
+],
+"poštovani": [
+"A1",
+null
+],
+"prati": [
+"A1",
+null
+],
+"pravilo": [
+"A1",
+null
+],
+"prebivalište": [
+"A0",
+null
+],
+"predati": [
+"A0",
+null
+],
+"predložiti": [
+"A2",
+4
+],
+"predmet": [
+"A1",
+6
+],
+"predstava": [
+"A1",
+null
+],
+"pregled": [
+"A0",
+null
+],
+"pregledati": [
+"A1",
+null
+],
+"prehladiti se": [
+"A2",
+7
+],
+"prehlađen": [
+"A1",
+null
+],
+"prema najavi": [
+"A2",
+10
+],
+"preseliti se": [
+"A0",
+null
+],
+"preslika": [
+"A1",
+6
+],
+"previše": [
+"A0",
+null
+],
+"prijatelj": [
+"A0",
+null
+],
+"prijava": [
+"A0",
+null
+],
+"prijaviti se": [
+"A1",
+null
+],
+"prije": [
+"A0",
+null
+],
+"prijevoz": [
+"A1",
+null
+],
+"primiti": [
+"A1",
+null
+],
+"privremeni boravak": [
+"A0",
+null
+],
+"pričekati": [
+"A1",
+null
+],
+"probati": [
+"A0",
+null
+],
+"problem": [
+"A0",
+null
+],
+"proizvod": [
+"A1",
+null
+],
+"promet": [
+"A0",
+null
+],
+"promijeniti": [
+"A1",
+null
+],
+"pronaći": [
+"A2",
+9
+],
+"provesti": [
+"A1",
+null
+],
+"proći": [
+"A2",
+8
+],
+"prošetati": [
+"A1",
+null
+],
+"prošli": [
+"A0",
+null
+],
+"prvi": [
+"A0",
+null
+],
+"prvo": [
+"A0",
+null
+],
+"pršut": [
+"A1",
+null
+],
+"puno": [
+"A0",
+null
+],
+"put": [
+"A0",
+null
+],
+"putovati": [
+"A0",
+null
+],
+"putovnica": [
+"A0",
+null
+],
+"raditi": [
+"A0",
+null
+],
+"radnim danom": [
+"A1",
+null
+],
+"radno vrijeme": [
+"A0",
+null
+],
+"rado": [
+"A1",
+null
+],
+"razboljeti se": [
+"A2",
+7
+],
+"razgovarati": [
+"A1",
+null
+],
+"razgovor": [
+"A1",
+null
+],
+"razina": [
+"A1",
+null
+],
+"razred": [
+"A0",
+null
+],
+"razumjeti": [
+"A0",
+null
+],
+"račun": [
+"A0",
+null
+],
+"recepcija": [
+"A0",
+null
+],
+"recept": [
+"A0",
+null
+],
+"restoran": [
+"A0",
+null
+],
+"rezervirati": [
+"A0",
+null
+],
+"reći": [
+"A0",
+null
+],
+"riba": [
+"A0",
+null
+],
+"rijeka": [
+"A1",
+null
+],
+"riječ": [
+"A0",
+null
+],
+"rok": [
+"A0",
+null
+],
+"rublje": [
+"A1",
+null
+],
+"rujan": [
+"A0",
+null
+],
+"ruka": [
+"A0",
+null
+],
+"s poštovanjem": [
+"A2",
+5
+],
+"sada": [
+"A0",
+null
+],
+"samo": [
+"A0",
+null
+],
+"sat": [
+"A0",
+null
+],
+"sedam": [
+"A0",
+null
+],
+"seliti se": [
+"A1",
+null
+],
+"selo": [
+"A1",
+null
+],
+"serija": [
+"A2",
+10
+],
+"sestra": [
+"A0",
+null
+],
+"siječanj": [
+"A0",
+null
+],
+"sir": [
+"A0",
+null
+],
+"skladište": [
+"A1",
+null
+],
+"skoro": [
+"A1",
+null
+],
+"skup": [
+"A1",
+null
+],
+"skupo": [
+"A0",
+null
+],
+"sladoled": [
+"A0",
+null
+],
+"slap": [
+"A1",
+null
+],
+"slavina": [
+"A1",
+null
+],
+"slavonija": [
+"A1",
+null
+],
+"sljedeći": [
+"A0",
+null
+],
+"slobodan": [
+"A0",
+null
+],
+"slobodno": [
+"A0",
+null
+],
+"službena osoba": [
+"A2",
+6
+],
+"službenik": [
+"A0",
+null
+],
+"smetati": [
+"A1",
+4
+],
+"smeće": [
+"A1",
+null
+],
+"smjena": [
+"A1",
+null
+],
+"spavati": [
+"A1",
+null
+],
+"spor": [
+"A0",
+null
+],
+"spremište": [
+"A2",
+9
+],
+"sram": [
+"A1",
+null
+],
+"srdačan": [
+"A2",
+12
+],
+"srijeda": [
+"A0",
+null
+],
+"srpanj": [
+"A0",
+null
+],
+"stalno": [
+"A1",
+null
+],
+"stan": [
+"A0",
+null
+],
+"stanica": [
+"A0",
+null
+],
+"star": [
+"A0",
+null
+],
+"stići": [
+"A0",
+null
+],
+"sto": [
+"A0",
+null
+],
+"strah me je": [
+"A0",
+null
+],
+"stranac": [
+"A0",
+null
+],
+"stranica": [
+"A0",
+null
+],
+"stvar": [
+"A0",
+null
+],
+"subota": [
+"A0",
+null
+],
+"super": [
+"A0",
+null
+],
+"susjed": [
+"A0",
+null
+],
+"susjeda": [
+"A0",
+null
+],
+"svaki": [
+"A1",
+null
+],
+"sve": [
+"A0",
+null
+],
+"sviđati se": [
+"A1",
+null
+],
+"svjež": [
+"A0",
+null
+],
+"svježi zrak": [
+"A1",
+null
+],
+"svoj": [
+"A0",
+null
+],
+"taj": [
+"A0",
+null
+],
+"tako": [
+"A0",
+null
+],
+"također": [
+"A0",
+null
+],
+"tamburaši": [
+"A2",
+11
+],
+"tamo": [
+"A0",
+null
+],
+"tekući račun": [
+"A1",
+null
+],
+"telefon": [
+"A0",
+null
+],
+"temperatura": [
+"A0",
+null
+],
+"termin": [
+"A0",
+null
+],
+"tečaj": [
+"A0",
+null
+],
+"težak": [
+"A0",
+null
+],
+"ti": [
+"A0",
+null
+],
+"tijelo": [
+"A0",
+null
+],
+"tisuća": [
+"A0",
+null
+],
+"tjedan": [
+"A0",
+null
+],
+"tko": [
+"A0",
+null
+],
+"trajati": [
+"A1",
+null
+],
+"tramvaj": [
+"A0",
+null
+],
+"tražiti": [
+"A0",
+null
+],
+"trebati": [
+"A0",
+null
+],
+"treći": [
+"A0",
+null
+],
+"trg": [
+"A0",
+null
+],
+"tri": [
+"A0",
+null
+],
+"tržnica": [
+"A0",
+null
+],
+"turist": [
+"A0",
+null
+],
+"tvrtka": [
+"A0",
+null
+],
+"u prilogu": [
+"A2",
+6
+],
+"ugovor": [
+"A1",
+null
+],
+"uključiti": [
+"A1",
+null
+],
+"ukrajina": [
+"A0",
+null
+],
+"ukusan": [
+"A0",
+null
+],
+"ulaz": [
+"A0",
+null
+],
+"ulje": [
+"A1",
+null
+],
+"umivaonik": [
+"A1",
+null
+],
+"umoran": [
+"A0",
+null
+],
+"unajmiti": [
+"A0",
+null
+],
+"unaprijed": [
+"A1",
+null
+],
+"unutra": [
+"A0",
+null
+],
+"upala": [
+"A1",
+null
+],
+"upisati": [
+"A0",
+null
+],
+"ured": [
+"A0",
+null
+],
+"urudžbeni broj": [
+"A2",
+6
+],
+"usporediti": [
+"A1",
+null
+],
+"ustati": [
+"A1",
+null
+],
+"utorak": [
+"A0",
+null
+],
+"uvijek": [
+"A0",
+null
+],
+"uvjeren sam da": [
+"A2",
+10
+],
+"uzeti": [
+"A0",
+null
+],
+"uzimati": [
+"A1",
+null
+],
+"učiti": [
+"A0",
+null
+],
+"vaš": [
+"A0",
+null
+],
+"važan": [
+"A0",
+null
+],
+"velik": [
+"A0",
+null
+],
+"već": [
+"A0",
+null
+],
+"vi": [
+"A0",
+null
+],
+"vidjeti": [
+"A0",
+null
+],
+"vikend": [
+"A0",
+null
+],
+"vino": [
+"A0",
+null
+],
+"visok": [
+"A0",
+null
+],
+"više": [
+"A0",
+null
+],
+"vlaga": [
+"A1",
+null
+],
+"voda": [
+"A0",
+null
+],
+"voditelj": [
+"A1",
+null
+],
+"vodoinstalater": [
+"A1",
+null
+],
+"voziti": [
+"A0",
+null
+],
+"voće": [
+"A0",
+null
+],
+"vratiti": [
+"A0",
+null
+],
+"vrijediti": [
+"A0",
+null
+],
+"vrijeme": [
+"A0",
+null
+],
+"vrtić": [
+"A0",
+null
+],
+"web-stranica": [
+"A1",
+null
+],
+"zadatak": [
+"A0",
+null
+],
+"zadovoljan": [
+"A1",
+null
+],
+"zahtjev": [
+"A0",
+null
+],
+"zamijeniti": [
+"A0",
+null
+],
+"zarazan": [
+"A2",
+7
+],
+"zatim": [
+"A1",
+null
+],
+"zato": [
+"A0",
+null
+],
+"zatvoriti": [
+"A0",
+null
+],
+"završiti": [
+"A1",
+null
+],
+"začepljen": [
+"A1",
+null
+],
+"zdrava prehrana": [
+"A2",
+7
+],
+"zdravstveno osiguranje": [
+"A0",
+null
+],
+"zgrada": [
+"A0",
+null
+],
+"zidine": [
+"A0",
+null
+],
+"zimi": [
+"A0",
+null
+],
+"znati": [
+"A0",
+null
+],
+"zvučati": [
+"A1",
+null
+],
+"čaj": [
+"A0",
+null
+],
+"čak": [
+"A1",
+null
+],
+"čekati": [
+"A0",
+null
+],
+"često": [
+"A1",
+null
+],
+"četvrtak": [
+"A0",
+null
+],
+"čini mi se da": [
+"A2",
+10
+],
+"čist": [
+"A0",
+null
+],
+"šalter": [
+"A0",
+6
+],
+"šator": [
+"A1",
+null
+],
+"šest": [
+"A0",
+null
+],
+"šetati": [
+"A0",
+null
+],
+"škola": [
+"A0",
+null
+],
+"štand": [
+"A1",
+null
+],
+"što": [
+"A0",
+null
+],
+"žao mi je": [
+"A0",
+null
+],
+"željeti": [
+"A0",
+null
+],
+"žena": [
+"A0",
+null
+],
+"živjeti": [
+"A0",
+null
+],
+"život": [
+"A1",
+null
+],
+"životopis": [
+"A1",
+null
+],
+"žuriti se": [
+"A0",
+null
+]
+},
+"lexemes": {
+"barem": [
+"barem",
+"принаймні",
+"A0",
+null,
+"adv"
+],
+"broj u redu": [
+"broj u redu",
+"номер у черзі",
+"A2",
+6,
+"phr"
+],
+"cijeli": [
+"cijeli",
+"цілий",
+"A0",
+null,
+"adj"
+],
+"dom": [
+"dom",
+"дім, оселя; заклад",
+"A1",
+null,
+"n.m"
+],
+"dopuna zahtjeva": [
+"dopuna zahtjeva",
+"доповнення заяви",
+"A2",
+6,
+"phr"
+],
+"društvene igre": [
+"društvene igre",
+"настільні ігри",
+"A1",
+13,
+"phr"
+],
+"dug": [
+"dug",
+"довгий",
+"A0",
+null,
+"adj"
+],
+"e-pošta": [
+"e-pošta",
+"електронна пошта",
+"A0",
+null,
+"n.f"
+],
+"gripa": [
+"gripa",
+"грип",
+"A0",
+null,
+"n.f"
+],
+"hitan": [
+"hitan",
+"терміновий, невідкладний",
+"A1",
+null,
+"adj"
+],
+"hitna intervencija": [
+"hitna intervencija",
+"екстрений виклик",
+"A2",
+6,
+"phr"
+],
+"iako": [
+"iako",
+"хоча",
+"A2",
+10,
+"conj"
+],
+"internetsko bankarstvo": [
+"internetsko bankarstvo",
+"інтернет-банкінг",
+"A1",
+null,
+"phr"
+],
+"izabrani liječnik": [
+"izabrani liječnik",
+"обраний (сімейний) лікар",
+"A2",
+7,
+"phr"
+],
+"javni bilježnik": [
+"javni bilježnik",
+"нотаріус",
+"A1",
+null,
+"phr"
+],
+"javni prijevoz": [
+"javni prijevoz",
+"громадський транспорт",
+"A0",
+null,
+"phr"
+],
+"kapati": [
+"kapati",
+"капати",
+"A1",
+6,
+"v.ipf"
+],
+"klapa": [
+"klapa",
+"клапа (далматинський чоловічий спів)",
+"A1",
+null,
+"n.f"
+],
+"koncert": [
+"koncert",
+"концерт",
+"A1",
+null,
+"n.m"
+],
+"kvar": [
+"kvar",
+"несправність / поломка",
+"A0",
+null,
+"n.m"
+],
+"ležati": [
+"ležati",
+"лежати",
+"A2",
+7,
+"v.ipf"
+],
+"loš": [
+"loš",
+"поганий",
+"A0",
+null,
+"adj"
+],
+"manje": [
+"manje",
+"менше",
+"A0",
+null,
+"adv"
+],
+"maslinovo ulje": [
+"maslinovo ulje",
+"оливкова олія",
+"A1",
+null,
+"phr"
+],
+"mjesečno": [
+"mjesečno",
+"щомісяця; на місяць",
+"A0",
+null,
+"adv"
+],
+"nekad": [
+"nekad",
+"колись; іноді",
+"A1",
+null,
+"adv"
+],
+"obvezno": [
+"obvezno",
+"обов’язково",
+"A0",
+null,
+"adv"
+],
+"odjel": [
+"odjel",
+"відділ (у магазині, установі)",
+"A1",
+null,
+"n.m"
+],
+"odobriti": [
+"odobriti",
+"схвалити",
+"A0",
+null,
+"v.pf"
+],
+"odvod": [
+"odvod",
+"злив, стік",
+"A1",
+null,
+"n.m"
+],
+"omotnica": [
+"omotnica",
+"конверт",
+"A1",
+null,
+"n.f"
+],
+"opet": [
+"opet",
+"знову",
+"A1",
+null,
+"adv"
+],
+"oporaviti se": [
+"oporaviti se",
+"одужати, відновитися",
+"A2",
+7,
+"v.pf"
+],
+"original": [
+"original",
+"оригінал",
+"A2",
+6,
+"n.m"
+],
+"osam": [
+"osam",
+"вісім",
+"A0",
+null,
+"num"
+],
+"osim toga": [
+"osim toga",
+"крім того",
+"A2",
+10,
+"phr"
+],
+"ovim putem": [
+"ovim putem",
+"цим листом, таким чином",
+"A2",
+6,
+"phr"
+],
+"ovjeriti": [
+"ovjeriti",
+"засвідчити (печаткою, у нотаріуса)",
+"A0",
+null,
+"v.pf"
+],
+"papir": [
+"papir",
+"папір",
+"A1",
+null,
+"n.m"
+],
+"perilica rublja": [
+"perilica rublja",
+"пральна машина",
+"A1",
+null,
+"phr"
+],
+"pin": [
+"PIN",
+"PIN-код",
+"A0",
+null,
+"n.m"
+],
+"pisarnica": [
+"pisarnica",
+"канцелярія (приймання документів)",
+"A2",
+6,
+"n.f"
+],
+"pismo": [
+"pismo",
+"лист",
+"A1",
+null,
+"n.n"
+],
+"piti puno tekućine": [
+"piti puno tekućine",
+"пити багато рідини",
+"A2",
+7,
+"phr"
+],
+"plijesan": [
+"plijesan",
+"пліснява",
+"A1",
+null,
+"n.f"
+],
+"podrum": [
+"podrum",
+"підвал",
+"A0",
+null,
+"n.m"
+],
+"pokvariti se": [
+"pokvariti se",
+"зламатися, зіпсуватися",
+"A1",
+null,
+"v.pf"
+],
+"pomagati": [
+"pomagati",
+"допомагати",
+"A1",
+null,
+"v.ipf"
+],
+"poslodavac": [
+"poslodavac",
+"роботодавець",
+"A1",
+5,
+"n.m"
+],
+"potvrda o oib-u": [
+"potvrda o OIB-u",
+"довідка про OIB",
+"A2",
+6,
+"phr"
+],
+"prebivalište": [
+"prebivalište",
+"місце постійного проживання",
+"A0",
+null,
+"n.n"
+],
+"predati": [
+"predati",
+"здати, передати",
+"A0",
+null,
+"v.pf"
+],
+"predmet": [
+"predmet",
+"тема (листа); предмет",
+"A1",
+6,
+"n.m"
+],
+"prehladiti se": [
+"prehladiti se",
+"застудитися",
+"A2",
+7,
+"v.pf"
+],
+"prema najavi": [
+"prema najavi",
+"за анонсом, як повідомляють",
+"A2",
+10,
+"phr"
+],
+"preslika": [
+"preslika",
+"копія (ксерокопія)",
+"A1",
+6,
+"n.f"
+],
+"privremeni boravak": [
+"privremeni boravak",
+"тимчасове проживання (дозвіл)",
+"A0",
+null,
+"phr"
+],
+"pričekati": [
+"pričekati",
+"почекати",
+"A1",
+null,
+"v.pf"
+],
+"prošetati": [
+"prošetati",
+"прогулятися",
+"A1",
+null,
+"v.pf"
+],
+"radnim danom": [
+"radnim danom",
+"у будні",
+"A1",
+null,
+"phr"
+],
+"razboljeti se": [
+"razboljeti se",
+"захворіти",
+"A2",
+7,
+"v.pf"
+],
+"rok": [
+"rok",
+"дедлайн / термін",
+"A0",
+null,
+"n.m"
+],
+"s poštovanjem": [
+"s poštovanjem",
+"з повагою (у кінці листа)",
+"A2",
+5,
+"phr"
+],
+"slavina": [
+"slavina",
+"кран (водопровідний)",
+"A1",
+null,
+"n.f"
+],
+"službena osoba": [
+"službena osoba",
+"посадова особа",
+"A2",
+6,
+"phr"
+],
+"službenik": [
+"službenik",
+"службовець / чиновник",
+"A0",
+null,
+"n.m"
+],
+"smetati": [
+"smetati",
+"заважати",
+"A1",
+4,
+"v.ipf"
+],
+"spremište": [
+"spremište",
+"комора, підсобка",
+"A2",
+9,
+"n.n"
+],
+"stići": [
+"stići",
+"прибути / доїхати",
+"A0",
+null,
+"v.pf"
+],
+"strah me je": [
+"strah me je",
+"мені страшно; я боюся",
+"A0",
+null,
+"phr"
+],
+"susjed": [
+"susjed",
+"сусід",
+"A0",
+null,
+"n.m"
+],
+"svježi zrak": [
+"svježi zrak",
+"свіже повітря",
+"A1",
+null,
+"phr"
+],
+"tamburaši": [
+"tamburaši",
+"тамбураші (музиканти)",
+"A2",
+11,
+"n.pl.m"
+],
+"tekući račun": [
+"tekući račun",
+"поточний рахунок у банку",
+"A1",
+null,
+"phr"
+],
+"tijelo": [
+"tijelo",
+"тіло",
+"A0",
+null,
+"n.n"
+],
+"u prilogu": [
+"u prilogu",
+"у додатку",
+"A2",
+6,
+"phr"
+],
+"uključiti": [
+"uključiti",
+"увімкнути",
+"A1",
+null,
+"v.pf"
+],
+"urudžbeni broj": [
+"urudžbeni broj",
+"вхідний номер (реєстраційний)",
+"A2",
+6,
+"phr"
+],
+"uvjeren sam da": [
+"uvjeren sam da",
+"я переконаний, що",
+"A2",
+10,
+"phr"
+],
+"vlaga": [
+"vlaga",
+"вологість; сирість",
+"A1",
+null,
+"n.f"
+],
+"vodoinstalater": [
+"vodoinstalater",
+"сантехнік",
+"A1",
+null,
+"n.m"
+],
+"web-stranica": [
+"web-stranica",
+"вебсайт",
+"A1",
+null,
+"n.f"
+],
+"zarazan": [
+"zarazan",
+"заразний",
+"A2",
+7,
+"adj"
+],
+"začepljen": [
+"začepljen",
+"засмічений, забитий",
+"A1",
+null,
+"adj"
+],
+"zdrava prehrana": [
+"zdrava prehrana",
+"здорове харчування",
+"A2",
+7,
+"phr"
+],
+"zdravstveno osiguranje": [
+"zdravstveno osiguranje",
+"медичне страхування",
+"A0",
+null,
+"phr"
+],
+"čekati": [
+"čekati",
+"чекати",
+"A0",
+null,
+"v.ipf"
+],
+"čini mi se da": [
+"čini mi se da",
+"мені здається, що",
+"A2",
+10,
+"phr"
+],
+"šalter": [
+"šalter",
+"віконце (в установі)",
+"A0",
+6,
+"n.m"
+],
+"žuriti se": [
+"žuriti se",
+"поспішати",
+"A0",
+null,
+"v.ipf"
+]
+}
+}

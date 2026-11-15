@@ -171,4 +171,6 @@ for f in $A/data_fixes/20261113_reading_a2_v2_part*.sql; do run "$f"; done
 run $A/data_fixes/20261113_phrases_a2_v2.sql
 # A2 v2: діалоги ≥ 6 реплік (118 нових реплік у 97 діалогах), 2026-11-15
 run $A/data_fixes/20261115_a2_v2_dialogues_6_turns.sql
+# A2 v2: 20 старих текстів — знайомі слова за уроками A2, 6 текстів наново (≥ 90 % знайомих), 2026-11-15
+run $A/data_fixes/20261115_reading_a2_old_v2.sql
 echo "Готово. Тести: for t in supabase/tests/*.sql; do psql -h /tmp -p $P -U postgres -q -v ON_ERROR_STOP=1 -f \$t | tail -1; done"
