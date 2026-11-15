@@ -114,6 +114,7 @@ LESSONS = [
                 ('Daša', 'Bravo! A na poslu?', 'Молодець! А на роботі?'),
                 ('Darja', 'Dogovorila sam se sa šefom oko godišnjeg. Izašla sam na kraj sa svime.', 'Домовилася з шефом про відпустку. Впоралася з усім.'),
                 ('Daša', 'Vidiš, jezik ti je dao samopouzdanje.', 'Бачиш, мова дала тобі впевненість.'),
+                ('Darja', 'Istina. Sad se puno bolje snalazim.', 'Правда. Тепер я набагато краще даю собі раду.'),
             ]),
         ],
         fill=('Prijevod? Donijet ću ___ ga sutra.', 'Vam', ['Vas', 'Vi', 'Vaš']),
@@ -172,6 +173,7 @@ LESSONS = [
                 ('Darja', 'A na kraju?', 'А наприкінці?'),
                 ('Daša', '„Jako mi nedostaješ, jedva čekam da se vidimo. Puno pozdrava!“', '«Я дуже сумую за тобою, не можу дочекатися зустрічі. Щирі вітання!»'),
                 ('Darja', 'I P. S. — pozdravi mamu!', 'І P. S. — передавай вітання мамі!'),
+                ('Daša', 'Savršeno! Olena će se jako obradovati.', 'Чудово! Олена дуже зрадіє.'),
             ]),
             ('Офіційний лист', 'Službeno pismo', [
                 ('Ivan', 'A službeno pismo? Što je drukčije?', 'А офіційний лист? Що інакше?'),

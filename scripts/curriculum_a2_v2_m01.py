@@ -187,6 +187,7 @@ LESSONS = [
                 ('Recepcionarka', 'Jest, od sedam do deset. Ovo su dvije kartice za sobu.', 'Так, із сьомої до десятої. Ось дві картки-ключі від номера.'),
                 ('Darja', 'A koja je lozinka za wi-fi?', 'А який пароль від wi-fi?'),
                 ('Recepcionarka', 'Piše na kartici. Ako trebate nešto, nazovite recepciju.', 'Написано на картці. Якщо щось знадобиться, телефонуйте на рецепцію.'),
+                ('Darja', 'Hvala lijepa, vrlo ste ljubazni.', 'Щиро дякую, ви дуже люб’язні.'),
             ]),
             ('Не працює кондиціонер', 'Klima ne radi', [
                 ('Darja', 'Dobra večer, zovem iz sobe dvjesto pet. Klima ne radi.', 'Добрий вечір, телефоную з номера двісті п’ять. Не працює кондиціонер.'),
@@ -265,6 +266,7 @@ LESSONS = [
                 ('Ivan', 'Naplatili ste nam dvije porcije škampa, a naručili smo jednu.', 'Ви порахували нам дві порції креветок, а ми замовляли одну.'),
                 ('Konobar', 'Imate pravo, ispričavam se. Odmah ću ispraviti.', 'Ви маєте рацію, перепрошую. Зараз виправлю.'),
                 ('Ivan', 'Hvala. Možemo li platiti zasebno?', 'Дякую. Можемо заплатити окремо?'),
+                ('Konobar', 'Naravno. Platit ćete gotovinom ili karticom?', 'Звісно. Платитимете готівкою чи карткою?'),
             ]),
         ],
         fill=('Što ___ nam preporučili?', 'biste', ['bismo', 'bih', 'bi']),
@@ -332,6 +334,7 @@ LESSONS = [
                 ('Ivan', 'Sjedni u sredinu broda, tamo se manje ljulja.', 'Сядь посередині судна, там менше гойдає.'),
                 ('Daša', 'Dobro. Kad stignemo, gdje se iskrcavamo?', 'Добре. Коли припливемо, де ми сходимо?'),
                 ('Ivan', 'U Supetru. Vozači moraju sići do auta prije pristajanja.', 'У Супетарі. Водії мають спуститися до авто перед причалюванням.'),
+                ('Daša', 'Dobro, javi mi kad budemo blizu pristaništa.', 'Добре, скажи мені, коли будемо біля пристані.'),
             ]),
         ],
         fill=('___ trajekt stigne, idemo ravno na plažu.', 'Čim', ['Dok', 'Nego', 'Kao']),
@@ -393,6 +396,7 @@ LESSONS = [
                 ('Darja', 'Na stijenama ima ježinaca. Ako staneš na ježinca, jako boli.', 'На скелях є морські їжаки. Якщо наступиш на їжака, дуже болить.'),
                 ('Filip', 'Dobro. Mogu li plivati do plutače?', 'Добре. Можна мені плисти до буя?'),
                 ('Darja', 'Samo s tatom. Tamo je dubina tri metra i jaka struja.', 'Лише з татом. Там глибина три метри й сильна течія.'),
+                ('Filip', 'Može. Tata, ideš sa mnom do plutače?', 'Гаразд. Тату, попливеш зі мною до буя?'),
             ]),
             ('Медуза', 'Meduza', [
                 ('Daša', 'Joj! Nešto me opeklo na nozi!', 'Ой! Щось мене обпекло за ногу!'),
@@ -461,6 +465,7 @@ LESSONS = [
                 ('Daša', 'Onda bih uzela termin u jedanaest. Online kupnja je jeftinija.', 'Тоді я б узяла час на одинадцяту. Онлайн дешевше.'),
                 ('Darja', 'Dobro. Koliko traje obilazak?', 'Добре. Скільки триває огляд?'),
                 ('Daša', 'Oko četiri sata. Obvezno ponesi udobnu obuću.', 'Близько чотирьох годин. Обов’язково візьми зручне взуття.'),
+                ('Darja', 'Hoću. I kupit ću ulaznice odmah, dok još ima termina.', 'Візьму. І куплю квитки зараз, поки ще є вільний час.'),
             ]),
             ('Правила в парку', 'Pravila u parku', [
                 ('Čuvar', 'Oprostite, kupanje u jezerima je zabranjeno.', 'Перепрошую, купатися в озерах заборонено.'),
@@ -468,6 +473,7 @@ LESSONS = [
                 ('Čuvar', 'Ovo je zaštićeno područje. Molim Vas, ostanite na drvenoj stazi.', 'Це охоронювана територія. Будь ласка, залишайтеся на дерев’яній стежці.'),
                 ('Ivan', 'Razumijem. A kako bismo došli do velikog vodopada?', 'Зрозумів. А як би нам дістатися до великого водоспаду?'),
                 ('Čuvar', 'Idite pješačkom stazom do vidikovca, pa dolje uz kanjon.', 'Ідіть пішохідною стежкою до оглядового майданчика, а тоді вниз уздовж каньйону.'),
+                ('Ivan', 'Hvala lijepa i oprostite još jednom.', 'Щиро дякую і ще раз перепрошую.'),
             ]),
         ],
         fill=('Kako ___ došli do vidikovca?', 'bismo', ['biste', 'bih', 'smo']),
