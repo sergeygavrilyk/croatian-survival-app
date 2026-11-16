@@ -40,6 +40,8 @@ export const EVENT_NAMES = [
   // службові: підказка «Додати на початковий екран» (§76, 2026-11-16) — показано / людина відповіла; не навчальні події
   'install_hint_shown',
   'install_hint_result',
+  // службова: сторінки наперед для офлайну (§76, 2026-11-16) — скільки збережено / не вдалося; не навчальна подія
+  'offline_prefetched',
   // службова: як браузер відпрацював розпізнавання мовлення (діагностика Safari, 2026-10-21); не навчальна подія
   'speech_diagnostic',
 ] as const;
@@ -94,7 +96,8 @@ export interface EventProps {
   slow_used?: boolean;
   /** «Граматика рівня»: тема, яку тренують (lib/grammar.ts) */
   grammar_topic_id?: string;
-  /** Офлайн-черга: вид дії (offline_queued), скільки не прийнято сервером і скільки найдовше чекала (offline_synced) */
+  /** Офлайн-черга: вид дії (offline_queued), скільки не прийнято сервером і скільки найдовше чекала (offline_synced);
+   *  offline_prefetched: kind — lessons / lessons_situations, count — збережено сторінок, failed — не вдалося */
   kind?: string;
   failed?: number;
   age_ms?: number;

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
-import { ChevronRight, Eye, EyeOff, ListChecks, Mic, RotateCcw, Sparkles } from 'lucide-react';
+import { ChevronRight, CloudOff, Eye, EyeOff, ListChecks, Mic, RotateCcw, Sparkles } from 'lucide-react';
 import PageHeader from '@/components/ui/PageHeader';
 import Card from '@/components/ui/Card';
 import Hr from '@/components/ui/Hr';
@@ -57,11 +57,17 @@ export default function SituationView({
   loadError,
   roleplay,
   seed,
+  dialoguesOnline = 0,
 }: {
   situation: SituationInfo;
   phrases: SituationPhrase[];
   dialogues: SituationDialogue[];
   loadError?: boolean;
+  /**
+   * Копія для офлайну (§76, 2026-11-16): сторінку збережено наперед лише з фразами, а стільки діалогів
+   * відкриються з інтернетом. 0 — звичайна сторінка.
+   */
+  dialoguesOnline?: number;
   /** Seed перемішування з сервера (newSeed): порядок фраз без Math.random під час рендеру (lib/random.ts) */
   seed: string;
   /** Рольова гра з AI для цієї ситуації (VS-004) */
@@ -89,8 +95,9 @@ export default function SituationView({
 
   const tabs: Array<{ key: Tab; label: string; count: number }> = [
     { key: 'phrases', label: 'Фрази', count: phrases.length },
-    { key: 'dialogues', label: 'Діалоги', count: dialogues.length },
+    { key: 'dialogues', label: 'Діалоги', count: dialogues.length || dialoguesOnline },
   ];
+  const dialoguesCount = dialogues.length || dialoguesOnline;
 
   return (
     <div className="min-h-screen pb-28">
@@ -134,7 +141,7 @@ export default function SituationView({
             </span>
             <div className="min-w-0">
               <p className="text-body text-ink-muted">
-                {situationCounts({ phrases: phrases.length, dialogues: dialogues.length })}
+                {situationCounts({ phrases: phrases.length, dialogues: dialoguesCount })}
               </p>
               {levels.length > 0 && (
                 <p className="mt-1 flex flex-wrap gap-1.5">
@@ -187,9 +194,26 @@ export default function SituationView({
             />
           ))}
 
-        {tab === 'dialogues' && <DialogueList dialogues={dialogues} />}
+        {tab === 'dialogues' &&
+          (dialogues.length === 0 && dialoguesOnline > 0 ? <DialoguesOnlineNote /> : <DialogueList dialogues={dialogues} />)}
       </main>
     </div>
+  );
+}
+
+// ---------------------------------------------------------------- Діалоги — лише з інтернетом (копія для офлайну)
+function DialoguesOnlineNote() {
+  return (
+    <Card data-testid="situation-dialogues-online" className="flex animate-fade-in-up items-start gap-3 p-4">
+      <CloudOff className="mt-0.5 size-5 shrink-0 text-ink-muted" aria-hidden="true" />
+      <div className="min-w-0 flex-1">
+        <p className="text-body">Діалоги відкриються з інтернетом. Без мережі тут — фрази ситуації.</p>
+        <Button variant="secondary" size="sm" className="mt-3" onClick={() => window.location.reload()}>
+          <RotateCcw className="size-5" aria-hidden="true" />
+          Оновити сторінку
+        </Button>
+      </div>
+    </Card>
   );
 }
 

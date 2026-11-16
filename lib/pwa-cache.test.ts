@@ -3,6 +3,7 @@ import { test } from 'node:test';
 import {
   PAGE_CACHE_MAX_AGE_SECONDS,
   PAGE_CACHE_MAX_ENTRIES,
+  PAGE_CACHE_NAMES,
   PAGE_NETWORK_TIMEOUT_SECONDS,
   pageCacheRules,
   type PageCacheRule,
@@ -33,9 +34,10 @@ test('кеш сторінок: 30 днів, до 200 сторінок, тайм-
   assert.equal(PAGE_NETWORK_TIMEOUT_SECONDS, 5);
   assert.deepEqual(
     pageCacheRules.map((r) => r.options.cacheName),
-    ['pages-rsc-prefetch', 'pages-rsc', 'pages'],
-    'усі три кеші сторінок замінено, у такому порядку',
+    ['pages-rsc-prefetch', 'pages-rsc', 'pages', 'pages'],
+    'усі три кеші сторінок замінено, у такому порядку; четверте правило — сторінки наперед (2026-11-16)',
   );
+  assert.deepEqual([...new Set(pageCacheRules.map((r) => r.options.cacheName))], [...PAGE_CACHE_NAMES], 'вихід з акаунта чистить усі кеші сторінок');
   for (const rule of pageCacheRules) {
     assert.equal(rule.handler, 'NetworkFirst', rule.options.cacheName);
     assert.ok(rule.options.expiration.maxAgeSeconds >= 30 * 24 * 60 * 60, rule.options.cacheName);
@@ -70,4 +72,22 @@ test('«pages-rsc» і «pages-rsc-prefetch» — лише запити роут
   assert.equal(prefetch('/reading/abc', req('cors', { RSC: '1', 'Next-Router-Prefetch': '1' })), true);
   assert.equal(prefetch('/reading/abc', req('cors', { RSC: '1' })), false, 'звичайний перехід — не prefetch');
   assert.equal(prefetch('/reading/abc', req('cors', { RSC: '1', 'Next-Router-Prefetch': '1' }), false), false);
+});
+
+test('сторінки наперед (2026-11-16): лише запит із заголовком, у кеш «pages», лише відповіді 200', async () => {
+  const { PREFETCH_HEADER, PREFETCH_HEADER_VALUE } = await import('./offline-prefetch.ts');
+  const rule = pageCacheRules[3];
+  assert.equal(rule.options.cacheName, 'pages', 'той самий кеш, що й відкриття сторінки — без мережі навігація знайде її');
+  assert.deepEqual(rule.options.cacheableResponse, { statuses: [200] }, 'переадресація на вхід не потрапляє в кеш');
+  assert.equal(rule.options.expiration.maxEntries, PAGE_CACHE_MAX_ENTRIES);
+  const prefetch = asInServiceWorker(rule);
+  const marked = { [PREFETCH_HEADER]: PREFETCH_HEADER_VALUE };
+  assert.equal(prefetch('/lesson/c0000000-0000-0000-0000-000000000002', req('cors', marked)), true);
+  assert.equal(prefetch('/situations/pharmacy', req('cors', marked)), true);
+  assert.equal(prefetch('/lesson/x', req('cors')), false, 'звичайний запит — ні');
+  assert.equal(prefetch('/lesson/x', req('cors', { [PREFETCH_HEADER]: 'yes' })), false);
+  assert.equal(prefetch('/api/tts', req('cors', marked)), false);
+  assert.equal(prefetch('/lesson/x', req('cors', marked), false), false, 'чужий сайт');
+  // звичайне відкриття сторінки цим правилом не змінюється
+  assert.equal(pageCacheRules[2].options.cacheableResponse, undefined);
 });

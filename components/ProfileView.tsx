@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { BadgeCheck, BookOpen, ChevronRight, KeyRound, Layers, LogOut, Repeat, TrendingUp, type LucideIcon } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
+import { clearPageCaches } from '@/lib/offline-prefetch-client';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import LevelBadge from '@/components/ui/LevelBadge';
@@ -67,6 +68,8 @@ export default function ProfileView({
 
   const logout = async () => {
     await createClient().auth.signOut();
+    // збережені для офлайну сторінки (§76) — особисті («Сьогодні», прогрес): на спільному телефоні не лишаємо
+    await clearPageCaches().catch(() => {});
     router.push('/login');
     router.refresh();
   };
