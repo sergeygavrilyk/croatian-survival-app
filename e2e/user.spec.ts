@@ -73,6 +73,30 @@ test('урок від початку до святкового екрана: п�
   await expect(page.getByRole('link', { name: 'До уроків' })).toHaveAttribute('href', /^\/lessons/);
 });
 
+test.describe('«Сьогодні» на iPhone', () => {
+  // Chromium з адресою браузера iPhone: Safari не можна запустити, але логіка підказки дивиться саме на неї
+  test.use({
+    userAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 18_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.1 Mobile/15E148 Safari/604.1',
+  });
+
+  test('підказка «Додати на початковий екран» (§76): кроки в Safari, «Не зараз» ховає', async ({ page }) => {
+    // Підказка — після першого уроку: попередній тест щойно пройшов урок (серія ≥ 1)
+    await page.goto('/');
+    const hint = page.getByTestId('install-hint');
+    await expect(hint).toBeVisible();
+    await expect(hint.getByRole('heading', { name: 'Додайте застосунок на початковий екран' })).toBeVisible();
+    await expect(hint.getByRole('list', { name: 'Як додати на iPhone' })).toContainText('«На початковий екран»');
+    await expect(hint.getByRole('button', { name: 'Встановити' })).toHaveCount(0);
+
+    await hint.getByRole('button', { name: 'Не зараз' }).click();
+    await expect(hint).toBeHidden();
+    await page.reload();
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect(page.getByTestId('install-hint')).toHaveCount(0);
+  });
+});
+
 test('урок, якого немає: «Урок не знайдено» і шлях до уроків', async ({ page }) => {
   await page.goto('/lesson/00000000-0000-0000-0000-000000000000');
   await expect(page.getByRole('heading', { name: 'Урок не знайдено' })).toBeVisible();

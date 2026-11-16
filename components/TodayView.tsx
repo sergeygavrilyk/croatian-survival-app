@@ -9,6 +9,7 @@ import { weekCheer, type AssessmentSuggestion } from '@/lib/today';
 import { cn } from '@/lib/ui';
 import type { DayActivity } from '@/lib/progress';
 import OfflinePendingNote from '@/components/OfflinePendingNote';
+import InstallHint from '@/components/InstallHint';
 import AiPanel from '@/components/ui/AiPanel';
 import AudioButton from '@/components/ui/AudioButton';
 import Button from '@/components/ui/Button';
@@ -93,6 +94,8 @@ export default function TodayView(props: TodayViewProps) {
         )}
 
         <ContinueCard level={level} next={next} done={lessonsDone} total={lessonsTotal} />
+        {/* §76: після першого уроку — «Додати на початковий екран» (iPhone без іконки стирає збережене) */}
+        <InstallHint lessonsDone={Math.max(lessonsDone, streak > 0 ? 1 : 0)} />
         {/* коли всі уроки пройдено, «Перевірити рівень» уже в головній картці */}
         {assessment && next && <AssessmentCard level={level} suggestion={assessment} />}
         <ReviewCard dueCount={dueCount} />
