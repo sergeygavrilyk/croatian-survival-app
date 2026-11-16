@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type BrowserContext, type Page } from '@playwright/test';
 import { HAS_USER, NO_USER_REASON, TEST_LESSON_ID } from './env';
 
 /**
@@ -219,29 +219,8 @@ test('офлайн (§76): відкриті раз урок і текст від
   }
 
   // Без мережі кожну сторінку відкриваємо в новій вкладці — як людина, що знову відкриває застосунок офлайн.
-  // (У першій версії обидві відкривались в одній вкладці через адресний рядок, і щойно відкрита офлайн
-  // сторінка уроку перебивала перехід на текст повторним завантаженням самої себе — див. HISTORY 2026-10-21.)
   await page.close();
-  // ДІАГНОСТИКА (тимчасово): хто і куди перезавантажує сторінку без мережі
-  const diag: string[] = [];
-  await context.addInitScript(() => {
-    const t0 = Date.now();
-    const log = (m: string) => console.log(`[diag] +${Date.now() - t0}ms ${location.pathname} ${m}`);
-    addEventListener('online', () => log('online event'));
-    addEventListener('offline', () => log('offline event'));
-    addEventListener('popstate', (e) => log(`popstate ${JSON.stringify(Object.keys((e.state as object) ?? {}))}`));
-    addEventListener('pagehide', () => log('pagehide'));
-    const nav = (window as unknown as { navigation?: EventTarget }).navigation;
-    nav?.addEventListener('navigate', (ev) => {
-      const e = ev as unknown as { navigationType: string; destination: { url: string; sameDocument: boolean }; userInitiated: boolean };
-      const stack = (new Error().stack ?? '').split('\n').slice(2, 9).map((l) => l.trim()).join(' <- ');
-      log(`navigate ${e.navigationType} -> ${e.destination.url} sameDoc=${e.destination.sameDocument} user=${e.userInitiated} | ${stack}`);
-    });
-  });
-  context.on('console', (m) => {
-    if (m.text().startsWith('[diag]') || m.type() === 'error' || m.type() === 'warning') diag.push(`${m.type()}: ${m.text()}`.slice(0, 900));
-  });
-  context.on('page', (p) => p.on('framenavigated', (f) => { if (f === p.mainFrame()) diag.push(`framenavigated ${f.url()}`); }));
+  const journal = await recordNavigations(context);
   await context.setOffline(true);
   try {
     for (const [path, title] of [
@@ -254,6 +233,23 @@ test('офлайн (§76): відкриті раз урок і текст від
       await offlinePage.close();
     }
 
+    // Мережа «моргнула» (подія online): сторінка не перезавантажується сама — інакше губиться незбережене в уроці
+    // і скасовується перехід, який людина вже почала. Саме це раз на кілька прогонів ламало тест (2026-11-16):
+    // Chromium без мережі інколи сам шле online, а PWA мала reloadOnOnline: true.
+    const lessonPage = await context.newPage();
+    await lessonPage.goto(lessonUrl);
+    await expect(lessonPage.getByRole('heading', { level: 1, name: lessonTitle })).toBeVisible();
+    await lessonPage.evaluate(() => {
+      (window as unknown as { __e2eStay?: boolean }).__e2eStay = true;
+      window.dispatchEvent(new Event('online'));
+    });
+    await lessonPage.waitForTimeout(1_000);
+    expect(
+      await lessonPage.evaluate(() => (window as unknown as { __e2eStay?: boolean }).__e2eStay === true),
+      'подія online не перезавантажує сторінку',
+    ).toBe(true);
+    await lessonPage.close();
+
     // Як людина в застосунку: без мережі «Читання» → натиснути на текст (перехід усередині застосунку)
     const listPage = await context.newPage();
     await listPage.goto('/reading');
@@ -261,10 +257,10 @@ test('офлайн (§76): відкриті раз урок і текст від
     await expect(listPage).toHaveURL(new RegExp(`${textPath}$`));
     await expect(listPage.getByRole('heading', { level: 1, name: textTitle }), 'перехід зі списку без мережі').toBeVisible();
   } catch (err) {
-    console.log(`[diag] ПАДІННЯ, журнал:\n${diag.join('\n')}`);
+    // Запис кроків (trace) у CI не вивантажуємо (у ньому пароль), тож журнал переходів — у лог кроку
+    console.log(`Журнал переходів без мережі:\n${journal.join('\n')}`);
     throw err;
   } finally {
-    if (process.env.E2E_DIAG) console.log(`[diag] журнал:\n${diag.join('\n')}`);
     await context.setOffline(false);
   }
 });
@@ -314,6 +310,34 @@ async function openFirstReadingText(page: Page): Promise<string> {
   await expect(page).toHaveURL(new RegExp(`${href}$`));
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   return href;
+}
+
+/** Журнал переходів у нових вкладках (для логу CI, якщо офлайн-тест упаде): хто і куди перезавантажив сторінку,
+ *  події online / offline, помилки консолі. Стек показує, який код запустив перехід. */
+async function recordNavigations(context: BrowserContext): Promise<string[]> {
+  const journal: string[] = [];
+  await context.addInitScript(() => {
+    const t0 = Date.now();
+    const log = (m: string) => console.log(`[nav] +${Date.now() - t0}ms ${location.pathname} ${m}`);
+    addEventListener('online', () => log('online'));
+    addEventListener('offline', () => log('offline'));
+    const nav = (window as unknown as { navigation?: EventTarget }).navigation;
+    nav?.addEventListener('navigate', (ev) => {
+      const e = ev as unknown as { navigationType: string; destination: { url: string; sameDocument: boolean } };
+      if (e.destination.sameDocument) return;
+      const stack = (new Error().stack ?? '').split('\n').slice(2, 6).map((l) => l.trim()).join(' <- ');
+      log(`${e.navigationType} -> ${e.destination.url} | ${stack}`);
+    });
+  });
+  context.on('console', (m) => {
+    if (m.text().startsWith('[nav]') || m.type() === 'error') journal.push(m.text().slice(0, 600));
+  });
+  context.on('page', (p) =>
+    p.on('framenavigated', (f) => {
+      if (f === p.mainFrame()) journal.push(`відкрито ${f.url()}`);
+    }),
+  );
+  return journal;
 }
 
 async function waitForServiceWorker(page: Page) {
