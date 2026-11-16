@@ -81,7 +81,8 @@ jobs:
 
   e2e-user:
     name: E2E з тестовим акаунтом
-    needs: app
+    # Паралельно з `app` (рішення власника 2026-11-16): не чекаємо lint / unit / smoke — CI ~2,5 хв замість ~4,5.
+    # Збірка тут своя (зі справжньою адресою Supabase), тож від `app` нічого не потрібно.
     # Лише PR, ручний запуск і main: push у гілку з відкритим PR інакше запускав би ті самі сценарії двічі
     if: github.event_name != 'push' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
