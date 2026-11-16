@@ -41,6 +41,7 @@ LESSONS = [
                 ('Daša', 'Rovinjske uličice, pulski amfiteatar i neki brdski gradić, recimo Motovun.', 'Ровіньські вулички, пульський амфітеатр і якесь містечко на пагорбі, наприклад, Мотовун.'),
                 ('Darja', 'Po čemu je Motovun poznat?', 'Чим відомий Мотовун?'),
                 ('Daša', 'Po pogledu na dolinu i tartufima. I ručajte u nekom agroturizmu.', 'Видом на долину й трюфелями. І пообідайте в якійсь сільській садибі.'),
+                ('Darja', 'Super, hvala! Zapisat ću sve.', 'Супер, дякую! Запишу все.'),
             ]),
             ('В агротуризмі', 'U agroturizmu', [
                 ('Domaćin', 'Dobro došli! Danas imamo maneštru i fuže s tartufima.', 'Ласкаво просимо! Сьогодні маємо манештру й фужі з трюфелями.'),
@@ -48,6 +49,7 @@ LESSONS = [
                 ('Domaćin', 'Našu malvaziju ili teran. Vino je iz našeg vinograda.', 'Нашу мальвазію або теран. Вино з нашого виноградника.'),
                 ('Ivan', 'Zašto su natpisi dvojezični?', 'Чому написи двомовні?'),
                 ('Domaćin', 'U Istri živi talijanska manjina, pa je talijanski službeni jezik u nekim gradovima.', 'В Істрії живе італійська меншина, тож італійська — офіційна мова в деяких містах.'),
+                ('Ivan', 'Zanimljivo, nisam to znao. Onda ćemo probati teran.', 'Цікаво, я цього не знав. Тоді скуштуємо теран.'),
             ]),
         ],
         fill=('Pulski amfiteatar je jedan od najljepših u svijetu, a ___ uličice su prekrasne.', 'rovinjske', ['Rovinj', 'rovinjski', 'Rovinja']),
@@ -107,6 +109,7 @@ LESSONS = [
                 ('Darja', 'Da! Žitna polja, suncokret, kukuruz... Ravničarski krajolik je isti.', 'Так! Хлібні поля, соняшник, кукурудза... Рівнинний краєвид такий самий.'),
                 ('Ivana', 'A hrana? Slavonski kulen i fiš paprikaš?', 'А їжа? Славонський кулен і фіш-паприкаш?'),
                 ('Darja', 'Fiš paprikaš je kao naša juha, samo ljući!', 'Фіш-паприкаш — як наша юшка, тільки гостріший!'),
+                ('Ivana', 'Onda moraš probati i šljivovicu, ali samo malo!', 'Тоді мусиш скуштувати й сливовицю, але лише трохи!'),
             ]),
             ('На салаші', 'Na salašu', [
                 ('Domaćica', 'Dobro došli! Izvolite domaću kobasicu iz pušnice i bakin kulen.', 'Ласкаво просимо! Прошу, домашня ковбаса з коптильні й бабусин кулен.'),
@@ -114,6 +117,7 @@ LESSONS = [
                 ('Domaćica', 'Tako je to u Slavoniji. Navečer dolaze tamburaši.', 'Так у Славонії заведено. Увечері прийдуть тамбураші.'),
                 ('Ivan', 'Kada je ovdje berba grožđa?', 'Коли тут збір винограду?'),
                 ('Domaćica', 'U rujnu. Dođite onda, vidjet ćete iločki vinski podrum.', 'У вересні. Приїжджайте тоді, побачите ілоцький винний льох.'),
+                ('Ivan', 'Hvala, sigurno ćemo doći!', 'Дякую, обов’язково приїдемо!'),
             ]),
         ],
         fill=('Najbolji je ___ kulen, ona ga radi sama.', 'bakin', ['bakina', 'bake', 'baka']),
@@ -172,6 +176,7 @@ LESSONS = [
                 ('Marko', 'Nije, planinarska staza je dobro označena. Pratimo crveno-bijele markacije.', 'Ні, туристична стежка добре позначена. Ідемо за червоно-білим маркуванням.'),
                 ('Darja', 'Gdje spavamo?', 'Де ночуємо?'),
                 ('Marko', 'U planinarskoj kući ispod vrha. Velebitski pogled na more je nevjerojatan.', 'У гірському притулку під вершиною. Велебітський вид на море неймовірний.'),
+                ('Darja', 'Onda sigurno idem. Ponijet ću toplu jaknu.', 'Тоді точно йду. Візьму теплу куртку.'),
             ]),
             ('Зима в Горському Котарі', 'Zima u Gorskom kotaru', [
                 ('Ivan', 'Kakve su zime u Gorskom kotaru?', 'Які зими в Горському Котарі?'),
@@ -372,6 +377,7 @@ LESSONS = [
                 ('Daša', 'Dalmatinsko pjevanje, a cappella, obično osam glasova.', 'Далматинський спів а капела, зазвичай вісім голосів.'),
                 ('Darja', 'Kao naš zbor?', 'Як наш хор?'),
                 ('Daša', 'Slično, ali manje. Klapsko pjevanje je na popisu UNESCO-a.', 'Схоже, але менший. Спів клапи — у списку ЮНЕСКО.'),
+                ('Darja', 'Zvuči lijepo. Doći ću s Ivanom.', 'Звучить гарно. Прийду з Іваном.'),
             ]),
             ('Спадщина', 'Baština', [
                 ('Ivan', 'Znaš li da Hrvatska ima puno nematerijalne baštine?', 'Ти знаєш, що Хорватія має багато нематеріальної спадщини?'),
@@ -379,6 +385,7 @@ LESSONS = [
                 ('Ivan', 'I sinjska alka, stari viteški turnir. Svakog kolovoza.', 'І Сіньська алка, старовинний лицарський турнір. Щосерпня.'),
                 ('Darja', 'Kod nas je vez, ukrajinska vezena košulja.', 'У нас вишивка, українська вишиванка.'),
                 ('Ivan', 'Važno je očuvati takve običaje.', 'Важливо зберігати такі звичаї.'),
+                ('Darja', 'Slažem se. Djeca trebaju znati svoje korijene.', 'Згодна. Діти мають знати своє коріння.'),
             ]),
         ],
         fill=('___ alka je stari viteški turnir.', 'Sinjska', ['Sinj', 'Sinja', 'Sinjski']),

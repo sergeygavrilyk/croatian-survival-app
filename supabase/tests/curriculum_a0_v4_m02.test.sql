@@ -115,7 +115,8 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.content_versions where entit
 
 -- ---------------------------------------------------------------- перевірки модулів і читання
 select pg_temp.ok(pg_temp.n($q$select 1 from public.assessments a join public.assessment_items i on i.assessment_id = a.id
-  where a.slug in ('a0-m01', 'a0-m02') and i.status = 'PUBLISHED'$q$) = 20, 'перевірки модулів A0.1 і A0.2 — по 10 опублікованих завдань');
+  where a.slug in ('a0-m01', 'a0-m02') and i.status = 'PUBLISHED'$q$) = 30,
+  'перевірки модулів A0.1 і A0.2 — 12 і 18 опублікованих завдань (схема 2026-11-07: 2 на урок, 12–20; було по 10)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.assessments a join public.assessment_items i on i.assessment_id = a.id
   where a.slug = 'a0-m02' and i.status = 'PUBLISHED' and i.lesson_id is not null
     and i.lesson_id not in (select lid from pg_temp.m2())$q$) = 0, 'завдання перевірки A0.2 — з уроків модуля A0.2');
@@ -124,7 +125,8 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.assessments a join public.as
     and not exists (select 1 from public.lessons l where l.id = i.lesson_id and l.status = 'PUBLISHED')$q$) = 0,
   'завдання перевірок посилаються на опубліковані уроки');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.assessments a join public.assessment_items i on i.assessment_id = a.id
-  where a.slug in ('a0-m01', 'a0-m02') and i.status = 'DEPRECATED'$q$) = 20, 'старі завдання перевірок — DEPRECATED (не видалені)');
+  where a.slug in ('a0-m01', 'a0-m02') and i.status = 'DEPRECATED'$q$) = 40,
+  'старі завдання перевірок (по 10 першої версії й v4) — DEPRECATED (не видалені)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.reading_texts r
   where exists (select 1 from jsonb_array_elements(r.glossary) e where e->>'lemma' = 'biti' and (e->>'lesson')::boolean)$q$) > 0,
   'читання: форми «biti» (je, sam…) тепер позначено як слово з уроків');

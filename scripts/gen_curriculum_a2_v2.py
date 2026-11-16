@@ -261,8 +261,8 @@ class CourseA2(Course):
             sw = f'{w}.scene{si}'
             self.check_ua(s_ua, sw)
             self.check_hr(s_hr, sw)
-            if not (4 <= len(turns) <= 6):
-                self.errors.append(f'{sw}: {len(turns)} реплік (має бути 4–6)')
+            if not (6 <= len(turns) <= 8):  # не менше 6 реплік (2026-11-15, пакет gen_a2_v2_dialogues_fix.py)
+                self.errors.append(f'{sw}: {len(turns)} реплік (має бути 6–8)')
             for speaker, hr, ua in turns:
                 self.check_hr(speaker, sw + '.speaker')
                 self.check_hr(hr, sw + '.turn')

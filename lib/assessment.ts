@@ -9,7 +9,7 @@
  * Сервер сам перевіряє відповіді (клієнтському «правильно» не довіряє).
  */
 import { checkTypedAnswer } from './answer.ts';
-import { checkSentence } from './mistakes.ts';
+import { checkSentence, normalizeSentence, type SentenceVerdict } from './mistakes.ts';
 import { evaluateSpeech } from './speaking.ts';
 import { countUk } from './format.ts';
 import { LEVEL_CODES, isLevelCode, nextLevelCode } from './levels.ts';
@@ -44,6 +44,10 @@ export interface GradableItem {
   options: unknown;
   correct_index: number | null;
   answer_text: string | null;
+  /** «Складіть»: інші правильні порядки тих самих плиток (M27); інші типи — порожньо */
+  answer_alternatives?: string[] | null;
+  /** Навичка завдання (listening, reading, interaction, mediation, writing, speaking…) — для skill_progress */
+  skill?: string | null;
   weight?: number | string | null;
   lesson_id?: string | null;
 }
@@ -117,6 +121,39 @@ function num(v: number | string | null | undefined, fallback: number): number {
   return typeof n === 'number' && Number.isFinite(n) ? n : fallback;
 }
 
+/** Ті самі слова (плитки), що й у головній відповіді, — порядок не важить. */
+export function sameTiles(a: string, b: string): boolean {
+  const words = (s: string) => normalizeSentence(s).split(' ').filter(Boolean).sort().join(' ');
+  return words(a) !== '' && words(a) === words(b);
+}
+
+/**
+ * Правильні відповіді «Складіть»: головна (answer_text) + інші порядки (answer_alternatives).
+ * Альтернатива береться, лише якщо складається з тих самих плиток, що й головна (захист від помилки в даних).
+ */
+export function sentenceAnswers(item: Pick<GradableItem, 'answer_text' | 'answer_alternatives'>): string[] {
+  const main = (item.answer_text ?? '').trim();
+  if (!main) return [];
+  const out = [main];
+  for (const alt of Array.isArray(item.answer_alternatives) ? item.answer_alternatives : []) {
+    if (typeof alt !== 'string' || !alt.trim() || !sameTiles(alt, main)) continue;
+    if (out.some((x) => normalizeSentence(x) === normalizeSentence(alt))) continue;
+    out.push(alt.trim());
+  }
+  return out;
+}
+
+/** Найкращий збіг складеного речення з будь-якою правильною відповіддю: exact → diacritics → wrong. */
+export function checkSentenceAny(text: string, answers: ReadonlyArray<string>): SentenceVerdict {
+  let best: SentenceVerdict = 'wrong';
+  for (const a of answers) {
+    const v = checkSentence(text, a);
+    if (v === 'exact') return 'exact';
+    if (v === 'diacritics') best = 'diacritics';
+  }
+  return best;
+}
+
 /** Перевірка однієї відповіді. Немає відповіді = неправильно (крім говоріння — тоді пропуск). */
 export function gradeItem(item: GradableItem, response: ItemResponse | undefined): GradedItem {
   const area: Area = isArea(item.area) ? item.area : 'understand';
@@ -141,7 +178,7 @@ export function gradeItem(item: GradableItem, response: ItemResponse | undefined
     }
     case 'sentence_builder': {
       const text = response?.text ?? '';
-      const verdict = checkSentence(text, answer);
+      const verdict = checkSentenceAny(text, sentenceAnswers(item));
       if (!text.trim()) return { ...base, correct: false, skipped: false, given: null, verdict: 'no_answer' };
       return { ...base, correct: verdict !== 'wrong', skipped: false, given: clip(text), verdict };
     }
