@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { CircleCheck, Clock, Languages, Mic, Sparkles, Target, X } from 'lucide-react';
+import { CircleCheck, Clock, Hourglass, Languages, Mic, Sparkles, Target, X } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import SessionDone from '@/components/ui/SessionDone';
@@ -63,8 +63,11 @@ const STAGE_EMOJI: Record<LessonStage, string> = {
   summary: '🎉',
 };
 
-/** Що повертає збереження уроку: нові слова й серія для святкового екрана (або нічого — тоді без плиток). */
-type CompleteResult = Pick<CompleteLessonResult, 'addedToReview' | 'lessonWords' | 'streak'> | void;
+/**
+ * Що повертає збереження уроку: нові слова й серія для святкового екрана (або нічого — тоді без плиток);
+ * `queued` — мережі немає, прогрес у черзі на телефоні (офлайн без втрат), відправиться сам.
+ */
+export type CompleteResult = Pick<CompleteLessonResult, 'addedToReview' | 'lessonWords' | 'streak'> | { queued: true } | void;
 
 /**
  * Урок повністю: вступ → слова → діалоги → граматика → вправи → святковий підсумок (~10–15 хв).
@@ -659,19 +662,20 @@ function SummaryStep({
   backHref: string;
   onRestart: () => void;
 }) {
-  const [save, setSave] = useState<'saving' | 'saved' | 'error'>('saving');
+  const [save, setSave] = useState<'saving' | 'saved' | 'queued' | 'error'>('saving');
   const [result, setResult] = useState<CompleteResult>(undefined);
   const startedRef = useRef(false);
   const completeRef = useRef(onComplete);
 
-  const run = () =>
-    completeRef.current().then(
-      (res) => {
-        setResult(res);
-        setSave('saved');
-      },
-      () => setSave('error'),
-    );
+  const done = (res: CompleteResult) => {
+    if (res && 'queued' in res) {
+      setSave('queued');
+      return;
+    }
+    setResult(res);
+    setSave('saved');
+  };
+  const run = () => completeRef.current().then(done, () => setSave('error'));
   const retrySave = () => {
     setSave('saving');
     void run();
@@ -681,18 +685,13 @@ function SummaryStep({
   useEffect(() => {
     if (startedRef.current) return;
     startedRef.current = true;
-    void completeRef.current().then(
-      (res) => {
-        setResult(res);
-        setSave('saved');
-      },
-      () => setSave('error'),
-    );
+    void run();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- зберігаємо рівно один раз
   }, []);
 
   const info = situation ? situationInfo(situation) : null;
   const mascot = useStoredMascot();
-  const party = result
+  const party = result && !('queued' in result)
     ? lessonCelebration({ newWords: result.addedToReview, lessonWords: result.lessonWords, streak: result.streak })
     : null;
 
@@ -741,6 +740,12 @@ function SummaryStep({
                 : words > 0
                   ? `Прогрес збережено. ${countUk(words, ['слово', 'слова', 'слів'])} уроку чекають на вас у повторенні завтра.`
                   : 'Прогрес збережено.')}
+            {save === 'queued' && (
+              <span className="inline-flex items-center gap-2 text-warning-ink" role="status">
+                <Hourglass className="size-4 shrink-0" aria-hidden="true" />
+                🎉 Прогрес збережемо, щойно з’явиться інтернет.
+              </span>
+            )}
             {save === 'error' && <span className="text-danger-ink">Не вдалося зберегти прогрес — перевірте інтернет.</span>}
           </p>
         </>

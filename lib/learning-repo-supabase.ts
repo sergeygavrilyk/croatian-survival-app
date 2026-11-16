@@ -3,7 +3,7 @@
  * Використовується лише на сервері (server actions).
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { LearningRepo } from './learning.ts';
+import { earlierCompletion, type LearningRepo } from './learning.ts';
 import { LEARNING_EVENTS } from './progress.ts';
 import { DEFAULT_EASE } from './srs.ts';
 
@@ -59,13 +59,21 @@ export function createSupabaseLearningRepo(supabase: SupabaseClient): LearningRe
     },
 
     async markLessonCompleted(userId, lessonId, now) {
+      // Лишається раніша дата проходження (урок на двох пристроях, відправлений з офлайн-черги пізніше)
+      const { data: existing, error: readError } = await supabase
+        .from('lesson_progress')
+        .select('completed_at')
+        .eq('user_id', userId)
+        .eq('lesson_id', lessonId)
+        .maybeSingle();
+      if (readError) throw new Error(`Не вдалося прочитати прогрес уроку: ${readError.message}`);
       const { error } = await supabase.from('lesson_progress').upsert(
         {
           user_id: userId,
           lesson_id: lessonId,
           status: 'completed',
-          completed_at: now.toISOString(),
-          updated_at: now.toISOString(),
+          completed_at: earlierCompletion((existing as { completed_at?: string | null } | null)?.completed_at, now),
+          updated_at: new Date().toISOString(),
         },
         { onConflict: 'user_id,lesson_id' }
       );

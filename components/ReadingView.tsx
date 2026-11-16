@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { BookmarkPlus, CircleCheck, CircleX, Languages, Lightbulb, Square, Volume2, X } from 'lucide-react';
+import { BookmarkPlus, CircleCheck, CircleX, Hourglass, Languages, Lightbulb, Square, Volume2, X } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import Hr from '@/components/ui/Hr';
@@ -21,7 +21,8 @@ import {
 import { cn } from '@/lib/ui';
 import { playCroatian, stopCroatianAudio } from '@/utils/speech';
 
-type Result = { ok: true } | { ok: false; error: string };
+/** Результат збереження; `queued` — мережі немає, збережено в черзі на телефоні (офлайн без втрат). */
+export type SaveResult = { ok: true; queued?: boolean } | { ok: false; error: string };
 
 /**
  * Екран читання (§6, §56): текст, у якому можна натиснути будь-яке слово й побачити переклад,
@@ -34,8 +35,8 @@ export default function ReadingView({
   onSaveWord,
 }: {
   text: ReadingText;
-  onComplete: (correct: number, total: number, durationMs: number) => Promise<Result>;
-  onSaveWord: (lemma: string) => Promise<Result>;
+  onComplete: (correct: number, total: number, durationMs: number) => Promise<SaveResult>;
+  onSaveWord: (lemma: string) => Promise<SaveResult>;
 }) {
   const router = useRouter();
   const glossary = useMemo(() => glossaryIndex(text.glossary), [text.glossary]);
@@ -48,8 +49,9 @@ export default function ReadingView({
   const [showTranslation, setShowTranslation] = useState(false);
   const [answers, setAnswers] = useState<Array<string | null>>(() => text.questions.map(() => null));
   const [checked, setChecked] = useState(false);
-  const [saveState, setSaveState] = useState<Record<string, 'saving' | 'saved' | string>>({});
+  const [saveState, setSaveState] = useState<Record<string, 'saving' | 'saved' | 'queued' | string>>({});
   const [completeError, setCompleteError] = useState<string | null>(null);
+  const [completeQueued, setCompleteQueued] = useState(false);
   const [playing, setPlaying] = useState(false);
   const stopRef = useRef(false);
   const startedAtRef = useRef(0); // ставимо в ефекті нижче
@@ -96,7 +98,7 @@ export default function ReadingView({
   const save = async (entry: GlossaryEntry) => {
     setSaveState((s) => ({ ...s, [entry.lemma]: 'saving' }));
     const res = await onSaveWord(entry.lemma);
-    setSaveState((s) => ({ ...s, [entry.lemma]: res.ok ? 'saved' : res.error }));
+    setSaveState((s) => ({ ...s, [entry.lemma]: res.ok ? (res.queued ? 'queued' : 'saved') : res.error }));
   };
 
   const allAnswered = answers.every((a) => a !== null);
@@ -106,12 +108,14 @@ export default function ReadingView({
     setChecked(true);
     const res = await onComplete(correct, text.questions.length, Date.now() - startedAtRef.current);
     if (!res.ok) setCompleteError(res.error);
+    else if (res.queued) setCompleteQueued(true);
   };
 
   const again = () => {
     setAnswers(text.questions.map(() => null));
     setChecked(false);
     setCompleteError(null);
+    setCompleteQueued(false);
     startedAtRef.current = Date.now();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -271,6 +275,12 @@ export default function ReadingView({
               {correct < text.questions.length && ' Перечитайте текст — можна відкрити переклад.'}
             </p>
             {completeError && <p className="mt-2 text-label text-danger-ink">{completeError}</p>}
+            {completeQueued && (
+              <p className="mt-2 flex items-center justify-center gap-2 text-label text-warning-ink" role="status">
+                <Hourglass className="size-4 shrink-0" aria-hidden="true" />
+                Результат збережемо, щойно з’явиться інтернет.
+              </p>
+            )}
           </SessionDone>
         )}
       </section>
@@ -320,6 +330,11 @@ export default function ReadingView({
                 <p className="flex items-center gap-2 text-label text-success-ink" role="status">
                   <CircleCheck className="size-5" aria-hidden="true" />
                   Збережено в тренажер
+                </p>
+              ) : selectedState === 'queued' ? (
+                <p className="flex items-center gap-2 text-label text-warning-ink" role="status">
+                  <Hourglass className="size-5" aria-hidden="true" />
+                  Слово додамо в тренажер, щойно з’явиться інтернет
                 </p>
               ) : (
                 <>

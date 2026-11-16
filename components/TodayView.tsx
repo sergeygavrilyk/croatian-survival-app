@@ -8,6 +8,7 @@ import { levelStyle, moduleIcon } from '@/lib/levels';
 import { weekCheer, type AssessmentSuggestion } from '@/lib/today';
 import { cn } from '@/lib/ui';
 import type { DayActivity } from '@/lib/progress';
+import OfflinePendingNote from '@/components/OfflinePendingNote';
 import AiPanel from '@/components/ui/AiPanel';
 import AudioButton from '@/components/ui/AudioButton';
 import Button from '@/components/ui/Button';
@@ -84,6 +85,7 @@ export default function TodayView(props: TodayViewProps) {
       </header>
 
       <main className="mx-auto flex max-w-2xl animate-fade-in-up flex-col gap-4 px-5">
+        <OfflinePendingNote className="items-start" />
         {loadFailed && (
           <p role="alert" className="rounded-card border border-warning-line bg-warning-soft p-4 text-body text-warning-ink">
             Частину даних не вдалося завантажити. Ваш прогрес збережено — оновіть сторінку трохи згодом.

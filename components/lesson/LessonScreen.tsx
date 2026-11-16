@@ -2,19 +2,21 @@
 
 import { useCallback, useEffect, useRef, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import LessonPlayer from '@/components/lesson/LessonPlayer';
+import LessonPlayer, { type CompleteResult } from '@/components/lesson/LessonPlayer';
 import ErrorState from '@/components/ui/ErrorState';
 import EmptyState from '@/components/ui/EmptyState';
 import Button from '@/components/ui/Button';
 import { useOfflineCopy } from '@/components/useOfflineCopy';
 import { completeLesson } from '@/app/actions/progress';
 import { track, getSessionId } from '@/lib/analytics-client';
+import { failedForNetwork, isBrowserOffline, queueProgress } from '@/lib/offline-client';
 import { isLessonContent, type LessonContent } from '@/lib/lesson-content';
 
 /**
  * Екран уроку (client): дані приходять із сервера (app/(main)/lesson/[id]/page.tsx).
  * Офлайн (§76): кожне успішне відкриття зберігає копію уроку в браузері; якщо сервер не відповів —
  * показуємо останню збережену копію (useOfflineCopy). Версій кешу немає — копію перезаписують свіжі дані.
+ * Завершення уроку без мережі — у черзі на телефоні (lib/offline-client.ts), відправляє OfflineSync.
  */
 export default function LessonScreen({
   lessonId,
@@ -42,12 +44,21 @@ export default function LessonScreen({
 
   // Завершення уроку: прогрес уроку + слова уроку в повторення (SRS). Результат (нові слова, серія 🔥) —
   // для святкового екрана; помилку показує екран підсумку.
-  const handleComplete = useCallback(async () => {
-    return completeLesson(lessonId, {
+  // Без мережі (офлайн без втрат, 2026-11-16) — у чергу на телефоні з часом проходження; відправиться сама.
+  const handleComplete = useCallback(async (): Promise<CompleteResult> => {
+    const context = {
       session_id: getSessionId(),
       duration_ms: Date.now() - startedAtRef.current,
       level: content?.lesson.level_code ?? undefined,
-    });
+    };
+    const queue = () => queueProgress('lesson_completed', { lesson_id: lessonId, ...context });
+    if (isBrowserOffline() && queue()) return { queued: true };
+    try {
+      return await completeLesson(lessonId, context);
+    } catch (error) {
+      if (failedForNetwork(error) && queue()) return { queued: true };
+      throw error;
+    }
   }, [lessonId, content]);
 
   if (notFound) {

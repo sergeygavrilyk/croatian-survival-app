@@ -10,6 +10,7 @@
 
 import { labelChips, readLabels, type LexemeLabels } from './lexeme-labels.ts';
 import { isLevelCode, nearestLowerLevel, type LevelCode } from './levels.ts';
+import type { EventProps } from './analytics.ts';
 
 export const TEXT_TYPES = [
   'message', 'chat', 'email', 'notice', 'ad', 'menu', 'instruction', 'form', 'story', 'article', 'news', 'dialogue', 'sign',
@@ -399,4 +400,26 @@ export function isReadingText(v: unknown): v is ReadingText {
     Array.isArray(t.glossary) &&
     Array.isArray(t.questions)
   );
+}
+
+/**
+ * Властивості події reading_completed (§71) — однакові онлайн і з офлайн-черги.
+ * Успіх — частка правильних ≥ 0,67 (як і раніше; 2 з 3 — ще ні) (текст без питань — успіх).
+ */
+export function readingCompletedProps(input: {
+  cefr: string | null;
+  level?: string;
+  correct: number;
+  total: number;
+  durationMs?: number;
+}): EventProps {
+  return {
+    skill: 'reading',
+    source: 'reading',
+    level: input.cefr ?? input.level,
+    success: input.total > 0 ? input.correct / input.total >= 0.67 : true,
+    count: input.total,
+    correct_count: input.correct,
+    duration_ms: typeof input.durationMs === 'number' && input.durationMs >= 0 ? Math.round(input.durationMs) : undefined,
+  };
 }

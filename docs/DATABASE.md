@@ -215,7 +215,7 @@ An implementation may initially activate only a subset, but the data model must 
 | analytics_events | Append-only product/learning events including lesson, exercise, review, speaking, conversation, reading, word_saved/mastered, What Do I Say/Hear, subscription events. |
 | subscriptions | User subscription state and provider identifiers. |
 | notifications | User notification schedule/read state. |
-| sync_operations | Idempotent queue for offline mutations and server reconciliation. |
+| sync_operations | Idempotent queue for offline mutations and server reconciliation. **Реалізація (2026-11-16, M28): `client_ops`** — черга лежить на телефоні (`lib/offline-queue.ts`), у базі — лише журнал номерів прийнятих дій: `op_id` (uuid, PK), `user_id`, `kind` (`lesson_completed`, `reading_completed`, `word_saved`, `event`, `srs_rating`), `occurred_at` (коли людина вчилася), `received_at`. RLS: свої рядки — читати й додавати; змінювати й видаляти не може ніхто. Повтор номера сервер пропускає. |
 
 A Successful Learning Session contains retrieval + production + feedback/review. learning_sessions and analytics_events must provide sufficient evidence to calculate this metric without reconstructing it from UI clicks.
 

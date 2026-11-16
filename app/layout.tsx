@@ -4,6 +4,7 @@ import "./globals.css";
 import AnalyticsSession from "@/components/AnalyticsSession";
 import MotionProvider from "@/components/MotionProvider";
 import BottomNav from "@/components/ui/BottomNav";
+import OfflineSync from "@/components/OfflineSync";
 
 // Inter — основний текст, Plus Jakarta Sans — заголовки (docs/DESIGN_SYSTEM.md §4)
 const inter = Inter({ subsets: ["latin", "latin-ext", "cyrillic"], variable: "--font-inter" });
@@ -41,6 +42,8 @@ export default function RootLayout({
           {children}
           <BottomNav />
         </MotionProvider>
+        {/* офлайн без втрат: тиха відправка черги прогресу, щойно є мережа (§76) */}
+        <OfflineSync />
       </body>
     </html>
   );

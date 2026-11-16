@@ -4,6 +4,7 @@
  */
 import { trackEvent } from '@/app/actions/analytics';
 import type { EventName, EventProps } from '@/lib/analytics';
+import { failedForNetwork, isBrowserOffline, queueEvent } from '@/lib/offline-client';
 
 const SESSION_KEY = 'cs_analytics_session';
 let memorySessionId: string | null = null;
@@ -31,10 +32,21 @@ export function getSessionId(): string {
   }
 }
 
-/** Відправити подію. Не чекає відповіді і не кидає помилок. */
+/**
+ * Відправити подію. Не чекає відповіді і не кидає помилок.
+ * Без мережі подія йде в чергу на телефоні (lib/offline-client.ts) з часом, коли людина вчилася,
+ * і відправиться, щойно з'явиться інтернет — «Успішна навчальна сесія» рахується за справжнім днем.
+ */
 export function track(name: EventName, props: EventProps = {}): void {
   try {
-    void trackEvent(name, { ...props, session_id: getSessionId() }).catch(() => {});
+    const full = { ...props, session_id: getSessionId() };
+    if (isBrowserOffline()) {
+      queueEvent(name, full);
+      return;
+    }
+    void trackEvent(name, full).catch((error: unknown) => {
+      if (failedForNetwork(error)) queueEvent(name, full);
+    });
   } catch {
     // аналітика ніколи не ламає інтерфейс
   }

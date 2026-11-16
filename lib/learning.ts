@@ -164,6 +164,15 @@ export async function completeLesson(repo: LearningRepo, input: CompleteLessonIn
   return { success: true as const, addedToReview, lessonWords: uniqueIds.length, streak };
 }
 
+/**
+ * Дата проходження уроку, яку записуємо: раніша з наявної й нової (урок, пройдений на двох пристроях
+ * або відправлений з офлайн-черги пізніше, не переписує першу дату). Офлайн без втрат, 2026-11-16.
+ */
+export function earlierCompletion(existing: string | null | undefined, now: Date): string {
+  const prev = typeof existing === 'string' ? Date.parse(existing) : NaN;
+  return Number.isFinite(prev) && prev < now.getTime() ? new Date(prev).toISOString() : now.toISOString();
+}
+
 /** Скільки днів назад дивимось, рахуючи серію (як на «Сьогодні»). */
 export const STREAK_LOOKBACK_DAYS = 120;
 

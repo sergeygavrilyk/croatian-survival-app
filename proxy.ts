@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
+import { UID_COOKIE } from '@/lib/offline-queue';
 
 export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -44,6 +45,15 @@ export async function proxy(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = '/lessons';
     return NextResponse.redirect(url);
+  }
+
+  // Офлайн-черга (lib/offline-queue.ts): телефон має знати, чия черга, навіть без мережі — id користувача
+  // в cookie, яке читає браузер (не секрет: це не ключ доступу; сервер однаково перевіряє вхід)
+  const uidCookie = request.cookies.get(UID_COOKIE)?.value;
+  if (user && uidCookie !== user.id) {
+    supabaseResponse.cookies.set(UID_COOKIE, user.id, { path: '/', sameSite: 'lax', maxAge: 60 * 60 * 24 * 400, httpOnly: false, secure: request.nextUrl.protocol === 'https:' });
+  } else if (!user && uidCookie) {
+    supabaseResponse.cookies.delete(UID_COOKIE);
   }
 
   return supabaseResponse;

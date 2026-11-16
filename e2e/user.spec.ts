@@ -1,9 +1,9 @@
-import { expect, test, type BrowserContext, type Page } from '@playwright/test';
+import { expect, test, type BrowserContext, type Page, type Route } from '@playwright/test';
 import { HAS_USER, NO_USER_REASON, TEST_LESSON_ID } from './env';
 
 /**
  * Сценарії з тестовим акаунтом: у власника — `npm run e2e`, у CI — робота `e2e-user` на кожному PR (з 2026-11-14).
- * Пишуть у робочу базу лише прогрес тестового акаунта (lesson_progress, повторення, події).
+ * Пишуть у робочу базу лише прогрес тестового акаунта (lesson_progress, reading_progress, повторення, події, client_ops).
  */
 test.skip(!HAS_USER, NO_USER_REASON);
 
@@ -265,7 +265,67 @@ test('офлайн (§76): відкриті раз урок і текст від
   }
 });
 
+test('офлайн без втрат: урок без зв\'язку з сервером — у черзі, з\'явився зв\'язок — прогрес збережено', async ({ page }) => {
+  test.slow(); // урок від початку до кінця
+  await page.goto(`/lesson/${TEST_LESSON_ID}`);
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  // Зв'язку з сервером немає: кожен виклик server action обривається, як без інтернету (сторінки — як завжди)
+  const dropActions = async (route: Route) => {
+    if (route.request().method() === 'POST' && route.request().headers()['next-action']) await route.abort('internetdisconnected');
+    else await route.continue();
+  };
+  await page.route('**/*', dropActions);
+  await page.getByRole('button', { name: 'Почати урок' }).click();
+  await walkThroughLesson(page);
+
+  await expect(page.getByRole('heading', { name: 'Урок пройдено!' })).toBeVisible();
+  await expect(page.getByText('Прогрес збережемо, щойно з’явиться інтернет')).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByText('Не вдалося зберегти прогрес')).toHaveCount(0);
+  expect(await queuedKinds(page), 'завершення уроку — у черзі на телефоні').toContain('lesson_completed');
+
+  // «Уроки» без зв'язку: значок «… чекають на інтернет»
+  await page.goto('/lessons');
+  await expect(page.getByText(/чека(є|ють) на інтернет/)).toBeVisible();
+
+  // Зв'язок з'явився — черга відправляється сама, значок зникає
+  await page.unroute('**/*', dropActions);
+  await page.evaluate(() => window.dispatchEvent(new Event('online')));
+  await expect.poll(() => queuedKinds(page), { timeout: 60_000, message: 'черга відправлена' }).toEqual([]);
+  await expect(page.getByText(/чека(є|ють) на інтернет/)).toHaveCount(0);
+});
+
+test('офлайн без втрат: текст без інтернету — «Результат збережемо…», інтернет з\'явився — черга порожня', async ({ page, context }) => {
+  await openFirstReadingText(page);
+  await context.setOffline(true);
+  try {
+    for (const group of await page.locator('section[aria-labelledby="reading-questions"]').getByRole('group').all()) {
+      await group.getByRole('button').first().click();
+    }
+    await page.getByRole('button', { name: 'Перевірити' }).click();
+    await expect(page.getByText('Результат збережемо, щойно з’явиться інтернет.')).toBeVisible();
+    expect(await queuedKinds(page)).toContain('reading_completed');
+  } finally {
+    await context.setOffline(false);
+  }
+  await expect.poll(() => queuedKinds(page), { timeout: 60_000, message: 'черга відправлена' }).toEqual([]);
+});
+
 // ------------------------------------------------------------------ помічники
+
+/** Види дій у черзі на телефоні поточного користувача (lib/offline-queue.ts: ключ cs_queue_<id>). */
+async function queuedKinds(page: Page): Promise<string[]> {
+  return page.evaluate(() => {
+    const uid = document.cookie.split('; ').find((c) => c.startsWith('cs_uid='))?.slice('cs_uid='.length);
+    if (!uid) return ['<немає cs_uid>'];
+    try {
+      const raw = localStorage.getItem(`cs_queue_${uid}`);
+      return raw ? (JSON.parse(raw) as { ops: { kind: string }[] }).ops.map((o) => o.kind) : [];
+    } catch {
+      return ['<пошкоджено>'];
+    }
+  });
+}
+
 
 /** Пройти етапи уроку й вправи до підсумку. Відповідаємо «не знаю» / пропускаємо / перший варіант:
  *  неправильна вправа повторюється один раз, тож урок усе одно доходить до кінця.
