@@ -7,7 +7,7 @@
 project: Croatia survival
 release: pre-MVP (з 2026-11-07 — робота через PR: Claude готує гілку й PR, власник мерджить; SQL — «Apply SQL» після Approve)
 supabase_project: "New app for learning" (ref mhdgozragkkogvxpjksp, eu-west-2)
-active_work: 2026-11-16 — перевірки рівня: «Складіть» з кількома порядками слів (M27), skill_progress, A0 / A1 за схемою 2026-11-07; далі — recognition, програма B1 v2
+active_work: 2026-11-16 — стабільний E2E-тест офлайну (PR #48); перед тим — перевірки рівня v5 (M27); далі — recognition, програма B1 v2
 completed_slices: [VS-001, VS-002, VS-003, VS-004]
 content:                      # робоча база; уроки, модулі й граматика — 2026-10-27, решта — дати нижче
   lexemes: {published: 6192}   # 2026-11-12, після A2 v2; vulgar — 0
@@ -76,7 +76,7 @@ last_updated: 2026-11-16 (CI: E2E з входом паралельно — PR #4
 ## Технічний борг і ризики
 
 - **Запуск для інших людей** — `docs/SCALING.md`: AI для ЄС, SMTP, видалення акаунта, політика конфіденційності, згода на AI, резервні копії, регіон Vercel, офіційний TTS.
-- **Перевірки:** CI на кожному PR ✅; інколи «flaky» — тест офлайн.
+- **Перевірки:** CI на кожному PR ✅; офлайн-тест стабільний (PR #48).
 - **Код:** офлайн — на телефоні; мін. пароль 10 — звірити з Auth; відповіді перевірок (`correct_index`, `answer_text`, `answer_alternatives`) видно через API — PROPOSE закрити.
 - **Документи:** `DESIGN_SYSTEM.md` 67 КБ (> 60) — історію «реалізовано…» винести в архів окремою задачею.
 - **Контент:**
