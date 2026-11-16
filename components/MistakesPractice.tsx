@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { useRouter } from 'next/navigation';
-import { CircleCheck, MessagesSquare } from 'lucide-react';
+import { CircleCheck, MessagesSquare, WifiOff } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import Hr from '@/components/ui/Hr';
@@ -14,7 +14,11 @@ import ProgressBar from '@/components/ui/ProgressBar';
 import SessionDone from '@/components/ui/SessionDone';
 import { rateMistake } from '@/app/actions/mistakes';
 import { track } from '@/lib/analytics-client';
-import { answerTiles, checkSentence, distractorTiles, shuffleTiles, type SentenceVerdict } from '@/lib/mistakes';
+import {
+  answerTiles, checkSentence, distractorTiles, doneMarksKey, hiddenMistakeIds, markMistakeDone, shuffleTiles, type SentenceVerdict,
+} from '@/lib/mistakes';
+import { browserStorage, readOfflineRaw } from '@/lib/offline-copy';
+import { currentUserId, failedForNetwork, isBrowserOffline, queueProgress } from '@/lib/offline-client';
 import { seededRandom } from '@/lib/random';
 import { countUk } from '@/lib/format';
 import { cn } from '@/lib/ui';
@@ -41,21 +45,33 @@ function buildTiles(item: MistakeItem, seed: string): Tile[] {
   return shuffleTiles(words.map((text, i) => ({ key: `${i}:${text}`, text })), seededRandom(`${seed}:${item.id}`));
 }
 
+const noSubscribe = () => () => {};
+const doneMarksSnapshot = () => {
+  const userId = currentUserId();
+  return userId ? readOfflineRaw(browserStorage(), doneMarksKey(userId)) : null;
+};
+
 /**
  * Вправа «Виправте помилку»: користувач бачить, що сказав у рольовій грі,
  * і складає правильний варіант із плиток (серед них — його ж неправильні слова).
+ *
+ * Без мережі (офлайн, етап 2, 2026-11-16): сторінку віддає кеш застосунку, відповіді — у черзі (srs_rating),
+ * а правильно виправлені на телефоні після того, як сторінку зібрав сервер, ховаємо (lib/mistakes.ts).
  */
 export default function MistakesPractice({
-  items,
+  items: allItems,
   waitingCount,
   resolvedCount,
   seed,
+  renderedAt,
 }: {
   items: MistakeItem[];
   waitingCount: number;
   resolvedCount: number;
   /** Випадковий seed від сервера для перемішування плиток */
   seed: string;
+  /** Коли сервер зібрав сторінку (мс) — без мережі вона може бути з кешу */
+  renderedAt: number;
 }) {
   const router = useRouter();
   const [index, setIndex] = useState(0);
@@ -64,6 +80,14 @@ export default function MistakesPractice({
   const [correctCount, setCorrectCount] = useState(0);
   const [masteredNow, setMasteredNow] = useState(0);
   const [saveFailed, setSaveFailed] = useState(false);
+  const [queued, setQueued] = useState(false);
+  // Виправлені в цій сесії лишаються в ній (ховаємо лише виправлені раніше, на сторінці з кешу)
+  const [doneHere, setDoneHere] = useState<ReadonlySet<string>>(() => new Set());
+  const marksRaw = useSyncExternalStore(noSubscribe, doneMarksSnapshot, () => null);
+  const items = useMemo(() => {
+    const hidden = hiddenMistakeIds(marksRaw, renderedAt);
+    return hidden.size === 0 ? allItems : allItems.filter((i) => !hidden.has(i.id) || doneHere.has(i.id));
+  }, [allItems, marksRaw, renderedAt, doneHere]);
   const shownAtRef = useRef(0); // ставимо в ефекті нижче, коли сесія почалася
   const sessionStartRef = useRef(0);
 
@@ -121,6 +145,7 @@ export default function MistakesPractice({
                 setResult(null);
                 setCorrectCount(0);
                 setMasteredNow(0);
+                setDoneHere(new Set()); // без мережі виправлені щойно сховаються; онлайн нові підтягне сервер
                 router.refresh();
               }}
             >
@@ -143,9 +168,24 @@ export default function MistakesPractice({
     const correct = verdict === 'exact' || verdict === 'diacritics';
     setResult(verdict);
     if (correct) setCorrectCount((c) => c + 1);
-    const res = await rateMistake(item.id, correct, Date.now() - shownAtRef.current);
-    if (!res.ok) setSaveFailed(true);
-    else if (res.resolved && correct) setMasteredNow((m) => m + 1);
+    const durationMs = Date.now() - shownAtRef.current;
+    if (correct) {
+      setDoneHere((prev) => new Set(prev).add(item.id));
+      markMistakeDone(browserStorage(), currentUserId(), item.id);
+    }
+    const queue = () => {
+      const ok = queueProgress('srs_rating', { target: 'mistake', error_id: item.id, correct, duration_ms: durationMs });
+      if (ok) setQueued(true);
+      return ok;
+    };
+    if (isBrowserOffline() && queue()) return;
+    try {
+      const res = await rateMistake(item.id, correct, durationMs);
+      if (!res.ok) setSaveFailed(true);
+      else if (res.resolved && correct) setMasteredNow((m) => m + 1);
+    } catch (error) {
+      if (!(failedForNetwork(error) && queue())) setSaveFailed(true);
+    }
   };
 
   const next = () => {
@@ -162,6 +202,7 @@ export default function MistakesPractice({
     setIndex(nextIndex);
     setPicked([]);
     setResult(null);
+    setQueued(false);
     shownAtRef.current = Date.now();
   };
 
@@ -241,6 +282,12 @@ export default function MistakesPractice({
             <AiPanel title="Чому так">
               <p className="text-body">{item.explanation}</p>
             </AiPanel>
+          )}
+          {queued && !saveFailed && (
+            <p role="status" className="flex items-start gap-2 text-label font-normal text-warning-ink">
+              <WifiOff className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+              Відповідь збережемо, щойно з’явиться інтернет.
+            </p>
           )}
           {saveFailed && (
             <p role="alert" className="text-label font-normal text-danger-ink">

@@ -2,13 +2,13 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { trackEvent } from '@/app/actions/analytics';
-import { scheduleMistake } from '@/lib/mistakes';
+import { writeMistakeRating } from '@/lib/progress-write-supabase';
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /**
- * Відповідь на вправу «Виправте помилку»: оновлює розклад повторення (lib/mistakes.ts)
- * і пише подію exercise_completed. Права — RLS: лише власна помилка.
+ * Відповідь на вправу «Виправте помилку»: оновлює розклад повторення (lib/mistakes.ts через
+ * writeMistakeRating — те саме приймає офлайн-черга) і пише подію exercise_completed. Права — RLS: лише власна помилка.
  */
 export async function rateMistake(
   errorId: string,
@@ -20,42 +20,16 @@ export async function rateMistake(
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { ok: false, error: 'Увійдіть, щоб зберегти прогрес.' };
 
-  const { data: row, error: readError } = await supabase
-    .from('user_errors')
-    .select('id, correct_streak, review_count, resolved_at')
-    .eq('id', errorId)
-    .eq('user_id', user.id)
-    .maybeSingle();
-  if (readError || !row) return { ok: false, error: 'Помилку не знайдено.' };
-  if (row.resolved_at) return { ok: true, resolved: true };
-
-  const now = new Date();
-  const next = scheduleMistake(
-    { correctStreak: row.correct_streak as number, reviewCount: row.review_count as number },
-    Boolean(correct),
-    now,
-  );
-  const { error } = await supabase
-    .from('user_errors')
-    .update({
-      correct_streak: next.correctStreak,
-      review_count: next.reviewCount,
-      next_review_at: next.nextReviewAt.toISOString(),
-      last_reviewed_at: now.toISOString(),
-      resolved_at: next.resolvedAt ? next.resolvedAt.toISOString() : null,
-    })
-    .eq('id', errorId);
-  if (error) {
-    console.error('rateMistake:', error.message);
-    return { ok: false, error: 'Не вдалося зберегти відповідь. Перевірте інтернет.' };
-  }
+  const res = await writeMistakeRating(supabase, user.id, errorId, Boolean(correct), new Date());
+  if (!res.ok) return { ok: false, error: res.error };
+  if (!res.changed) return { ok: true, resolved: res.resolved };
 
   await trackEvent('exercise_completed', {
     exercise_type: 'fix_mistake',
     source: 'mistakes',
     success: Boolean(correct),
-    attempt: next.reviewCount,
+    attempt: res.attempt,
     duration_ms: typeof durationMs === 'number' && durationMs >= 0 ? Math.round(durationMs) : undefined,
   });
-  return { ok: true, resolved: Boolean(next.resolvedAt) };
+  return { ok: true, resolved: res.resolved };
 }

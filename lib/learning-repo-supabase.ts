@@ -12,7 +12,7 @@ export function createSupabaseLearningRepo(supabase: SupabaseClient): LearningRe
     async getCardState(userId, lexemeId) {
       const { data, error } = await supabase
         .from('user_progress')
-        .select('ease_factor, interval_days, repetition_count, lapses')
+        .select('ease_factor, interval_days, repetition_count, lapses, last_reviewed_at')
         .eq('user_id', userId)
         .eq('lexeme_id', lexemeId)
         .maybeSingle();
@@ -23,6 +23,7 @@ export function createSupabaseLearningRepo(supabase: SupabaseClient): LearningRe
         intervalDays: data.interval_days ?? 0,
         repetitionCount: data.repetition_count ?? 0,
         lapses: data.lapses ?? 0,
+        lastReviewedAt: (data.last_reviewed_at as string | null) ?? null,
       };
     },
 
@@ -54,6 +55,8 @@ export function createSupabaseLearningRepo(supabase: SupabaseClient): LearningRe
         new_interval: entry.next.intervalDays,
         old_ease: entry.prev.easeFactor,
         new_ease: entry.next.easeFactor,
+        // час відповіді (з офлайн-черги — коли людина вчилася), а не прийому: серія днів 🔥
+        created_at: entry.at.toISOString(),
       });
       if (error) throw new Error(error.message);
     },

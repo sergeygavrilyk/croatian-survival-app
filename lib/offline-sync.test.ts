@@ -121,7 +121,22 @@ test('зміст дій: перевірка й нормалізація', () => 
   assert.equal(parseOpPayload('event', { name: 'drop_table', props: {} }), null);
   assert.equal(parseOpPayload('event', { name: 'offline_synced', props: {} }), null, 'службову подію сервера з черги не приймаємо');
   assert.deepEqual(parseOpPayload('event', { name: 'lesson_started', props: 'x' }), { kind: 'event', name: 'lesson_started', props: {} });
-  assert.equal(parseOpPayload('srs_rating', { lexeme_id: LESSON, rating: 1 }), null, 'етап 2 — поки не приймаємо');
+  // srs_rating (етап 2): картка тренажера або «Помилки»; без target — відмова
+  assert.equal(parseOpPayload('srs_rating', { lexeme_id: LESSON, rating: 1 }), null, 'без target — відмова');
+  assert.deepEqual(parseOpPayload('srs_rating', { target: 'lexeme', lexeme_id: LESSON, rating: 1, response_time_ms: 1500.6 }), {
+    kind: 'srs_rating', target: 'lexeme', lexemeId: LESSON, rating: 1, responseTimeMs: 1501,
+  });
+  assert.deepEqual(parseOpPayload('srs_rating', { target: 'lexeme', lexeme_id: LESSON, rating: 0, response_time_ms: -5 }), {
+    kind: 'srs_rating', target: 'lexeme', lexemeId: LESSON, rating: 0, responseTimeMs: undefined,
+  });
+  assert.equal(parseOpPayload('srs_rating', { target: 'lexeme', lexeme_id: LESSON, rating: 2 }), null);
+  assert.equal(parseOpPayload('srs_rating', { target: 'lexeme', lexeme_id: 'kava', rating: 1 }), null);
+  assert.deepEqual(parseOpPayload('srs_rating', { target: 'mistake', error_id: TEXT, correct: false, duration_ms: 9000 }), {
+    kind: 'srs_rating', target: 'mistake', errorId: TEXT, correct: false, durationMs: 9000,
+  });
+  assert.equal(parseOpPayload('srs_rating', { target: 'mistake', error_id: TEXT, correct: 'так' }), null);
+  assert.equal(parseOpPayload('srs_rating', { target: 'mistake', correct: true }), null);
+  assert.equal(parseOpPayload('srs_rating', { target: 'phrase', lexeme_id: LESSON, rating: 1 }), null);
   assert.equal(parseOpPayload('lesson_completed', null), null);
   assert.equal(parseOpPayload('lesson_completed', { lesson_id: LESSON, session_id: 'x' })?.kind, 'lesson_completed');
 });
@@ -136,4 +151,17 @@ test('підсумок для offline_synced: прийнято, відхилен
     NOW,
   );
   assert.deepEqual(summary, { count: 2, failed: 1, age_ms: 2 * DAY });
+});
+
+test('оцінки тренажера й «Помилок» (етап 2): по черзі за часом відповіді', async () => {
+  const { d, applied } = deps();
+  const second = op('srs_rating', { target: 'lexeme', lexeme_id: LESSON, rating: 1 }, NOW.getTime() - 30_000);
+  const first = op('srs_rating', { target: 'lexeme', lexeme_id: LESSON, rating: 0 }, NOW.getTime() - 90_000);
+  const mistake = op('srs_rating', { target: 'mistake', error_id: TEXT, correct: true }, NOW.getTime() - 60_000);
+  const res = await syncOps([second, mistake, first], d);
+  assert.deepEqual(res.map((r) => r.status), ['ok', 'ok', 'ok']);
+  assert.deepEqual(
+    applied.map((a) => (a.op.kind === 'srs_rating' && a.op.target === 'lexeme' ? `картка:${a.op.rating}` : 'помилка')),
+    ['картка:0', 'помилка', 'картка:1'],
+  );
 });
