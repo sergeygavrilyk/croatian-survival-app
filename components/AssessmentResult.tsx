@@ -224,6 +224,17 @@ export default function AssessmentResult({
                           Правильно: <Answer text={r.correctText} />
                         </p>
                       )}
+                      {!r.correct && r.alsoCorrect?.length > 0 && (
+                        <p className="break-words text-caption text-success-ink">
+                          Теж правильно:{' '}
+                          {r.alsoCorrect.map((t, i) => (
+                            <span key={t}>
+                              {i > 0 && ' · '}
+                              <Answer text={t} />
+                            </span>
+                          ))}
+                        </p>
+                      )}
                       {!r.correct && !r.skipped && r.explanation && <p className="mt-1 text-caption text-ink-muted">{r.explanation}</p>}
                     </div>
                   </li>

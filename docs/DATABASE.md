@@ -136,7 +136,7 @@ The current user_progress model is retained because it contains live-compatible 
 
 | Entity | Purpose |
 |---|---|
-| skill_progress | Independent state for Vocabulary, Grammar, Listening, Reading, Speaking, Writing, Pronunciation, Interaction, Mediation. |
+| skill_progress | Independent state for Vocabulary, Grammar, Listening, Reading, Speaking, Writing, Pronunciation, Interaction, Mediation. *Заповнюється з 2026-11-16 після кожної перевірки рівня (рішення власника 2026-11-15): `xp_or_score` — результат навички в останній перевірці, 0–100; `level_estimate` — найвищий рівень, де навичка ≥ 70 % у фінальній перевірці, не знижується (`lib/skill-progress.ts`).* |
 
 The legacy repetition_count/ease_factor/interval_days fields remain readable during migration but are not the final scheduling contract. The scheduler must use stability, difficulty, retrievability, review history, lapses, time since review, learning direction and item importance, and must be benchmarked against real learning data.
 
@@ -191,7 +191,7 @@ An implementation may initially activate only a subset, but the data model must 
 | mediation_tasks | CEFR-style mediation tasks with source/target languages and key points. |
 | mediation_attempts | User mediation response and feedback. |
 | assessments | Diagnostic/module/mid/final assessments. |
-| assessment_items | Ordered weighted skill-linked assessment items. |
+| assessment_items | Ordered weighted skill-linked assessment items. *M27 (2026-11-16): `answer_alternatives text[]` — інші правильні порядки слів для «Складіть» (лише `sentence_builder`, до 6, латиницею).* |
 | assessment_attempts | Estimated CEFR, confidence, skill profile, recommended start and is_official=false by default. |
 
 ## 124. Content governance and versioning

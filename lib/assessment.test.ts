@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   assessmentSlug, attemptMeta, displayOrder, gradeItem, isLevelAssessmentSlug, kindTitle, levelStatus, levelTestSubtitle, midLastModule,
   mistakesToSave, nextLevel, percent,
-  levelTestLinks, pickAssessmentLevel, scoreAssessment, summarizeAttempts, type GradableItem, type ItemResponse,
+  levelTestLinks, pickAssessmentLevel, sameTiles, scoreAssessment, sentenceAnswers, summarizeAttempts, type GradableItem, type ItemResponse,
 } from './assessment.ts';
 
 const mc = (id: string, area: string, correct = 1, lesson: string | null = null): GradableItem => ({
@@ -242,4 +242,25 @@ test('ARCH-03: адреса перевірки — для будь-якого р
   assert.ok(!isLevelAssessmentSlug('a2-m1'));
   assert.equal(nextLevel('A2'), 'B1');
   assert.equal(nextLevel('B2'), null);
+});
+
+test('gradeItem: «складіть» — інший записаний порядок слів теж правильний (M27)', () => {
+  const item: GradableItem = { ...build('b', 'Sutra idem u Split.'), answer_alternatives: ['U Split idem sutra.'] };
+  assert.equal(gradeItem(item, { item_id: 'b', text: 'Sutra idem u Split.' }).verdict, 'exact');
+  assert.equal(gradeItem(item, { item_id: 'b', text: 'U Split idem sutra' }).correct, true);
+  assert.equal(gradeItem(item, { item_id: 'b', text: 'u split idem sutra' }).verdict, 'exact');
+  // незаписаний порядок — помилка, навіть якщо плитки ті самі
+  assert.equal(gradeItem(item, { item_id: 'b', text: 'Idem sutra u Split.' }).correct, false);
+  // без діакритики — як і для головної відповіді
+  const z: GradableItem = { ...build('z', 'Danas je lijepo vrijeme.'), answer_alternatives: ['Lijepo je vrijeme danas.'] };
+  assert.equal(gradeItem(z, { item_id: 'z', text: 'Lijepo je vrijeme danas' }).verdict, 'exact');
+});
+
+test('sentenceAnswers: альтернатива з іншими плитками чи дубль головної — не береться', () => {
+  assert.deepEqual(sentenceAnswers({ answer_text: 'Sutra idem u Split.', answer_alternatives: ['U Split idem sutra.', 'Sutra idem u Zagreb.', 'sutra idem u split', ''] }),
+    ['Sutra idem u Split.', 'U Split idem sutra.']);
+  assert.deepEqual(sentenceAnswers({ answer_text: 'Hvala.', answer_alternatives: null }), ['Hvala.']);
+  assert.deepEqual(sentenceAnswers({ answer_text: '', answer_alternatives: ['x'] }), []);
+  assert.equal(sameTiles('Gdje je WC?', 'WC je gdje'), true);
+  assert.equal(sameTiles('Gdje je WC?', 'Gdje je WC je'), false);
 });

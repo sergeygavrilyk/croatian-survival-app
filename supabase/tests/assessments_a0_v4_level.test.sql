@@ -30,21 +30,23 @@ left join public.modules m on m.id = u.module_id
 where a.slug in ('a0-mid', 'a0-final') and i.status = 'PUBLISHED';
 
 -- ---------------------------------------------------------------- склад
-select pg_temp.ok(pg_temp.n($q$select 1 from lvl where slug = 'a0-mid'$q$) = 20, 'a0-mid: 20 опублікованих завдань');
-select pg_temp.ok(pg_temp.n($q$select 1 from lvl where slug = 'a0-final'$q$) = 30, 'a0-final: 30 опублікованих завдань');
-select pg_temp.ok(pg_temp.n($q$select area, count(*) from lvl where slug = 'a0-mid' group by area having count(*) = 5$q$) = 4,
-  'a0-mid: по 5 завдань на кожну з 4 навичок §60');
-select pg_temp.ok(pg_temp.n($q$select 1 from lvl where slug = 'a0-final' group by area
+-- Схема 2026-11-07 (пакет 20261116_assessments_a0_v5.sql): середина — 30, фінал — 48 (було 20 / 30)
+select pg_temp.ok(pg_temp.n($q$select 1 from lvl where slug = 'a0-mid'$q$) = 30, 'a0-mid: 30 опублікованих завдань');
+select pg_temp.ok(pg_temp.n($q$select 1 from lvl where slug = 'a0-final'$q$) = 48, 'a0-final: 48 опублікованих завдань');
+select pg_temp.ok(pg_temp.n($q$select 1 from lvl where slug = 'a0-mid' group by area
   having (area in ('understand', 'produce') and count(*) = 8) or (area in ('interact', 'mediate') and count(*) = 7)$q$) = 4,
-  'a0-final: 8 / 7 / 7 / 8 завдань на навички');
+  'a0-mid: 8 / 7 / 7 / 8 завдань на 4 навички §60');
+select pg_temp.ok(pg_temp.n($q$select 1 from lvl where slug = 'a0-final' group by area
+  having (area in ('understand', 'produce') and count(*) = 13) or (area in ('interact', 'mediate') and count(*) = 11)$q$) = 4,
+  'a0-final: 13 / 11 / 11 / 13 завдань на навички');
 select pg_temp.ok(pg_temp.n($q$select slug, order_index from lvl group by 1, 2 having count(*) > 1$q$) = 0
-  and pg_temp.n($q$select 1 from lvl where order_index not between 1 and 30$q$) = 0,
+  and pg_temp.n($q$select 1 from lvl where order_index not between 1 and 48$q$) = 0,
   'місця завдань 1…N без повторів');
 
 -- ---------------------------------------------------------------- старі завдання не видалено
 select pg_temp.ok(pg_temp.n($q$select 1 from public.assessment_items i join public.assessments a on a.id = i.assessment_id
-  where a.slug in ('a0-mid', 'a0-final') and i.status = 'DEPRECATED' and i.order_index > 100$q$) = 50,
-  'старі 50 завдань — DEPRECATED (місця зсунуто на +100), не видалені');
+  where a.slug in ('a0-mid', 'a0-final') and i.status = 'DEPRECATED' and i.order_index > 100$q$) = 100,
+  'старі завдання (50 першої версії + 50 v4) — DEPRECATED (місця зсунуто за 100), не видалені');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.content_versions cv join public.assessments a on a.id = cv.entity_id
   where cv.entity_type = 'assessment' and a.slug in ('a0-mid', 'a0-final')
     and cv.change_reason like 'curriculum_a0_v4: перевірку рівня%' and jsonb_array_length(cv.payload->'items') > 0$q$) = 2,
@@ -89,7 +91,7 @@ select pg_temp.ok(pg_temp.n($q$select 1 from lvl where (prompt_ua || coalesce(ex
 set local role anon;
 select set_config('request.jwt.claims', '{"role":"anon"}', true);
 select pg_temp.ok(pg_temp.n($q$select 1 from public.assessment_items i join public.assessments a on a.id = i.assessment_id
-  where a.slug in ('a0-mid', 'a0-final')$q$) = 50, 'гість бачить 50 опублікованих завдань, старих — ні');
+  where a.slug in ('a0-mid', 'a0-final')$q$) = 78, 'гість бачить 78 опублікованих завдань (30 + 48), старих — ні');
 reset role;
 
 select 'ALL TESTS PASSED' as result;

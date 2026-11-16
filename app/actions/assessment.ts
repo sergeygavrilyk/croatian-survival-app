@@ -4,9 +4,10 @@ import { createClient } from '@/utils/supabase/server';
 import { trackEvent } from '@/app/actions/analytics';
 import { previousLevelCode } from '@/lib/levels';
 import {
-  attemptMeta, isLevelAssessmentSlug, mistakesToSave, nextLevel, optionsOf, scoreAssessment,
+  attemptMeta, isLevelAssessmentSlug, mistakesToSave, nextLevel, optionsOf, scoreAssessment, sentenceAnswers,
   type Area, type AreaScore, type GradableItem, type ItemResponse,
 } from '@/lib/assessment';
+import { skillProgressRows, skillScores } from '@/lib/skill-progress';
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const MAX_ITEMS = 60;
@@ -19,6 +20,8 @@ export interface AssessmentReviewItem {
   prompt_hr: string | null;
   /** Правильна відповідь (хорватською або українською — залежно від завдання) */
   correctText: string;
+  /** «Складіть»: інші правильні порядки слів (M27) */
+  alsoCorrect: string[];
   given: string | null;
   correct: boolean;
   skipped: boolean;
@@ -43,6 +46,39 @@ export interface AssessmentResultView {
   nextLevel: string | null;
   savedMistakes: number;
   attemptSaved: boolean;
+}
+
+/**
+ * Стан навичок (skill_progress) після перевірки: бал — останній результат, рівень — з фіналу ≥ порогу, не знижується
+ * (рішення власника 2026-11-15, lib/skill-progress.ts). Збій не ламає результат перевірки.
+ */
+async function saveSkillProgress(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  userId: string,
+  kind: string,
+  cefr: string,
+  passRatio: number,
+  items: ReadonlyArray<GradableItem>,
+  graded: Parameters<typeof skillScores>[1],
+): Promise<void> {
+  try {
+    const scores = skillScores(items, graded);
+    if (scores.size === 0) return;
+    const { data: existing } = await supabase
+      .from('skill_progress')
+      .select('skill, level_estimate')
+      .eq('user_id', userId)
+      .in('skill', [...scores.keys()]);
+    const rows = skillProgressRows(kind, cefr, scores, existing ?? [], passRatio);
+    if (rows.length === 0) return;
+    const now = new Date().toISOString();
+    const { error } = await supabase
+      .from('skill_progress')
+      .upsert(rows.map((r) => ({ ...r, user_id: userId, updated_at: now })), { onConflict: 'user_id,skill' });
+    if (error) console.error('skill_progress:', error.message);
+  } catch (e) {
+    console.error('skill_progress:', e instanceof Error ? e.message : e);
+  }
 }
 
 /** Відповіді з браузера: лише очікувана форма, обрізана довжина (решту відкидаємо). */
@@ -89,7 +125,8 @@ export async function submitAssessment(
 
   const { data: rows, error } = await supabase
     .from('assessment_items')
-    .select('id, order_index, area, item_type, prompt_ua, prompt_hr, options, correct_index, answer_text, weight, lesson_id, explanation_ua')
+    // '*': answer_alternatives (M27) і skill — без помилки, навіть доки міграцію ще не запущено
+    .select('*')
     .eq('assessment_id', assessment.id)
     .eq('status', 'PUBLISHED')
     .order('order_index', { ascending: true });
@@ -116,6 +153,7 @@ export async function submitAssessment(
     ...attemptMeta(kind, cefr, result),
   });
   if (insertError) console.error('assessment_attempts:', insertError.message);
+  await saveSkillProgress(supabase, user.id, kind, cefr, Number(assessment.pass_ratio) || 0.7, items, result.graded);
 
   // Помилки-фрази → «Помилки» (повторення з плиток). Уже відкриті такі самі не дублюємо.
   let savedMistakes = 0;
@@ -176,6 +214,7 @@ export async function submitAssessment(
       prompt_ua: i.prompt_ua,
       prompt_hr: i.prompt_hr,
       correctText: i.item_type === 'multiple_choice' ? optionsOf(i.options)[i.correct_index ?? -1] ?? '' : (i.answer_text ?? ''),
+      alsoCorrect: i.item_type === 'sentence_builder' ? sentenceAnswers(i).slice(1) : [],
       given: g.given,
       correct: g.correct,
       skipped: g.skipped,
