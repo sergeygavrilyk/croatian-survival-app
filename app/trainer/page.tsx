@@ -2,12 +2,18 @@
 
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { useRouter } from 'next/navigation';
-import { BookOpen, Layers, PenLine, Repeat } from 'lucide-react';
+import { BookOpen, Layers, PenLine, Repeat, WifiOff } from 'lucide-react';
 import FlashcardTrainer, { Flashcard } from '@/components/FlashcardTrainer';
 import WriteTrainer, { WriteCard } from '@/components/WriteTrainer';
 import { createClient } from '@/utils/supabase/client';
 import { rateFlashcard } from '@/app/actions/srs';
 import { track } from '@/lib/analytics-client';
+import { browserStorage, readOfflineCopy, saveOfflineCopy } from '@/lib/offline-copy';
+import { currentUserId, failedForNetwork, isBrowserOffline, queueProgress } from '@/lib/offline-client';
+import {
+  buildDeck, deckDueCount, deckKey, dueAtFromRow, isDue, isTrainerDeck, pickSession, rateInDeck, srsFromRow,
+  DECK_SIZE, type DeckEntry, type ProgressRow, type SessionKind, type TrainerDeck,
+} from '@/lib/trainer-deck';
 import { firstExample, type AnswerCheck } from '@/lib/answer';
 import { countUk, posLabelUk } from '@/lib/format';
 import { LEVEL_CODES, levelStyle } from '@/lib/levels';
@@ -28,15 +34,19 @@ type Level = (typeof LEVELS)[number];
  * В обох режимах — ЛИШЕ слова, які користувач уже вчить (user_progress):
  * слова пройдених уроків і ті, що він сам додав у словник. Нових слів тренажер не підкидає.
  * Вигляд — DESIGN_SYSTEM §3.4, §9.1, §9.2: колір рівня й емодзі теми біля слова.
+ *
+ * Без мережі (офлайн, етап 2, 2026-11-16): онлайн кожне відкриття зберігає копію колоди на телефоні
+ * (lib/trainer-deck.ts), без мережі сесія — з неї; оцінки — у черзі (srs_rating), відправляє OfflineSync.
  */
 type Mode = 'recognize' | 'write';
-type SessionKind = 'review' | 'practice' | 'write';
 type Card = Flashcard & WriteCard;
-
-const SESSION_SIZE = 10;
 // v2: типовий рівень став «Усі» (старі збережені налаштування з рівнем A1 ігноруємо)
 const PREFS_KEY = 'cs_trainer_prefs_v2';
 const LEXEME_FIELDS = 'id, lemma, ukrainian_translation, part_of_speech, audio_url, examples, cefr';
+const PROGRESS_FIELDS = 'lexeme_id, next_review_date, ease_factor, interval_days, repetition_count, lapses';
+/** Скільки слів беремо з бази за раз (найдавніші «на повторення») */
+const FETCH_LIMIT = 300;
+const THEME_CHUNK = 150;
 
 const noSubscribe = () => () => {};
 function readPrefsRaw(): string | null {
@@ -95,6 +105,9 @@ export default function TrainerPage() {
   const [dueCount, setDueCount] = useState(0);
   const [modeChoice, setMode] = useState<Mode | null>(null);
   const [saveError, setSaveError] = useState(false);
+  // Сесія з копії на телефоні (без мережі) / відповіді чекають у черзі
+  const [offline, setOffline] = useState(false);
+  const [queued, setQueued] = useState(false);
   // Ключ сесії: новий набір карток → компонент тренажера починає з першої картки
   const [sessionKey, setSessionKey] = useState(0);
   // «Ще слова» / «Спробувати ще раз» — нове завантаження
@@ -110,6 +123,8 @@ export default function TrainerPage() {
   // Аналітика сесії тренажера
   const sessionRef = useRef({ startedAt: 0, rated: 0, correct: 0, kind: 'review' as SessionKind });
   const cardShownAtRef = useRef(0);
+  // Копія колоди на телефоні (оновлюється з кожною оцінкою)
+  const deckRef = useRef<TrainerDeck | null>(null);
 
   const supabase = createClient();
   const router = useRouter();
@@ -129,82 +144,118 @@ export default function TrainerPage() {
     // результат старого завантаження ігноруємо, щоб не було подвійних карток і подій.
     let cancelled = false;
 
+    /** Нова сесія: лічильники, подія review_started, картки. */
+    function startSession(cards: Card[], kind: SessionKind, learning: number, due: number, fromPhone: boolean) {
+      if (cancelled) return;
+      setLearningCount(learning);
+      setDueCount(due);
+      setOffline(fromPhone);
+      const now = Date.now();
+      sessionRef.current = { startedAt: now, rated: 0, correct: 0, kind };
+      cardShownAtRef.current = now;
+      if (cards.length > 0) {
+        track('review_started', { level: selectedLevel, count: cards.length, source: kind });
+      }
+      setCards(cards);
+      setSessionKey(now);
+    }
+
+    /** Без мережі — сесія з копії колоди на телефоні. false — копії немає. */
+    function startFromPhone(userId: string | null): boolean {
+      if (!userId) return false;
+      const copy = readOfflineCopy(browserStorage(), deckKey(userId), isTrainerDeck);
+      if (!copy || copy.data.userId !== userId) return false;
+      deckRef.current = copy.data;
+      const now = Date.now();
+      const session = pickSession(copy.data.entries, selectedLevel, mode, now);
+      startSession(session.cards as Card[], session.kind, copy.data.learningCount, deckDueCount(copy.data, now), true);
+      return true;
+    }
+
     async function fetchCards() {
       setLoading(true);
       setLoadError(false);
       try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
+        // Браузер знає, що мережі немає, — одразу з телефона
+        if (isBrowserOffline() && startFromPhone(currentUserId())) return;
+
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        if (!user) {
+          if (authError && failedForNetwork(authError)) throw authError; // немає зв'язку — спробуємо копію
+          return;
+        }
 
         const nowMs = Date.now();
 
         // 1. Усі слова, які користувач уже вчить (пройдені в уроках або додані в словник)
         const { data: progressData, error: progressError } = await supabase
           .from('user_progress')
-          .select('lexeme_id, next_review_date')
+          .select(PROGRESS_FIELDS)
           .eq('user_id', user.id);
 
         if (progressError) throw progressError;
 
         // Спершу ті, що чекають повторення найдовше
-        const progress = (progressData ?? [])
-          .map(p => ({
-            id: p.lexeme_id as string,
-            dueAt: p.next_review_date ? new Date(p.next_review_date).getTime() : 0,
-          }))
+        const progress = ((progressData ?? []) as ProgressRow[])
+          .map(p => ({ id: p.lexeme_id, dueAt: dueAtFromRow(p), srs: srsFromRow(p) }))
           .sort((a, b) => a.dueAt - b.dueAt);
-        const dueIds = new Set(progress.filter(p => p.dueAt <= nowMs).map(p => p.id));
-        const ordered = progress.map(p => p.id).slice(0, 300);
+        const dueTotal = progress.filter(p => p.dueAt <= nowMs).length;
+        const ordered = progress.slice(0, FETCH_LIMIT);
 
-        // 2. Самі слова (лише чинні; за потреби — одного рівня)
+        // 2. Самі слова (лише чинні; рівень фільтруємо вже тут — копія на телефоні потрібна для всіх рівнів)
         let rows: LexemeRow[] = [];
         if (ordered.length > 0) {
-          let query = supabase
+          const { data, error } = await supabase
             .from('lexemes')
             .select(LEXEME_FIELDS)
-            .in('id', ordered)
+            .in('id', ordered.map(p => p.id))
             // Лише чинні слова (речення й репліки перенесено в phrases / conversations → DEPRECATED)
             .eq('status', 'PUBLISHED');
-          if (selectedLevel !== 'ALL') query = query.eq('cefr', selectedLevel);
-          const { data, error } = await query;
           if (error) throw error;
-          const byId = new Map(((data ?? []) as LexemeRow[]).map(row => [row.id, row]));
-          rows = ordered.map(id => byId.get(id)).filter((r): r is LexemeRow => !!r);
+          rows = (data ?? []) as LexemeRow[];
         }
+        const byId = new Map(rows.map(row => [row.id, row]));
+        const bare: DeckEntry[] = ordered.flatMap(p => {
+          const row = byId.get(p.id);
+          return row ? [{ card: toCard(row, undefined), cefr: row.cefr, dueAt: p.dueAt, srs: p.srs }] : [];
+        });
 
         // 3. Сесія: спершу слова «на сьогодні», потім — решта вивчених (повторити наперед)
-        const lexemeData = rows.slice(0, SESSION_SIZE);
-        const hasDue = lexemeData.some(r => dueIds.has(r.id));
-        const kind: SessionKind = mode === 'write' ? 'write' : hasDue ? 'review' : 'practice';
+        const session = pickSession(bare, selectedLevel, mode, nowMs);
+        const deckIds = bare.slice(0, DECK_SIZE).map(e => e.card.id);
 
-        // 4. Тема слів сесії — емодзі модуля, де слово трапляється в уроках (не критично: без неї — літера)
+        // 4. Тема слів сесії й копії — емодзі модуля, де слово трапляється в уроках (не критично: без неї — літера)
+        const themeIds = Array.from(new Set([...session.cards.map(c => c.id), ...deckIds]));
         let themes = new Map<string, WordTheme>();
-        if (lexemeData.length > 0) {
-          const { data: links, error: linksError } = await supabase
-            .from('lesson_items')
-            .select(WORD_THEME_SELECT)
-            .eq('item_type', 'lexeme')
-            .eq('lessons.status', 'PUBLISHED')
-            .in('item_id', lexemeData.map(r => r.id));
-          if (linksError) console.warn('Тема слів не завантажилась:', linksError.message);
-          else themes = wordThemes(links);
+        if (themeIds.length > 0) {
+          const links: unknown[] = [];
+          for (let i = 0; i < themeIds.length; i += THEME_CHUNK) {
+            const { data, error: linksError } = await supabase
+              .from('lesson_items')
+              .select(WORD_THEME_SELECT)
+              .eq('item_type', 'lexeme')
+              .eq('lessons.status', 'PUBLISHED')
+              .in('item_id', themeIds.slice(i, i + THEME_CHUNK));
+            if (linksError) {
+              console.warn('Тема слів не завантажилась:', linksError.message);
+              break;
+            }
+            links.push(...(data ?? []));
+          }
+          themes = wordThemes(links);
         }
+        const entries: DeckEntry[] = bare.map(e => ({ ...e, card: toCard(byId.get(e.card.id)!, themes.get(e.card.id)) }));
+        const themed = new Map(entries.map(e => [e.card.id, e.card as Card]));
 
-        if (cancelled) return;
-        setLearningCount(progress.length);
-        setDueCount(dueIds.size);
+        // 5. Копія колоди на телефоні — для тренажера без мережі
+        const deck = buildDeck(user.id, entries, progress.length, nowMs);
+        deck.dueOutside = Math.max(0, dueTotal - deck.entries.filter(e => isDue(e, nowMs)).length);
+        deckRef.current = deck;
+        saveOfflineCopy(browserStorage(), deckKey(user.id), deck);
 
-        // Нова сесія: лічильники + подія review_started
-        const now = Date.now();
-        sessionRef.current = { startedAt: now, rated: 0, correct: 0, kind };
-        cardShownAtRef.current = now;
-        if (lexemeData.length > 0) {
-          track('review_started', { level: selectedLevel, count: lexemeData.length, source: kind });
-        }
-
-        setCards(lexemeData.map(row => toCard(row, themes.get(row.id))));
-        setSessionKey(now);
+        startSession(session.cards.map(c => themed.get(c.id) ?? (c as Card)), session.kind, progress.length, dueTotal, false);
       } catch (err) {
+        if (!cancelled && startFromPhone(currentUserId())) return;
         console.error('Помилка завантаження тренажера:', err);
         if (!cancelled) setLoadError(true);
       } finally {
@@ -235,10 +286,28 @@ export default function TrainerPage() {
       });
     }
 
+    // Копія колоди на телефоні — тим самим розкладом: щойно повторене без мережі не повернеться «на сьогодні»
+    if (deckRef.current) {
+      deckRef.current = rateInDeck(deckRef.current, cardId, correct, new Date(now));
+      saveOfflineCopy(browserStorage(), deckKey(deckRef.current.userId), deckRef.current);
+    }
+
+    const rating = correct ? 1 : 0;
+    const queue = () => {
+      const ok = queueProgress('srs_rating', { target: 'lexeme', lexeme_id: cardId, rating, response_time_ms: responseTimeMs });
+      if (ok) {
+        setQueued(true);
+        setSaveError(false);
+      }
+      return ok;
+    };
+    // Сесія з телефона або мережі точно немає — одразу в чергу
+    if ((offline || isBrowserOffline()) && queue()) return;
     try {
-      await rateFlashcard(cardId, correct ? 1 : 0, responseTimeMs);
+      await rateFlashcard(cardId, rating, responseTimeMs);
       setSaveError(false);
     } catch (error) {
+      if (failedForNetwork(error) && queue()) return;
       console.error('Помилка при збереженні прогресу:', error);
       setSaveError(true);
     }
@@ -329,6 +398,15 @@ export default function TrainerPage() {
             <span>
               Ви вчите {countUk(learningCount, ['слово', 'слова', 'слів'])}
               {dueCount > 0 ? ` · ${countUk(dueCount, ['чекає', 'чекають', 'чекають'])} повторення` : ' · усе повторено вчасно 🎉'}
+            </span>
+          </p>
+        )}
+
+        {(offline || queued) && !saveError && (
+          <p role="status" className="flex items-start gap-2 rounded-card border border-warning-line bg-warning-soft px-4 py-3 text-label font-normal text-warning-ink">
+            <WifiOff className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+            <span>
+              {offline ? 'Без інтернету: картки з телефона. ' : ''}Відповіді збережемо, щойно з’явиться інтернет.
             </span>
           </p>
         )}

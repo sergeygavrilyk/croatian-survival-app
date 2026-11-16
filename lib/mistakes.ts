@@ -98,3 +98,63 @@ export function isDue(row: { resolved_at: string | null; next_review_at: string 
   if (row.resolved_at) return false;
   return !row.next_review_at || new Date(row.next_review_at).getTime() <= now.getTime();
 }
+
+// ---------------------------------------------------------------------------
+// Без мережі (офлайн, етап 2, 2026-11-16): правильно виправлені помилки — позначка на телефоні
+// ---------------------------------------------------------------------------
+// Без мережі сторінку «Помилки» віддає кеш застосунку — з тими помилками, що були на момент останнього
+// відкриття. Щоб уже правильно виправлена (відповідь чекає в черзі) не трапилась знову, телефон пам'ятає,
+// коли її виправили, і ховає, якщо сторінку зібрано раніше. Неправильні не ховаємо: онлайн вони теж
+// повертаються одразу. Свіжа сторінка з сервера (зібрана пізніше) показує все, що каже сервер.
+
+/** Скільки пам'ятаємо позначку — стільки ж, скільки дія чекає в черзі (14 днів). */
+export const DONE_MARK_MAX_AGE_MS = 14 * 24 * 60 * 60 * 1000;
+const DONE_MARK_MAX = 300;
+const DONE_PREFIX = 'cs_mistakes_done_';
+
+type MarkStorage = Pick<Storage, 'getItem' | 'setItem'>;
+
+export function doneMarksKey(userId: string): string {
+  return `${DONE_PREFIX}${userId}`;
+}
+
+/** Розібрати позначки { id помилки: мс }; пошкоджене — порожньо. */
+export function parseDoneMarks(raw: string | null | undefined): Record<string, number> {
+  if (!raw) return {};
+  try {
+    const parsed = JSON.parse(raw) as unknown;
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return {};
+    const out: Record<string, number> = {};
+    for (const [id, at] of Object.entries(parsed as Record<string, unknown>)) {
+      if (typeof at === 'number' && Number.isFinite(at)) out[id] = at;
+    }
+    return out;
+  } catch {
+    return {};
+  }
+}
+
+/** Позначити помилку виправленою зараз. Старші за 14 днів позначки прибираємо, не більше 300. */
+export function markMistakeDone(storage: MarkStorage | null | undefined, userId: string | null | undefined, errorId: string, now: number = Date.now()): boolean {
+  if (!storage || !userId) return false;
+  try {
+    const marks = parseDoneMarks(storage.getItem(doneMarksKey(userId)));
+    marks[errorId] = now;
+    const kept = Object.entries(marks)
+      .filter(([, at]) => now - at <= DONE_MARK_MAX_AGE_MS)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, DONE_MARK_MAX);
+    storage.setItem(doneMarksKey(userId), JSON.stringify(Object.fromEntries(kept)));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Які помилки сховати: виправлені на телефоні після того, як сторінку зібрав сервер. */
+export function hiddenMistakeIds(raw: string | null | undefined, renderedAtMs: number): Set<string> {
+  const hidden = new Set<string>();
+  if (!Number.isFinite(renderedAtMs)) return hidden;
+  for (const [id, at] of Object.entries(parseDoneMarks(raw))) if (at > renderedAtMs) hidden.add(id);
+  return hidden;
+}

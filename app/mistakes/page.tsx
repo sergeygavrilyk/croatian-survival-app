@@ -63,6 +63,7 @@ export default async function MistakesPage() {
             waitingCount={open.length - due.length}
             resolvedCount={resolvedRes.count ?? 0}
             seed={newSeed()}
+            renderedAt={now.getTime()}
           />
         )}
       </main>

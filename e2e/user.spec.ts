@@ -310,6 +310,37 @@ test('офлайн без втрат: текст без інтернету — �
   await expect.poll(() => queuedKinds(page), { timeout: 60_000, message: 'черга відправлена' }).toEqual([]);
 });
 
+test('офлайн без втрат, етап 2: тренажер без інтернету — картки з телефона, відповідь у черзі, інтернет з\'явився — черга порожня', async ({ page, context }) => {
+  // Режим «Картки», усі рівні — тоді перемикання на «Написати» без мережі збирає нову сесію з копії
+  await page.addInitScript(() => localStorage.setItem('cs_trainer_prefs_v2', JSON.stringify({ mode: 'recognize', level: 'ALL' })));
+  await page.goto('/trainer');
+  await expect(page.getByRole('heading', { level: 1, name: 'Практика' })).toBeVisible();
+  await expect(page.getByLabel('Підготовка карток')).toHaveCount(0, { timeout: 30_000 });
+  test.skip(await page.getByText('Тут з’являться ваші слова').isVisible(), 'у тестового акаунта ще немає слів у повторенні');
+  // Онлайн тренажер зберіг копію колоди на телефоні
+  await expect
+    .poll(() => page.evaluate(() => {
+      const uid = document.cookie.split('; ').find((c) => c.startsWith('cs_uid='))?.slice('cs_uid='.length);
+      return uid ? Boolean(localStorage.getItem(`cs_offline_trainer_${uid}`)) : false;
+    }), { message: 'копія колоди на телефоні' })
+    .toBe(true);
+
+  await context.setOffline(true);
+  try {
+    await page.getByRole('button', { name: 'Написати', exact: true }).click();
+    await expect(page.getByText('Без інтернету: картки з телефона.')).toBeVisible();
+    await expect(page.getByLabel('Хорватське слово')).toBeVisible();
+    await page.getByRole('button', { name: 'Не знаю', exact: true }).click();
+    await expect(page.getByRole('button', { name: /Далі/ })).toBeVisible();
+    await expect(page.getByText('Не вдалося зберегти відповідь')).toHaveCount(0);
+    expect(await queuedKinds(page), 'відповідь — у черзі на телефоні').toContain('srs_rating');
+  } finally {
+    await context.setOffline(false);
+  }
+  await page.evaluate(() => window.dispatchEvent(new Event('online')));
+  await expect.poll(() => queuedKinds(page), { timeout: 60_000, message: 'черга відправлена' }).toEqual([]);
+});
+
 // ------------------------------------------------------------------ помічники
 
 /** Види дій у черзі на телефоні поточного користувача (lib/offline-queue.ts: ключ cs_queue_<id>). */

@@ -50,7 +50,11 @@ export type ValidOp =
   | { kind: 'reading_completed'; textId: string; correct: number; total: number; durationMs?: number; level?: string }
   | { kind: 'word_saved'; source: 'reading'; textId: string; lemma: string }
   | { kind: 'word_saved'; source: 'dictionary'; lexemeId: string; category?: string }
-  | { kind: 'event'; name: EventName; props: EventProps };
+  | { kind: 'event'; name: EventName; props: EventProps }
+  /** Оцінка картки тренажера («Знаю» / «Не знаю», «Написати») — етап 2 */
+  | { kind: 'srs_rating'; target: 'lexeme'; lexemeId: string; rating: 0 | 1; responseTimeMs?: number }
+  /** Відповідь у «Помилках» («Виправте помилку») — етап 2 */
+  | { kind: 'srs_rating'; target: 'mistake'; errorId: string; correct: boolean; durationMs?: number };
 
 const optText = (v: unknown, max: number): string | undefined =>
   typeof v === 'string' && v.trim() ? v.trim().slice(0, max) : undefined;
@@ -95,8 +99,19 @@ export function parseOpPayload(kind: OfflineOpKind, payload: unknown): ValidOp |
       const props = p.props && typeof p.props === 'object' && !Array.isArray(p.props) ? (p.props as EventProps) : {};
       return { kind, name: p.name, props };
     }
+    case 'srs_rating': {
+      // target: lexeme — картка тренажера, mistake — «Помилки» (одна таблиця журналу, M28 без змін)
+      if (p.target === 'lexeme') {
+        if (!isUuidValue(p.lexeme_id) || (p.rating !== 0 && p.rating !== 1)) return null;
+        return { kind, target: 'lexeme', lexemeId: p.lexeme_id, rating: p.rating, responseTimeMs: optDuration(p.response_time_ms) };
+      }
+      if (p.target === 'mistake') {
+        if (!isUuidValue(p.error_id) || typeof p.correct !== 'boolean') return null;
+        return { kind, target: 'mistake', errorId: p.error_id, correct: p.correct, durationMs: optDuration(p.duration_ms) };
+      }
+      return null;
+    }
     default:
-      // srs_rating — етап 2 (тренажер без мережі); поки не приймаємо
       return null;
   }
 }

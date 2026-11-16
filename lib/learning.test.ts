@@ -16,7 +16,7 @@ type Failing = Partial<Record<keyof LearningRepo, boolean>>;
 
 /** Проста реалізація сховища в пам'яті + можливість «зламати» будь-який метод. */
 function memoryRepo(fail: Failing = {}, activity: string[] = [], timeZone: string | null = 'Europe/Zagreb') {
-  const progress = new Map<string, SrsState & { nextReviewDate: Date }>();
+  const progress = new Map<string, SrsState & { nextReviewDate: Date; lastReviewedAt?: string }>();
   const history: ReviewHistoryEntry[] = [];
   const lessons = new Map<string, string>();
   const events: { userId: string; row: AnalyticsRow }[] = [];
@@ -26,7 +26,7 @@ function memoryRepo(fail: Failing = {}, activity: string[] = [], timeZone: strin
 
   const repo: LearningRepo = {
     async getCardState(u, l) { guard('getCardState'); const p = progress.get(key(u, l)); return p ? { ...p } : null; },
-    async saveCardState(u, l, next: SrsResult) { guard('saveCardState'); progress.set(key(u, l), { ...next }); },
+    async saveCardState(u, l, next: SrsResult, at: Date) { guard('saveCardState'); progress.set(key(u, l), { ...next, lastReviewedAt: at.toISOString() }); },
     async addReviewHistory(e) { guard('addReviewHistory'); history.push(e); },
     async markLessonCompleted(u, lessonId) { guard('markLessonCompleted'); lessons.set(key(u, lessonId), 'completed'); },
     async getLessonLexemeIds(lessonId) { guard('getLessonLexemeIds'); return lessonItems.get(lessonId) ?? []; },
@@ -92,6 +92,28 @@ test('VS-001: збій історії не ламає відповідь', async
   const res = await rateCard(m.repo, { userId: USER, lexemeId: BOK, rating: 1, now }, silent);
   assert.equal(res.success, true);
   assert.equal(m.progress.size, 1);
+});
+
+test('VS-001 з офлайн-черги: історія — з часом відповіді; картку вже повторили пізніше — розклад не чіпаємо', async () => {
+  const m = memoryRepo();
+  const earlier = new Date(now.getTime() - 3 * 60 * 60 * 1000);
+  // онлайн повторили о 15:30 («Знаю» — завтра)
+  await rateCard(m.repo, { userId: USER, lexemeId: BOK, rating: 1, now }, silent);
+  const online = { ...m.progress.get(m.key(USER, BOK))! };
+  // з черги приходить «Не знаю», дане без мережі о 12:30
+  const res = await rateCard(m.repo, { userId: USER, lexemeId: BOK, rating: 0, now: earlier, keepNewer: true }, silent);
+  assert.equal(res.stale, true);
+  assert.deepEqual(m.progress.get(m.key(USER, BOK)), online, 'новіший розклад лишився');
+  assert.equal(m.history.length, 2, 'історія є — день навчання рахується');
+  assert.equal(m.history[1].at.getTime(), earlier.getTime());
+  assert.equal(m.history[1].next.intervalDays, m.history[1].prev.intervalDays, 'в історії — без зміни інтервалу');
+  // без keepNewer (онлайн) — як раніше, застосовуємо
+  const fresh = await rateCard(m.repo, { userId: USER, lexemeId: HVALA, rating: 1, now: earlier, keepNewer: true }, silent);
+  assert.equal(fresh.stale, false, 'нова картка — застосовуємо');
+  assert.equal(m.history[2].at.getTime(), earlier.getTime());
+  const later = await rateCard(m.repo, { userId: USER, lexemeId: BOK, rating: 1, now: new Date(now.getTime() + 60_000), keepNewer: true }, silent);
+  assert.equal(later.stale, false, 'пізніша за останнє повторення — застосовуємо');
+  assert.equal(m.progress.get(m.key(USER, BOK))!.repetitionCount, 2);
 });
 
 // ---------------------------------------------------------------- VS-002

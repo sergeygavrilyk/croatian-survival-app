@@ -21,7 +21,8 @@ export const OFFLINE_PREFIX = 'cs_offline_';
 /** Ключі старого кешу з ручними версіями — прибираємо, щоб не займали місце. */
 export const LEGACY_PREFIXES = ['cs_lesson_data_', 'cs_reading_', 'cs_modules_', 'cs_units_', 'cs_lessons_'] as const;
 
-export type OfflineKind = 'lesson' | 'reading';
+/** trainer — колода тренажера без мережі (lib/trainer-deck.ts, ключ — id користувача). */
+export type OfflineKind = 'lesson' | 'reading' | 'trainer';
 
 export function offlineKey(kind: OfflineKind, id: string): string {
   return `${OFFLINE_PREFIX}${kind}_${id}`;

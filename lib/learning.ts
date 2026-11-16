@@ -16,10 +16,15 @@ export interface ReviewHistoryEntry {
   responseTimeMs: number | null;
   prev: SrsState;
   next: SrsResult;
+  /** Коли людина відповіла (з офлайн-черги — час на телефоні): за ним рахується серія днів 🔥 */
+  at: Date;
 }
 
+/** Стан картки в базі + коли її востаннє повторювали (для оцінок з офлайн-черги). */
+export type CardState = SrsState & { lastReviewedAt?: string | null };
+
 export interface LearningRepo {
-  getCardState(userId: string, lexemeId: string): Promise<SrsState | null>;
+  getCardState(userId: string, lexemeId: string): Promise<CardState | null>;
   saveCardState(userId: string, lexemeId: string, next: SrsResult, now: Date): Promise<void>;
   addReviewHistory(entry: ReviewHistoryEntry): Promise<void>;
   markLessonCompleted(userId: string, lessonId: string, now: Date): Promise<void>;
@@ -81,6 +86,12 @@ export interface RateCardInput {
   rating: number;            // 1 — «Знаю», 0 — «Не знаю»
   responseTimeMs?: number;
   now?: Date;
+  /**
+   * Оцінка з офлайн-черги (етап 2, 2026-11-16): якщо картку вже повторили пізніше (онлайн чи на іншому
+   * пристрої), розклад не чіпаємо — лише історія (вона рахується в серію днів). Інакше старіша оцінка
+   * відкотила б новіший розклад.
+   */
+  keepNewer?: boolean;
 }
 
 export async function rateCard(repo: LearningRepo, input: RateCardInput, log: Logger = defaultLogger) {
@@ -88,10 +99,16 @@ export async function rateCard(repo: LearningRepo, input: RateCardInput, log: Lo
   if (rating !== 0 && rating !== 1) throw new Error('Оцінка має бути 0 або 1');
   const now = input.now ?? new Date();
 
-  const prev = (await repo.getCardState(userId, lexemeId)) ?? NEW_CARD;
-  const next = scheduleReview(prev, rating === 1, now);
+  const state = await repo.getCardState(userId, lexemeId);
+  const prev: SrsState = state
+    ? { easeFactor: state.easeFactor, intervalDays: state.intervalDays, repetitionCount: state.repetitionCount, lapses: state.lapses }
+    : NEW_CARD;
+  const reviewedMs = state?.lastReviewedAt ? Date.parse(state.lastReviewedAt) : NaN;
+  const stale = Boolean(input.keepNewer) && Number.isFinite(reviewedMs) && reviewedMs > now.getTime();
+  // Застаріла оцінка: розклад лишається як є (в історії — без зміни інтервалу)
+  const next: SrsResult = stale ? { ...prev, nextReviewDate: now } : scheduleReview(prev, rating === 1, now);
 
-  await repo.saveCardState(userId, lexemeId, next, now);
+  if (!stale) await repo.saveCardState(userId, lexemeId, next, now);
 
   await softly('Помилка запису в srs_reviews:', undefined, () =>
     repo.addReviewHistory({
@@ -101,12 +118,14 @@ export async function rateCard(repo: LearningRepo, input: RateCardInput, log: Lo
       responseTimeMs: typeof input.responseTimeMs === 'number' ? Math.round(input.responseTimeMs) : null,
       prev,
       next,
+      at: now,
     }), log);
 
   return {
     success: true as const,
     nextReviewDate: next.nextReviewDate.toISOString(),
     intervalDays: next.intervalDays,
+    stale,
   };
 }
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useSyncExternalStore } from 'react';
+import { useRouter } from 'next/navigation';
 import { CircleCheck, Hourglass, X } from 'lucide-react';
 import { browserStorage } from '@/lib/offline-copy';
 import { QUEUE_CHANGED_EVENT, pendingCount, peekExpiredNotice, takeExpiredNotice } from '@/lib/offline-queue';
@@ -25,11 +26,14 @@ const zero = () => 0;
  * Значок офлайн-черги на «Сьогодні» й «Уроках» (тексти — план офлайну §6, «Добро» власника 2026-11-16):
  * лише коли є що відправити — «⏳ 2 результати чекають на інтернет»; після відправлення — коротко
  * «✓ Прогрес збережено»; черга старша за 14 днів — одне повідомлення, яке людина закриває.
+ * Після відправлення — м'яке оновлення сторінки (router.refresh: дані з сервера, без перезавантаження,
+ * стан екрана лишається): серія 🔥, «на повторення», пройдені уроки — уже з урахуванням черги (етап 2, 2026-11-16).
  */
 export default function OfflinePendingNote({ className }: { className?: string }) {
   const pending = useSyncExternalStore(subscribe, pendingSnapshot, zero);
   const expired = useSyncExternalStore(subscribe, expiredSnapshot, zero);
   const [justSynced, setJustSynced] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | undefined;
@@ -37,6 +41,7 @@ export default function OfflinePendingNote({ className }: { className?: string }
       const detail = (e as CustomEvent<QueueChangedDetail>).detail;
       if (detail?.reason !== 'synced' || !detail.synced) return;
       setJustSynced(true);
+      router.refresh();
       clearTimeout(timer);
       timer = setTimeout(() => setJustSynced(false), 4_000);
     };
@@ -45,7 +50,7 @@ export default function OfflinePendingNote({ className }: { className?: string }
       clearTimeout(timer);
       window.removeEventListener(QUEUE_CHANGED_EVENT, onChange);
     };
-  }, []);
+  }, [router]);
 
   const dismissExpired = () => {
     takeExpiredNotice(browserStorage(), currentUserId());

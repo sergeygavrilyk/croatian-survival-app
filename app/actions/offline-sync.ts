@@ -2,11 +2,11 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { createSupabaseLearningRepo } from '@/lib/learning-repo-supabase';
-import { completeLesson as completeLessonCore } from '@/lib/learning';
+import { completeLesson as completeLessonCore, rateCard } from '@/lib/learning';
 import { buildAnalyticsRow } from '@/lib/analytics';
 import { isWordCategory } from '@/lib/lexeme-labels';
 import { readingCompletedProps } from '@/lib/reading';
-import { writeDictionaryWord, writeReadingCompleted, writeReadingWord } from '@/lib/progress-write-supabase';
+import { writeDictionaryWord, writeMistakeRating, writeReadingCompleted, writeReadingWord } from '@/lib/progress-write-supabase';
 import { syncOps, syncSummary, type ApplyOutcome, type SyncResult, type ValidOp } from '@/lib/offline-sync';
 import { withRequestMeta } from '@/lib/server-context';
 
@@ -79,6 +79,28 @@ export async function syncOfflineOps(ops: unknown): Promise<{ ok: true; results:
           level: res.cefr ?? undefined,
           category: isWordCategory(op.category) ? op.category : undefined,
         }, at);
+        return { status: 'ok' };
+      }
+      case 'srs_rating': {
+        if (op.target === 'lexeme') {
+          // Картка тренажера: той самий розклад, що й онлайн (rateCard), з часом відповіді; новішого не відкочуємо
+          const { data: lexeme, error } = await supabase.from('lexemes').select('id').eq('id', op.lexemeId).maybeSingle();
+          if (error) return { status: 'retry', reason: 'lexeme_read' };
+          if (!lexeme) return { status: 'rejected', reason: 'not_found' };
+          await rateCard(repo, { userId, lexemeId: op.lexemeId, rating: op.rating, responseTimeMs: op.responseTimeMs, now: at, keepNewer: true });
+          return { status: 'ok' };
+        }
+        const res = await writeMistakeRating(supabase, userId, op.errorId, op.correct, at, { keepNewer: true });
+        if (!res.ok) return res.permanent ? { status: 'rejected', reason: 'not_found' } : { status: 'retry', reason: 'write' };
+        if (res.changed) {
+          await softLog('exercise_completed', {
+            exercise_type: 'fix_mistake',
+            source: 'mistakes',
+            success: op.correct,
+            attempt: res.attempt,
+            duration_ms: op.durationMs,
+          }, at);
+        }
         return { status: 'ok' };
       }
       case 'event': {

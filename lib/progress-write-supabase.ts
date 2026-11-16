@@ -1,6 +1,6 @@
 /**
- * Запис прогресу читання й слів у повторення — спільне для онлайн-дій (app/actions/reading.ts,
- * app/actions/dictionary.ts) і прийому офлайн-черги (app/actions/offline-sync.ts). Лише сервер;
+ * Запис прогресу читання, слів у повторення й відповідей у «Помилках» — спільне для онлайн-дій (app/actions/reading.ts,
+ * app/actions/dictionary.ts, app/actions/mistakes.ts) і прийому офлайн-черги (app/actions/offline-sync.ts). Лише сервер;
  * працює від імені користувача (діють RLS). Час дії `now` — онлайн «зараз», з черги — коли людина вчилася.
  *
  * `permanent: true` — дію не застосувати ніколи (тексту чи слова немає): з черги її прибираємо;
@@ -8,6 +8,7 @@
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { newWordProgress } from './word-save.ts';
+import { scheduleMistake } from './mistakes.ts';
 
 export type WriteResult<T = object> = ({ ok: true } & T) | { ok: false; error: string; permanent: boolean };
 
@@ -118,4 +119,50 @@ export async function writeReadingCompleted(
     return { ok: false, error: 'Не вдалося зберегти прогрес. Перевірте інтернет.', permanent: false };
   }
   return { ok: true, cefr: (text.cefr as string | null) ?? null };
+}
+
+/**
+ * Відповідь у «Помилках» → новий розклад повторення помилки (lib/mistakes.ts). Права — RLS (лише своя).
+ * `keepNewer` (з офлайн-черги): помилку вже повторили пізніше — розклад не чіпаємо (`stale`).
+ * Уже засвоєну не змінюємо.
+ */
+export async function writeMistakeRating(
+  supabase: SupabaseClient,
+  userId: string,
+  errorId: string,
+  correct: boolean,
+  now: Date,
+  { keepNewer = false }: { keepNewer?: boolean } = {},
+): Promise<WriteResult<{ resolved: boolean; attempt: number; changed: boolean }>> {
+  const { data: row, error: readError } = await supabase
+    .from('user_errors')
+    .select('id, correct_streak, review_count, resolved_at, last_reviewed_at')
+    .eq('id', errorId)
+    .eq('user_id', userId)
+    .maybeSingle();
+  if (readError) return { ok: false, error: 'Не вдалося зберегти відповідь. Перевірте інтернет.', permanent: false };
+  if (!row) return { ok: false, error: 'Помилку не знайдено.', permanent: true };
+  const reviewCount = (row.review_count as number | null) ?? 0;
+  if (row.resolved_at) return { ok: true, resolved: true, attempt: reviewCount, changed: false };
+  const reviewedMs = row.last_reviewed_at ? Date.parse(row.last_reviewed_at as string) : NaN;
+  if (keepNewer && Number.isFinite(reviewedMs) && reviewedMs > now.getTime()) {
+    return { ok: true, resolved: false, attempt: reviewCount, changed: false };
+  }
+
+  const next = scheduleMistake({ correctStreak: (row.correct_streak as number | null) ?? 0, reviewCount }, correct, now);
+  const { error } = await supabase
+    .from('user_errors')
+    .update({
+      correct_streak: next.correctStreak,
+      review_count: next.reviewCount,
+      next_review_at: next.nextReviewAt.toISOString(),
+      last_reviewed_at: now.toISOString(),
+      resolved_at: next.resolvedAt ? next.resolvedAt.toISOString() : null,
+    })
+    .eq('id', errorId);
+  if (error) {
+    console.error('writeMistakeRating:', error.message);
+    return { ok: false, error: 'Не вдалося зберегти відповідь. Перевірте інтернет.', permanent: false };
+  }
+  return { ok: true, resolved: Boolean(next.resolvedAt), attempt: next.reviewCount, changed: true };
 }
