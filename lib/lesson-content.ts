@@ -5,6 +5,7 @@
  */
 import { examplesFrom, lessonPitfalls, type TypicalError } from './interference.ts';
 import { labelChips, readLabels, type LexemeLabels } from './lexeme-labels.ts';
+import { recognitionLexemeIds, withoutProductionFor } from './recognition.ts';
 
 export interface LessonWord {
   id: string;
@@ -67,6 +68,8 @@ export interface LessonExerciseRow {
   options: unknown;
   /** Завдання письма / переказу (exercises.task, M19); для інших типів — null або немає */
   task?: unknown;
+  /** Слово вправи (exercises.lexeme_id) — щоб не питати «Напишіть» слово «лише впізнавати» (lib/recognition.ts) */
+  lexeme_id?: string | null;
 }
 
 export interface LessonContent {
@@ -91,7 +94,8 @@ export interface LessonRows {
   };
   /** Модуль уроку (lessons.unit_id → units.module_id → modules); необов'язковий — збій не ламає урок */
   module?: { order_index: number | null; title_ua: string | null; title_hr?: string | null } | null;
-  items: ReadonlyArray<{ item_type: string; item_id: string }>;
+  /** target_skill = 'recognition' — слово уроку лише впізнають (LEARNING_SPEC §18) */
+  items: ReadonlyArray<{ item_type: string; item_id: string; target_skill?: string | null }>;
   lexemes: ReadonlyArray<{
     id: string;
     lemma: string;
@@ -205,7 +209,10 @@ export function buildLessonContent(rows: LessonRows): LessonContent {
     })),
   );
 
-  const exercises = inOrder(exerciseIds, rows.exercises);
+  // Слова «лише впізнавати» (LEARNING_SPEC §18): без «Напишіть» і «Скажіть уголос» з ними
+  const recognitionIds = recognitionLexemeIds(rows.items);
+  const recognition = rows.lexemes.filter((l) => recognitionIds.has(l.id)).map((l) => ({ id: l.id, lemma: l.lemma }));
+  const exercises = withoutProductionFor(inOrder(exerciseIds, rows.exercises), recognition);
 
   const pitfalls = lessonPitfalls(
     rows.errors.map((r) => ({ ...r, examples: examplesFrom(r.examples) })),

@@ -6,6 +6,7 @@ import MotionProvider from "@/components/MotionProvider";
 import BottomNav from "@/components/ui/BottomNav";
 import OfflineSync from "@/components/OfflineSync";
 import InstallPromptCapture from "@/components/InstallPromptCapture";
+import OfflineRefresh from "@/components/OfflineRefresh";
 
 // Inter — основний текст, Plus Jakarta Sans — заголовки (docs/DESIGN_SYSTEM.md §4)
 const inter = Inter({ subsets: ["latin", "latin-ext", "cyrillic"], variable: "--font-inter" });
@@ -46,6 +47,7 @@ export default function RootLayout({
         {/* офлайн без втрат: тиха відправка черги прогресу, щойно є мережа (§76) */}
         <OfflineSync />
         <InstallPromptCapture />
+        <OfflineRefresh />
       </body>
     </html>
   );

@@ -13,6 +13,8 @@
 /** Заголовок запиту «зберегти сторінку наперед». Сервер ситуації за ним віддає сторінку лише з фразами. */
 export const PREFETCH_HEADER = 'X-Offline-Prefetch';
 export const PREFETCH_HEADER_VALUE = 'page';
+/** Те саме, але повна сторінка (оновлення збереженої після оновлення застосунку, lib/offline-refresh.ts). */
+export const REFRESH_HEADER_VALUE = 'full';
 
 /** Скільки наступних уроків модуля зберігати (рішення власника: 3–5). */
 export const NEXT_LESSONS = 5;

@@ -15,6 +15,8 @@
  * - уроки й ситуації наперед (lib/offline-prefetch.ts) — звичайний запит із заголовком `X-Offline-Prefetch: page`;
  *   четверте правило кладе його в той самий кеш `pages`, і без мережі сторінка відкривається, як щойно відвідана.
  *   Лише відповіді 200: переадресація на вхід (сесія скінчилась) у кеш не потрапляє.
+ * - після оновлення застосунку збережені сторінки оновлюються тим самим правилом (`X-Offline-Prefetch: full`,
+ *   lib/offline-refresh.ts): стара сторінка посилається на файли старої збірки, яких на телефоні вже немає.
  */
 
 /** Скільки зберігаємо сторінку в кеші: 30 днів. */
@@ -78,9 +80,12 @@ export const pageCacheRules: PageCacheRule[] = [
     },
   },
   {
-    // Сторінка наперед для офлайну (lib/offline-prefetch.ts): той самий кеш, що й відкриття сторінки
+    // Сторінка наперед для офлайну (lib/offline-prefetch.ts, «page») чи оновлення збереженої після оновлення
+    // застосунку (lib/offline-refresh.ts, «full»): той самий кеш, що й відкриття сторінки
     urlPattern: ({ request, url, sameOrigin }) =>
-      sameOrigin && !url.pathname.startsWith('/api/') && request.headers.get('X-Offline-Prefetch') === 'page',
+      sameOrigin &&
+      !url.pathname.startsWith('/api/') &&
+      ['page', 'full'].includes(request.headers.get('X-Offline-Prefetch') ?? ''),
     handler: 'NetworkFirst',
     options: {
       cacheName: 'pages',

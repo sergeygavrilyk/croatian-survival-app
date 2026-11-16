@@ -42,6 +42,8 @@ export interface DeckEntry {
   /** Коли повторити (мс); 0 — одразу */
   dueAt: number;
   srs: SrsState;
+  /** Слово «лише впізнавати» (lib/recognition.ts): лише «Картки», не «Написати» */
+  recognitionOnly?: boolean;
 }
 
 export interface TrainerDeck {
@@ -96,7 +98,7 @@ export function buildDeck(userId: string, all: readonly DeckEntry[], learningCou
 
 /**
  * Сесія: спершу слова «на сьогодні», потім — решта вивчених (повторити наперед), як онлайн.
- * `level` — рівень слів або «ALL».
+ * `level` — рівень слів або «ALL». «Написати» — без слів «лише впізнавати».
  */
 export function pickSession(
   entries: readonly DeckEntry[],
@@ -107,6 +109,8 @@ export function pickSession(
 ): { cards: TrainerCard[]; kind: SessionKind } {
   const chosen = sortEntries(entries)
     .filter((e) => level === DECK_LEVEL_ALL || e.cefr === level)
+    // «Написати» — лише слова, які людина вчиться вживати (слова «лише впізнавати» — поза ним)
+    .filter((e) => mode !== 'write' || !e.recognitionOnly)
     .slice(0, size);
   const kind: SessionKind = mode === 'write' ? 'write' : chosen.some((e) => isDue(e, now)) ? 'review' : 'practice';
   return { cards: chosen.map((e) => e.card), kind };

@@ -15,6 +15,7 @@ import {
   DECK_SIZE, type DeckEntry, type ProgressRow, type SessionKind, type TrainerDeck,
 } from '@/lib/trainer-deck';
 import { firstExample, type AnswerCheck } from '@/lib/answer';
+import { RECOGNITION_SKILL, recognitionOnlyIds } from '@/lib/recognition';
 import { countUk, posLabelUk } from '@/lib/format';
 import { LEVEL_CODES, levelStyle } from '@/lib/levels';
 import { cn } from '@/lib/ui';
@@ -42,7 +43,7 @@ type Mode = 'recognize' | 'write';
 type Card = Flashcard & WriteCard;
 // v2: типовий рівень став «Усі» (старі збережені налаштування з рівнем A1 ігноруємо)
 const PREFS_KEY = 'cs_trainer_prefs_v2';
-const LEXEME_FIELDS = 'id, lemma, ukrainian_translation, part_of_speech, audio_url, examples, cefr';
+const LEXEME_FIELDS = 'id, lemma, ukrainian_translation, part_of_speech, audio_url, examples, cefr, register';
 const PROGRESS_FIELDS = 'lexeme_id, next_review_date, ease_factor, interval_days, repetition_count, lapses';
 /** Скільки слів беремо з бази за раз (найдавніші «на повторення») */
 const FETCH_LIMIT = 300;
@@ -82,6 +83,45 @@ interface LexemeRow {
   audio_url: string | null;
   examples: unknown;
   cefr: string | null;
+  register?: string | null;
+}
+
+/**
+ * Які слова людина лише впізнає (lib/recognition.ts): нецензурні й ті, що в уроках лише з target_skill = recognition.
+ * Не критично: збій — порожньо (слово просто трапиться в «Написати»).
+ */
+async function loadRecognitionOnly(supabase: ReturnType<typeof createClient>, rows: readonly LexemeRow[]): Promise<Set<string>> {
+  const ids = rows.map(r => r.id);
+  const links: { item_id: string; target_skill: string | null }[] = [];
+  try {
+    for (let i = 0; i < ids.length; i += THEME_CHUNK) {
+      const chunk = ids.slice(i, i + THEME_CHUNK);
+      const rec = await supabase
+        .from('lesson_items')
+        .select('item_id, target_skill, lessons!inner(status)')
+        .eq('item_type', 'lexeme')
+        .eq('target_skill', RECOGNITION_SKILL)
+        .eq('lessons.status', 'PUBLISHED')
+        .in('item_id', chunk);
+      if (rec.error) throw rec.error;
+      const recIds = [...new Set(((rec.data ?? []) as { item_id: string }[]).map(l => l.item_id))];
+      if (recIds.length === 0) continue;
+      links.push(...recIds.map(item_id => ({ item_id, target_skill: RECOGNITION_SKILL })));
+      // Те саме слово в іншому уроці вчать вживати — тоді його можна писати
+      const other = await supabase
+        .from('lesson_items')
+        .select('item_id, target_skill, lessons!inner(status)')
+        .eq('item_type', 'lexeme')
+        .neq('target_skill', RECOGNITION_SKILL)
+        .eq('lessons.status', 'PUBLISHED')
+        .in('item_id', recIds);
+      if (other.error) throw other.error;
+      links.push(...((other.data ?? []) as { item_id: string; target_skill: string | null }[]));
+    }
+  } catch (err) {
+    console.warn('Слова «лише впізнавати» не завантажились:', err instanceof Error ? err.message : err);
+  }
+  return recognitionOnlyIds(links, rows);
 }
 
 const toCard = (item: LexemeRow, theme: WordTheme | undefined): Card => ({
@@ -215,9 +255,14 @@ export default function TrainerPage() {
           rows = (data ?? []) as LexemeRow[];
         }
         const byId = new Map(rows.map(row => [row.id, row]));
+        // Слова «лише впізнавати» (LEARNING_SPEC §18) — у «Картках», але не в «Написати»
+        const recognitionOnly = await loadRecognitionOnly(supabase, rows);
         const bare: DeckEntry[] = ordered.flatMap(p => {
           const row = byId.get(p.id);
-          return row ? [{ card: toCard(row, undefined), cefr: row.cefr, dueAt: p.dueAt, srs: p.srs }] : [];
+          if (!row) return [];
+          const entry: DeckEntry = { card: toCard(row, undefined), cefr: row.cefr, dueAt: p.dueAt, srs: p.srs };
+          if (recognitionOnly.has(row.id)) entry.recognitionOnly = true;
+          return [entry];
         });
 
         // 3. Сесія: спершу слова «на сьогодні», потім — решта вивчених (повторити наперед)

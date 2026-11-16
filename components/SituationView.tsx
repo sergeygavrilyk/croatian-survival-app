@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
+import { OFFLINE_COPY_PHRASES } from '@/lib/offline-refresh';
 import { ChevronRight, CloudOff, Eye, EyeOff, ListChecks, Mic, RotateCcw, Sparkles } from 'lucide-react';
 import PageHeader from '@/components/ui/PageHeader';
 import Card from '@/components/ui/Card';
@@ -100,7 +101,8 @@ export default function SituationView({
   const dialoguesCount = dialogues.length || dialoguesOnline;
 
   return (
-    <div className="min-h-screen pb-28">
+    // Позначка копії «лише фрази» (§76): після оновлення застосунку її оновлюємо так само, без діалогів (lib/offline-refresh.ts)
+    <div className="min-h-screen pb-28" data-offline-copy={dialoguesOnline > 0 ? OFFLINE_COPY_PHRASES : undefined}>
       <PageHeader title={situation.label} backHref="/situations">
         <div role="tablist" aria-label="Розділи ситуації" className="grid grid-cols-2 gap-1 rounded-control bg-surface-muted p-1">
           {tabs.map((t) => (
