@@ -7,6 +7,7 @@ import ErrorState from '@/components/ui/ErrorState';
 import EmptyState from '@/components/ui/EmptyState';
 import Button from '@/components/ui/Button';
 import { useOfflineCopy } from '@/components/useOfflineCopy';
+import OfflinePrefetch from '@/components/OfflinePrefetch';
 import { completeLesson } from '@/app/actions/progress';
 import { track, getSessionId } from '@/lib/analytics-client';
 import { failedForNetwork, isBrowserOffline, queueProgress } from '@/lib/offline-client';
@@ -73,7 +74,14 @@ export default function LessonScreen({
     );
   }
 
-  if (content) return <LessonPlayer key={content.lesson.id} content={content} onComplete={handleComplete} />;
+  if (content)
+    return (
+      <>
+        <LessonPlayer key={content.lesson.id} content={content} onComplete={handleComplete} />
+        {/* §76: наступні уроки модуля й тексти — на телефон наперед (лише коли урок прийшов із мережі) */}
+        {initial && <OfflinePrefetch lessonId={lessonId} source="lesson" />}
+      </>
+    );
 
   if (!checked || retrying) return <LessonLoading />;
 

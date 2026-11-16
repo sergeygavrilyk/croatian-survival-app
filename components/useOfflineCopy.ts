@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useSyncExternalStore } from 'react';
 import {
-  browserStorage, offlineKey, parseOfflineCopy, purgeLegacyCache, readOfflineRaw, saveOfflineCopy, type OfflineKind,
+  browserStorage, offlineKey, parseOfflineCopy, pruneOfflineCopies, purgeLegacyCache, readOfflineRaw, saveOfflineCopy, type OfflineKind,
 } from '@/lib/offline-copy';
 
 const noSubscribe = () => () => {};
@@ -25,8 +25,17 @@ export function useOfflineCopy<T>(
   useEffect(() => {
     const storage = browserStorage();
     purgeLegacyCache(storage);
-    if (fresh) saveOfflineCopy(storage, key, fresh);
-  }, [key, fresh]);
+    if (!fresh) return;
+    // старші копії — геть (межа OFFLINE_COPY_KEEP); не влізло — звільнити місце й спробувати ще раз
+    const saved = saveOfflineCopy(storage, key, fresh);
+    if (kind === 'lesson' || kind === 'reading') {
+      pruneOfflineCopies(storage, kind);
+      if (!saved) {
+        pruneOfflineCopies(storage, kind, 10);
+        saveOfflineCopy(storage, key, fresh);
+      }
+    }
+  }, [key, kind, fresh]);
 
   // undefined — сервер / гідратація (копії ще не видно); null — копії немає
   const raw = useSyncExternalStore(

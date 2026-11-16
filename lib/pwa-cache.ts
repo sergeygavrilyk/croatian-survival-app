@@ -11,7 +11,10 @@
  *   (`request.mode === 'navigate'`), а не скрипти, стилі й картинки — їх кешують стандартні правила;
  * - Workbox переносить `urlPattern` у service worker як текст функції, тому функції — без зовнішніх змінних;
  * - `networkTimeoutSeconds`: на слабкій мережі (метро) сторінка відкривається з кешу за 5 с замість «висіти»;
- *   якщо копії в кеші немає — чекаємо мережу далі. Свіжа сторінка з мережі все одно оновлює кеш.
+ *   якщо копії в кеші немає — чекаємо мережу далі. Свіжа сторінка з мережі все одно оновлює кеш;
+ * - уроки й ситуації наперед (lib/offline-prefetch.ts) — звичайний запит із заголовком `X-Offline-Prefetch: page`;
+ *   четверте правило кладе його в той самий кеш `pages`, і без мережі сторінка відкривається, як щойно відвідана.
+ *   Лише відповіді 200: переадресація на вхід (сесія скінчилась) у кеш не потрапляє.
  */
 
 /** Скільки зберігаємо сторінку в кеші: 30 днів. */
@@ -30,8 +33,13 @@ export type PageCacheRule = {
     cacheName: 'pages-rsc-prefetch' | 'pages-rsc' | 'pages';
     networkTimeoutSeconds?: number;
     expiration: { maxEntries: number; maxAgeSeconds: number };
+    /** Які відповіді класти в кеш (за замовчуванням Workbox бере 0 і 200) */
+    cacheableResponse?: { statuses: number[] };
   };
 };
+
+/** Кеші сторінок — їх чистимо, коли людина виходить з акаунта (там її «Сьогодні», прогрес, ім'я). */
+export const PAGE_CACHE_NAMES = ['pages-rsc-prefetch', 'pages-rsc', 'pages'] as const;
 
 export const pageCacheRules: PageCacheRule[] = [
   {
@@ -67,6 +75,17 @@ export const pageCacheRules: PageCacheRule[] = [
       cacheName: 'pages',
       networkTimeoutSeconds: PAGE_NETWORK_TIMEOUT_SECONDS,
       expiration: { maxEntries: PAGE_CACHE_MAX_ENTRIES, maxAgeSeconds: PAGE_CACHE_MAX_AGE_SECONDS },
+    },
+  },
+  {
+    // Сторінка наперед для офлайну (lib/offline-prefetch.ts): той самий кеш, що й відкриття сторінки
+    urlPattern: ({ request, url, sameOrigin }) =>
+      sameOrigin && !url.pathname.startsWith('/api/') && request.headers.get('X-Offline-Prefetch') === 'page',
+    handler: 'NetworkFirst',
+    options: {
+      cacheName: 'pages',
+      expiration: { maxEntries: PAGE_CACHE_MAX_ENTRIES, maxAgeSeconds: PAGE_CACHE_MAX_AGE_SECONDS },
+      cacheableResponse: { statuses: [200] },
     },
   },
 ];

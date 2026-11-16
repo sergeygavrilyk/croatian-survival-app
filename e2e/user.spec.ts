@@ -501,6 +501,68 @@ test('словник без інтернету (§76): шукає серед с�
   await expect(page.getByTestId('dictionary-offline')).toBeHidden({ timeout: 15_000 });
 });
 
+test('офлайн наперед (§76): наступні уроки модуля, тексти й фрази ситуацій відкриваються без інтернету', async ({ page, context, request }) => {
+  test.slow();
+  const sw = await request.get('/sw.js');
+  test.skip(!sw.ok(), 'PWA вимкнено (npm run dev) — офлайн перевіряємо лише у збірці: npm run e2e');
+
+  // Service worker має керувати сторінкою, інакше зберігати наперед нікуди
+  await page.goto('/lessons');
+  await waitForServiceWorker(page);
+  await page.evaluate(() => localStorage.removeItem('cs_offline_prefetch_v1'));
+
+  // Відкрили урок 1 — за кілька секунд на телефоні наступні уроки модуля й тексти модуля
+  await page.goto(`/lesson/${TEST_LESSON_ID}`);
+  await expect(page.getByRole('button', { name: 'Почати урок' })).toBeVisible();
+  const cachedPaths = (prefix: string, exclude = '') =>
+    page.evaluate(
+      async ([p, ex]) => {
+        const keys = await (await caches.open('pages')).keys();
+        return keys.map((k) => new URL(k.url).pathname).filter((path) => path.startsWith(p) && (!ex || !path.endsWith(ex)));
+      },
+      [prefix, exclude] as const,
+    );
+  await expect
+    .poll(async () => (await cachedPaths('/lesson/', TEST_LESSON_ID)).length, { timeout: 30_000, message: 'наступні уроки модуля в кеші' })
+    .toBeGreaterThan(0);
+  const nextLesson = (await cachedPaths('/lesson/', TEST_LESSON_ID))[0];
+  await expect.poll(async () => (await cachedPaths('/reading/')).length, { timeout: 30_000, message: 'тексти модуля в кеші' }).toBeGreaterThan(0);
+  const moduleText = (await cachedPaths('/reading/'))[0];
+
+  // «Сьогодні» — ситуації з фразами
+  await page.goto('/');
+  await expect
+    .poll(async () => (await cachedPaths('/situations/')).length, { timeout: 30_000, message: 'ситуації в кеші' })
+    .toBeGreaterThan(0);
+  const situation = (await cachedPaths('/situations/'))[0];
+
+  await page.close();
+  await context.setOffline(true);
+  try {
+    const lessonPage = await context.newPage();
+    await lessonPage.goto(nextLesson);
+    await expect(lessonPage.getByRole('button', { name: 'Почати урок' }), `${nextLesson} без мережі — ще не відкривали`).toBeVisible();
+    await lessonPage.close();
+
+    const textPage = await context.newPage();
+    await textPage.goto(moduleText);
+    await expect(textPage.getByRole('heading', { level: 1 }), `${moduleText} без мережі`).toBeVisible();
+    await expect(textPage.getByText('Текст не знайдено')).toBeHidden();
+    await textPage.close();
+
+    const situationPage = await context.newPage();
+    await situationPage.goto(situation);
+    await expect(situationPage.getByRole('button', { name: 'Перевір себе' }), `${situation}: фрази без мережі`).toBeVisible();
+    const dialogues = situationPage.getByRole('tab', { name: /^Діалоги/ });
+    if (await dialogues.isEnabled()) {
+      await dialogues.click();
+      await expect(situationPage.getByTestId('situation-dialogues-online'), 'діалоги — лише з інтернетом').toBeVisible();
+    }
+  } finally {
+    await context.setOffline(false);
+  }
+});
+
 test('ARCH-03: рівні з опублікованими перевірками видно в «Перевірках» і на «Уроках» (A2)', async ({ page }) => {
   // Рівні беруться з бази, а не з переліку в коді: опубліковані перевірки A2 мають бути видні без правки коду
   await page.goto('/lessons/tests?level=A2');

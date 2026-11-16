@@ -1,6 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { offlineKey, purgeLegacyCache, readOfflineCopy, saveOfflineCopy, type KeyValueStorage } from './offline-copy.ts';
+import {
+  OFFLINE_COPY_KEEP, offlineKey, pruneOfflineCopies, purgeLegacyCache, readOfflineCopy, saveOfflineCopy, type KeyValueStorage,
+} from './offline-copy.ts';
 
 function memoryStorage(initial: Record<string, string> = {}): KeyValueStorage & { map: Map<string, string> } {
   const map = new Map(Object.entries(initial));
@@ -79,4 +81,28 @@ test('purgeLegacyCache: прибирає лише старий кеш з руч�
   assert.deepEqual([...s.map.keys()].sort(), ['croatia.mascot', 'cs_offline_lesson_abc', 'cs_offline_reading_abc', 'cs_trainer_prefs_v2']);
   assert.equal(purgeLegacyCache(s), 0);
   assert.equal(purgeLegacyCache(null), 0);
+});
+
+test('pruneOfflineCopies (2026-11-16): лишає 40 найсвіжіших копій уроків, тексти й тренажер окремо', () => {
+  assert.equal(OFFLINE_COPY_KEEP, 40);
+  const s = memoryStorage();
+  for (let i = 0; i < 45; i++) saveOfflineCopy(s, offlineKey('lesson', `l${i}`), { n: i, big: 'x'.repeat(100) }, 1000 + i);
+  for (let i = 0; i < 3; i++) saveOfflineCopy(s, offlineKey('reading', `r${i}`), { n: i }, 500 + i);
+  saveOfflineCopy(s, offlineKey('trainer', 'u1'), { deck: [] }, 1);
+  s.map.set(offlineKey('lesson', 'broken'), 'не json'); // пошкоджена — найстаріша
+  s.map.set('other_key', 'x');
+
+  assert.equal(pruneOfflineCopies(s, 'lesson'), 6, '46 → 40');
+  const lessons = [...s.map.keys()].filter((k) => k.startsWith(offlineKey('lesson', '')));
+  assert.equal(lessons.length, 40);
+  assert.ok(!s.map.has(offlineKey('lesson', 'broken')), 'пошкоджена — першою');
+  assert.ok(!s.map.has(offlineKey('lesson', 'l0')) && !s.map.has(offlineKey('lesson', 'l4')), 'найстаріші — геть');
+  assert.ok(s.map.has(offlineKey('lesson', 'l5')) && s.map.has(offlineKey('lesson', 'l44')));
+  assert.equal([...s.map.keys()].filter((k) => k.startsWith(offlineKey('reading', ''))).length, 3, 'тексти не чіпали');
+  assert.ok(s.map.has(offlineKey('trainer', 'u1')) && s.map.has('other_key'));
+  assert.equal(pruneOfflineCopies(s, 'lesson'), 0, 'уже в межах');
+  assert.equal(pruneOfflineCopies(s, 'reading', 1), 2);
+  assert.ok(s.map.has(offlineKey('reading', 'r2')), 'лишилась найсвіжіша');
+  assert.equal(pruneOfflineCopies(null, 'lesson'), 0);
+  assert.equal(pruneOfflineCopies({ get length(): number { throw new Error('x'); } } as unknown as KeyValueStorage, 'lesson'), 0, 'збій сховища');
 });

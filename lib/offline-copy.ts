@@ -77,6 +77,42 @@ export function readOfflineCopy<T>(
   return parseOfflineCopy(readOfflineRaw(storage, key), isValid);
 }
 
+/**
+ * Скільки копій уроків і текстів тримати (§76, 2026-11-16). localStorage браузера — ~5 МБ на сайт, а копія уроку —
+ * 20–35 КБ: без межі після сотні уроків (з B1 / B2 — кількох сотень) нові копії вже не вміщались би.
+ * 40 уроків + 40 текстів ≈ 1,5 МБ; решта місця — черга, колода тренажера, налаштування.
+ */
+export const OFFLINE_COPY_KEEP = 40;
+
+/** Коли збережено копію — з початку запису, без розбору всього JSON (копії великі). Немає — 0 (найстаріша). */
+function savedAtOf(raw: string | null): number {
+  const m = raw ? /"savedAt":(\d+)/.exec(raw.slice(0, 80)) : null;
+  return m ? Number(m[1]) : 0;
+}
+
+/**
+ * Лишити `keep` найсвіжіших копій виду (урок / текст), старші — прибрати. Колоду тренажера не чіпаємо.
+ * Повертає, скільки копій видалено; збій сховища — 0.
+ */
+export function pruneOfflineCopies(storage: KeyValueStorage | null | undefined, kind: 'lesson' | 'reading', keep = OFFLINE_COPY_KEEP): number {
+  if (!storage) return 0;
+  try {
+    const prefix = offlineKey(kind, '');
+    const copies: { key: string; savedAt: number }[] = [];
+    for (let i = 0; i < storage.length; i++) {
+      const k = storage.key(i);
+      if (k && k.startsWith(prefix)) copies.push({ key: k, savedAt: savedAtOf(storage.getItem(k)) });
+    }
+    if (copies.length <= keep) return 0;
+    copies.sort((a, b) => b.savedAt - a.savedAt || a.key.localeCompare(b.key));
+    const doomed = copies.slice(Math.max(0, keep));
+    for (const c of doomed) storage.removeItem(c.key);
+    return doomed.length;
+  } catch {
+    return 0;
+  }
+}
+
 /** Прибрати ключі старого кешу. Повертає, скільки ключів видалено. */
 export function purgeLegacyCache(storage: KeyValueStorage | null | undefined, prefixes: readonly string[] = LEGACY_PREFIXES): number {
   if (!storage) return 0;
