@@ -126,6 +126,12 @@ jobs:
           timeout --kill-after=15 300 npx playwright install-deps chromium \
             || echo "::warning::Системні пакети для Playwright не встановились (дзеркала Ubuntu?) — E2E запускаємо з тим, що є на сервері"
       # Пишуть у робочу базу лише прогрес і події тестового акаунта (як npm run e2e у власника)
+      - name: ТИМЧАСОВО — діагностика офлайн-тесту (25 повторів)
+        if: steps.secrets.outputs.ok == 'true'
+        continue-on-error: true
+        env:
+          E2E_DIAG: '1'
+        run: npx playwright test --project=setup --project=user -g "офлайн" --repeat-each=25 --retries=0
       - name: E2E з входом (setup + user)
         if: steps.secrets.outputs.ok == 'true'
         run: npx playwright test --project=setup --project=user

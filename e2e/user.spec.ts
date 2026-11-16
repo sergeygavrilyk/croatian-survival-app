@@ -222,6 +222,26 @@ test('офлайн (§76): відкриті раз урок і текст від
   // (У першій версії обидві відкривались в одній вкладці через адресний рядок, і щойно відкрита офлайн
   // сторінка уроку перебивала перехід на текст повторним завантаженням самої себе — див. HISTORY 2026-10-21.)
   await page.close();
+  // ДІАГНОСТИКА (тимчасово): хто і куди перезавантажує сторінку без мережі
+  const diag: string[] = [];
+  await context.addInitScript(() => {
+    const t0 = Date.now();
+    const log = (m: string) => console.log(`[diag] +${Date.now() - t0}ms ${location.pathname} ${m}`);
+    addEventListener('online', () => log('online event'));
+    addEventListener('offline', () => log('offline event'));
+    addEventListener('popstate', (e) => log(`popstate ${JSON.stringify(Object.keys((e.state as object) ?? {}))}`));
+    addEventListener('pagehide', () => log('pagehide'));
+    const nav = (window as unknown as { navigation?: EventTarget }).navigation;
+    nav?.addEventListener('navigate', (ev) => {
+      const e = ev as unknown as { navigationType: string; destination: { url: string; sameDocument: boolean }; userInitiated: boolean };
+      const stack = (new Error().stack ?? '').split('\n').slice(2, 9).map((l) => l.trim()).join(' <- ');
+      log(`navigate ${e.navigationType} -> ${e.destination.url} sameDoc=${e.destination.sameDocument} user=${e.userInitiated} | ${stack}`);
+    });
+  });
+  context.on('console', (m) => {
+    if (m.text().startsWith('[diag]') || m.type() === 'error' || m.type() === 'warning') diag.push(`${m.type()}: ${m.text()}`.slice(0, 900));
+  });
+  context.on('page', (p) => p.on('framenavigated', (f) => { if (f === p.mainFrame()) diag.push(`framenavigated ${f.url()}`); }));
   await context.setOffline(true);
   try {
     for (const [path, title] of [
@@ -240,7 +260,11 @@ test('офлайн (§76): відкриті раз урок і текст від
     await listPage.locator(`a[href="${textPath}"]`).first().click();
     await expect(listPage).toHaveURL(new RegExp(`${textPath}$`));
     await expect(listPage.getByRole('heading', { level: 1, name: textTitle }), 'перехід зі списку без мережі').toBeVisible();
+  } catch (err) {
+    console.log(`[diag] ПАДІННЯ, журнал:\n${diag.join('\n')}`);
+    throw err;
   } finally {
+    if (process.env.E2E_DIAG) console.log(`[diag] журнал:\n${diag.join('\n')}`);
     await context.setOffline(false);
   }
 });
