@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { BookmarkPlus, Check, CircleCheck, Loader2, Search, X } from 'lucide-react';
+import { BookmarkPlus, Check, CircleCheck, Hourglass, Loader2, Search, X } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
 import { saveDictionaryWord } from '@/app/actions/dictionary';
+import { failedForNetwork, isBrowserOffline, queueProgress } from '@/lib/offline-client';
 import PracticeTabs from '@/components/ui/PracticeTabs';
 import { dictionarySearchTerm, posLabelUk } from '@/lib/format';
 import { LEVEL_CODES, levelStyle } from '@/lib/levels';
@@ -43,7 +44,8 @@ interface Word {
 }
 
 /** Стан кнопки «Додати в повторення» в картці слова: текст — помилка. */
-type SaveState = 'idle' | 'saving' | 'saved' | string;
+/** `queued` — мережі немає, слово в черзі на телефоні (офлайн без втрат), відправиться саме */
+type SaveState = 'idle' | 'saving' | 'saved' | 'queued' | string;
 
 /**
  * Словник (розділ «Практика»): пошук по всьому словнику, фільтри за рівнем і категорією (розмовне, сленг, регіональне…).
@@ -273,6 +275,12 @@ export default function DictionaryPage() {
 
   const saveWord = async (word: Word) => {
     setSaveState('saving');
+    // Без мережі (офлайн без втрат, 2026-11-16) — у чергу на телефоні; відправиться саме
+    const queue = () => queueProgress('word_saved', { source: 'dictionary', lexeme_id: word.id, category });
+    if (isBrowserOffline() && queue()) {
+      setSaveState('queued');
+      return;
+    }
     try {
       const res = await saveDictionaryWord(word.id, category);
       if (res.ok) {
@@ -281,8 +289,9 @@ export default function DictionaryPage() {
       } else {
         setSaveState(res.error);
       }
-    } catch {
-      setSaveState('Не вдалося додати слово. Перевірте інтернет.');
+    } catch (error) {
+      if (failedForNetwork(error) && queue()) setSaveState('queued');
+      else setSaveState('Не вдалося додати слово. Перевірте інтернет.');
     }
   };
 
@@ -519,7 +528,7 @@ function WordSheet({
   onSave: () => void;
   onClose: () => void;
 }) {
-  const error = saveState !== 'idle' && saveState !== 'saving' && saveState !== 'saved' ? saveState : null;
+  const error = saveState !== 'idle' && saveState !== 'saving' && saveState !== 'saved' && saveState !== 'queued' ? saveState : null;
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center">
       <button type="button" aria-label="Закрити картку слова" onClick={onClose} className="absolute inset-0 cursor-default bg-ink/40" />
@@ -567,6 +576,11 @@ function WordSheet({
             <p className="flex items-center gap-2 text-label text-success-ink" role="status">
               <CircleCheck className="size-5" aria-hidden="true" />
               Додано в повторення — слово з’явиться в «Тренажері» сьогодні
+            </p>
+          ) : saveState === 'queued' ? (
+            <p className="flex items-center gap-2 text-label text-warning-ink" role="status">
+              <Hourglass className="size-5" aria-hidden="true" />
+              Слово додамо в повторення, щойно з’явиться інтернет
             </p>
           ) : isLearning ? (
             <p className="flex items-center gap-2 text-label text-success-ink" role="status">

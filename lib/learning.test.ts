@@ -1,7 +1,7 @@
 // Тести сценаріїв VS-001 / VS-002 на сховищі в пам'яті (без бази). Запуск: npm test
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { rateCard, completeLesson, trackEvent, startOfTomorrow, type LearningRepo, type ReviewHistoryEntry } from './learning.ts';
+import { rateCard, completeLesson, trackEvent, startOfTomorrow, earlierCompletion, type LearningRepo, type ReviewHistoryEntry } from './learning.ts';
 import type { SrsState, SrsResult } from './srs.ts';
 import type { AnalyticsRow } from './analytics.ts';
 
@@ -200,4 +200,23 @@ test('trackEvent: валідна подія записується, невалі
 
   const broken = memoryRepo({ logEvent: true });
   assert.equal(await trackEvent(broken.repo, USER, 'app_open', {}, now, silent), false);
+});
+
+// ---------------------------------------------------------------- Офлайн без втрат (2026-11-16)
+
+test('Урок з офлайн-черги: подія й «повторити завтра» — за днем, коли людина вчилася', async () => {
+  const m = memoryRepo();
+  const learnedAt = new Date('2026-10-10T09:00:00');
+  await completeLesson(m.repo, { userId: USER, lessonId: LESSON, now: learnedAt }, silent);
+  const ev = m.events.find((e) => e.row.event_name === 'lesson_completed')!;
+  assert.equal(ev.row.occurred_at, learnedAt.toISOString());
+  assert.equal(m.progress.get(m.key(USER, BOK))!.nextReviewDate.getTime(), startOfTomorrow(learnedAt).getTime());
+});
+
+test('earlierCompletion: лишається раніша дата проходження уроку', () => {
+  const later = new Date('2026-11-16T10:00:00Z');
+  assert.equal(earlierCompletion('2026-11-15T08:00:00.000Z', later), '2026-11-15T08:00:00.000Z');
+  assert.equal(earlierCompletion('2026-11-17T08:00:00.000Z', later), later.toISOString());
+  assert.equal(earlierCompletion(null, later), later.toISOString());
+  assert.equal(earlierCompletion('не дата', later), later.toISOString());
 });

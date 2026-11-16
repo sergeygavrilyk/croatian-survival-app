@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  readingCompletedProps,
   glossaryIndex, glossaryLemmas, withGlossaryLabels, isCroatianOption, isReadingText, readingTextFrom, knownLabel, levelIntro, moduleCardTitles, moduleHeading, moduleTitle, paragraphs, pickReadingLevel, questionsFrom, readingMinutes,
   scoreAnswers, seededShuffle, speechChunks, textTypeLabel, tokenize,
 } from './reading.ts';
@@ -203,4 +204,13 @@ test('словничок тексту: мітки переживають офл�
   assert.deepEqual(idx.get('fjaka')?.labels, { register: 'colloquial', regionality: 'Dalmatia', usage_tags: ['italianism'] });
   assert.equal(idx.get('fjaka')?.standard_lemma, 'lijenost');
   assert.equal(idx.get('kuća')?.labels, undefined); // після readLabels — звичайне слово, без позначки
+});
+
+test('readingCompletedProps: як і раніше — успіх від 0,67 частки правильних, рівень тексту важливіший за рівень з екрана', () => {
+  assert.deepEqual(readingCompletedProps({ cefr: 'A1', level: 'A0', correct: 3, total: 3, durationMs: 1234.6 }), {
+    skill: 'reading', source: 'reading', level: 'A1', success: true, count: 3, correct_count: 3, duration_ms: 1235,
+  });
+  assert.equal(readingCompletedProps({ cefr: null, level: 'A0', correct: 2, total: 3 }).success, false);
+  assert.equal(readingCompletedProps({ cefr: null, level: 'A0', correct: 0, total: 0 }).success, true);
+  assert.equal(readingCompletedProps({ cefr: null, level: 'A0', correct: 0, total: 0, durationMs: -5 }).duration_ms, undefined);
 });

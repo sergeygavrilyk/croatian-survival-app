@@ -34,6 +34,9 @@ export const EVENT_NAMES = [
   'what_did_i_hear_used',
   'subscription_started',
   'subscription_cancelled',
+  // службові: офлайн без втрат (2026-11-16) — дію покладено в чергу на телефоні / черга відправлена; не навчальні події
+  'offline_queued',
+  'offline_synced',
   // службова: як браузер відпрацював розпізнавання мовлення (діагностика Safari, 2026-10-21); не навчальна подія
   'speech_diagnostic',
 ] as const;
@@ -88,6 +91,10 @@ export interface EventProps {
   slow_used?: boolean;
   /** «Граматика рівня»: тема, яку тренують (lib/grammar.ts) */
   grammar_topic_id?: string;
+  /** Офлайн-черга: вид дії (offline_queued), скільки не прийнято сервером і скільки найдовше чекала (offline_synced) */
+  kind?: string;
+  failed?: number;
+  age_ms?: number;
   /** «Словник»: фільтр «Категорія», з якого додали слово (lib/lexeme-labels.ts WORD_CATEGORIES; `all` — без фільтра) */
   category?: string;
   device?: string;

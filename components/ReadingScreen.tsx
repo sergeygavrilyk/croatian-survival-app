@@ -2,7 +2,7 @@
 
 import { useCallback, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import ReadingView from '@/components/ReadingView';
+import ReadingView, { type SaveResult } from '@/components/ReadingView';
 import ErrorState from '@/components/ui/ErrorState';
 import EmptyState from '@/components/ui/EmptyState';
 import Button from '@/components/ui/Button';
@@ -10,10 +10,12 @@ import Skeleton from '@/components/ui/Skeleton';
 import { useOfflineCopy } from '@/components/useOfflineCopy';
 import { completeReading, saveReadingWord } from '@/app/actions/reading';
 import { isReadingText, type ReadingText } from '@/lib/reading';
+import { failedForNetwork, isBrowserOffline, queueProgress } from '@/lib/offline-client';
 
 /**
  * Екран тексту для читання (client): текст приходить із сервера (app/reading/[id]/page.tsx).
- * Відкритий раз текст можна читати офлайн (копія в браузері, §76); збереження слова й результату — лише онлайн.
+ * Відкритий раз текст можна читати офлайн (копія в браузері, §76); слово й результат без мережі — у черзі
+ * на телефоні (lib/offline-client.ts), відправляє OfflineSync.
  */
 export default function ReadingScreen({
   textId,
@@ -29,11 +31,16 @@ export default function ReadingScreen({
   const { data: text, checked } = useOfflineCopy('reading', textId, initial, isReadingText, { useCopy: !notFound });
 
   const level = text?.cefr;
+  // Без мережі (офлайн без втрат, 2026-11-16) — результат і слово в чергу на телефоні; відправляться самі
   const handleComplete = useCallback(
-    async (correct: number, total: number, durationMs: number) => {
+    async (correct: number, total: number, durationMs: number): Promise<SaveResult> => {
+      const queue = () =>
+        queueProgress('reading_completed', { text_id: textId, correct, total, duration_ms: durationMs, level });
+      if (isBrowserOffline() && queue()) return { ok: true, queued: true };
       try {
         return await completeReading({ textId, correct, total, durationMs, level });
-      } catch {
+      } catch (error) {
+        if (failedForNetwork(error) && queue()) return { ok: true, queued: true };
         return { ok: false as const, error: 'Немає інтернету — результат не збережено.' };
       }
     },
@@ -41,10 +48,13 @@ export default function ReadingScreen({
   );
 
   const handleSaveWord = useCallback(
-    async (lemma: string) => {
+    async (lemma: string): Promise<SaveResult> => {
+      const queue = () => queueProgress('word_saved', { source: 'reading', text_id: textId, lemma });
+      if (isBrowserOffline() && queue()) return { ok: true, queued: true };
       try {
         return await saveReadingWord(textId, lemma);
-      } catch {
+      } catch (error) {
+        if (failedForNetwork(error) && queue()) return { ok: true, queued: true };
         return { ok: false as const, error: 'Немає інтернету — спробуйте пізніше.' };
       }
     },

@@ -11,6 +11,7 @@ import { LEVEL_CODES, assessmentIcon, levelStyle, moduleIcon } from '@/lib/level
 import { moduleCardTitles } from '@/lib/reading';
 import { cn } from '@/lib/ui';
 import Button from '@/components/ui/Button';
+import OfflinePendingNote from '@/components/OfflinePendingNote';
 import EmptyState from '@/components/ui/EmptyState';
 import ErrorState from '@/components/ui/ErrorState';
 import Hr from '@/components/ui/Hr';
@@ -90,6 +91,7 @@ export default function LessonsView({
             Тренажер
           </Button>
         </div>
+        <OfflinePendingNote className="items-start" />
 
         <nav aria-label="Рівень" className="flex rounded-control bg-surface-muted p-1">
           {LEVEL_CODES.map((level) => {

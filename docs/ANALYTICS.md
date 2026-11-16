@@ -31,6 +31,8 @@ Events:
 - what_did_i_hear_used
 - subscription_started
 - subscription_cancelled
+- offline_queued *(службова, 2026-11-16)*
+- offline_synced *(службова, 2026-11-16)*
 
 ## 72. Analytics Properties
 
@@ -89,7 +91,7 @@ Track:
 
 Таблиця `public.analytics_events` (міграція M4): append-only, RLS — користувач пише і читає лише свої події, змінювати й видаляти не може ніхто. Поширені властивості §72 — окремими колонками (`session_id`, `lesson_id`, `lexeme_id`, `level`, `success`, `duration_ms`, `device`, `app_version`), решта — у `properties` (jsonb).
 
-Код: `lib/analytics.ts` (перелік подій і валідація), `lib/analytics-client.ts` (`track()` у браузері, сесія = вкладка), `app/actions/analytics.ts` (запис від імені користувача). Аналітика ніколи не ламає навчання: некоректна подія або збій бази просто не записуються.
+Код: `lib/analytics.ts` (перелік подій і валідація), `lib/analytics-client.ts` (`track()` у браузері, сесія = вкладка), `app/actions/analytics.ts` (запис від імені користувача). **Без мережі** (2026-11-16) `track()` кладе подію в чергу на телефоні, і вона приходить пізніше зі своїм `occurred_at` — «Успішна навчальна сесія» й серія 🔥 рахуються за днем, коли людина вчилася (`lib/offline-queue.ts`, `app/actions/offline-sync.ts`). Аналітика ніколи не ламає навчання: некоректна подія або збій бази просто не записуються.
 
 | Подія | Де | Властивості |
 |---|---|---|
@@ -100,7 +102,7 @@ Track:
 | `exercise_completed` | урок, «Напишіть повідомлення» / «Перекажіть другу» (з 2026-11-05) | ті самі; exercise_type = `write_message` / `mediation`; success = усі пункти є (без AI); пропуск — success = false. Текст відповіді — у `writing_attempts` / `mediation_attempts`, не в події |
 | `exercise_completed` | урок, «Прослухайте діалог чи оголошення» (з 2026-11-12) | ті самі; exercise_type = `listening_dialogue`; success = усі запитання правильні; count — запитань, correct_count — правильних, plays — скільки разів слухали, slow_used — «Повільніше»; пропуск (без інтернету / «не можу слухати») — success = false, у черзі як пропущена |
 | `exercise_completed` | тренажер «Написати», кожна відповідь | lexeme_id, level, exercise_type = `type_word`, source = `trainer`, success, verdict (exact / diacritics / typo / wrong), duration_ms |
-| `lesson_completed` | сервер, `completeLesson` | lesson_id, level, duration_ms, count (слів у уроці), added_to_review |
+| `lesson_completed` | сервер, `completeLesson` | lesson_id, level, duration_ms, count (слів у уроці), added_to_review; з офлайн-черги — ще source = `offline` |
 | `review_started` | тренажер, картки завантажені | level, count, source (`review` / `new` / `write`) |
 | `review_completed` | тренажер, оцінено всі картки | level, count, correct_count, duration_ms, source |
 | `review_started` | «Граматика рівня»: «Потренувати тему» або «Підсумок граматики» → вправи (з 2026-10-27) | source (`grammar_topic` / `grammar_review`), level, skill = `grammar`, count, grammar_topic_id (лише тема) |
@@ -123,6 +125,8 @@ Track:
 | `word_saved` | сервер, `saveDictionaryWord` («Словник» → картка слова → «Додати в повторення») | lexeme_id, source = `dictionary`, level, category (фільтр «Категорія»: `all`, `colloquial`, `slang`, `regional`… — з 2026-11-13) |
 | `assessment_started` | `/assessment/<slug>`, «Почати» (§60) | level, assessment_kind (`module` / `mid` / `final`), assessment_slug (`a0-m01`…), count (завдань) |
 | `assessment_completed` | сервер, `submitAssessment` | level, module_id, assessment_kind, assessment_slug, score (0…1), count (зараховано завдань, без пропущеного говоріння), correct_count, success (пройдено), duration_ms |
+| `offline_queued` | браузер, `queueProgress` (`lib/offline-client.ts`): без мережі урок, текст чи слово покладено в чергу на телефоні; сама подія теж іде через чергу (2026-11-16) | kind (`lesson_completed` / `reading_completed` / `word_saved`). Не навчальна подія |
+| `offline_synced` | сервер, `syncOfflineOps`: пакет черги прийнято (2026-11-16) | count (прийнято), failed (відхилено назавжди), age_ms (скільки найдовше чекала дія). Не навчальна подія |
 | `speech_diagnostic` | службова, `utils/speech-recognition.ts`: кінець кожного розпізнавання на iPhone / Mac Safari і кожне невдале деінде (2026-10-21) | success (почули текст), verdict (`ok` / `empty` / `aborted` / `error:<код>` / `start-failed`), count (подій result), duration_ms, speech_platform, speech_trace (події браузера з мс: `st` start, `au` audiostart, `so` soundstart, `sp` speechstart, `r`/`rF` result, `end`, `stop`, `grace`; на початку `tts-on/was/no` і `pwa/tab`). Без тексту й аудіо. Не навчальна подія — у серію днів не входить |
 
 Кожна оцінка картки окремо записується в `srs_reviews` (результат, інтервали, ease, `response_time_ms`) — це і є детальна історія повторень, тому окремої події на кожну картку немає.

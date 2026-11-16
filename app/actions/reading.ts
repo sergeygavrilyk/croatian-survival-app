@@ -2,13 +2,15 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { trackEvent } from '@/app/actions/analytics';
-import { newWordProgress } from '@/lib/word-save';
+import { writeReadingCompleted, writeReadingWord } from '@/lib/progress-write-supabase';
+import { readingCompletedProps } from '@/lib/reading';
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /**
  * Читання (§6): слово з тексту → у тренажер (user_progress, як «зберегти слово» в уроці).
  * Шукаємо опубліковане слово словника за лемою зі словничка тексту. Права — RLS (лише свої рядки).
+ * Без мережі слово кладе в чергу на телефоні ReadingScreen (lib/offline-queue.ts).
  */
 export async function saveReadingWord(
   textId: string,
@@ -20,31 +22,16 @@ export async function saveReadingWord(
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { ok: false, error: 'Увійдіть, щоб зберігати слова.' };
 
-  const { data: lexeme } = await supabase
-    .from('lexemes')
-    .select('id')
-    .ilike('lemma', clean.replace(/[%_\\]/g, (c) => `\\${c}`))
-    .eq('status', 'PUBLISHED')
-    .order('created_at', { ascending: true })
-    .limit(1)
-    .maybeSingle();
-  if (!lexeme) return { ok: false, error: 'Цього слова ще немає у словнику застосунку.' };
-
-  const { error } = await supabase.from('user_progress').upsert(
-    newWordProgress(user.id, lexeme.id as string, new Date()),
-    { onConflict: 'user_id,lexeme_id', ignoreDuplicates: true }, // уже збережене слово не скидаємо
-  );
-  if (error) {
-    console.error('saveReadingWord:', error.message);
-    return { ok: false, error: 'Не вдалося зберегти слово. Перевірте інтернет.' };
-  }
-  await trackEvent('word_saved', { lexeme_id: lexeme.id as string, source: UUID_RE.test(textId) ? 'reading' : 'reading_unknown' });
+  const res = await writeReadingWord(supabase, user.id, clean, new Date());
+  if (!res.ok) return { ok: false, error: res.error };
+  await trackEvent('word_saved', { lexeme_id: res.lexemeId, source: UUID_RE.test(textId) ? 'reading' : 'reading_unknown' });
   return { ok: true };
 }
 
 /**
  * Текст прочитано, відповіді на питання перевірено → reading_progress (один рядок на текст,
  * повторне читання оновлює результат і лічильник) + подія reading_completed (§71).
+ * Без мережі результат кладе в чергу на телефоні ReadingScreen (lib/offline-queue.ts).
  */
 export async function completeReading(input: {
   textId: string;
@@ -61,35 +48,9 @@ export async function completeReading(input: {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { ok: false, error: 'Увійдіть, щоб зберегти прогрес.' };
 
-  const { data: text } = await supabase.from('reading_texts').select('id, cefr').eq('id', textId).eq('status', 'PUBLISHED').maybeSingle();
-  if (!text) return { ok: false, error: 'Текст не знайдено.' };
+  const res = await writeReadingCompleted(supabase, user.id, { textId, correct, total }, new Date());
+  if (!res.ok) return { ok: false, error: res.error };
 
-  const { data: existing } = await supabase
-    .from('reading_progress')
-    .select('id, read_count')
-    .eq('user_id', user.id)
-    .eq('text_id', textId)
-    .maybeSingle();
-  const now = new Date().toISOString();
-  const { error } = existing
-    ? await supabase
-        .from('reading_progress')
-        .update({ correct_count: correct, question_count: total, read_count: ((existing.read_count as number) ?? 1) + 1, completed_at: now })
-        .eq('id', existing.id as string)
-    : await supabase.from('reading_progress').insert({ user_id: user.id, text_id: textId, correct_count: correct, question_count: total, completed_at: now });
-  if (error) {
-    console.error('completeReading:', error.message);
-    return { ok: false, error: 'Не вдалося зберегти прогрес. Перевірте інтернет.' };
-  }
-
-  await trackEvent('reading_completed', {
-    skill: 'reading',
-    source: 'reading',
-    level: (text.cefr as string) ?? input.level,
-    success: total > 0 ? correct / total >= 0.67 : true,
-    count: total,
-    correct_count: correct,
-    duration_ms: typeof input.durationMs === 'number' && input.durationMs >= 0 ? Math.round(input.durationMs) : undefined,
-  });
+  await trackEvent('reading_completed', readingCompletedProps({ cefr: res.cefr, level: input.level, correct, total, durationMs: input.durationMs }));
   return { ok: true };
 }
