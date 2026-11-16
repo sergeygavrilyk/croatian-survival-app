@@ -7,7 +7,7 @@
 project: Croatia survival
 release: pre-MVP (з 2026-11-07 — робота через PR: Claude готує гілку й PR, власник мерджить; SQL — «Apply SQL» після Approve)
 supabase_project: "New app for learning" (ref mhdgozragkkogvxpjksp, eu-west-2)
-active_work: 2026-11-16 — офлайн: кеш сторінок, підказка встановлення, словник (#52–#54); далі — перевірки рівня, recognition, B1 v2
+active_work: 2026-11-16 — офлайн: кеш сторінок, підказка встановлення, словник (#52); далі — перевірки рівня, recognition, B1 v2
 completed_slices: [VS-001, VS-002, VS-003, VS-004]
 content:                      # робоча база; уроки, модулі й граматика — 2026-10-27, решта — дати нижче
   lexemes: {published: 6192}   # 2026-11-12, після A2 v2; vulgar — 0
@@ -21,7 +21,7 @@ content:                      # робоча база; уроки, модулі 
   songs: 7                    # «Ситуації» → «Пісні», lib/songs.ts
 tests: {unit: 345, sql_files: 58, e2e_user: 16, failing: 0}   # npm test; supabase/tests/*.test.sql; e2e/user.spec.ts
 docs_limits: {PROJECT_STATE: 15 KB, HISTORY: 30 KB, SPEC_CHANGELOG: 30 KB, ТЗ і довідники: 60 KB, DECISIONS: без ліміту}   # рішення 2026-11-14
-last_updated: 2026-11-16 (#52–#54 — офлайн; #46–#51 — у main)
+last_updated: 2026-11-16 (#52 — офлайн; #46–#51 — у main)
 ```
 
 ## Чинні рішення власника (коротко)
