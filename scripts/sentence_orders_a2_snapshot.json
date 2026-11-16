@@ -1,0 +1,125 @@
+{
+ "note": "Завдання «Складіть» перевірок A2 (PUBLISHED) з робочої бази 2026-11-16 (збіг з локальною — хеш id + answer_text).",
+ "items": [
+  {
+   "slug": "a2-final",
+   "id": "a7cb2965-f22b-50c9-bd6e-e503d20f5e8d",
+   "answer_text": "Tvoja poruka me jako obradovala."
+  },
+  {
+   "slug": "a2-final",
+   "id": "b56d7940-25be-568b-8ae7-b8ffa52af64b",
+   "answer_text": "Zabranjeno je hraniti životinje."
+  },
+  {
+   "slug": "a2-final",
+   "id": "cf3d9e63-ec26-5d1c-9e16-3b41420fb5ce",
+   "answer_text": "Na sljedećem izlazu skrenite desno."
+  },
+  {
+   "slug": "a2-final",
+   "id": "f6ca7922-cbbd-5578-b5f8-5e93a474ca96",
+   "answer_text": "Danas mu je već bolje."
+  },
+  {
+   "slug": "a2-final",
+   "id": "718532b2-80c4-5dc2-9446-946d87b3781a",
+   "answer_text": "Potpišite suglasnost za izlet."
+  },
+  {
+   "slug": "a2-m01",
+   "id": "d3b745a5-d573-5edd-ac3c-077a40cfc964",
+   "answer_text": "Katamaran ne prevozi automobile."
+  },
+  {
+   "slug": "a2-m01",
+   "id": "02912ac9-8400-54f6-a1c4-11ff810a13a4",
+   "answer_text": "U posezoni su cijene niže."
+  },
+  {
+   "slug": "a2-m02",
+   "id": "cd4f5076-dd57-535c-a15d-b692af64dffc",
+   "answer_text": "Za nezaposlene je tečaj besplatan."
+  },
+  {
+   "slug": "a2-m02",
+   "id": "7affede8-9ee9-54db-b088-ba56e65eb050",
+   "answer_text": "Iz matematike ide na instrukcije."
+  },
+  {
+   "slug": "a2-m03",
+   "id": "d3d32fdf-58ef-5619-9098-348a77008fdd",
+   "answer_text": "Izgubili smo se u starom gradu."
+  },
+  {
+   "slug": "a2-m04",
+   "id": "b169cf53-78e5-5e45-84df-6cdf9014d3db",
+   "answer_text": "Zahtijevam povrat novca."
+  },
+  {
+   "slug": "a2-m05",
+   "id": "9b2fd4fe-1f35-5908-ab31-7dcdf7226ac7",
+   "answer_text": "Svakom kupcu treba izdati račun."
+  },
+  {
+   "slug": "a2-m06",
+   "id": "d40fe759-3288-5a5e-a68a-31bdfe11e9e3",
+   "answer_text": "Slavina kapa cijelu noć."
+  },
+  {
+   "slug": "a2-m07",
+   "id": "b3b5ea28-a898-58b6-8a52-191faea836b3",
+   "answer_text": "Na pregled dođite natašte."
+  },
+  {
+   "slug": "a2-m08",
+   "id": "edf4c8ba-3acc-5046-a79b-5878f9412f25",
+   "answer_text": "Parking možete platiti SMS-om."
+  },
+  {
+   "slug": "a2-m09",
+   "id": "7c19ef44-a584-52fd-9574-6658bd7ed325",
+   "answer_text": "Moramo čuvati okoliš."
+  },
+  {
+   "slug": "a2-m10",
+   "id": "8ba40715-f4ce-5abc-a342-0bb53f6aa1e1",
+   "answer_text": "Nemoj mi otkriti kraj!"
+  },
+  {
+   "slug": "a2-m11",
+   "id": "0026b933-a456-5b5e-93ad-df4dc134fde7",
+   "answer_text": "Starijima se persira."
+  },
+  {
+   "slug": "a2-m12",
+   "id": "f71c6cdd-58bb-5af3-8e2c-1c41becc451d",
+   "answer_text": "Mama je primila novac jučer."
+  },
+  {
+   "slug": "a2-m13",
+   "id": "a1141969-356f-583a-9aca-76929a0e8787",
+   "answer_text": "Doći ću, pod uvjetom da ne pada kiša."
+  },
+  {
+   "slug": "a2-m14",
+   "id": "a4a54875-c928-56ed-b4fe-90b7c28b4d72",
+   "answer_text": "Jako mi nedostaješ."
+  },
+  {
+   "slug": "a2-mid",
+   "id": "c030bc32-db2c-56f6-ae54-1283e240e540",
+   "answer_text": "Natječaj se objavljuje u svibnju."
+  },
+  {
+   "slug": "a2-mid",
+   "id": "09ca43b4-97f6-51bf-9b7c-e2deae738151",
+   "answer_text": "Nisam te htjela uvrijediti."
+  },
+  {
+   "slug": "a2-mid",
+   "id": "e2b44503-dc65-55b6-8b85-08e330c8d7ae",
+   "answer_text": "Brzo smo se priviknuli na novi grad."
+  }
+ ]
+}

@@ -73,8 +73,10 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.assessments a join public.mo
   'тест модуля прив''язаний до свого модуля (адреса a0-m03 = модуль A0.3)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.assessments a where a.source = 'claude_assessment_v1'
   and (select count(*) from public.assessment_items i where i.assessment_id = a.id and i.status = 'PUBLISHED')
-      <> case a.kind when 'module' then 10 when 'mid' then 20 else 30 end$q$) = 0,
-  'завдань: модуль — 10, середина — 20, фінал — 30');
+      <> case a.kind when 'module' then greatest(12, least(20, 2 * (select count(*) from public.lessons l join public.units u on u.id = l.unit_id
+                                                                     where u.module_id = a.module_id and l.status = 'PUBLISHED')))
+                     when 'mid' then 30 else 48 end$q$) = 0,
+  'завдань (схема 2026-11-07, пакети v5): модуль — 2 на урок (12–20), середина — 30, фінал — 48');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.assessments a where a.source = 'claude_assessment_v1'
   and exists (select 1 from unnest(array['understand', 'produce', 'interact', 'mediate']) ar
               where (select count(*) from public.assessment_items i where i.assessment_id = a.id and i.area = ar)
@@ -161,8 +163,8 @@ reset role;
 set local role anon;
 select set_config('request.jwt.claims', '{"role":"anon"}', true);
 select pg_temp.ok(pg_temp.n($q$select 1 from public.assessment_items i join public.assessments a on a.id = i.assessment_id
-  where a.source = 'claude_assessment_v1'$q$) between 300 and 330,
-  'гість бачить опубліковані завдання (A0 — 150, A1 — 150…180: нові тести A1 v3 з’являються з модулем)');
+  where a.source = 'claude_assessment_v1'$q$) = 518,
+  'гість бачить лише опубліковані завдання (схема 2026-11-07, пакети v5: A0 — 218, A1 — 300), старих — ні');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.assessment_attempts$q$) = 0, 'гість не бачить спроб');
 reset role;
 

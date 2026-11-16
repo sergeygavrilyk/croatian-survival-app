@@ -55,12 +55,15 @@ select pg_temp.ok(pg_temp.n($q$select 1 from tst t, jsonb_array_elements_text(t.
   where t.item_type = 'multiple_choice' and t.skill = 'listening' and e !~ '[Ѐ-ӿ]'$q$) = 0,
   'варіанти «на слух» — українською');
 
--- Пакет 2026-11-03 змінює лише варіанти: id, місце й правильна відповідь лишаються (старі спроби чинні)
-select pg_temp.ok(pg_temp.n($q$select 1 from tst where id in ('adb9f6f3-4143-52da-96b4-efac02ed3b3a', '0fd92cef-7905-521f-bfcd-6d8f2a652b39')$q$) = 2,
-  'виправлені завдання a0-final #12 і a1-m02 #7 на своїх місцях');
-select pg_temp.ok((select options ->> correct_index from tst where id = 'adb9f6f3-4143-52da-96b4-efac02ed3b3a') = 'Ne, nazvali ste krivi broj.',
+-- Пакет 2026-11-03 змінює лише варіанти: id, місце й правильна відповідь лишаються (старі спроби чинні).
+-- Пакети v5 (схема 2026-11-07, 2026-11-16) замінили ці тести новими завданнями: виправлені завдання — DEPRECATED, не видалені.
+create temp view fixed as
+select i.* from public.assessment_items i where i.id in ('adb9f6f3-4143-52da-96b4-efac02ed3b3a', '0fd92cef-7905-521f-bfcd-6d8f2a652b39');
+select pg_temp.ok(pg_temp.n($q$select 1 from fixed where status = 'DEPRECATED' and order_index > 100$q$) = 2,
+  'виправлені завдання a0-final #12 і a1-m02 #7 збережено (DEPRECATED після переходу на схему 2026-11-07)');
+select pg_temp.ok((select options ->> correct_index from fixed where id = 'adb9f6f3-4143-52da-96b4-efac02ed3b3a') = 'Ne, nazvali ste krivi broj.',
   'a0-final #12: правильна відповідь та сама');
-select pg_temp.ok((select options ->> correct_index from tst where id = '0fd92cef-7905-521f-bfcd-6d8f2a652b39') = 'Što je danas sezonsko?',
+select pg_temp.ok((select options ->> correct_index from fixed where id = '0fd92cef-7905-521f-bfcd-6d8f2a652b39') = 'Što je danas sezonsko?',
   'a1-m02 #7: правильна відповідь та сама');
 
 select 'ALL TESTS PASSED' as result;

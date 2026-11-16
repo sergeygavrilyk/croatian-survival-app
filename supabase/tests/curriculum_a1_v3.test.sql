@@ -143,8 +143,8 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.grammar_rules r join public.
   where g.cefr = 'A1' and g.title_ua = 'Минулий час: radio sam, bila sam'$q$) >= 6,
   'тема «Минулий час» — щонайменше 6 правил (+ «Poslao sam ti ga», «Pisala sam і napisala sam»)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.assessment_items i join public.assessments a on a.id = i.assessment_id
-  where a.slug = 'a1-m07' and a.kind = 'module' and a.status = 'PUBLISHED' and i.status = 'PUBLISHED'$q$) = 10,
-  'новий тест a1-m07 — 10 завдань');
+  where a.slug = 'a1-m07' and a.kind = 'module' and a.status = 'PUBLISHED' and i.status = 'PUBLISHED'$q$) = 14,
+  'новий тест a1-m07 — 14 завдань (схема 2026-11-07: 2 на урок × 7 уроків; було 10)');
 
 -- ---------------------------------------------------------------- модуль A1.8
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l join v3_lessons v on v.id = l.id
@@ -191,8 +191,8 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons where status = 'PUBL
   ('d9ef1de4-f4db-590e-bafd-474f84c8e03f', 'Урок 93: Старе місто: екскурсія'),
   ('f67bd38c-a41c-51df-b9c0-081737600fce', 'Урок 96: Святкуємо: Різдво, Великдень'))$q$) = 2
   and pg_temp.n($q$select 1 from public.assessment_items i join public.assessments a on a.id = i.assessment_id
-  where a.slug = 'a1-m11' and i.status = 'PUBLISHED'$q$) = 10,
-  'A1.11: нові назви уроків, перевірка модуля a1-m11 — 10 завдань');
+  where a.slug = 'a1-m11' and i.status = 'PUBLISHED'$q$) = 12,
+  'A1.11: нові назви уроків, перевірка модуля a1-m11 — 12 завдань (схема 2026-11-07: щонайменше 12; було 10)');
 
 -- ---------------------------------------------------------------- модуль A1.12
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l join v3_lessons v on v.id = l.id
@@ -201,8 +201,8 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l join v3_lessons v 
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons where status = 'PUBLISHED' and level_code = 'A1'
   and title_ua in ('Урок 99: Школа: класи, уроки, розклад', 'Урок 100: Шкільне приладдя', 'Урок 98: Дитячий садок')$q$) = 3
   and pg_temp.n($q$select 1 from public.assessment_items i join public.assessments a on a.id = i.assessment_id
-  where a.slug = 'a1-m12' and i.status = 'PUBLISHED'$q$) = 10,
-  'нові уроки A1.12 — «Школа» й «Шкільне приладдя»; «Дитячий садок» окремо; перевірка a1-m12 — 10 завдань');
+  where a.slug = 'a1-m12' and i.status = 'PUBLISHED'$q$) = 16,
+  'нові уроки A1.12 — «Школа» й «Шкільне приладдя»; «Дитячий садок» окремо; перевірка a1-m12 — 16 завдань (схема 2026-11-07: 2 на урок; було 10)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.grammar_rules r join public.grammar_topics g on g.id = r.topic_id
   where g.cefr = 'A1' and r.title_ua in ('Родовий часу: prije, poslije, od … do, tijekom', 'Svoj: svoju torbu, svoga sina')
   and jsonb_array_length(r.examples) >= 4$q$) = 2,
@@ -219,19 +219,19 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l join public.units 
 
 -- ---------------------------------------------------------------- середина рівня A1
 select pg_temp.ok(pg_temp.n($q$select 1 from public.assessment_items i join public.assessments a on a.id = i.assessment_id
-  where a.slug = 'a1-mid' and i.status = 'PUBLISHED'$q$) = 20
+  where a.slug = 'a1-mid' and i.status = 'PUBLISHED'$q$) = 30
   and pg_temp.n($q$select 1 from public.assessment_items i join public.assessments a on a.id = i.assessment_id
   join public.lessons l on l.id = i.lesson_id join public.units u on u.id = l.unit_id join public.modules m on m.id = u.module_id
   where a.slug = 'a1-mid' and i.status = 'PUBLISHED' and m.order_index > 6$q$) = 0,
-  'середина A1 — 20 завдань лише з модулів A1.1–A1.6');
+  'середина A1 — 30 завдань (схема 2026-11-07; було 20) лише з модулів A1.1–A1.6');
 
 -- ---------------------------------------------------------------- фінал рівня A1
 select pg_temp.ok(pg_temp.n($q$select 1 from public.assessment_items i join public.assessments a on a.id = i.assessment_id
-  where a.slug = 'a1-final' and i.status = 'PUBLISHED'$q$) = 30
+  where a.slug = 'a1-final' and i.status = 'PUBLISHED'$q$) = 48
   and (select count(distinct m.order_index) from public.assessment_items i join public.assessments a on a.id = i.assessment_id
   join public.lessons l on l.id = i.lesson_id join public.units u on u.id = l.unit_id join public.modules m on m.id = u.module_id
   where a.slug = 'a1-final' and i.status = 'PUBLISHED') >= 12,
-  'фінал A1 — 30 завдань з усіх 13 модулів (завдання на читання — без уроку, тож за уроками видно щонайменше 12)');
+  'фінал A1 — 48 завдань (схема 2026-11-07; було 30) з усіх 13 модулів (завдання на читання — без уроку, тож за уроками видно щонайменше 12)');
 
 -- ---------------------------------------------------------------- склад уроків v3
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l join v3_lessons v on v.id = l.id
