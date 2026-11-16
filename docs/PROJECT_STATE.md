@@ -21,7 +21,7 @@ content:                      # робоча база; уроки, модулі 
   songs: 7                    # «Ситуації» → «Пісні», lib/songs.ts
 tests: {unit: 313, sql_files: 57, e2e_user: 13, failing: 0}   # npm test; supabase/tests/*.test.sql; e2e/user.spec.ts
 docs_limits: {PROJECT_STATE: 15 KB, HISTORY: 30 KB, SPEC_CHANGELOG: 30 KB, ТЗ і довідники: 60 KB, DECISIONS: без ліміту}   # рішення 2026-11-14
-last_updated: 2026-11-16 (PR #49 — офлайн; #46–#48 — у main)
+last_updated: 2026-11-16 (#49 — офлайн; #46–#48 — у main)
 ```
 
 ## Чинні рішення власника (коротко)
