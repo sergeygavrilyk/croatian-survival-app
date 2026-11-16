@@ -73,6 +73,30 @@ test('урок від початку до святкового екрана: п�
   await expect(page.getByRole('link', { name: 'До уроків' })).toHaveAttribute('href', /^\/lessons/);
 });
 
+test.describe('«Сьогодні» на iPhone', () => {
+  // Chromium з адресою браузера iPhone: Safari не можна запустити, але логіка підказки дивиться саме на неї
+  test.use({
+    userAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 18_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.1 Mobile/15E148 Safari/604.1',
+  });
+
+  test('підказка «Додати на початковий екран» (§76): кроки в Safari, «Не зараз» ховає', async ({ page }) => {
+    // Підказка — після першого уроку: попередній тест щойно пройшов урок (серія ≥ 1)
+    await page.goto('/');
+    const hint = page.getByTestId('install-hint');
+    await expect(hint).toBeVisible();
+    await expect(hint.getByRole('heading', { name: 'Додайте застосунок на початковий екран' })).toBeVisible();
+    await expect(hint.getByRole('list', { name: 'Як додати на iPhone' })).toContainText('«На початковий екран»');
+    await expect(hint.getByRole('button', { name: 'Встановити' })).toHaveCount(0);
+
+    await hint.getByRole('button', { name: 'Не зараз' }).click();
+    await expect(hint).toBeHidden();
+    await page.reload();
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect(page.getByTestId('install-hint')).toHaveCount(0);
+  });
+});
+
 test('урок, якого немає: «Урок не знайдено» і шлях до уроків', async ({ page }) => {
   await page.goto('/lesson/00000000-0000-0000-0000-000000000000');
   await expect(page.getByRole('heading', { name: 'Урок не знайдено' })).toBeVisible();
@@ -443,6 +467,39 @@ async function waitForServiceWorker(page: Page) {
     return Boolean(reg.active);
   });
 }
+
+test('словник без інтернету (§76): шукає серед слів на телефоні — з відкритого уроку', async ({ page, context, request }) => {
+  test.slow();
+  const sw = await request.get('/sw.js');
+  test.skip(!sw.ok(), 'PWA вимкнено (npm run dev) — офлайн перевіряємо лише у збірці: npm run e2e');
+
+  // Урок з інтернетом — його слова лягають у копію на телефоні
+  await page.goto(`/lesson/${TEST_LESSON_ID}`);
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  const lemma = await page.evaluate((key) => {
+    const raw = localStorage.getItem(key);
+    const words = raw ? (JSON.parse(raw) as { data?: { words?: { hr_text?: string }[] } }).data?.words : undefined;
+    return words?.find((w) => (w.hr_text ?? '').trim().length > 2)?.hr_text?.trim() ?? '';
+  }, `cs_offline_lesson_${TEST_LESSON_ID}`);
+  expect(lemma, 'слово уроку в копії на телефоні').not.toBe('');
+
+  await page.goto('/dictionary');
+  await waitForServiceWorker(page);
+  await page.reload(); // сторінку словника віддає service worker і кладе в кеш
+  await expect(page.getByRole('heading', { level: 1, name: 'Практика' })).toBeVisible();
+
+  await context.setOffline(true);
+  try {
+    await page.reload();
+    await expect(page.getByTestId('dictionary-offline')).toBeVisible();
+    await page.getByLabel('Пошук слова').fill(lemma);
+    await expect(page.getByRole('list').getByText(lemma, { exact: true }).first()).toBeVisible();
+  } finally {
+    await context.setOffline(false);
+  }
+  // Інтернет повернувся — знову весь словник, без перезавантаження сторінки
+  await expect(page.getByTestId('dictionary-offline')).toBeHidden({ timeout: 15_000 });
+});
 
 test('ARCH-03: рівні з опублікованими перевірками видно в «Перевірках» і на «Уроках» (A2)', async ({ page }) => {
   // Рівні беруться з бази, а не з переліку в коді: опубліковані перевірки A2 мають бути видні без правки коду

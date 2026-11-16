@@ -33,6 +33,8 @@ Events:
 - subscription_cancelled
 - offline_queued *(службова, 2026-11-16)*
 - offline_synced *(службова, 2026-11-16)*
+- install_hint_shown *(службова, 2026-11-16)*
+- install_hint_result *(службова, 2026-11-16)*
 
 ## 72. Analytics Properties
 
@@ -127,6 +129,8 @@ Track:
 | `assessment_completed` | сервер, `submitAssessment` | level, module_id, assessment_kind, assessment_slug, score (0…1), count (зараховано завдань, без пропущеного говоріння), correct_count, success (пройдено), duration_ms |
 | `offline_queued` | браузер, `queueProgress` (`lib/offline-client.ts`): без мережі урок, текст, слово чи оцінку (тренажер, «Помилки» — етап 2) покладено в чергу на телефоні; сама подія теж іде через чергу (2026-11-16) | kind (`lesson_completed` / `reading_completed` / `word_saved` / `srs_rating`). Не навчальна подія |
 | `offline_synced` | сервер, `syncOfflineOps`: пакет черги прийнято (2026-11-16) | count (прийнято), failed (відхилено назавжди), age_ms (скільки найдовше чекала дія). Не навчальна подія |
+| `install_hint_shown` | браузер, «Сьогодні» (`components/InstallHint.tsx`): показано підказку «Додати на початковий екран» (§76, 2026-11-16) | kind (`native` — кнопка «Встановити», `ios` — кроки в Safari), source = `today`. Не навчальна подія |
+| `install_hint_result` | браузер, та сама картка: «Встановити» (системне вікно: прийнято / відмовлено), «Готово» (iPhone), «Не зараз» | kind, source = `today`, success (`true` — встановлено або «Готово», `false` — «Не зараз» чи відмова у вікні). Не навчальна подія |
 | `speech_diagnostic` | службова, `utils/speech-recognition.ts`: кінець кожного розпізнавання на iPhone / Mac Safari і кожне невдале деінде (2026-10-21) | success (почули текст), verdict (`ok` / `empty` / `aborted` / `error:<код>` / `start-failed`), count (подій result), duration_ms, speech_platform, speech_trace (події браузера з мс: `st` start, `au` audiostart, `so` soundstart, `sp` speechstart, `r`/`rF` result, `end`, `stop`, `grace`; на початку `tts-on/was/no` і `pwa/tab`). Без тексту й аудіо. Не навчальна подія — у серію днів не входить |
 
 Кожна оцінка картки окремо записується в `srs_reviews` (результат, інтервали, ease, `response_time_ms`) — це і є детальна історія повторень, тому окремої події на кожну картку немає.

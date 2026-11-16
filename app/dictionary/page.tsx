@@ -1,10 +1,12 @@
 'use client';
 
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { BookmarkPlus, Check, CircleCheck, Hourglass, Loader2, Search, X } from 'lucide-react';
+import { BookmarkPlus, Check, CircleCheck, CloudOff, Hourglass, Loader2, Search, X } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
 import { saveDictionaryWord } from '@/app/actions/dictionary';
-import { failedForNetwork, isBrowserOffline, queueProgress } from '@/lib/offline-client';
+import { currentUserId, failedForNetwork, isBrowserOffline, queueProgress } from '@/lib/offline-client';
+import { browserStorage } from '@/lib/offline-copy';
+import { collectOfflineWords, searchOfflineWords } from '@/lib/dictionary-offline';
 import PracticeTabs from '@/components/ui/PracticeTabs';
 import { dictionarySearchTerm, posLabelUk } from '@/lib/format';
 import { LEVEL_CODES, levelStyle } from '@/lib/levels';
@@ -43,6 +45,9 @@ interface Word {
   standardId: string | null;
 }
 
+/** Порція слів: з бази або (без мережі) з телефона; `learningIds` — слова з колоди тренажера («Вчу»). */
+type PageResult = { words: Word[]; offline: boolean; learningIds: string[] };
+
 /** Стан кнопки «Додати в повторення» в картці слова: текст — помилка. */
 /** `queued` — мережі немає, слово в черзі на телефоні (офлайн без втрат), відправиться саме */
 type SaveState = 'idle' | 'saving' | 'saved' | 'queued' | string;
@@ -52,6 +57,7 @@ type SaveState = 'idle' | 'saving' | 'saved' | 'queued' | string;
  * Біля слова — емодзі теми уроку в кольорі рівня, бейдж рівня, частина мови, «Вчу», позначка категорії (DESIGN_SYSTEM §3.4).
  * Натиск на слово — картка знизу: переклад, позначка категорії й «стандартно: …», пояснення, приклади й «Додати в повторення».
  * Слова `vulgar` (модуль «18+») — лише тим, хто ввімкнув «Показувати контент 18+» у профілі (`profiles.adult_content`, M26).
+ * Без мережі (§76, рішення 2026-11-16) — пошук серед слів на телефоні: колода тренажера й відкриті уроки (`lib/dictionary-offline.ts`).
  */
 export default function DictionaryPage() {
   const supabase = createClient();
@@ -68,6 +74,8 @@ export default function DictionaryPage() {
   const requestRef = useRef(0); // відповідь старішого запиту (попередній пошук) не перезаписує новішу
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  // Без мережі: шукаємо серед слів на телефоні (null — звичайний пошук у базі)
+  const [offlineMode, setOfflineMode] = useState(false);
   // Доповнення до слів (не критичні: без них — літера замість емодзі й без позначки «Вчу»)
   const [themes, setThemes] = useState<Map<string, WordTheme>>(new Map());
   const [learning, setLearning] = useState<Set<string>>(new Set());
@@ -149,7 +157,7 @@ export default function DictionaryPage() {
   }, []);
 
   /** Запит однієї порції слів (лише читання з бази, стан не змінює). Помилка бази — виняток. */
-  const queryWords = useCallback(async (pageIndex: number, search: string | null, lvl: Level, cat: WordCategory): Promise<Word[]> => {
+  const queryOnline = useCallback(async (pageIndex: number, search: string | null, lvl: Level, cat: WordCategory): Promise<Word[]> => {
     const from = pageIndex * PAGE_SIZE;
     const to = from + PAGE_SIZE - 1;
     const adult = await adultContent();
@@ -191,15 +199,49 @@ export default function DictionaryPage() {
     }));
   }, [supabase, adultContent]);
 
+  /** Без мережі: слова з телефона (колода тренажера, відкриті уроки) за тими самими умовами пошуку. */
+  const queryOffline = useCallback(async (search: string | null, lvl: Level, cat: WordCategory): Promise<PageResult> => {
+    const adult = await adultContent();
+    const found = searchOfflineWords(collectOfflineWords(browserStorage(), currentUserId()), { term: search, level: lvl, category: cat, adultContent: adult });
+    return {
+      offline: true,
+      learningIds: found.filter((w) => w.learning).map((w) => w.id),
+      words: found.map((w) => ({
+        id: w.id, lemma: w.lemma, translation: w.translation, pos: null, level: w.level, explanation: null,
+        examples: w.example ? [w.example] : [], labels: w.labels, standardId: null,
+      })),
+    };
+  }, [adultContent]);
+
+  /** Порція слів: з бази, а без мережі — з телефона. Помилка бази (не мережі) — виняток. */
+  const queryWords = useCallback(async (pageIndex: number, search: string | null, lvl: Level, cat: WordCategory): Promise<PageResult> => {
+    if (isBrowserOffline()) return queryOffline(search, lvl, cat);
+    try {
+      return { offline: false, learningIds: [], words: await queryOnline(pageIndex, search, lvl, cat) };
+    } catch (error) {
+      // помилка Supabase — звичайний об'єкт, тож дивимось і на текст
+      if (failedForNetwork(error) || failedForNetwork((error as { message?: unknown } | null)?.message)) return queryOffline(search, lvl, cat);
+      throw error;
+    }
+  }, [queryOffline, queryOnline]);
+
   /** Відповідь бази → стан. Відповідь старішого запиту (попередній пошук) ігноруємо. */
-  const applyPage = useCallback((requestId: number, isReset: boolean, result: { words: Word[] } | { error: unknown }) => {
+  const applyPage = useCallback((requestId: number, isReset: boolean, result: PageResult | { error: unknown }) => {
     if (requestId !== requestRef.current) return;
     if ('error' in result) {
       console.error('Помилка завантаження словника:', result.error);
       if (isReset) setWords([]); // старі результати іншого пошуку не показуємо
       setLoadError(true);
+    } else if (result.offline) {
+      // без мережі — усі знайдені слова одразу, без «Ще»; доповнень з бази немає (кнопка «Додати» — одразу)
+      setOfflineMode(true);
+      setHasMore(false);
+      setWords(result.words);
+      setLearning(prev => new Set([...prev, ...result.learningIds]));
+      setChecked(prev => new Set([...prev, ...result.words.map(w => w.id)]));
     } else {
       const mapped = result.words;
+      setOfflineMode(false);
       setHasMore(mapped.length === PAGE_SIZE); // менше за порцію — кінець словника чи результатів
       setWords(prev => (isReset ? mapped : [...prev, ...mapped]));
       void enrich(mapped);
@@ -213,10 +255,21 @@ export default function DictionaryPage() {
     beginLoad(pageIndex, isReset);
     const requestId = ++requestRef.current;
     queryWords(pageIndex, term, level, category).then(
-      (found) => applyPage(requestId, isReset, { words: found }),
+      (found) => applyPage(requestId, isReset, found),
       (error: unknown) => applyPage(requestId, isReset, { error }),
     );
   };
+
+  // Мережа повернулась — знову шукаємо в усьому словнику (не перезавантажуючи сторінку)
+  const [netTick, setNetTick] = useState(0);
+  useEffect(() => {
+    const onOnline = () => {
+      beginLoad(0, true);
+      setNetTick((t) => t + 1);
+    };
+    window.addEventListener('online', onOnline);
+    return () => window.removeEventListener('online', onOnline);
+  }, [beginLoad]);
 
   // Затримка: шукаємо, коли користувач перестав друкувати
   useEffect(() => {
@@ -234,10 +287,10 @@ export default function DictionaryPage() {
   useEffect(() => {
     const requestId = ++requestRef.current;
     queryWords(0, term, level, category).then(
-      (found) => applyPage(requestId, true, { words: found }),
+      (found) => applyPage(requestId, true, found),
       (error: unknown) => applyPage(requestId, true, { error }),
     );
-  }, [queryWords, applyPage, term, level, category]);
+  }, [queryWords, applyPage, term, level, category, netTick]);
 
   const selectLevel = (lvl: Level) => {
     if (lvl === level) return;
@@ -388,6 +441,13 @@ export default function DictionaryPage() {
           {!loading && words.length > 0 && <p className="text-caption text-ink-subtle">Показано {words.length}</p>}
         </div>
 
+        {offlineMode && !loading && (
+          <p role="status" data-testid="dictionary-offline" className="mb-3 flex items-start gap-2 rounded-card border border-line bg-surface-muted px-4 py-3 text-label font-normal text-ink-muted">
+            <CloudOff className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+            Без інтернету шукаємо серед слів на телефоні — з тренажера й уроків, які ви відкривали. Увесь словник — з інтернетом.
+          </p>
+        )}
+
         {loading ? (
           <div className="grid gap-3 sm:grid-cols-2" aria-busy="true" aria-label="Завантаження словника">
             {Array.from({ length: 6 }, (_, i) => (
@@ -416,7 +476,9 @@ export default function DictionaryPage() {
               </Button>
             ) : (
               <p className="mt-6 text-center text-label font-normal text-ink-muted">
-                {term
+                {offlineMode
+                  ? 'Це всі слова на телефоні за вашим пошуком.'
+                  : term
                   ? 'Це всі слова за вашим пошуком.'
                   : category !== 'all'
                     ? `Це всі слова категорії «${categoryName(category)}» 🎉`
@@ -429,7 +491,9 @@ export default function DictionaryPage() {
             icon={<Search className="size-6" aria-hidden="true" />}
             title="Слів не знайдено"
             text={
-              category !== 'all'
+              offlineMode
+                ? 'Без інтернету шукаємо лише серед слів на телефоні (тренажер і уроки, які ви відкривали). Увесь словник — з інтернетом.'
+                : category !== 'all'
                 ? emptyCategoryText(category)
                 : level !== 'ALL'
                   ? `На рівні ${level} такого слова немає. Спробуйте «Усі» рівні.`
