@@ -86,8 +86,8 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.lesson_items i join public.l
   'урок «Погода»: погода, сонячно, дощ, сніг, вітер, холодно, тепло, бура, юго');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lesson_items i join public.lexemes x on x.id = i.item_id
   where i.lesson_id = 'd7cf3059-0d92-5215-8ef4-ad699e317b10' and i.item_type = 'lexeme'
-    and lower(x.lemma) in ('božić', 'nova godina', 'uskrs', 'sretan božić', 'sretna nova godina', 'sretni blagdani', 'neradni dan')$q$) = 7,
-  'урок «Свята»: Різдво, Новий рік, Великдень, привітання, неробочий день');
+    and lower(x.lemma) in ('božić', 'nova godina', 'uskrs', 'sretan božić', 'sretna nova godina', 'sretni blagdani', 'hvala na čestitki')$q$) = 7,
+  'урок «Свята»: Різдво, Новий рік, Великдень, привітання, «дякую за привітання» (з 2026-11-17 — без «неробочого дня», Д10)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.grammar_topics g where g.id = '8feb6432-33f0-5645-ad22-b4215fe3771f' and g.status = 'PUBLISHED' and g.cefr = 'A0'
   and (select count(*) from public.grammar_rules r where r.topic_id = g.id and jsonb_array_length(r.examples) >= 3) = 3$q$) = 1,
   'нова тема граматики «Погода: безособові речення» — 3 правила з прикладами');

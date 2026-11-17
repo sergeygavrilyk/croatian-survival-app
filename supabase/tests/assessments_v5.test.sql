@@ -61,14 +61,14 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.assessment_items i join publ
   and (select sum(cardinality(i.answer_alternatives)) from public.assessment_items i join public.assessments a on a.id = i.assessment_id
        where a.cefr = 'A2' and i.status = 'PUBLISHED') = 19,
   'A2: 17 з 24 завдань «Складіть» мають інші порядки (разом 19)');
-select pg_temp.ok(pg_temp.n($q$select 1 from v5 where item_type = 'sentence_builder' and cardinality(answer_alternatives) > 0$q$) = 30
-  and pg_temp.n($q$select 1 from v5 where item_type = 'sentence_builder'$q$) = 58,
-  'A0 / A1: 30 з 58 завдань «Складіть» мають інші порядки (2026-11-17: нові a0-m05, a0-m06)');
+select pg_temp.ok(pg_temp.n($q$select 1 from v5 where item_type = 'sentence_builder' and cardinality(answer_alternatives) > 0$q$) = 29
+  and pg_temp.n($q$select 1 from v5 where item_type = 'sentence_builder'$q$) = 59,
+  'A0 / A1: 29 з 59 завдань «Складіть» мають інші порядки (2026-11-17: нові a0-m05, a0-m06; PR 2б — нові a0-m09, a0-m11, a0-final)');
 
 -- ---------------------------------------------------------------- склад за схемою 2026-11-07
 select pg_temp.ok(pg_temp.n($q$select 1 from v5 where source <> 'claude_assessment_v5'$q$) = 0
-  and pg_temp.n($q$select 1 from v5$q$) = 530,
-  'усі опубліковані завдання A0 / A1 — нові (v5): A0 — 230 (2026-11-17: + модуль A0.6), A1 — 300');
+  and pg_temp.n($q$select 1 from v5$q$) = 532,
+  'усі опубліковані завдання A0 / A1 — нові (v5): A0 — 232 (2026-11-17: + модуль A0.6; a0-m11 — 8 уроків, 16 завдань), A1 — 300');
 select pg_temp.ok(pg_temp.n($q$select slug from v5 group by slug, kind, test_module
   having count(*) <> case kind when 'module' then greatest(12, least(20, 2 * (select count(*) from public.lessons l join public.units u on u.id = l.unit_id
                                                                                 where u.module_id = test_module and l.status = 'PUBLISHED')))
@@ -128,7 +128,7 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.assessments a where a.cefr i
 set local role anon;
 select set_config('request.jwt.claims', '{"role":"anon"}', true);
 select pg_temp.ok(pg_temp.n($q$select 1 from public.assessment_items i join public.assessments a on a.id = i.assessment_id
-  where a.cefr in ('A0', 'A1')$q$) = 530, 'гість бачить 530 опублікованих завдань A0 / A1, старих — ні');
+  where a.cefr in ('A0', 'A1')$q$) = 532, 'гість бачить 532 опублікованих завдання A0 / A1, старих — ні');
 reset role;
 
 -- ---------------------------------------------------------------- skill_progress: лише свої рядки

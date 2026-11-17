@@ -171,10 +171,11 @@ Level → Module → Unit → Lesson → Learning Objectives → Input → Pract
 - directions;
 - transport.
 
-**A0.11 — Survival Croatian**
+**A0.11 — Survival Croatian** *(2026-11-17, план дублів Д12: «У лікаря» і «В аптеці» — окремі уроки, PR 2б)*
 - help;
 - repetition;
 - misunderstanding;
+- at the doctor; at the pharmacy (buying medicine, prescription, night pharmacy);
 - emergency;
 - basic administration.
 

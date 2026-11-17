@@ -45,8 +45,8 @@ select pg_temp.ok(pg_temp.n($q$select slug, order_index from lvl group by 1, 2 h
 
 -- ---------------------------------------------------------------- старі завдання не видалено
 select pg_temp.ok(pg_temp.n($q$select 1 from public.assessment_items i join public.assessments a on a.id = i.assessment_id
-  where a.slug in ('a0-mid', 'a0-final') and i.status = 'DEPRECATED' and i.order_index > 100$q$) = 100,
-  'старі завдання (50 першої версії + 50 v4) — DEPRECATED (місця зсунуто за 100), не видалені');
+  where a.slug in ('a0-mid', 'a0-final') and i.status = 'DEPRECATED' and i.order_index > 100$q$) = 148,
+  'старі завдання (50 першої версії + 50 v4 + 48 фіналу v5 — фінал наново в PR 2б, 2026-11-17) — DEPRECATED (місця зсунуто за 100), не видалені');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.content_versions cv join public.assessments a on a.id = cv.entity_id
   where cv.entity_type = 'assessment' and a.slug in ('a0-mid', 'a0-final')
     and cv.change_reason like 'curriculum_a0_v4: перевірку рівня%' and jsonb_array_length(cv.payload->'items') > 0$q$) = 2,
@@ -62,8 +62,8 @@ select pg_temp.ok(pg_temp.n($q$select 1 from lvl where lesson_id is not null and
   'уроки-джерела — опубліковані уроки A0');
 select pg_temp.ok(pg_temp.n($q$select 1 from lvl where slug = 'a0-mid' and module_order > 5$q$) = 0,
   'a0-mid: лише модулі A0.1–A0.5');
-select pg_temp.ok(pg_temp.n($q$select distinct module_order from lvl where slug = 'a0-final' and module_order is not null$q$) = 10,
-  'a0-final: завдання з 10 модулів (усі, крім нового A0.6 — фінал оновиться разом з A0, PR 2б)');
+select pg_temp.ok(pg_temp.n($q$select distinct module_order from lvl where slug = 'a0-final' and module_order is not null$q$) = 11,
+  'a0-final: завдання з усіх 11 модулів (з A0.6 — PR 2б, 2026-11-17)');
 select pg_temp.ok(pg_temp.n($q$select 1 from lvl where lesson_id is not null and not exists (
     select 1 from public.lessons l2 where l2.id = lvl.lesson_id and l2.title_ua ~ '^Урок [0-9]+: ')$q$) = 0,
   'уроки-джерела — нумеровані уроки за темою');

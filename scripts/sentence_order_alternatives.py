@@ -38,6 +38,9 @@ ALTERNATIVES: dict[str, list[str]] = {
     'Kada stiže vlak?': ['Kada vlak stiže?'],
     'Drži ljestve, molim te.': ['Molim te, drži ljestve.'],
     'Treba prozračiti kupaonicu.': ['Kupaonicu treba prozračiti.'],
+    # A0 після плану «Дублі й сенс уроків» (PR 2б, 2026-11-17): a0-m09, фінал a0-final
+    'Koliko košta kila?': ['Koliko kila košta?'],
+    'Ključevi su na stolu.': ['Na stolu su ključevi.'],
     'Prvo napuni mobitel.': ['Napuni prvo mobitel.'],
     'Uzimajte lijek natašte.': ['Lijek uzimajte natašte.'],
     'Dijete povraća od jutra.': ['Od jutra dijete povraća.'],

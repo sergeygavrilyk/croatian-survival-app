@@ -48,12 +48,12 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l join public.units 
   and pg_temp.n($q$select 1 from pg_temp.pets() t join public.lessons l on l.id = t.lid and l.order_index = t.o
                    and l.unit_id = 'aaf6ad60-560f-5720-9a19-24398989dd00' and l.title_ua like 'Урок ' || t.n || ':%'$q$) = 6,
   'A0.6: урок 37 першим, далі уроки 38–43');
-select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons where level_code = 'A0' and status = 'PUBLISHED'$q$) = 72
+select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons where level_code = 'A0' and status = 'PUBLISHED'$q$) = 73
   and pg_temp.n($q$select 1 from (select l.title_ua, l.title_hr, row_number() over (order by m.order_index, u.order_index, l.order_index) n
        from public.lessons l join public.units u on u.id = l.unit_id join public.modules m on m.id = u.module_id
       where m.level_code = 'A0' and l.status = 'PUBLISHED') t
      where t.title_ua not like 'Урок ' || t.n || ':%' or t.title_hr not like 'Lekcija ' || t.n || ':%'$q$) = 0,
-  'A0: 72 уроки, пронумеровані підряд');
+  'A0: 73 уроки (2026-11-17: + «В аптеці», PR 2б), пронумеровані підряд');
 select pg_temp.ok((select title_ua from public.lessons where id = '78f28f85-dd8b-5e81-8a52-1b2dbce4eb34') = 'Урок 44: Моя квартира'
   and pg_temp.n($q$select 1 from public.content_versions where entity_type = 'lesson' and change_reason like 'a0_pets: новий номер уроку%'$q$) = 29,
   'уроки 38–66 → 44–72; старі назви — у content_versions');
@@ -116,11 +116,12 @@ select pg_temp.ok((select status from public.exercises where id = 'fcca6bae-5d7c
   'урок 37: «Прослухайте» — з нового діалогу на тому самому місці, стара вправа — DEPRECATED, крок — у backup');
 
 -- ---------------------------------------------------------------- тексти для читання
-select pg_temp.ok(pg_temp.n($q$select 1 from public.reading_texts where cefr = 'A0' and module_order = 6$q$) = 0
+select pg_temp.ok(pg_temp.n($q$select 1 from public.reading_texts where cefr = 'A0' and module_order = 6$q$) = 2
+  and pg_temp.n($q$select 1 from public.reading_texts where cefr = 'A0' and module_order = 6 and code in ('RD-A0-021', 'RD-A0-022')$q$) = 2
   and (select module_order from public.reading_texts where code = 'RD-A0-011') = 7
   and (select module_order from public.reading_texts where code = 'RD-A0-010') = 5
   and pg_temp.n($q$select 1 from backup.reading_texts_a0_20261117$q$) >= 20,
-  'тексти A0 — за своїм модулем (Moj dom — 7, Obitelj — 5); старі номери — у backup');
+  'тексти A0 — за своїм модулем (Moj dom — 7, Obitelj — 5; в A0.6 — 2 нові тексти PR 2б, 2026-11-17); старі номери — у backup');
 
 -- ---------------------------------------------------------------- перевірки модулів
 select pg_temp.ok(pg_temp.n($q$select 1 from public.assessments a join public.modules m on m.id = a.module_id
