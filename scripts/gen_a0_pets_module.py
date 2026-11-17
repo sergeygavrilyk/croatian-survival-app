@@ -6,7 +6,7 @@
   python3 -B scripts/gen_a0_pets_module.py              →  supabase/data_fixes/20261117_a0_pets_module.sql
   python3 -B scripts/gen_a0_pets_module.py --check      →  лише перевірка даних (нічого не пише)
   python3 -B scripts/gen_a0_pets_module.py --review     →  content/reviews/2026-11-17_a0_pets_module.md (для носія)
-  python3 -B scripts/gen_a0_pets_module.py assessments  →  supabase/data_fixes/20261117_a0_pets_assessments.sql
+  python3 -B scripts/gen_a0_pets_module.py assessments  →  supabase/data_fixes/20261117_a0_pets_tests_m05_m06.sql
                                                           (знімок після пакета — scripts/assessment_a0_pets_snapshot.json)
 
 Дані — scripts/curriculum_a0_pets_data.py. Знімок робочої бази — scripts/curriculum_a0_pets_snapshot.json
@@ -49,7 +49,9 @@ FIXES = ROOT / 'supabase' / 'data_fixes'
 REVIEWS = ROOT / 'content' / 'reviews'
 SNAPSHOT = json.loads((HERE / 'curriculum_a0_pets_snapshot.json').read_text(encoding='utf-8'))
 OUT = FIXES / '20261117_a0_pets_module.sql'
-OUT_ASSESS = FIXES / '20261117_a0_pets_assessments.sql'
+# 2026-11-17: перший запуск «Apply SQL» узяв `…a0_pets_assessments.sql` раніше за `…a0_pets_module.sql` (порядок — за назвою),
+# тож перевірки — у файлі, назва якого стоїть після модуля. У вже змердженому пакеті модуля стару назву не міняємо.
+OUT_ASSESS = FIXES / '20261117_a0_pets_tests_m05_m06.sql'
 REVIEW_OUT = REVIEWS / '2026-11-17_a0_pets_module.md'
 LEVEL = 'A0'
 MOD = 6                     # новий модуль
@@ -772,7 +774,7 @@ end $$;
 -- Перевірки рівня A0 після нового модуля A0.6 «Kućni ljubimci» · 2026-11-17
 -- Згенеровано: python3 -B scripts/gen_a0_pets_module.py assessments (не редагуйте вручну).
 --
--- Запускати після 20261117_a0_pets_module.sql. Схема 2026-11-07: модуль — 2 завдання на урок (12–20).
+-- Запускати після 20261117_a0_pets_module.sql (назва файлу стоїть після нього — «Apply SQL» запускає за назвою). Схема 2026-11-07: модуль — 2 завдання на урок (12–20).
 --   * Тести модулів a0-m06…a0-m10 → a0-m07…a0-m11 (назва «Перевірка модуля A0.N» і місце — теж); спроби користувачів
 --     прив’язані до id тесту й не змінюються. Копія рядків тестів — backup.assessments_a0_20261117.
 --   * Новий тест a0-m06 «Перевірка модуля A0.6» — {len(tests[1]['items'])} завдань (7 уроків).
@@ -781,7 +783,7 @@ end $$;
 --     у content_versions і DEPRECATED. Середина (a0-mid) і фінал (a0-final) не змінюються.
 --   * Повторний запуск нічого не змінює.
 -- Запуск: workflow «Apply SQL (production)» після мержу й Approve власника.
--- Очікуване повідомлення: «Готово: 20261117_a0_pets_assessments.sql — …».
+-- Очікуване повідомлення: «Готово: 20261117_a0_pets_tests_m05_m06.sql — …».
 -- =====================================================================
 
 begin;
@@ -837,7 +839,7 @@ begin
   if v_new <> {total} or v_bad > 0 or (select count(*) from public.assessments where cefr = 'A0' and kind = 'module') <> 11 then
     raise exception 'Перевірки A0: нових завдань % (очікувалось {total}), тестів з помилкою %', v_new, v_bad;
   end if;
-  raise notice 'Готово: 20261117_a0_pets_assessments.sql — 11 тестів модулів A0, % нових завдань (a0-m05, a0-m06)', v_new;
+  raise notice 'Готово: 20261117_a0_pets_tests_m05_m06.sql — 11 тестів модулів A0, % нових завдань (a0-m05, a0-m06)', v_new;
 end $$;
 
 commit;
