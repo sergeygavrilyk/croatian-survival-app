@@ -190,4 +190,8 @@ run $S/seed_a0_dupes_supplement.sql
 run $A/data_fixes/20261117_a0_dupes_1_lessons.sql
 run $A/data_fixes/20261117_a0_dupes_2_reading.sql
 run $A/data_fixes/20261117_a0_dupes_3_tests.sql
+# дублі A1 (план «Дублі й сенс уроків», PR 3), 2026-11-17: урок 105 → A1.8, Д2, Д3, Д12, Д13, 3 нові уроки A1.11, назви діалогів; перевірки
+run $S/seed_a1_dupes_supplement.sql
+run $A/data_fixes/20261117_a1_dupes_1_lessons.sql
+run $A/data_fixes/20261117_a1_dupes_2_tests.sql
 echo "Готово. Тести: for t in supabase/tests/*.sql; do psql -h /tmp -p $P -U postgres -q -v ON_ERROR_STOP=1 -f \$t | tail -1; done"

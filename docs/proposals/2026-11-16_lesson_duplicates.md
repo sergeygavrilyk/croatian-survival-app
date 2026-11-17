@@ -201,7 +201,7 @@
 | **PR 1 · П1 назви** | 7 уроків (A0-42, A0-52, A1-93, A2-13, A2-27, A2-38, A2-72) і 2 модулі (A1.12, A2.9); старі назви уроків → `content_versions`, модулів → `backup.modules_20261117`. A2-33 — разом з його змістом у PR 4; назви діалогів — у пакетах рівнів (спершу читаємо обидва тексти) | низький |
 | **PR 2а · A0 «Домашні тварини»** (#57) | новий модуль A0.6: A0-37 + 6 нових уроків; перенумерація модулів (A0.6–A0.10 → A0.7–A0.11) і уроків A0 (+6); перевірка модуля A0.6; `lib/goals.ts`; номери модулів текстів A0 | середній |
 | **PR 2б · A0 дублі** | A0-62 → «У лікаря» + «В аптеці» (A0-61 «Частини тіла» лишається поруч); Д4, Д9, Д10, Д11; перевірки модулів; назви діалогів A0 — **зроблено (2026-11-17), див. §7а** | середній |
-| **PR 3 · A1** | A1-105 → A1.8 (перенумерація 76–105, перевірки a1-m8 / a1-m12); Д2 (A1-101), Д3, Д13, A1-70; A1.11 +3 уроки (після «ок» тем); назви діалогів A1 | середній |
+| **PR 3 · A1** — **зроблено (2026-11-17), див. §7б** | A1-105 → A1.8 (перенумерація 76–105, перевірки a1-m8 / a1-m12); Д2 (A1-101), Д3, Д13, A1-70; A1.11 +3 уроки (після «ок» тем); назви діалогів A1 | середній |
 | **PR 4 · A2** | Д1, Д2 (A2-9), Д5, Д6, Д7, Д8 + назва A2-33; урок «Далмація: Задар і околиці» (перенумерація A2 70–86, перевірка a2-m11); назви діалогів A2 | середній |
 | далі | A1 — 20–25 слів у кожному уроці, модуль за модулем (skill `lesson-topic-rebuild`) | великий обсяг |
 
@@ -222,6 +222,19 @@
 - *mjesečna karta, presjesti, kontrolor* — лише в словнику: в A1-31 уже є *mjesečna pokazna karta, presjedati, kontrolor karata*.
 - Перевірки: a0-m09 і a0-m11 (8 уроків — 16 завдань) — наново; фінал a0-final — наново з усіх 11 модулів; 2 тексти A0.6 (RD-A0-021, RD-A0-022).
 - Звіт носію — `content/reviews/2026-11-17_a0_dupes.md`.
+
+## 7б. PR 3 — що зроблено (2026-11-17)
+
+Номери — нові: урок 105 → A1.8 (76), уроки 76–104 → 77–105, A1.11 +3 (99–101), далі +4; уроків A1 — 111. Звіт носію — `content/reviews/2026-11-17_a1_dupes.md`.
+
+- **A1-105** «Надзвичайні ситуації» → A1.8, місце 11 (урок 76); A1.8 — 11 уроків, A1.12 — 7.
+- **Д3** (54): кандидати *radno mjesto, slobodan dan, godišnji odmor* уже в інших уроках → *potpisati ugovor, raditi vikendom, ugovor o radu, opis posla, uvjeti rada*; «Prva plaća» → «Pitanja o ugovoru». *porez, platna lista* → **A2-34** (там лише *bruto plaća, neto plaća, porez na dohodak*); *bruto, neto, doprinosi* — лише в словнику.
+- **Д12** (70): *nakon jela* уже в A2-45 → *prije jela, dvaput dnevno*; *lijek protiv bolova* — лише в словнику (в A0 «В аптеці» — *lijek, protiv bolova*).
+- **Д13** (93 → 94): *gotički, renesansni*.
+- **Д2** (101 → 105): кандидати *udžbenik, radna bilježnica, ponoviti, objasniti, pitanje* уже в A0 / A1 → *upisati se, test razine, početni tečaj* (з A2-9 — їх прибрати з A2-9 у PR 4) і *rječnik, vježba* (були без уроку); «Poslije ispita» → «Prvi sat». *svjedodžba* → **A2-11**; *priznavanje* — лише в словнику (в A2-11 — *priznavanje diplome*); *polagati, položiti* — A2-12, *uvjerenje* — A2-13.
+- **A1.11 +3 уроки**: 99 «Символи й винаходи» (22 слова), 100 «Фестивалі й карнавали» (22), 101 «Казки й легенди» (23); 2 діалоги по 6 реплік, 15 вправ; 60 нових слів (з усіма замінами).
+- **Назви діалогів A1** (9): «Na igralištu» (5) → «Tobogan i ljuljačka», «U taksiju» (35) → «Najkraćim putem», «Razgledavanje stana» (40) → «Stan s potkrovljem», «U trgovini namještajem» (42) → «Garnitura na akciji», «Tko što radi?» (50) → «Tko gdje radi?», «Razgovor za posao» (53) → «Gdje ste radili prije?» і (106) → «Recite nam nešto o sebi», «Poslije treninga» (67) → «Mišići i zglobovi», «Poziv na rođendan» (78) → «Dođi na moj rođendan!» (старі номери; тексти різні — лише назва). Однакові назви A1 ↔ A2 (*Rad od kuće, Rezultati, U policijskoj upravi*) — у PR 4.
+- Перевірки: a1-m06, a1-m08 (20), a1-m11 (16), a1-m12 (14) і фінал a1-final — наново; a1-mid і решта — без змін.
 
 ## 8. Що ще потрібно від власника (2026-11-17)
 

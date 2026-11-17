@@ -148,8 +148,8 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.assessment_items i join publ
 
 -- ---------------------------------------------------------------- модуль A1.8
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l join v3_lessons v on v.id = l.id
-  where l.unit_id = '2eec2289-6a8a-5fb2-9988-e52433d5a242' and l.order_index between 1 and 10$q$) = 10,
-  'A1.8: 10 уроків за програмою v3 (9 перебудованих + «Внутрішні органи»)');
+  where l.unit_id = '2eec2289-6a8a-5fb2-9988-e52433d5a242' and l.order_index between 1 and 11$q$) = 11,
+  'A1.8: 11 уроків за програмою v3 (9 перебудованих + «Внутрішні органи» + «Надзвичайні ситуації» з A1.12, рішення 2026-11-17)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons where id = 'b6859b5e-db71-543a-8d05-db9b43811d8a'
   and title_ua = 'Урок 67: Внутрішні органи' and status = 'PUBLISHED'$q$) = 1, 'новий урок «Внутрішні органи» — урок 67');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.grammar_rules r join public.grammar_topics g on g.id = r.topic_id
@@ -161,8 +161,8 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l join v3_lessons v 
   where l.unit_id = '0df70119-403a-517e-af33-8073d14fca03' and l.order_index between 1 and 10$q$) = 10,
   'A1.9: 10 уроків за програмою v3 (8 перебудованих + 2 нові)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons where status = 'PUBLISHED' and (id, title_ua) in (
-  ('6df343ef-4a40-5dfb-9100-7ab47fb1667d', 'Урок 76: Як звернутися? Dašo! Gospodine!'),
-  ('3f440ad8-f057-5898-b773-6aa8816fa8a3', 'Урок 83: Хтось, щось, десь'))$q$) = 2, 'нові уроки A1.9 — 76 і 83');
+  ('6df343ef-4a40-5dfb-9100-7ab47fb1667d', 'Урок 77: Як звернутися? Dašo! Gospodine!'),
+  ('3f440ad8-f057-5898-b773-6aa8816fa8a3', 'Урок 84: Хтось, щось, десь'))$q$) = 2, 'нові уроки A1.9 — 77 і 84 (з 2026-11-17 — +1: урок 105 → A1.8)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.grammar_topics g where g.cefr = 'A1' and g.status = 'PUBLISHED'
   and g.title_ua in ('Кличний відмінок: Dašo! Ivane! Gospodine!', 'Неозначені займенники: netko, nešto, negdje')
   and (select count(*) from public.grammar_rules r where r.topic_id = g.id and jsonb_array_length(r.examples) >= 4) = 4$q$) = 2
@@ -175,8 +175,8 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l join v3_lessons v 
   where l.unit_id = '704b6312-30cc-5a3c-94ff-c2a2dfd1b17c' and l.order_index between 1 and 7$q$) = 7,
   'A1.10: 7 уроків за програмою v3 (4 перебудовані + 3 нові)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons where status = 'PUBLISHED' and level_code = 'A1'
-  and title_ua in ('Урок 87: Плани на відпустку', 'Урок 89: Далмація: Задар', 'Урок 92: Дикі тварини')$q$) = 3,
-  'нові уроки A1.10 — 87, 89 і 92 (Далмація одразу після «Краї Хорватії»)');
+  and title_ua in ('Урок 88: Плани на відпустку', 'Урок 90: Далмація: Задар', 'Урок 93: Дикі тварини')$q$) = 3,
+  'нові уроки A1.10 — 88, 90 і 93 (Далмація одразу після «Краї Хорватії»; з 2026-11-17 — +1)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.grammar_rules r join public.grammar_topics g on g.id = r.topic_id
   where g.cefr = 'A1' and g.status = 'PUBLISHED' and g.title_ua = 'Майбутній час: ići ću, bit će' and jsonb_array_length(r.examples) >= 4$q$) = 4
   and pg_temp.n($q$select 1 from public.grammar_rules r join public.grammar_topics g on g.id = r.topic_id
@@ -185,24 +185,24 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.grammar_rules r join public.
 
 -- ---------------------------------------------------------------- модуль A1.11
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l join v3_lessons v on v.id = l.id
-  where l.unit_id = '1fb51162-343f-5587-89cf-d2594a3091db' and l.order_index between 1 and 5$q$) = 5,
-  'A1.11: 5 уроків за програмою v3 (новий модуль «Хорватська культура», уроки 93–97)');
+  where l.unit_id = '1fb51162-343f-5587-89cf-d2594a3091db' and l.order_index between 1 and 8$q$) = 8,
+  'A1.11: 8 уроків за програмою v3 (модуль «Хорватська культура», уроки 94–101; 3 нові — рішення 2026-11-17)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons where status = 'PUBLISHED' and (id, title_ua) in (
-  ('d9ef1de4-f4db-590e-bafd-474f84c8e03f', 'Урок 93: Дубровник і Спліт: історія й архітектура'),  -- назва з 20261117_course_titles.sql (було «Старе місто: екскурсія»)
-  ('f67bd38c-a41c-51df-b9c0-081737600fce', 'Урок 96: Святкуємо: Різдво, Великдень'))$q$) = 2
+  ('d9ef1de4-f4db-590e-bafd-474f84c8e03f', 'Урок 94: Дубровник і Спліт: історія й архітектура'),  -- назва з 20261117_course_titles.sql (було «Старе місто: екскурсія»)
+  ('f67bd38c-a41c-51df-b9c0-081737600fce', 'Урок 97: Святкуємо: Різдво, Великдень'))$q$) = 2
   and pg_temp.n($q$select 1 from public.assessment_items i join public.assessments a on a.id = i.assessment_id
-  where a.slug = 'a1-m11' and i.status = 'PUBLISHED'$q$) = 12,
-  'A1.11: нові назви уроків, перевірка модуля a1-m11 — 12 завдань (схема 2026-11-07: щонайменше 12; було 10)');
+  where a.slug = 'a1-m11' and i.status = 'PUBLISHED'$q$) = 16,
+  'A1.11: нові назви уроків, перевірка модуля a1-m11 — 16 завдань (схема 2026-11-07: 2 на урок × 8 уроків; було 12)');
 
 -- ---------------------------------------------------------------- модуль A1.12
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l join v3_lessons v on v.id = l.id
-  where l.unit_id = 'e0fc94e0-c41d-5f59-adf7-db0c97c4575c' and l.order_index between 1 and 8$q$) = 8,
-  'A1.12: 8 уроків за програмою v3 (6 перебудованих + 2 нові)');
+  where l.unit_id = 'e0fc94e0-c41d-5f59-adf7-db0c97c4575c' and l.order_index between 1 and 7$q$) = 7,
+  'A1.12: 7 уроків за програмою v3 (5 перебудованих + 2 нові; «Надзвичайні ситуації» → A1.8, рішення 2026-11-17)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons where status = 'PUBLISHED' and level_code = 'A1'
-  and title_ua in ('Урок 99: Школа: класи, уроки, розклад', 'Урок 100: Шкільне приладдя', 'Урок 98: Дитячий садок')$q$) = 3
+  and title_ua in ('Урок 103: Школа: класи, уроки, розклад', 'Урок 104: Шкільне приладдя', 'Урок 102: Дитячий садок')$q$) = 3
   and pg_temp.n($q$select 1 from public.assessment_items i join public.assessments a on a.id = i.assessment_id
-  where a.slug = 'a1-m12' and i.status = 'PUBLISHED'$q$) = 16,
-  'нові уроки A1.12 — «Школа» й «Шкільне приладдя»; «Дитячий садок» окремо; перевірка a1-m12 — 16 завдань (схема 2026-11-07: 2 на урок; було 10)');
+  where a.slug = 'a1-m12' and i.status = 'PUBLISHED'$q$) = 14,
+  'нові уроки A1.12 — «Школа» й «Шкільне приладдя»; «Дитячий садок» окремо; перевірка a1-m12 — 14 завдань (схема 2026-11-07: 2 на урок × 7; було 16)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.grammar_rules r join public.grammar_topics g on g.id = r.topic_id
   where g.cefr = 'A1' and r.title_ua in ('Родовий часу: prije, poslije, od … do, tijekom', 'Svoj: svoju torbu, svoga sina')
   and jsonb_array_length(r.examples) >= 4$q$) = 2,
@@ -212,10 +212,10 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.grammar_rules r join public.
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l join v3_lessons v on v.id = l.id
   where l.unit_id = '90bce36b-b9de-5168-b120-49d8e33aa6cf' and l.order_index between 1 and 3$q$) = 3
   and pg_temp.n($q$select 1 from public.lessons where status = 'PUBLISHED' and level_code = 'A1'
-  and title_ua in ('Урок 106: Розкажіть про себе', 'Урок 107: Як усе почалося: мій перший рік', 'Урок 108: Нове життя: мої плани')$q$) = 3,
-  'A1.13: 3 підсумкові уроки 106–108; усього в A1 — 108 уроків');
+  and title_ua in ('Урок 109: Розкажіть про себе', 'Урок 110: Як усе почалося: мій перший рік', 'Урок 111: Нове життя: мої плани')$q$) = 3,
+  'A1.13: 3 підсумкові уроки 109–111; усього в A1 — 111 уроків (було 108; +3 уроки A1.11, рішення 2026-11-17)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l join public.units u on u.id = l.unit_id join public.modules m on m.id = u.module_id
-  where m.level_code = 'A1' and l.status = 'PUBLISHED'$q$) = 108, 'рівень A1 — 108 опублікованих уроків');
+  where m.level_code = 'A1' and l.status = 'PUBLISHED'$q$) = 111, 'рівень A1 — 111 опублікованих уроків (було 108)');
 
 -- ---------------------------------------------------------------- середина рівня A1
 select pg_temp.ok(pg_temp.n($q$select 1 from public.assessment_items i join public.assessments a on a.id = i.assessment_id
