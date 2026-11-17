@@ -181,4 +181,8 @@ for f in $A/data_fixes/20261116_assessments_a0_v5.sql $A/data_fixes/20261116_ass
 run $A/data_fixes/20261117_course_titles.sql
 # урок A1 5: лема pelena замість форми pelene (як у робочій базі), 2026-11-17
 run $A/data_fixes/20261117_pelena_a1_5.sql
+# модуль A0.6 «Kućni ljubimci» (план «Дублі й сенс уроків», PR 2а), 2026-11-17: модулі A0.6–A0.10 → A0.7–A0.11, 6 нових уроків
+run $S/seed_a0_pets_supplement.sql
+run $A/data_fixes/20261117_a0_pets_module.sql
+run $A/data_fixes/20261117_a0_pets_assessments.sql
 echo "Готово. Тести: for t in supabase/tests/*.sql; do psql -h /tmp -p $P -U postgres -q -v ON_ERROR_STOP=1 -f \$t | tail -1; done"

@@ -21,14 +21,14 @@ end $$;
 
 -- уроки модуля A0.5 у новому порядку (id, місце)
 create or replace function pg_temp.m5() returns table (lid uuid, o int) language sql as $$
-  select * from (values ('4e003796-1ce0-5a02-8a2d-59a0de38f3dd'::uuid, 1), ('18efed0f-53a5-5717-9c4e-319627da2360'::uuid, 2), ('f9ca38e4-3a61-56a6-b5f5-060933516c9a'::uuid, 3), ('cec08ff0-a97d-5847-88cc-dee22fed2f8c'::uuid, 4), ('2b0e9742-99e1-57e1-a574-67ffb78d2607'::uuid, 5), ('60130364-d731-5f5a-8b12-ac4d8d6d92e9'::uuid, 6), ('40b9da1d-1686-5b78-8317-0439067d5f8e'::uuid, 7)) as t(lid, o)
+  select * from (values ('4e003796-1ce0-5a02-8a2d-59a0de38f3dd'::uuid, 1), ('18efed0f-53a5-5717-9c4e-319627da2360'::uuid, 2), ('f9ca38e4-3a61-56a6-b5f5-060933516c9a'::uuid, 3), ('cec08ff0-a97d-5847-88cc-dee22fed2f8c'::uuid, 4), ('2b0e9742-99e1-57e1-a574-67ffb78d2607'::uuid, 5), ('60130364-d731-5f5a-8b12-ac4d8d6d92e9'::uuid, 6), ('40b9da1d-1686-5b78-8317-0439067d5f8e'::uuid, 1)) as t(lid, o)  -- урок 37 з 2026-11-17 — перший у модулі A0.6
 $$;
 
 -- ---------------------------------------------------------------- модуль і порядок
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l join public.units u on u.id = l.unit_id join public.modules m on m.id = u.module_id
-  where m.level_code = 'A0' and m.order_index = 5 and l.status = 'PUBLISHED'$q$) = 7, 'у модулі A0.5 — 7 опублікованих уроків');
+  where m.level_code = 'A0' and m.order_index = 5 and l.status = 'PUBLISHED'$q$) = 6, 'у модулі A0.5 — 6 опублікованих уроків (урок 37 — у модулі A0.6 з 2026-11-17)');
 select pg_temp.ok(pg_temp.n($q$select 1 from pg_temp.m5() t join public.lessons l on l.id = t.lid and l.order_index = t.o$q$) = 7,
-  'уроки A0.5 стоять у новому порядку (4 наявні + 3 нові)');
+  'уроки A0.5 стоять у новому порядку (4 наявні + 3 нові; урок 37 — першим у A0.6)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons where level_code = 'A0' and status = 'PUBLISHED'$q$) >= 61, 'A0: щонайменше 61 уроків');
 select pg_temp.ok(pg_temp.n($q$select 1 from (
     select l.title_ua, l.title_hr, row_number() over (order by m.order_index, u.order_index, l.order_index) as n
@@ -37,7 +37,7 @@ select pg_temp.ok(pg_temp.n($q$select 1 from (
   where t.title_ua not like 'Урок ' || t.n || ':%' or t.title_hr not like 'Lekcija ' || t.n || ':%'$q$) = 0,
   'назви уроків A0 пронумеровано підряд');
 select pg_temp.ok((select title_ua from public.lessons where id = '4e003796-1ce0-5a02-8a2d-59a0de38f3dd') = 'Урок 31: Моя сім’я'
-  and (select title_ua from public.lessons where id = '40b9da1d-1686-5b78-8317-0439067d5f8e') = 'Урок 37: Домашні тварини', 'модуль A0.5 — уроки 31–37');
+  and (select title_ua from public.lessons where id = '40b9da1d-1686-5b78-8317-0439067d5f8e') = 'Урок 37: Домашні тварини', 'уроки 31–37 (31–36 — модуль A0.5, 37 — A0.6)');
 
 -- ---------------------------------------------------------------- склад уроків
 select pg_temp.ok(pg_temp.n($q$select 1 from pg_temp.m5() v

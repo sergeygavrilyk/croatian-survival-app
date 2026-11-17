@@ -28,8 +28,8 @@ begin
 end $$;
 
 -- ---------------------------------------------------------------- структура (як адмін бази)
-select pg_temp.ok(pg_temp.n($q$select 1 from public.modules where level_code = 'A0' and status = 'PUBLISHED'$q$) = 10,
-  'A0: 10 опублікованих модулів');
+select pg_temp.ok(pg_temp.n($q$select 1 from public.modules where level_code = 'A0' and status = 'PUBLISHED'$q$) = 11,
+  'A0: 11 опублікованих модулів (2026-11-17: + A0.6 «Kućni ljubimci»)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l join public.units u on u.id = l.unit_id
   join public.modules m on m.id = u.module_id where m.level_code = 'A0' and l.status = 'PUBLISHED'$q$) >= 30,
   'A0: щонайменше 30 опублікованих уроків');

@@ -23,8 +23,9 @@ test('levelStyle: регістр і невідомий рівень', () => {
 
 test('moduleIcon: за рівнем і номером', () => {
   assert.equal(moduleIcon('A0', 1), '👋');
-  assert.equal(moduleIcon('A0', 7), '🍽️');
-  assert.equal(moduleIcon('A0', 10), '🆘');
+  assert.equal(moduleIcon('A0', 6), '🐾');
+  assert.equal(moduleIcon('A0', 8), '🍽️');
+  assert.equal(moduleIcon('A0', 11), '🆘');
   assert.equal(moduleIcon('a1', 4), '🚌');
   assert.equal(moduleIcon('A1', 7), '💻');
   assert.equal(moduleIcon('A1', 8), '🩺');

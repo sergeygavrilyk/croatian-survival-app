@@ -1,5 +1,5 @@
 -- =====================================================================
--- Тести: уроки A0 за темою (curriculum_a0_v4) · модуль A0.9 «Grad» · 2026-10-19
+-- Тести: уроки A0 за темою (curriculum_a0_v4) · модуль A0.9 «Grad» · 2026-10-19 (з 2026-11-17 — модуль A0.10: новий A0.6 «Kućni ljubimci»)
 -- Запускати ПІСЛЯ supabase/data_fixes/20261019_curriculum_a0_v4_m09.sql.
 -- БЕЗПЕЧНО для робочої бази: одна транзакція, у кінці ROLLBACK.
 -- Запуск: Supabase → SQL Editor → вставити файл → Run. Успіх: «ALL TESTS PASSED».
@@ -26,9 +26,9 @@ $$;
 
 -- ---------------------------------------------------------------- модуль і порядок
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l join public.units u on u.id = l.unit_id join public.modules m on m.id = u.module_id
-  where m.level_code = 'A0' and m.order_index = 9 and l.status = 'PUBLISHED'$q$) = 5, 'у модулі A0.9 — 5 опублікованих уроків');
+  where m.level_code = 'A0' and m.order_index = 10 and l.status = 'PUBLISHED'$q$) = 5, 'у модулі A0.10 — 5 опублікованих уроків');
 select pg_temp.ok(pg_temp.n($q$select 1 from pg_temp.m9() t join public.lessons l on l.id = t.lid and l.order_index = t.o$q$) = 5,
-  'уроки A0.9 стоять у новому порядку (5 наявних' || '' || ')');
+  'уроки A0.10 стоять у новому порядку (5 наявних' || '' || ')');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons where level_code = 'A0' and status = 'PUBLISHED'$q$) >= 64, 'A0: щонайменше 64 уроки');
 select pg_temp.ok(pg_temp.n($q$select 1 from (
     select l.title_ua, l.title_hr, row_number() over (order by m.order_index, u.order_index, l.order_index) as n
@@ -36,8 +36,8 @@ select pg_temp.ok(pg_temp.n($q$select 1 from (
      where l.level_code = 'A0' and l.status = 'PUBLISHED') t
   where t.title_ua not like 'Урок ' || t.n || ':%' or t.title_hr not like 'Lekcija ' || t.n || ':%'$q$) = 0,
   'назви уроків A0 пронумеровано підряд');
-select pg_temp.ok((select title_ua from public.lessons where id = '0addd5be-230b-582f-baed-a5d18eb1d619') = 'Урок 55: Місця в місті'
-  and (select title_ua from public.lessons where id = 'e0b9d742-0418-597b-9482-b6e2d82469da') = 'Урок 59: Таксі, авто чи велосипед?', 'модуль A0.9 — уроки 55–59');
+select pg_temp.ok((select title_ua from public.lessons where id = '0addd5be-230b-582f-baed-a5d18eb1d619') = 'Урок 61: Місця в місті'
+  and (select title_ua from public.lessons where id = 'e0b9d742-0418-597b-9482-b6e2d82469da') = 'Урок 65: Таксі, авто чи велосипед?', 'модуль A0.10 — уроки 61–65');
 
 -- ---------------------------------------------------------------- склад уроків
 select pg_temp.ok(pg_temp.n($q$select 1 from pg_temp.m9() v
@@ -60,7 +60,7 @@ select pg_temp.ok(pg_temp.n($q$select 1 from pg_temp.m9() v
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons where id in (select lid from pg_temp.m9())
   and (estimated_minutes <> 15 or jsonb_array_length(objectives) < 2 or status <> 'PUBLISHED')$q$) = 0, 'урок — 15 хвилин, щонайменше 2 цілі');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l join public.units u on u.id = l.unit_id join public.modules m on m.id = u.module_id
-  where m.level_code = 'A0' and m.order_index = 9 and l.id not in (select lid from pg_temp.m9())$q$) = 0, 'нових уроків у модулі немає — лише 5 перебудованих');
+  where m.level_code = 'A0' and m.order_index = 10 and l.id not in (select lid from pg_temp.m9())$q$) = 0, 'нових уроків у модулі немає — лише 5 перебудованих');
 select pg_temp.ok(pg_temp.n($q$select i.item_id from public.lesson_items i
   where i.lesson_id in (select lid from pg_temp.m9()) and i.item_type = 'lexeme' group by 1 having count(*) > 1$q$) = 0,
   'жодне слово не повторюється в різних уроках модуля');
@@ -68,8 +68,8 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.lesson_items i
   where i.lesson_id in (select lid from pg_temp.m9()) and i.item_type = 'lexeme'
     and i.item_id in (select i1.item_id from public.lesson_items i1 join public.lessons l on l.id = i1.lesson_id
                        join public.units u on u.id = l.unit_id join public.modules m on m.id = u.module_id
-                      where m.level_code = 'A0' and m.order_index in (1, 2, 3, 4, 5, 6, 7, 8) and i1.item_type = 'lexeme')$q$) = 0,
-  'слова A0.9 не повторюють слів A0.1–A0.8');
+                      where m.level_code = 'A0' and m.order_index in (1, 2, 3, 4, 5, 6, 7, 8, 9) and i1.item_type = 'lexeme')$q$) = 0,
+  'слова A0.10 не повторюють слів A0.1–A0.9');
 
 -- ---------------------------------------------------------------- тема модуля
 select pg_temp.ok(pg_temp.n($q$select distinct lower(x.lemma) from public.lesson_items i join public.lexemes x on x.id = i.item_id
@@ -84,11 +84,11 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.lesson_items i join public.l
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lesson_items i join public.lexemes x on x.id = i.item_id
   where i.lesson_id in (select lid from pg_temp.m9()) and i.item_type = 'lexeme'
     and lower(x.lemma) in ('policija', 'ljekarna', 'hotel', 'lijevo', 'desno', 'daleko', 'ulica')$q$) = 0,
-  'слова для A0.10 (policija, ljekarna, hotel) і вже вивчені (lijevo, desno, daleko, ulica) — не в A0.9');
+  'слова для A0.11 (policija, ljekarna, hotel) і вже вивчені (lijevo, desno, daleko, ulica) — не в A0.10');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lexemes where source = 'claude_curriculum_a0_v4' and status = 'PUBLISHED' and cefr = 'A0'
   and normalized !~ '[čćđšž]' and normalized = lower(normalized) and lemma !~ '[Ѐ-ӿ]' and ukrainian_translation ~ '[Ѐ-ӿ]'
   and jsonb_array_length(examples) = 1 and lower(lemma) in ('zoološki vrt', 'naselje', 'u blizini', 'najbliži', 'kako doći do', 'do kraja ulice', 'nedaleko', 'koliko je daleko', 'stari grad', 'obilazak', 'fontana', 'karta grada', 'suvenir', 'mjesečna karta', 'presjesti', 'kontrolor')$q$) = 16,
-  '16 нових слів і виразів A0.9: без кирилиці в лемі, normalized без діакритики, переклад і приклад');
+  '16 нових слів і виразів A0.10: без кирилиці в лемі, normalized без діакритики, переклад і приклад');
 
 -- ---------------------------------------------------------------- стара версія збережена
 select pg_temp.ok(pg_temp.n($q$select 1 from (values ('0addd5be-230b-582f-baed-a5d18eb1d619'::uuid), ('55af257e-e4d1-51ed-9637-388a7e0b4baf'::uuid), ('1e0384e5-6097-56ed-ab56-cf530f02ab73'::uuid), ('e5b81eb1-8ea8-5ff4-a987-e5e46421302b'::uuid), ('e0b9d742-0418-597b-9482-b6e2d82469da'::uuid)) v(lid)
@@ -106,7 +106,7 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.exercises e
 -- ---------------------------------------------------------------- видимість
 set local role anon;
 select pg_temp.ok(pg_temp.n($q$select 1 from public.conversations where source = 'claude_curriculum_a0_v4' and lesson_id in (select lid from pg_temp.m9())$q$) = 10,
-  'гість бачить 10 нових діалогів A0.9');
+  'гість бачить 10 нових діалогів A0.10');
 reset role;
 
 select 'ALL TESTS PASSED' as result;

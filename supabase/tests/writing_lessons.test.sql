@@ -22,7 +22,7 @@ end $$;
 
 -- уроки, які мають бути покриті: рівень → модулі
 create temp table wl_scope (level text, mo int);
-insert into wl_scope select 'A0', g from generate_series(1, 10) g;
+insert into wl_scope select 'A0', g from generate_series(1, 11) g;
 
 create temp view wl_lessons as
 select le.id, le.level_code, m.order_index mo
@@ -38,13 +38,15 @@ from public.lesson_items li
 join public.exercises e on e.id = li.item_id
 where li.item_type = 'exercise' and e.exercise_type in ('write_message', 'mediation') and e.status = 'PUBLISHED';
 
-select pg_temp.ok((select count(*) from wl_lessons where level_code = 'A0' and mo between 2 and 5) = 33,
-  'A0.2–A0.5: 33 опубліковані уроки (як у партії)');
-select pg_temp.ok((select count(*) from wl_lessons where level_code = 'A0' and mo between 6 and 10) = 29,
-  'A0.6–A0.10: 29 опублікованих уроків (як у партії)');
+select pg_temp.ok((select count(*) from wl_lessons where level_code = 'A0' and mo between 2 and 5) = 32,
+  'A0.2–A0.5: 32 опубліковані уроки (партія — 33; урок 37 з 2026-11-17 — у модулі A0.6)');
+select pg_temp.ok((select count(*) from wl_lessons where level_code = 'A0' and mo between 7 and 11) = 29,
+  'A0.7–A0.11 (до 2026-11-17 — A0.6–A0.10): 29 опублікованих уроків (як у партії)');
+select pg_temp.ok((select count(*) from wl_lessons where level_code = 'A0' and mo = 6) = 7,
+  'A0.6 «Kućni ljubimci»: 7 уроків (урок 37 + 6 нових, письмо й переказ — пакет 20261117_a0_pets_module.sql)');
 select pg_temp.ok(pg_temp.n($q$select 1 from wl_lessons l, unnest(array['write_message', 'mediation']) k(t)
   where (select count(*) from wl_ex where wl_ex.lesson_id = l.id and wl_ex.exercise_type = k.t) <> 1$q$) = 0,
-  'у кожному уроці A0.1–A0.10 — рівно одне «Напишіть повідомлення» і одне «Перекажіть другу»');
+  'у кожному уроці A0.1–A0.11 — рівно одне «Напишіть повідомлення» і одне «Перекажіть другу»');
 select pg_temp.ok(pg_temp.n($q$select 1 from wl_ex join wl_lessons l on l.id = wl_ex.lesson_id where wl_ex.required$q$) = 0,
   'письмо й переказ — необов’язкові');
 select pg_temp.ok(pg_temp.n($q$select 1 from wl_ex join wl_lessons l on l.id = wl_ex.lesson_id

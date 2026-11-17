@@ -141,7 +141,7 @@ Level → Module → Unit → Lesson → Learning Objectives → Input → Pract
 - relationships;
 - possessives.
 
-**A0.6 — Kućni ljubimci** *(рішення 2026-11-17, у базі — після PR 2а плану дублів; модулі «Moj dom»…«Survival» стають A0.7–A0.11)*
+**A0.6 — Kućni ljubimci** *(рішення 2026-11-17; PR #57 — у базі після мержу й Approve; модулі «Moj dom»…«Survival» стають A0.7–A0.11)*
 - pets (lesson 37);
 - a dog in the city;
 - cats;
