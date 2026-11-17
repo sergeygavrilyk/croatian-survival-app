@@ -63,7 +63,7 @@ select pg_temp.ok(pg_temp.n($q$select 1 from lvl where lesson_id is not null and
 select pg_temp.ok(pg_temp.n($q$select 1 from lvl where slug = 'a0-mid' and module_order > 5$q$) = 0,
   'a0-mid: лише модулі A0.1–A0.5');
 select pg_temp.ok(pg_temp.n($q$select distinct module_order from lvl where slug = 'a0-final' and module_order is not null$q$) = 10,
-  'a0-final: завдання з усіх 10 модулів');
+  'a0-final: завдання з 10 модулів (усі, крім нового A0.6 — фінал оновиться разом з A0, PR 2б)');
 select pg_temp.ok(pg_temp.n($q$select 1 from lvl where lesson_id is not null and not exists (
     select 1 from public.lessons l2 where l2.id = lvl.lesson_id and l2.title_ua ~ '^Урок [0-9]+: ')$q$) = 0,
   'уроки-джерела — нумеровані уроки за темою');

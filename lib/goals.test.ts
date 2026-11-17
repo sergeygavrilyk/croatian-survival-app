@@ -7,7 +7,7 @@ test('мети: кожна мета з онбордингу має мапу мо
   for (const g of LEARNING_GOALS) {
     const map = GOAL_MODULES[g.key];
     assert.ok(map, g.key);
-    for (const m of map.A0) assert.ok(m >= 1 && m <= 10, `${g.key} A0.${m}`);
+    for (const m of map.A0) assert.ok(m >= 1 && m <= 11, `${g.key} A0.${m}`);
     for (const m of map.A1) assert.ok(m >= 1 && m <= 13, `${g.key} A1.${m}`);
     assert.ok(map.A2.length > 0, `${g.key}: A2 без модулів`);
     for (const m of map.A2) assert.ok(m >= 1 && m <= 13, `${g.key} A2.${m} (A2.14 — підсумок, без мети)`);
@@ -20,11 +20,11 @@ test('мети: нові «Навчання» і «Туризм і подоро�
   assert.ok(keys.includes('study'));
   assert.equal(LEARNING_GOALS.find((g) => g.key === 'travel')?.label, 'Туризм і подорожі');
   assert.deepEqual(goalModules(['study'], 'A1'), [12]);
-  assert.deepEqual(goalModules(['travel'], 'A0'), [7, 9, 10]);
+  assert.deepEqual(goalModules(['travel'], 'A0'), [8, 10, 11]);
 });
 
 test('мети: кілька мет — об’єднання без повторів; невідомі мета й рівень — порожньо', () => {
-  assert.deepEqual(goalModules(['documents', 'travel'], 'A0'), [7, 9, 10]);
+  assert.deepEqual(goalModules(['documents', 'travel'], 'A0'), [8, 10, 11]);
   assert.deepEqual(goalModules(['work', 'documents'], 'A1'), [6, 7, 12]);
   assert.deepEqual(goalModules(['hack'], 'A1'), []);
   assert.deepEqual(goalModules(['travel'], 'B1'), []);

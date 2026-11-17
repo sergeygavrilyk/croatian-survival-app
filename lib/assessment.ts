@@ -372,7 +372,7 @@ export function pickAssessmentLevel(requested: unknown, profileLevel: unknown, a
 }
 
 /**
- * Після якого модуля — середина рівня: A0 — модулі 1–5 (з 10), A1 v3 — модулі 1–6 (з 13; gen_assessment_a1_v3.py, MID_MODULES).
+ * Після якого модуля — середина рівня: A0 — модулі 1–5 (з 11), A1 v3 — модулі 1–6 (з 13; gen_assessment_a1_v3.py, MID_MODULES).
  * Новий рівень без запису — половина модулів (округлення вниз).
  */
 const MID_LAST_MODULE: Readonly<Record<string, number>> = { A0: 5, A1: 6, A2: 7 };
@@ -392,7 +392,7 @@ export function levelTestSubtitle(kind: string, cefr: string | null | undefined,
   return null;
 }
 
-/** Порядок у списку: модулі до середини → середина → решта модулів → фінал (A0: 1–5 | 6–10, A1: 1–6 | 7–13). */
+/** Порядок у списку: модулі до середини → середина → решта модулів → фінал (A0: 1–5 | 6–11, A1: 1–6 | 7–13). */
 export function displayOrder(kind: string, orderIndex: number | null | undefined, midAfter = 5): number {
   if (kind === 'mid') return midAfter + 0.5;
   if (kind === 'final') return 1000;

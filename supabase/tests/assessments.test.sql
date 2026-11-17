@@ -59,15 +59,15 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.assessment_items i join publ
 
 -- ---------------------------------------------------------------- тести A0 і A1
 select pg_temp.ok(pg_temp.n($q$select 1 from public.assessments where source = 'claude_assessment_v1' and status = 'PUBLISHED'
-  and cefr = 'A0'$q$) = 12
+  and cefr = 'A0'$q$) = 13
   and pg_temp.n($q$select 1 from public.assessments where source = 'claude_assessment_v1' and status = 'PUBLISHED'
   and cefr = 'A1'$q$) between 12 and 15,
-  'A0: 12 тестів (10 модулів + середина + кінець); A1 v3: до 15 (13 модулів + середина + кінець; нові A1.7, A1.11, A1.12 — з модулем), опубліковано (бета)');
+  'A0: 13 тестів (11 модулів + середина + кінець); A1 v3: до 15 (13 модулів + середина + кінець; нові A1.7, A1.11, A1.12 — з модулем), опубліковано (бета)');
 select pg_temp.ok(pg_temp.n($q$select cefr from public.assessments where source = 'claude_assessment_v1'
   group by cefr having count(*) filter (where kind = 'module') = count(distinct module_id) filter (where kind = 'module')
-     and count(*) filter (where kind = 'module') between 10 and case cefr when 'A1' then 13 else 10 end
+     and count(*) filter (where kind = 'module') between 10 and case cefr when 'A1' then 13 else 11 end
      and count(*) filter (where kind = 'mid') = 1 and count(*) filter (where kind = 'final') = 1$q$) = 2,
-  'кожен рівень: тест на кожен модуль (A0 — 10, A1 v3 — до 13), один тест середини й один фінальний');
+  'кожен рівень: тест на кожен модуль (A0 — 11, A1 v3 — до 13), один тест середини й один фінальний');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.assessments a join public.modules m on m.id = a.module_id
   where a.source = 'claude_assessment_v1' and (m.level_code <> a.cefr or a.slug <> lower(a.cefr) || '-m' || lpad(m.order_index::text, 2, '0'))$q$) = 0,
   'тест модуля прив''язаний до свого модуля (адреса a0-m03 = модуль A0.3)');
@@ -118,8 +118,11 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.assessment_items i join publ
                            -- програма A1 v3 (2026-10-26) перенесла частину уроків в інші модулі; старі тести A1 оновлюються модуль за модулем
                            or a.cefr = 'A1' and exists (select 1 from public.content_versions v where v.entity_type = 'lesson' and v.entity_id = l.id
                                                           and v.change_reason like 'curriculum_a1_v3: нова програма%'
-                                                          and v.payload->>'unit_id' <> l.unit_id::text)))$q$) = 0,
-  'кожне завдання — з опублікованого уроку свого рівня (тест модуля — з цього модуля, середина — з модулів 1–5, A1 v3 — 1–6; крім уроків A1, перенесених програмою v3)');
+                                                          and v.payload->>'unit_id' <> l.unit_id::text)
+                           -- урок A0-37 перенесено в новий модуль A0.6 (2026-11-17): його старі завдання в a0-m05 — лише DEPRECATED
+                           or i.status = 'DEPRECATED' and exists (select 1 from public.content_versions v where v.entity_type = 'lesson'
+                                                          and v.entity_id = l.id and v.change_reason like 'a0_pets: урок перенесено%')))$q$) = 0,
+  'кожне завдання — з опублікованого уроку свого рівня (тест модуля — з цього модуля, середина — з модулів 1–5, A1 v3 — 1–6; крім уроків A1, перенесених програмою v3, і старих завдань уроку A0-37, перенесеного в A0.6)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.assessment_items i join public.assessments a on a.id = i.assessment_id
   where a.source = 'claude_assessment_v1' and (i::text ~* 'osnovni_pojam|базовий термін|placeholder|todo|переклад»')$q$) = 0,
   'без заглушок');
@@ -152,8 +155,8 @@ select pg_temp.ok(pg_temp.raises($q$insert into public.assessment_attempts (user
 select pg_temp.ok(pg_temp.raises($q$update public.assessment_attempts set passed = false where user_id = 'a1700000-0000-4000-8000-0000000000a1'$q$)
   and pg_temp.n($q$select 1 from public.assessment_attempts where user_id = 'a1700000-0000-4000-8000-0000000000a1' and passed$q$) = 1,
   'результат спроби змінити не можна');
-select pg_temp.ok(pg_temp.n($q$select 1 from public.assessments where source = 'claude_assessment_v1'$q$) between 24 and 27,
-  'користувач бачить усі тести A0 і A1 (24–27: нові тести A1 v3 з’являються з модулем)');
+select pg_temp.ok(pg_temp.n($q$select 1 from public.assessments where source = 'claude_assessment_v1'$q$) between 25 and 28,
+  'користувач бачить усі тести A0 і A1 (25–28: A0 — 13 з модулем A0.6; нові тести A1 v3 з’являються з модулем)');
 
 select set_config('request.jwt.claims', '{"sub":"b1700000-0000-4000-8000-0000000000b1","role":"authenticated"}', true);
 select pg_temp.ok(pg_temp.n($q$select 1 from public.assessment_attempts where user_id = 'a1700000-0000-4000-8000-0000000000a1'$q$) = 0,
@@ -163,8 +166,8 @@ reset role;
 set local role anon;
 select set_config('request.jwt.claims', '{"role":"anon"}', true);
 select pg_temp.ok(pg_temp.n($q$select 1 from public.assessment_items i join public.assessments a on a.id = i.assessment_id
-  where a.source = 'claude_assessment_v1'$q$) = 518,
-  'гість бачить лише опубліковані завдання (схема 2026-11-07, пакети v5: A0 — 218, A1 — 300), старих — ні');
+  where a.source = 'claude_assessment_v1'$q$) = 530,
+  'гість бачить лише опубліковані завдання (схема 2026-11-07, пакети v5: A0 — 230 з модулем A0.6, A1 — 300), старих — ні');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.assessment_attempts$q$) = 0, 'гість не бачить спроб');
 reset role;
 
