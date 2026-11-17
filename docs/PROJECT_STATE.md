@@ -19,9 +19,9 @@ content:                      # робоча база; уроки, модулі 
   phrases: {A0: 27, A1: 59, A2: 56}
   assessments: {placement: 1, A0: 12, A1: 15, A2: 16}   # усі — схема 2026-11-07: A0 218, A1 300 (після мержу й Approve), A2 258 завдань
   songs: 7                    # «Ситуації» → «Пісні», lib/songs.ts
-tests: {unit: 380, sql_files: 60, e2e_user: 20, failing: 0}   # npm test; supabase/tests/*.test.sql; e2e/user.spec.ts
+tests: {unit: 380, sql_files: 61, e2e_user: 20, failing: 0}   # npm test; supabase/tests/*.test.sql; e2e/user.spec.ts
 docs_limits: {PROJECT_STATE: 15 KB, HISTORY: 30 KB, SPEC_CHANGELOG: 30 KB, ТЗ і довідники: 60 KB, DECISIONS: без ліміту}   # рішення 2026-11-14
-last_updated: 2026-11-17 (#55 — PR 1 плану дублів; #46–#54 — у main)
+last_updated: 2026-11-17 (#55 у main; #56 — pelena в уроці A1 5)
 ```
 
 ## Чинні рішення власника (коротко)

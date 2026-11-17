@@ -179,4 +179,6 @@ run $A/data_fixes/20261116_assessment_sentence_orders_a2.sql
 for f in $A/data_fixes/20261116_assessments_a0_v5.sql $A/data_fixes/20261116_assessments_a1_v5_part*.sql; do run "$f"; done
 # нові назви 7 уроків і 2 модулів (план «Дублі й сенс уроків», П1), 2026-11-17
 run $A/data_fixes/20261117_course_titles.sql
+# урок A1 5: лема pelena замість форми pelene (як у робочій базі), 2026-11-17
+run $A/data_fixes/20261117_pelena_a1_5.sql
 echo "Готово. Тести: for t in supabase/tests/*.sql; do psql -h /tmp -p $P -U postgres -q -v ON_ERROR_STOP=1 -f \$t | tail -1; done"
