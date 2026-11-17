@@ -563,6 +563,39 @@ test('офлайн наперед (§76): наступні уроки модул
   }
 });
 
+test('оновлення застосунку (§76): збережені сторінки оновлюються самі й відкриваються без інтернету', async ({ page, context, request }) => {
+  test.slow();
+  const sw = await request.get('/sw.js');
+  test.skip(!sw.ok(), 'PWA вимкнено (npm run dev) — офлайн перевіряємо лише у збірці: npm run e2e');
+
+  await page.goto('/lessons');
+  await waitForServiceWorker(page);
+  // Наче сторінку уроку зберегла попередня версія застосунку (її файлів на телефоні вже немає)
+  const lessonPath = `/lesson/${TEST_LESSON_ID}`;
+  await page.evaluate(async (path) => {
+    localStorage.setItem('cs_offline_build_v1', 'old-build');
+    const cache = await caches.open('pages');
+    await cache.put(path, new Response('<html><body>stara verzija</body></html>', { headers: { 'Content-Type': 'text/html' } }));
+  }, lessonPath);
+
+  // Нова версія відкрилась з мережею — за кілька секунд сторінка в кеші вже нова
+  await page.reload();
+  const cachedText = () =>
+    page.evaluate(async (path) => (await (await caches.open('pages')).match(path))?.text() ?? '', lessonPath);
+  await expect.poll(cachedText, { timeout: 45_000, message: 'збережену сторінку оновлено' }).not.toContain('stara verzija');
+  await expect.poll(() => page.evaluate(() => localStorage.getItem('cs_offline_build_v1')), { timeout: 15_000 }).not.toBe('old-build');
+
+  await page.close();
+  await context.setOffline(true);
+  try {
+    const offlinePage = await context.newPage();
+    await offlinePage.goto(lessonPath);
+    await expect(offlinePage.getByRole('button', { name: 'Почати урок' }), 'урок без мережі після оновлення').toBeVisible();
+  } finally {
+    await context.setOffline(false);
+  }
+});
+
 test('ARCH-03: рівні з опублікованими перевірками видно в «Перевірках» і на «Уроках» (A2)', async ({ page }) => {
   // Рівні беруться з бази, а не з переліку в коді: опубліковані перевірки A2 мають бути видні без правки коду
   await page.goto('/lessons/tests?level=A2');

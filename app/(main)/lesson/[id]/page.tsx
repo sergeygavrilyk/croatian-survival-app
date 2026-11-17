@@ -29,7 +29,7 @@ async function loadLesson(lessonId: string): Promise<{ content: LessonContent | 
         .eq('id', lessonId)
         .eq('status', 'PUBLISHED')
         .maybeSingle(),
-      supabase.from('lesson_items').select('item_type, item_id').eq('lesson_id', lessonId).order('order_index', { ascending: true }),
+      supabase.from('lesson_items').select('item_type, item_id, target_skill').eq('lesson_id', lessonId).order('order_index', { ascending: true }),
       supabase
         .from('conversations')
         .select('id, title_ua, title_hr, situation')
@@ -59,7 +59,7 @@ async function loadLesson(lessonId: string): Promise<{ content: LessonContent | 
       exerciseIds.length
         ? supabase
             .from('exercises')
-            .select('id, exercise_type, question_text, correct_answer, options, task')
+            .select('id, exercise_type, question_text, correct_answer, options, task, lexeme_id')
             .in('id', exerciseIds)
             .eq('status', 'PUBLISHED')
             .then(async (res) =>
@@ -67,7 +67,7 @@ async function loadLesson(lessonId: string): Promise<{ content: LessonContent | 
               res.error?.code === '42703'
                 ? supabase
                     .from('exercises')
-                    .select('id, exercise_type, question_text, correct_answer, options')
+                    .select('id, exercise_type, question_text, correct_answer, options, lexeme_id')
                     .in('id', exerciseIds)
                     .eq('status', 'PUBLISHED')
                 : res,

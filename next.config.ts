@@ -19,8 +19,13 @@ const withPWA = withPWAInit({
   },
 });
 
+// Номер збірки для браузера: інший, ніж минулого разу, — застосунок оновився, і збережені для офлайну сторінки
+// треба оновити (components/OfflineRefresh.tsx, §76). Vercel — id розгортання; інакше — час збірки.
+const buildId = process.env.VERCEL_DEPLOYMENT_ID || process.env.VERCEL_GIT_COMMIT_SHA || String(Date.now());
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  env: { NEXT_PUBLIC_BUILD_ID: buildId },
 };
 
 export default withPWA(nextConfig);

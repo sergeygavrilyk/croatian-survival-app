@@ -86,6 +86,7 @@ test('сторінки наперед (2026-11-16): лише запит із з�
   assert.equal(prefetch('/situations/pharmacy', req('cors', marked)), true);
   assert.equal(prefetch('/lesson/x', req('cors')), false, 'звичайний запит — ні');
   assert.equal(prefetch('/lesson/x', req('cors', { [PREFETCH_HEADER]: 'yes' })), false);
+  assert.equal(prefetch('/lesson/x', req('cors', { [PREFETCH_HEADER]: 'full' })), true, 'оновлення після оновлення застосунку (2026-11-16)');
   assert.equal(prefetch('/api/tts', req('cors', marked)), false);
   assert.equal(prefetch('/lesson/x', req('cors', marked), false), false, 'чужий сайт');
   // звичайне відкриття сторінки цим правилом не змінюється
