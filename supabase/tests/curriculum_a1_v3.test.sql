@@ -286,10 +286,12 @@ select pg_temp.ok(pg_temp.n($q$select r.topic_id, r.order_index from public.gram
 -- ---------------------------------------------------------------- словник
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lexemes where source = 'claude_curriculum_a1_v3' and status = 'PUBLISHED' and cefr = 'A1'$q$) >= 707,
   'нові слова A1 v3 опубліковано (A1.1 — 73, A1.2 — 87, A1.3 — 68, A1.4 — 60, A1.5 — 58, A1.6 — 43, A1.7 — 43, A1.8 — 48, A1.9 — 43, A1.10 — 58, A1.11 — 51, A1.12 — 60, A1.13 — 15)');
-select pg_temp.ok(pg_temp.n($q$select 1 from public.lexemes where lower(lemma) = 'pelena'$q$) = 0
+-- рішення власника 2026-11-17 «Лишити pelena» (20261117_pelena_a1_5.sql): лема — однина pelena, pelene — форма слова (DEPRECATED)
+select pg_temp.ok(pg_temp.n($q$select 1 from public.lexemes where lower(lemma) = 'pelena' and status = 'PUBLISHED'$q$) = 1
   and pg_temp.n($q$select 1 from public.lesson_items li join public.lexemes x on x.id = li.item_id and li.item_type = 'lexeme'
-                   where li.lesson_id = 'd43d6c65-1ce3-5c72-9ecd-cce2ed200fc2' and x.lemma = 'pelene'$q$) = 1,
-  'нове слово не дублює наявне за формою (pelene, а не нове pelena)');
+                   where li.lesson_id = 'd43d6c65-1ce3-5c72-9ecd-cce2ed200fc2' and x.lemma = 'pelena'$q$) = 1
+  and pg_temp.n($q$select 1 from public.lexemes where lower(lemma) = 'pelene' and status <> 'DEPRECATED'$q$) = 0,
+  'одна лема для «підгузок»: pelena в уроці A1 5, форма pelene — DEPRECATED');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lexemes where source = 'claude_curriculum_a1_v3'
   and (normalized <> translate(lower(lemma), 'čćđšž', 'ccdsz') or lemma ~ '[Ѐ-ӿ]' or ukrainian_translation !~ '[Ѐ-ӿ]'
        or jsonb_array_length(examples) <> 1 or (examples->>0) ~ '[Ѐ-ӿ]'
