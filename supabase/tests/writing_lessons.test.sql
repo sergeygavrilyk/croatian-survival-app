@@ -40,8 +40,8 @@ where li.item_type = 'exercise' and e.exercise_type in ('write_message', 'mediat
 
 select pg_temp.ok((select count(*) from wl_lessons where level_code = 'A0' and mo between 2 and 5) = 32,
   'A0.2–A0.5: 32 опубліковані уроки (партія — 33; урок 37 з 2026-11-17 — у модулі A0.6)');
-select pg_temp.ok((select count(*) from wl_lessons where level_code = 'A0' and mo between 7 and 11) = 29,
-  'A0.7–A0.11 (до 2026-11-17 — A0.6–A0.10): 29 опублікованих уроків (як у партії)');
+select pg_temp.ok((select count(*) from wl_lessons where level_code = 'A0' and mo between 7 and 11) = 30,
+  'A0.7–A0.11 (до 2026-11-17 — A0.6–A0.10): 30 опублікованих уроків (29 — як у партії, + «В аптеці», PR 2б)');
 select pg_temp.ok((select count(*) from wl_lessons where level_code = 'A0' and mo = 6) = 7,
   'A0.6 «Kućni ljubimci»: 7 уроків (урок 37 + 6 нових, письмо й переказ — пакет 20261117_a0_pets_module.sql)');
 select pg_temp.ok(pg_temp.n($q$select 1 from wl_lessons l, unnest(array['write_message', 'mediation']) k(t)
@@ -67,8 +67,11 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.content_reviews r join wl_ex
   where r.entity_type = 'exercise' and r.notes like 'writing 20261107 (a0_m02_m05)%'$q$) = 66,
   'журнал перевірок: 66 записів партії A0.2–A0.5');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.content_reviews r join wl_ex on wl_ex.id = r.entity_id
-  where r.entity_type = 'exercise' and r.notes like 'writing 20261107 (a0_m06_m10)%'$q$) = 58,
-  'журнал перевірок: 58 записів партії A0.6–A0.10');
+  where r.entity_type = 'exercise' and r.notes like 'writing 20261107 (a0_m06_m10)%'$q$) = 55,
+  'журнал перевірок: 55 записів партії A0.6–A0.10 (58 − 3: письмо й переказ уроку 58 і переказ уроку 68 замінено, PR 2б)');
+select pg_temp.ok(pg_temp.n($q$select 1 from public.content_reviews r join wl_ex on wl_ex.id = r.entity_id
+  where r.entity_type = 'exercise' and r.notes like 'a0_dupes 20261117:%'$q$) = 5,
+  'журнал перевірок: 5 записів PR 2б (3 заміни в уроках 58 і 68 + 2 у новому уроці «В аптеці»)');
 
 select 'ALL TESTS PASSED' as result;
 rollback;

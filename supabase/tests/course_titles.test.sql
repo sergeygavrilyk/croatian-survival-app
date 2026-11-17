@@ -45,9 +45,9 @@ select pg_temp.ok(pg_temp.n($q$select 1 from backup.modules_20261117 where (id, 
   ('5a6eadc1-9da1-52c0-a50d-943a3fbffe70'::uuid, 'Модуль A1.12 — Діти, навчання й документи'),
   ('a198575a-bafc-51b5-b325-95aa7d6c9d8a'::uuid, 'Модуль A2.9 — Неприємності в місті й довкілля'))$q$) = 2,
   'старі назви модулів — у backup.modules_20261117');
-select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons where level_code in ('A0', 'A1', 'A2') and status = 'PUBLISHED'$q$) = 266
+select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons where level_code in ('A0', 'A1', 'A2') and status = 'PUBLISHED'$q$) = 267
   and pg_temp.n($q$select 1 from public.modules where level_code in ('A0', 'A1', 'A2') and status = 'PUBLISHED'$q$) = 38,
-  'кількість уроків (266) і модулів (38) A0–A2 (2026-11-17: + модуль A0.6 і 6 уроків; номери A0 після 37 — +6)');
+  'кількість уроків (267) і модулів (38) A0–A2 (2026-11-17: + модуль A0.6 і 6 уроків; номери A0 після 37 — +6; + «В аптеці», PR 2б)');
 
 select 'ALL TESTS PASSED';
 rollback;

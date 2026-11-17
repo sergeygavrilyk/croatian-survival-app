@@ -19,16 +19,17 @@ begin
   return r;
 end $$;
 
--- уроки модуля A0.10 у новому порядку (id, місце): 5 перебудованих + 2 нові (частини тіла; «Допоможіть!»)
+-- уроки модуля A0.10 у новому порядку (id, місце): 5 перебудованих + 2 нові (частини тіла; «Допоможіть!»);
+-- з 2026-11-17 — модуль A0.11, а після уроку «У лікаря» (3) — новий «В аптеці» (місце 4, PR 2б; окремий тест — a0_dupes.test.sql)
 create or replace function pg_temp.m10() returns table (lid uuid, o int) language sql as $$
-  select * from (values ('edbae9ca-c4f4-575d-b876-d50b0a1fd9b5'::uuid, 1), ('599fba4f-4cee-5a88-9f9b-5ce32a445554'::uuid, 2), ('fbc71f82-e715-5bab-a990-b8542fb0fe01'::uuid, 3), ('48f26e9d-96c5-5189-8ec6-db1f9d58e200'::uuid, 4), ('d2689a70-cb73-515f-9d81-6bb0f0fc1cff'::uuid, 5), ('b095637e-0644-507e-8f3d-d323483dd3e4'::uuid, 6), ('19df3241-90f3-5450-94ac-642d79fb2869'::uuid, 7)) as t(lid, o)
+  select * from (values ('edbae9ca-c4f4-575d-b876-d50b0a1fd9b5'::uuid, 1), ('599fba4f-4cee-5a88-9f9b-5ce32a445554'::uuid, 2), ('fbc71f82-e715-5bab-a990-b8542fb0fe01'::uuid, 3), ('a4455f67-27c7-5ad7-a454-771a94ca4e02'::uuid, 4), ('48f26e9d-96c5-5189-8ec6-db1f9d58e200'::uuid, 5), ('d2689a70-cb73-515f-9d81-6bb0f0fc1cff'::uuid, 6), ('b095637e-0644-507e-8f3d-d323483dd3e4'::uuid, 7), ('19df3241-90f3-5450-94ac-642d79fb2869'::uuid, 8)) as t(lid, o)
 $$;
 
 -- ---------------------------------------------------------------- модуль і порядок
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l join public.units u on u.id = l.unit_id join public.modules m on m.id = u.module_id
-  where m.level_code = 'A0' and m.order_index = 11 and l.status = 'PUBLISHED'$q$) = 7, 'у модулі A0.11 — 7 опублікованих уроків');
-select pg_temp.ok(pg_temp.n($q$select 1 from pg_temp.m10() t join public.lessons l on l.id = t.lid and l.order_index = t.o$q$) = 7,
-  'уроки A0.11 стоять у новому порядку (5 наявних + 2 нові)');
+  where m.level_code = 'A0' and m.order_index = 11 and l.status = 'PUBLISHED'$q$) = 8, 'у модулі A0.11 — 8 опублікованих уроків (2026-11-17: + «В аптеці»)');
+select pg_temp.ok(pg_temp.n($q$select 1 from pg_temp.m10() t join public.lessons l on l.id = t.lid and l.order_index = t.o$q$) = 8,
+  'уроки A0.11 стоять у новому порядку (5 наявних + 2 нові; з 2026-11-17 «В аптеці» — на місці 4)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons where level_code = 'A0' and status = 'PUBLISHED'$q$) >= 66, 'A0: щонайменше 66 уроків');
 select pg_temp.ok(pg_temp.n($q$select 1 from (
     select l.title_ua, l.title_hr, row_number() over (order by m.order_index, u.order_index, l.order_index) as n
@@ -38,8 +39,8 @@ select pg_temp.ok(pg_temp.n($q$select 1 from (
   'назви уроків A0 пронумеровано підряд');
 select pg_temp.ok((select title_ua from public.lessons where id = 'edbae9ca-c4f4-575d-b876-d50b0a1fd9b5') = 'Урок 66: У готелі'
   and (select title_ua from public.lessons where id = '599fba4f-4cee-5a88-9f9b-5ce32a445554') = 'Урок 67: Частини тіла'
-  and (select title_ua from public.lessons where id = '48f26e9d-96c5-5189-8ec6-db1f9d58e200') = 'Урок 69: Допоможіть!'
-  and (select title_ua from public.lessons where id = '19df3241-90f3-5450-94ac-642d79fb2869') = 'Урок 72: Документи в MUP', 'модуль A0.11 — уроки 66–72');
+  and (select title_ua from public.lessons where id = '48f26e9d-96c5-5189-8ec6-db1f9d58e200') = 'Урок 70: Допоможіть!'
+  and (select title_ua from public.lessons where id = '19df3241-90f3-5450-94ac-642d79fb2869') = 'Урок 73: Документи в MUP', 'модуль A0.11 — уроки 66–73 (69 — «В аптеці», 2026-11-17)');
 
 -- ---------------------------------------------------------------- склад уроків
 select pg_temp.ok(pg_temp.n($q$select 1 from pg_temp.m10() v
@@ -87,7 +88,7 @@ select pg_temp.ok(pg_temp.n($q$select distinct lower(x.lemma) from public.lesson
   where i.lesson_id in (select lid from pg_temp.m10()) and i.item_type = 'lexeme'
     and lower(x.lemma) in ('hotel', 'recepcija', 'glava', 'ruka', 'noga', 'liječnik', 'ljekarna', 'upomoć', 'hitna pomoć',
                            'policija', 'krađa', 'obrazac', 'potpisati', 'mup', 'zahtjev')$q$) = 15,
-  'у модулі готель, частини тіла, лікар і аптека, надзвичайні ситуації, поліція, анкета, MUP');
+  'у модулі готель, частини тіла, лікар і аптека (з 2026-11-17 — окремий урок «В аптеці»), надзвичайні ситуації, поліція, анкета, MUP');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lesson_items i join public.lexemes x on x.id = i.item_id
   where i.lesson_id = '599fba4f-4cee-5a88-9f9b-5ce32a445554' and i.item_type = 'lexeme'
     and lower(x.lemma) in ('glava', 'grlo', 'ruka', 'noga', 'leđa', 'trbuh', 'zub', 'koljeno', 'boljeti')$q$) = 9,
@@ -130,8 +131,8 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.exercises e
 
 -- ---------------------------------------------------------------- видимість
 set local role anon;
-select pg_temp.ok(pg_temp.n($q$select 1 from public.conversations where source = 'claude_curriculum_a0_v4' and lesson_id in (select lid from pg_temp.m10())$q$) = 14,
-  'гість бачить 14 нових діалогів A0.11');
+select pg_temp.ok(pg_temp.n($q$select 1 from public.conversations where source = 'claude_curriculum_a0_v4' and lesson_id in (select lid from pg_temp.m10())$q$) = 16,
+  'гість бачить 16 нових діалогів A0.11 (2026-11-17: + урок «В аптеці»)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons where id in ('599fba4f-4cee-5a88-9f9b-5ce32a445554', '48f26e9d-96c5-5189-8ec6-db1f9d58e200')$q$) = 2, 'гість бачить нові уроки');
 reset role;
 

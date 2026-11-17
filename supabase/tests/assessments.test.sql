@@ -166,8 +166,8 @@ reset role;
 set local role anon;
 select set_config('request.jwt.claims', '{"role":"anon"}', true);
 select pg_temp.ok(pg_temp.n($q$select 1 from public.assessment_items i join public.assessments a on a.id = i.assessment_id
-  where a.source = 'claude_assessment_v1'$q$) = 530,
-  'гість бачить лише опубліковані завдання (схема 2026-11-07, пакети v5: A0 — 230 з модулем A0.6, A1 — 300), старих — ні');
+  where a.source = 'claude_assessment_v1'$q$) = 532,
+  'гість бачить лише опубліковані завдання (схема 2026-11-07, пакети v5: A0 — 232 з модулем A0.6 і уроком «В аптеці», A1 — 300), старих — ні');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.assessment_attempts$q$) = 0, 'гість не бачить спроб');
 reset role;
 
