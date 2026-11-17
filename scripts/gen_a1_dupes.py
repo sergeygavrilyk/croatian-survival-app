@@ -869,7 +869,7 @@ def review(c: CourseA1Dupes) -> str:
             '- *polagati*, *položiti* — уже в A2 уроці 12, *uvjerenje* — в A2 уроці 13;',
             '- *bruto*, *neto*, *doprinosi*, *priznavanje*, *lijek protiv bolova* — лише в словнику (в A2-34 — *bruto plaća*, *neto plaća*, '
             '*mirovinski doprinos*; в A2-11 — *priznavanje diplome*; в A0 «В аптеці» — *lijek*, *protiv bolova*);',
-            '- *upisati se*, *test razine*, *početni tečaj* — з A2 уроку 9 в A1 урок 101 (з A2-9 їх приберемо в PR 4).', '',
+            '- *upisati se*, *test razine*, *početni tečaj* — з A2 уроку 9 в A1 урок 105 (був 101; з A2-9 їх приберемо в PR 4).', '',
             '## Нові назви діалогів', '', '| Урок | Було | Стало |', '|---|---|---|']
     for cid, (where, old_t, (t_ua, t_hr)) in D.RENAME_CONVS.items():
         lid = CONVS[cid]['lesson']
