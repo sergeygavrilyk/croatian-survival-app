@@ -177,4 +177,6 @@ run $A/data_fixes/20261115_reading_a2_old_v2.sql
 run $A/migrations/20261116100000_m27_assessment_answer_alternatives.sql
 run $A/data_fixes/20261116_assessment_sentence_orders_a2.sql
 for f in $A/data_fixes/20261116_assessments_a0_v5.sql $A/data_fixes/20261116_assessments_a1_v5_part*.sql; do run "$f"; done
+# нові назви 7 уроків і 2 модулів (план «Дублі й сенс уроків», П1), 2026-11-17
+run $A/data_fixes/20261117_course_titles.sql
 echo "Готово. Тести: for t in supabase/tests/*.sql; do psql -h /tmp -p $P -U postgres -q -v ON_ERROR_STOP=1 -f \$t | tail -1; done"
