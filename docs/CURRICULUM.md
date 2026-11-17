@@ -101,6 +101,15 @@ Context → Examples → Pattern discovery → Short explanation → Controlled 
 
 Level → Module → Unit → Lesson → Learning Objectives → Input → Practice → Production → Assessment
 
+### Дублі й сенс уроків A0–A2 (рішення власника 2026-11-17)
+
+План — `docs/proposals/2026-11-16_lesson_duplicates.md`; дослівно — `DECISIONS.md` 2026-11-17.
+
+- **Правило:** якщо два уроки (на одному чи різних рівнях) повторюють ту саму ситуацію, діалог або вираз, міняємо **один** урок — той, де повтор менш доречний; слово лишається в іншому уроці й у словнику; кількість слів уроку не зменшується (замість прибраного — нове за темою). Нові слова й діалоги — бета, носій перевіряє після. Прибрати слово з уроку — з копією `lesson_items` у `backup`.
+- **Нормальне повторення** (спіраль) — коли вищий рівень додає новий шар (інші слова, ситуації, граматику); спільні 1–2 базові слова — допустимо.
+- **Структура після плану:** A0 — 11 модулів (новий A0.6 «Домашні тварини»: A0-37 + 2 нові уроки; A0-62 → «У лікаря» і «В аптеці»; «Частини тіла» — в іншому модулі A0); A1-105 «Надзвичайні ситуації» → A1.8 «Здоров'я»; A1.11 «Хорватська культура» +3 уроки; A2.11 + «Далмація: Задар і околиці»; модулі A1.12 → «Сім'я й установи: школа, банк, документи», A2.9 → «Місто й довкілля: неприємності, сміття, природа» (назви — PR 1).
+- **A1 — 20–25 слів** у кожному уроці: окрема задача по модулях після плану дублів.
+
 ## 27. A0 Curriculum
 
 **Module A0.1 — Pozdrav!**
@@ -132,28 +141,33 @@ Level → Module → Unit → Lesson → Learning Objectives → Input → Pract
 - relationships;
 - possessives.
 
-**A0.6 — Moj dom**
+**A0.6 — Kućni ljubimci** *(рішення 2026-11-17, у базі — після PR 2 плану дублів; модулі «Moj dom»…«Survival» стають A0.7–A0.11)*
+- pets;
+- a dog in the city;
+- farm animals.
+
+**A0.7 — Moj dom**
 - rooms;
 - objects;
 - location.
 
-**A0.7 — Hrana**
+**A0.8 — Hrana**
 - food;
 - drinks;
 - ordering.
 
-**A0.8 — Kupovina**
+**A0.9 — Kupovina**
 - prices;
 - quantities;
 - requests;
 - payment.
 
-**A0.9 — Grad**
+**A0.10 — Grad**
 - streets;
 - directions;
 - transport.
 
-**A0.10 — Survival Croatian**
+**A0.11 — Survival Croatian**
 - help;
 - repetition;
 - misunderstanding;

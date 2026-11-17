@@ -188,7 +188,7 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons l join v3_lessons v 
   where l.unit_id = '1fb51162-343f-5587-89cf-d2594a3091db' and l.order_index between 1 and 5$q$) = 5,
   'A1.11: 5 уроків за програмою v3 (новий модуль «Хорватська культура», уроки 93–97)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lessons where status = 'PUBLISHED' and (id, title_ua) in (
-  ('d9ef1de4-f4db-590e-bafd-474f84c8e03f', 'Урок 93: Старе місто: екскурсія'),
+  ('d9ef1de4-f4db-590e-bafd-474f84c8e03f', 'Урок 93: Дубровник і Спліт: історія й архітектура'),  -- назва з 20261117_course_titles.sql (було «Старе місто: екскурсія»)
   ('f67bd38c-a41c-51df-b9c0-081737600fce', 'Урок 96: Святкуємо: Різдво, Великдень'))$q$) = 2
   and pg_temp.n($q$select 1 from public.assessment_items i join public.assessments a on a.id = i.assessment_id
   where a.slug = 'a1-m11' and i.status = 'PUBLISHED'$q$) = 12,
