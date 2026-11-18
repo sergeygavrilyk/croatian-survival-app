@@ -284,8 +284,13 @@ select pg_temp.ok(pg_temp.n($q$select r.topic_id, r.order_index from public.gram
   'номери правил у темі не повторюються');
 
 -- ---------------------------------------------------------------- словник
-select pg_temp.ok(pg_temp.n($q$select 1 from public.lexemes where source = 'claude_curriculum_a1_v3' and status = 'PUBLISHED' and cefr = 'A1'$q$) >= 707,
-  'нові слова A1 v3 опубліковано (A1.1 — 73, A1.2 — 87, A1.3 — 68, A1.4 — 60, A1.5 — 58, A1.6 — 43, A1.7 — 43, A1.8 — 48, A1.9 — 43, A1.10 — 58, A1.11 — 51, A1.12 — 60, A1.13 — 15)');
+-- 2026-11-18 (рішення власника «Рахувати й перенесені в A2»): план дублів (PR 3) прибрав слово з уроків A1 і перевів його
+-- на рівень A2, де його вчать (polagati, položiti…); такі слова рахуємо разом зі словами A1 — поріг не змінився
+select pg_temp.ok(pg_temp.n($q$select 1 from public.lexemes x where x.source = 'claude_curriculum_a1_v3' and x.status = 'PUBLISHED'
+     and (x.cefr = 'A1'
+          or (x.cefr = 'A2' and exists (select 1 from public.content_versions v where v.entity_type = 'lexeme' and v.entity_id = x.id
+                                          and v.change_reason like 'a1_dupes: рівень слова A2%' and v.payload->>'cefr' = 'A1')))$q$) >= 707,
+  'нові слова A1 v3 опубліковано (A1.1 — 73, A1.2 — 87, A1.3 — 68, A1.4 — 60, A1.5 — 58, A1.6 — 43, A1.7 — 43, A1.8 — 48, A1.9 — 43, A1.10 — 58, A1.11 — 51, A1.12 — 60, A1.13 — 15); з 2026-11-18 — разом зі словами, які план дублів переніс в A2');
 -- рішення власника 2026-11-17 «Лишити pelena» (20261117_pelena_a1_5.sql): лема — однина pelena, pelene — форма слова (DEPRECATED)
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lexemes where lower(lemma) = 'pelena' and status = 'PUBLISHED'$q$) = 1
   and pg_temp.n($q$select 1 from public.lesson_items li join public.lexemes x on x.id = li.item_id and li.item_type = 'lexeme'
