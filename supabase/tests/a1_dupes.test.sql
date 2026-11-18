@@ -94,7 +94,7 @@ select pg_temp.ok(pg_temp.n($q$select x.id from public.lesson_items li join publ
 
 -- ---------------------------------------------------------------- Д3, Д12, Д13, Д2
 select pg_temp.ok((select count(*) from pg_temp.w('4d6f3498-2cc5-54a0-b4e4-c66add71ef12')) = 16
-  and (select array_agg(w order by w) from pg_temp.w('4d6f3498-2cc5-54a0-b4e4-c66add71ef12') w
+  and (select array_agg(w order by convert_to(w, 'UTF8')) from pg_temp.w('4d6f3498-2cc5-54a0-b4e4-c66add71ef12') w
         where w in ('potpisati ugovor', 'raditi vikendom', 'ugovor o radu', 'opis posla', 'uvjeti rada', 'bruto', 'neto', 'porez', 'doprinosi', 'platna lista'))
       = array['opis posla', 'potpisati ugovor', 'raditi vikendom', 'ugovor o radu', 'uvjeti rada']
   and pg_temp.n($q$select 1 from public.conversations where lesson_id = '4d6f3498-2cc5-54a0-b4e4-c66add71ef12' and status = 'PUBLISHED'
@@ -152,7 +152,7 @@ select pg_temp.ok(pg_temp.n($q$select 1 from backup.lesson_items_a1dupes_2026111
 -- ---------------------------------------------------------------- нові слова й рівні
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lexemes where source = 'claude_curriculum_a1_dupes' and status = 'PUBLISHED' and cefr = 'A1'
      and register = 'standard' and regionality = 'general' and usage_tags is not null$q$) = 60
-  and (select array_agg(lower(lemma) || ':' || array_to_string(usage_tags, ',') order by lemma) from public.lexemes
+  and (select array_agg(lower(lemma) || ':' || array_to_string(usage_tags, ',') order by convert_to(lower(lemma), 'UTF8')) from public.lexemes
         where source = 'claude_curriculum_a1_dupes' and cardinality(usage_tags) > 0) = array['maskenbal:germanism', 'maškare:italianism'],
   '60 нових слів — PUBLISHED (бета) A1, з мітками; ознаки — лише maškare (italianism) і maskenbal (germanism)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.lexemes where lower(lemma) in ('kravata', 'vojnik', 'izum', 'izumitelj', 'znanstvenik', 'otkriće',
