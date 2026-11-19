@@ -8,6 +8,7 @@
 | `seed/` | `supabase_stub.sql` — ролі `anon` / `authenticated`, схеми `auth`, `extensions`; `seed_*.sql` — модулі, уроки й слова з робочої бази, на які посилаються пакети. |
 | `tscheck.sh` + `tscheck/stubs.d.ts` | Перевірка типів окремих файлів без `node_modules`: `bash scripts/dev/tscheck.sh <файли>`. Помилки «implicitly any» — артефакти заглушок. |
 | `sqltests.sh` | Усі SQL-тести (`supabase/tests/*.test.sql`) на локальній базі: PASS / FAIL на файл, код виходу ≠ 0, якщо щось упало. Так само запускає CI (`.github/workflows/ci.yml`). |
+| `check_frozen_sql.sh` | Чи гілка не змінює й не видаляє SQL-файли, які вже є в `main` (`supabase/migrations/`, `supabase/data_fixes/`): «Apply SQL» запускає кожен файл один раз, тож виправлення — лише новим файлом. Запускати перед push; у CI — на кожному PR. |
 
 ## Як перевіряти зміни
 
