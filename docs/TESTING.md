@@ -119,7 +119,7 @@ Claude проганяє ці тести також на локальній ко�
 
 ## 4. CI — GitHub Actions (з 2026-10-21)
 
-`.github/workflows/ci.yml` запускається після кожного push і pull request (і вручну: GitHub → Actions → CI → Run workflow). Збірка й smoke — з підставними адресами Supabase, SQL-тести — на чистій Postgres у GitHub; E2E з входом (`e2e-user`) — з репозиторних секретів.
+`.github/workflows/ci.yml` запускається на кожному pull request і на push у `main` (з 2026-11-19; і вручну: GitHub → Actions → CI → Run workflow). Збірка й smoke — з підставними адресами Supabase, SQL-тести — на чистій Postgres у GitHub; E2E з входом (`e2e-user`) — з репозиторних секретів.
 
 | Робота | Кроки |
 |---|---|
