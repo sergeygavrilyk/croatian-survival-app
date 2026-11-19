@@ -7,6 +7,7 @@ name: CI
 
 on:
   push:
+    branches: [main]   # гілки перевіряє pull_request (рішення 2026-11-19)
   pull_request:
   workflow_dispatch:
 
