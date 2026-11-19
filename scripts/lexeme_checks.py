@@ -241,6 +241,61 @@ def check_batch(rows: list[dict], existing: dict[str, str] | None = None) -> tup
     return errors, warnings
 
 
+# ----------------------------------------------------------------------------- для генераторів уроків (з 2026-11-19)
+DEFAULT_LABELS = {'register': 'standard', 'regionality': 'general', 'usage_tags': []}
+FROZEN_NOTE = 'SQL уже в main — не зупиняє'
+
+
+def row_from_tuple(t: tuple, level: str) -> dict:
+    """Нове слово старих генераторів (A0 v4, A1 v3) — кортеж (lemma, normalized, ua, pos, vtype, forms, example[, labels])
+    → рядок для check_batch(). labels — необов'язковий dict міток (register / regionality / usage_tags / standard_lemma);
+    без нього — стандартне загальне слово (DEFAULT_LABELS): регістр розмовних слів підкаже попередження lexeme_register."""
+    lemma, norm, ua, pos, vtype, forms, example = t[:7]
+    labels = dict(DEFAULT_LABELS, **(t[7] if len(t) > 7 else {}))
+    return dict(lemma=lemma, normalized=norm, ukrainian_translation=ua, part_of_speech=pos, cefr=level,
+                vocabulary_type=vtype, forms=forms, examples=[example] if example else [], **labels,
+                **({'proper_noun': True} if lemma[:1].isupper() and pos != 'phrase' else {}))
+
+
+def labels_sql(row: dict, q) -> tuple[str, str]:
+    """Колонки й значення міток для insert into public.lexemes (q — функція лапок генератора).
+    standard_lemma → standard_lexeme_id (підзапит за лемою; немає такого слова — null)."""
+    tags = ', '.join(q(x) for x in row['usage_tags'])
+    cols = ', register, regionality, usage_tags'
+    vals = f", {q(row['register'])}, {q(row['regionality'])}, array[{tags}]::text[]"
+    if row.get('standard_lemma'):
+        cols += ', standard_lexeme_id'
+        vals += (f", (select x.id from public.lexemes x where lower(x.lemma) = lower({q(row['standard_lemma'])}) "
+                 "order by x.created_at limit 1)")
+    return cols, vals
+
+
+def merged_in_main(path: Path) -> bool:
+    """SQL-файл уже є в origin/main (змерджений файл не змінюється — scripts/dev/check_frozen_sql.sh).
+    Без git чи без origin/main — чи файл є на диску."""
+    import subprocess
+    root = HERE.parent
+    try:
+        rel = Path(path).resolve().relative_to(root).as_posix()
+        r = subprocess.run(['git', 'cat-file', '-e', f'origin/main:{rel}'], cwd=root, capture_output=True)
+        if r.returncode in (0, 128):
+            ok = subprocess.run(['git', 'rev-parse', '--verify', '-q', 'origin/main'], cwd=root, capture_output=True)
+            if ok.returncode == 0:
+                return r.returncode == 0
+    except (OSError, ValueError):
+        pass
+    return Path(path).exists()
+
+
+def check_generated(rows: list[dict], frozen: bool, existing: dict[str, str] | None = None) -> tuple[list[str], list[str]]:
+    """check_batch() для генератора уроків. frozen — SQL модуля вже в main: його вже не змінити (виправлення — новим
+    пакетом), тож помилки стають попередженнями з позначкою FROZEN_NOTE; новий модуль помилки зупиняють."""
+    errors, warnings = check_batch(rows, existing)
+    if frozen:
+        return [], [f'({FROZEN_NOTE}) {m}' for m in errors] + warnings
+    return errors, warnings
+
+
 def _selftest():
     good = {'lemma': 'kutlača', 'normalized': 'kutlaca', 'ukrainian_translation': 'ополоник', 'part_of_speech': 'noun',
             'cefr': 'A1', 'vocabulary_type': 'core', 'forms': {'gender': 'f'}, 'examples': ['Uzmi kutlaču i nalij juhu.'],
@@ -289,6 +344,16 @@ def _selftest():
     assert any('заглушку' in m for m in check_row(dict(good, examples=['Važno je kutlača u ovoj situaciji.']))[0])
     assert any('register' in m for m in check_row(dict(good, register='casual'))[0])
     assert any('informal' in m for m in check_row(dict(good, lemma='bok', normalized='bok', part_of_speech='interjection'))[1])
+    # Генератори уроків: кортеж → рядок; заморожений модуль — помилки стають попередженнями
+    t = ('kutlača', 'kutlaca', 'ополоник', 'noun', 'core', {'gender': 'f'}, 'Uzmi kutlaču i nalij juhu.')
+    assert check_batch([row_from_tuple(t, 'A1')]) == ([], [])
+    assert row_from_tuple(t + ({'register': 'colloquial'},), 'A1')['register'] == 'colloquial'
+    assert row_from_tuple(('Zagreb', 'zagreb', 'Загреб', 'noun', 'core', {'gender': 'm'}, 'Živim u Zagrebu.'), 'A0')['proper_noun']
+    verb = ('čuvati', 'cuvati', 'берегти', 'verb', 'core', {}, 'Čuvam dijete.')
+    e, w = check_generated([row_from_tuple(verb, 'A0')], frozen=False)
+    assert any('без виду' in m for m in e)
+    e, w = check_generated([row_from_tuple(verb, 'A0')], frozen=True)
+    assert e == [] and any(FROZEN_NOTE in m and 'без виду' in m for m in w)
     assert normalize(' Hitna pomoć ') == 'hitna pomoc' and normalize('događaj') == 'dogadaj'
     assert example_has_lemma('kuća', 'Moja kuća je blizu mora.') is True
     assert example_has_lemma('plakati', 'Dijete plače.') is False  # чергування — лише попередження

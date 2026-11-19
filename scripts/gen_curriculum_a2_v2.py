@@ -33,7 +33,7 @@ sys.path.insert(0, str(HERE))
 import curriculum_a2_v2_data as D  # noqa: E402
 import gen_writing as GW  # noqa: E402
 from full_lessons import CYR, HELPERS_SQL, STOP_UA, Course, Place, fold_ua, q, qj, shuffled, typable, uid  # noqa: E402
-from lexeme_checks import check_batch, normalize  # noqa: E402
+from lexeme_checks import DEFAULT_LABELS, check_generated, merged_in_main, normalize  # noqa: E402
 
 ROOT = HERE.resolve().parent
 FIXES = ROOT / 'supabase' / 'data_fixes'
@@ -128,7 +128,8 @@ def new_lexemes(m: int) -> list[dict]:
         for lemma, ua, pos, forms, example in L['vocab']:
             p = POS[pos]
             rows.append(dict(lemma=lemma, normalized=normalize(lemma), ukrainian_translation=ua, part_of_speech=p, cefr=LEVEL,
-                             vocabulary_type=vtype_of(p), forms=forms_of(forms), examples=[example] if example else []))
+                             vocabulary_type=vtype_of(p), forms=forms_of(forms), examples=[example] if example else [],
+                             **DEFAULT_LABELS))  # мітки (з 2026-11-13): слова A2 v2 — стандартні загальні
     return rows
 
 
@@ -533,13 +534,18 @@ LISTEN_NOTE = 'curriculum_a2_v2: «Прослухайте діалог чи ог
 
 def lexemes_sql(m: int) -> list[str]:
     rows = new_lexemes(m)
+    labels = not frozen(m)  # мітки — у новому модулі (SQL модулів, що вже в main, — як був)
     data = [dict(lemma=r['lemma'], normalized=r['normalized'], pos=r['part_of_speech'], ua=r['ukrainian_translation'],
-                 vtype=r['vocabulary_type'], forms=r['forms'], examples=r['examples']) for r in rows]
+                 vtype=r['vocabulary_type'], forms=r['forms'], examples=r['examples'],
+                 **({k: r[k] for k in ('register', 'regionality', 'usage_tags')} if labels else {})) for r in rows]
+    cols = ', register, regionality, usage_tags' if labels else ''
+    vals = ', t.register, t.regionality, array(select jsonb_array_elements_text(t.usage_tags))' if labels else ''
+    types = ', register text, regionality text, usage_tags jsonb' if labels else ''
     return [f'-- 1. Слова уроків A2.{m} ({len(rows)}): нові — PUBLISHED (бета); наявні в словнику не змінюються',
-            'insert into public.lexemes (lemma, normalized, language, part_of_speech, cefr, ukrainian_translation, vocabulary_type, forms, examples, status, source)',
-            f"select t.lemma, t.normalized, 'hr', t.pos, {q(LEVEL)}, t.ua, t.vtype, t.forms, t.examples, {q(STATUS)}, {q(SOURCE)}",
+            f'insert into public.lexemes (lemma, normalized, language, part_of_speech, cefr, ukrainian_translation, vocabulary_type, forms, examples, status, source{cols})',
+            f"select t.lemma, t.normalized, 'hr', t.pos, {q(LEVEL)}, t.ua, t.vtype, t.forms, t.examples, {q(STATUS)}, {q(SOURCE)}{vals}",
             f'  from jsonb_to_recordset({qj(data)})',
-            '    as t(lemma text, normalized text, pos text, ua text, vtype text, forms jsonb, examples jsonb)',
+            f'    as t(lemma text, normalized text, pos text, ua text, vtype text, forms jsonb, examples jsonb{types})',
             ' where not exists (select 1 from public.lexemes x where lower(x.lemma) = lower(t.lemma))',
             'on conflict do nothing;', '']
 
@@ -699,7 +705,7 @@ def validate(c: CourseA2, m: int):
     if len(c.lessons) != D.PROGRAM[m]['lessons']:
         c.errors.append(f'A2.{m}: уроків {len(c.lessons)}, у програмі {D.PROGRAM[m]["lessons"]}')
     rows = new_lexemes(m)
-    errors, _warn = check_batch(rows)
+    errors, _warn = check_generated(rows, frozen(m))  # SQL модуля вже в main — помилки лише попередження (з 2026-11-19)
     c.errors += [f'слова: {e}' for e in errors]
     seen: dict = {}
     for key in sorted(c.lessons):
@@ -715,8 +721,13 @@ def validate(c: CourseA2, m: int):
 
 
 def warnings(m: int) -> list[str]:
-    _e, w = check_batch(new_lexemes(m))
+    _e, w = check_generated(new_lexemes(m), frozen(m))
     return w
+
+
+def frozen(m: int) -> bool:
+    """SQL модуля вже в main — не змінюється (з 2026-11-19)."""
+    return merged_in_main(module_out(m))
 
 
 def review(c: CourseA2, m: int) -> str:

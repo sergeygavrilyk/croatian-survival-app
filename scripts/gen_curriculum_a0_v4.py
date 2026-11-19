@@ -22,6 +22,11 @@ extra — модуль A0.2) + EXTRA_SNAPSHOT у файлі даних.
   3. кроки уроку (lesson_items) замінюються новими: 20–25 слів, та сама тема граматики, 15 вправ, 2 нові діалоги;
   4. назва, цілі й тривалість уроку оновлюються; запис у журналі перевірки.
 Нові слова — у lexemes (PUBLISHED, бета). SQL ідемпотентний: перебудований урок пропускається.
+
+Перевірка нових слів (з 2026-11-19): check_batch() з scripts/lexeme_checks.py. Новий модуль (SQL ще не в main) помилки
+зупиняють, а його SQL пише мітки register / regionality / usage_tags; слово — кортеж (lemma, normalized, ua, pos, vtype,
+forms, example[, {мітки}]), без міток — standard / general / []. Модулі, чий SQL уже в main, не змінюються: помилки — лише
+попередження (підсумок у консолі, список — --review).
 """
 import json
 import re
@@ -32,6 +37,7 @@ sys.dont_write_bytecode = True  # без __pycache__ у репозиторії
 sys.path.insert(0, str(Path(__file__).parent))
 import curriculum_a0_v4_data as D  # noqa: E402
 from full_lessons import Course, Place, q, qj, uid  # noqa: E402
+from lexeme_checks import FROZEN_NOTE, check_generated, labels_sql, merged_in_main, row_from_tuple  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 HERE = Path(__file__).parent
@@ -126,16 +132,19 @@ def build_course(module: int = 1) -> Course:
                   vocab_counts=(3, 2, 3))
 
 
-def lexemes_sql(new_lexemes=None) -> list[str]:
+def lexemes_sql(new_lexemes=None, labels: bool = False) -> list[str]:
+    """labels — писати мітки register / regionality / usage_tags (новий модуль; SQL модулів, що вже в main, — як був)."""
     out = ['-- 1. Нові слова й вирази A0 (наявні не змінюються)']
     seen = set()
-    for lemma, norm, ua, pos, vtype, forms, example in (D.NEW_LEXEMES if new_lexemes is None else new_lexemes):
+    for t in (D.NEW_LEXEMES if new_lexemes is None else new_lexemes):
+        lemma, norm, ua, pos, vtype, forms, example = t[:7]
         if lemma.lower() in seen:
             raise SystemExit(f'Дублікат нового слова: {lemma}')
         seen.add(lemma.lower())
+        cols, vals = labels_sql(row_from_tuple(t, LEVEL), q) if labels else ('', '')
         out.append(
-            'insert into public.lexemes (lemma, normalized, language, part_of_speech, cefr, ukrainian_translation, vocabulary_type, forms, examples, status, source)\n'
-            f"values ({q(lemma)}, {q(norm)}, 'hr', {q(pos)}, 'A0', {q(ua)}, {q(vtype)}, {qj(forms)}, {qj([example])}, {q(STATUS)}, {q(SOURCE)})\n"
+            f'insert into public.lexemes (lemma, normalized, language, part_of_speech, cefr, ukrainian_translation, vocabulary_type, forms, examples, status, source{cols})\n'
+            f"values ({q(lemma)}, {q(norm)}, 'hr', {q(pos)}, 'A0', {q(ua)}, {q(vtype)}, {qj(forms)}, {qj([example])}, {q(STATUS)}, {q(SOURCE)}{vals})\n"
             'on conflict do nothing;')
     out.append('')
     return out
@@ -231,7 +240,7 @@ do $$ begin
 end $$;
 revoke all on {BACKUP} from anon, authenticated;
 """, helpers_sql()]
-    out += lexemes_sql()
+    out += lexemes_sql(labels=not frozen(1))
     out.append('-- 2. Уроки')
     for key in keys:
         out += lesson_sql(c, key)
@@ -365,7 +374,7 @@ def review(c: Course, module: int = 1) -> str:
                                                     for k in keys) + '.', '']
     out += ['## Що варто глянути носію', '', *REVIEW_NOTES[module], '',
             '## Нові слова', '', '| Лема | Переклад | Приклад |', '|---|---|---|']
-    for lemma, _n, ua, _p, _v, _f, ex in M['new_lexemes']:
+    for lemma, _n, ua, _p, _v, _f, ex, *_ in M['new_lexemes']:
         out.append(f'| {lemma} | {ua} | {ex} |')
     for key in keys:
         L = M['lessons'][key]
@@ -640,7 +649,7 @@ do $$ begin
 end $$;
 revoke all on {BACKUP} from anon, authenticated;
 """, helpers_sql()]
-    out += lexemes_sql(M['new_lexemes'])
+    out += lexemes_sql(M['new_lexemes'], labels=not frozen(module))
     out += grammar_sql(module)
     out += fix_translations_sql(module)
     out.append(f'-- 2. Перебудова наявних уроків модуля A0.{module}')
@@ -702,7 +711,7 @@ def sync_sql() -> str:
         for si, (_s_ua, _s_hr, tt) in enumerate(D.LESSONS[key]['scenes'], 1):
             for ti, (speaker, hr, ua) in enumerate(tt, 1):
                 turns.append({'id': uid('turn_v4', LEVEL, m, o, si, ti), 'speaker': speaker, 'hr': hr, 'ua': ua})
-    examples = [{'lemma': lemma, 'example': ex} for lemma, _n, _ua, _p, _v, _f, ex in D.NEW_LEXEMES]
+    examples = [{'lemma': lemma, 'example': ex} for lemma, _n, _ua, _p, _v, _f, ex, *_ in D.NEW_LEXEMES]
     note = 'curriculum_a0_v4: імена в діалогах (Даша) — стара версія'
     return f"""-- =====================================================================
 -- Уроки A0.1 (curriculum_a0_v4): імена в діалогах — частіше Даша (Daša, кличний Dašo) · 2026-10-15
@@ -748,7 +757,7 @@ def validate(c: Course, module: int):
         c.validate_lesson(key)
         c.lesson_exercises(key)
     # нові слова: діакритика в normalized прибрана, леми без кирилиці, є приклад
-    for lemma, norm, ua, pos, vtype, forms, ex in M['new_lexemes']:
+    for lemma, norm, ua, pos, vtype, forms, ex, *_ in M['new_lexemes']:
         if re.search(r'[čćđšž]', norm) or norm != norm.lower():
             c.errors.append(f'{lemma}: normalized має бути без діакритики й малими літерами')
         if re.search(r'[Ѐ-ӿ]', lemma + ex):
@@ -786,6 +795,33 @@ def validate(c: Course, module: int):
                 c.errors.append(f'{l[0]}: уже нове слово модуля A0.{earlier_new[l[0].lower()]}')
         if sorted(k[1] for k in M['lessons']) != list(range(1, len(M['lessons']) + 1)):
             c.errors.append(f'A0.{module}: місця уроків мають іти 1…{len(M["lessons"])}')
+    # спільна перевірка нових слів (scripts/lexeme_checks.py, з 2026-11-19): новий модуль помилки зупиняють
+    e, w = check_generated([row_from_tuple(t, LEVEL) for t in M['new_lexemes']], frozen(module))
+    c.errors += [f'слова: {m}' for m in e]
+    c.lexeme_warnings = w
+
+
+def frozen(module: int) -> bool:
+    """SQL модуля вже в main — не змінюється; помилки check_batch для нього лише попередження."""
+    return merged_in_main(MODULES[module]['out'])
+
+
+def lexeme_warnings_md(c: Course, module: int) -> str:
+    """Розділ звіту для носія: попередження перевірки слів (для нового модуля; у заморожених — лише підсумок у консолі)."""
+    w = getattr(c, 'lexeme_warnings', [])
+    if frozen(module) or not w:
+        return ''
+    return '\n'.join(['', '## Попередження перевірки слів (scripts/lexeme_checks.py)', '', *[f'- {m}' for m in w], '']) + '\n'
+
+
+def report_lexeme_checks(courses: dict, prefix: str = 'A0'):
+    """Підсумок перевірки слів у консоль (stderr): скільки попереджень і скільки з них — помилки вже змерджених модулів."""
+    for module, c in courses.items():
+        w = getattr(c, 'lexeme_warnings', [])
+        if w:
+            old = sum(FROZEN_NOTE in m for m in w)
+            note = f' (з них {old} — помилки, але {FROZEN_NOTE})' if old else ''
+            print(f'{prefix}.{module}: перевірка слів — попереджень {len(w)}{note}; список — у --review', file=sys.stderr)
 
 
 def main():
@@ -801,6 +837,7 @@ def main():
     if errors:
         print('Перевірка не пройдена:', *errors, sep='\n  ', file=sys.stderr)
         sys.exit(1)
+    report_lexeme_checks(courses)
     if '--sync' in sys.argv:
         SYNC_OUT.write_text(sync_sql(), encoding='utf-8')
         print(f'{SYNC_OUT.relative_to(ROOT)}: {SYNC_OUT.stat().st_size // 1024} КБ')
@@ -808,6 +845,10 @@ def main():
     if '--review' in sys.argv:
         for module in modules:
             sys.stdout.write(review(courses[module], module))
+            if frozen(module) and getattr(courses[module], 'lexeme_warnings', []):
+                print(f'\n<!-- перевірка слів A0.{module} ({FROZEN_NOTE}): -->', *courses[module].lexeme_warnings, sep='\n  ', file=sys.stderr)
+            else:
+                sys.stdout.write(lexeme_warnings_md(courses[module], module))
         return
     for module in modules:
         sql = build(courses[module]) if module == 1 else build_module(courses[module], module)
