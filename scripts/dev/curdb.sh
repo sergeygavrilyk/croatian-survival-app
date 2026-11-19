@@ -194,4 +194,9 @@ run $A/data_fixes/20261117_a0_dupes_3_tests.sql
 run $S/seed_a1_dupes_supplement.sql
 run $A/data_fixes/20261117_a1_dupes_1_lessons.sql
 run $A/data_fixes/20261117_a1_dupes_2_tests.sql
+# дублі A2 (план «Дублі й сенс уроків», PR 4), 2026-11-19: Д1, Д2, Д5–Д8, новий урок A2.11 «Далмація: Задар і околиці», назви діалогів;
+# перевірки рівнів A1 і A2 наново (задача власника 2026-11-19)
+run $S/seed_a2_dupes_supplement.sql
+run $A/data_fixes/20261119_a2_dupes_1_lessons.sql
+for f in $A/data_fixes/20261119_a2_dupes_2_tests_a1_part*.sql $A/data_fixes/20261119_a2_dupes_2_tests_a2_part*.sql; do run "$f"; done
 echo "Готово. Тести: for t in supabase/tests/*.sql; do psql -h /tmp -p $P -U postgres -q -v ON_ERROR_STOP=1 -f \$t | tail -1; done"

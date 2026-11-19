@@ -202,7 +202,7 @@
 | **PR 2а · A0 «Домашні тварини»** (#57) | новий модуль A0.6: A0-37 + 6 нових уроків; перенумерація модулів (A0.6–A0.10 → A0.7–A0.11) і уроків A0 (+6); перевірка модуля A0.6; `lib/goals.ts`; номери модулів текстів A0 | середній |
 | **PR 2б · A0 дублі** | A0-62 → «У лікаря» + «В аптеці» (A0-61 «Частини тіла» лишається поруч); Д4, Д9, Д10, Д11; перевірки модулів; назви діалогів A0 — **зроблено (2026-11-17), див. §7а** | середній |
 | **PR 3 · A1** — **зроблено (2026-11-17), див. §7б** | A1-105 → A1.8 (перенумерація 76–105, перевірки a1-m8 / a1-m12); Д2 (A1-101), Д3, Д13, A1-70; A1.11 +3 уроки (після «ок» тем); назви діалогів A1 | середній |
-| **PR 4 · A2** | Д1, Д2 (A2-9), Д5, Д6, Д7, Д8 + назва A2-33; урок «Далмація: Задар і околиці» (перенумерація A2 70–86, перевірка a2-m11); назви діалогів A2 | середній |
+| **PR 4 · A2** — **зроблено (2026-11-19), див. §7в** | Д1, Д2 (A2-9), Д5, Д6, Д7, Д8 + назва A2-33; урок «Далмація: Задар і околиці» (перенумерація A2 70–86, перевірка a2-m11); назви діалогів A2; перевірки A1 і A2 наново | середній |
 | далі | A1 — 20–25 слів у кожному уроці, модуль за модулем (skill `lesson-topic-rebuild`) | великий обсяг |
 
 Разом за дублями: **15 уроків**, **~55 слів** прибрати з уроків (з них 3 — перенесення), **10 діалогів** замінити, вправи на слова цих уроків — перегенерувати; плюс 11 нових уроків (6 A0 «Тварини», A0 «В аптеці», A2 «Задар», 3 A1.11).
@@ -235,6 +235,21 @@
 - **A1.11 +3 уроки**: 99 «Символи й винаходи» (22 слова), 100 «Фестивалі й карнавали» (22), 101 «Казки й легенди» (23); 2 діалоги по 6 реплік, 15 вправ; 60 нових слів (з усіма замінами).
 - **Назви діалогів A1** (9): «Na igralištu» (5) → «Tobogan i ljuljačka», «U taksiju» (35) → «Najkraćim putem», «Razgledavanje stana» (40) → «Stan s potkrovljem», «U trgovini namještajem» (42) → «Garnitura na akciji», «Tko što radi?» (50) → «Tko gdje radi?», «Razgovor za posao» (53) → «Gdje ste radili prije?» і (106) → «Recite nam nešto o sebi», «Poslije treninga» (67) → «Mišići i zglobovi», «Poziv na rođendan» (78) → «Dođi na moj rođendan!» (старі номери; тексти різні — лише назва). Однакові назви A1 ↔ A2 (*Rad od kuće, Rezultati, U policijskoj upravi*) — у PR 4.
 - Перевірки: a1-m06, a1-m08 (20), a1-m11 (16), a1-m12 (14) і фінал a1-final — наново; a1-mid і решта — без змін.
+
+## 7в. PR 4 — що зроблено (2026-11-19)
+
+Номери — нові: новий урок 70 «Далмація: Задар і околиці» (A2.11, місце 5), уроки 70–86 → 71–87; уроків A2 — 87. Звіт носію — `content/reviews/2026-11-19_a2_dupes.md`.
+
+- **Д1** (27): *slagati se, ne slažem se, u pravu si, nisi u pravu, po meni* → *uvjerljiv, popustiti, inzistirati, opravdan, dokaz* (діалоги лишаються).
+- **Д2** (9): кандидати *napredak, izostanak* уже в A2-15 → *razina znanja, konverzacija, zaostajati, sudjelovati, ispravljati, samostalno učiti*; «Upis na tečaj» → «Kako napredujem?»; «на слух», письмо й переказ — нові (не про запис).
+- **Д5** (38): *kapati, iskočio je osigurač, začepiti se* → *rok završetka, kašnjenje radova, plaćanje gotovinom*; «Kapa slavina», «Bez struje» → «Mijenjamo bravu», «Predračun za pločice».
+- **Д6** (29 → «Сусіди: збори й шкода»): кандидат *dizalo* уже в A1-40 → *procuriti, fasada, popravak krova, nadoknada štete*; «Buka navečer» → «Poplavio nas je susjed».
+- **Д7** (70 → 71): кандидат *ponuditi* уже в A0 → *gostoprimstvo, nutkati*; «Ti ili Vi?» → «Ručak kod Ivaninih roditelja»; «на слух» про «ти» на роботі — новий (поведінка за столом).
+- **Д8**: урок 44 — *otvoriti / zatvoriti bolovanje, javiti se bolestan* з уроку 33 замість *povraćati, proljev* (22 слова), «Dijete je bolesno» → «Ispričnica za vrtić»; урок 33 → «Відпустка й вихідні дні»: кандидат *plaćeni dopust* уже в A1-56 → *zamjena smjene, kolektivni godišnji odmor, prenijeti dane, pravo na godišnji*; «Bolesna sam» → «Godišnji u kolovozu».
+- **Новий урок 70** «Далмація: Задар і околиці»: 23 слова (Нін — солеварня, лікувальна грязь, давньохорватська церковця; Паклениця — скелелазіння; Біоград — марина; Корнати — одноденна екскурсія; життя в Задарі — сезон, темп життя), *đir* — розмовне далматинське слово, лише впізнавати; без слів A1-90; діалоги «Vikend u Ninu», «Živjeti u Zadru».
+- **Назви діалогів A2** (6): «Na recepciji» (3) → «Prijava u hotel», «Račun» (4) → «Pogreška u računu», «Rezultati» (10) → «Rang-lista», «Loša vijest» (35) → «Dobio sam otkaz», «U policijskoj upravi» (48) → «Zamjena vozačke dozvole», «Rad od kuće» (65) → «Rad od kuće: za i protiv». Однакових назв діалогів в A0–A2 більше немає.
+- Прибрані слова: *početni tečaj, test razine, upisati se* — в A1-105; *smetati* — A1-48; *kapati* — A1-45; *povraćati, proljev* — A1-74; *persirati, tikati* — A1-77; решта — лише в словнику (в A1 — синоніми).
+- **Перевірки рівнів A1 і A2 наново** (задача власника 2026-11-19): усі 31 тест генератором v5 з уроків після PR 3–4; A1 — 302 завдання, A2 — 260 (a2-m11 — 14).
 
 ## 8. Що ще потрібно від власника (2026-11-17)
 

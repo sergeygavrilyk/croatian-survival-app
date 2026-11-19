@@ -1,6 +1,6 @@
 -- =====================================================================
--- Тести програми A2 v2 (погоджено власником 2026-11-12): 14 модулів, 86 уроків, 22 теми граматики,
--- 14 перевірок модулів + середина + фінал (258 завдань).
+-- Тести програми A2 v2 (погоджено власником 2026-11-12): 14 модулів, 87 уроків (86 + «Далмація: Задар і околиці», план «Дублі», 2026-11-17),
+-- 22 теми граматики, 14 перевірок модулів + середина + фінал (260 опублікованих завдань; перевірки наново — 20261119_a2_dupes_2_tests_*).
 -- Запускати ПІСЛЯ пакетів 20261112_curriculum_a2_v2_00_structure.sql … _m14.sql і _t1_assessments.sql.
 -- БЕЗПЕЧНО для робочої бази: одна транзакція, у кінці ROLLBACK. Успіх: «ALL TESTS PASSED».
 -- =====================================================================
@@ -31,13 +31,13 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.modules where level_code = '
 select pg_temp.ok(pg_temp.n($q$select 1 from public.modules where level_code = 'A2' and status = 'PUBLISHED'
   and (title_ua not like 'Модуль A2.' || order_index || ' — %' or order_index not between 1 and 14)$q$) = 0,
   'модулі A2 пронумеровано 1–14, назва «Модуль A2.N — …»');
-select pg_temp.ok(pg_temp.n($q$select 1 from a2_lessons$q$) = 86, 'A2: рівно 86 опублікованих уроків');
+select pg_temp.ok(pg_temp.n($q$select 1 from a2_lessons$q$) = 87, 'A2: рівно 87 опублікованих уроків (86 + новий урок A2.11, рішення 2026-11-17)');
 select pg_temp.ok(pg_temp.n($q$select 1 from a2_lessons where title_ua not like 'Урок ' || n || ':%' or title_hr not like 'Lekcija ' || n || ':%'$q$) = 0,
-  'назви уроків A2 пронумеровано підряд: «Урок 1» … «Урок 86»');
+  'назви уроків A2 пронумеровано підряд: «Урок 1» … «Урок 87»');
 select pg_temp.ok(pg_temp.n($q$select mo from a2_lessons group by mo
   having count(*) <> (case mo when 1 then 8 when 2 then 8 when 4 then 7 when 5 then 7 when 14 then 3 when 3 then 6
-                               when 6 then 6 when 7 then 5 else 6 end)$q$) = 0,
-  'уроків у модулях — за програмою (8, 8, 6, 7, 7, 6, 5, 6, 6, 6, 6, 6, 6, 3)');
+                               when 6 then 6 when 7 then 5 when 11 then 7 else 6 end)$q$) = 0,
+  'уроків у модулях — за програмою (8, 8, 6, 7, 7, 6, 5, 6, 6, 6, 7, 6, 6, 3; A2.11 +1 — рішення 2026-11-17)');
 select pg_temp.ok(pg_temp.n($q$select 1 from backup.modules_a2_20261112$q$) = 10,
   'старі 10 модулів A2 збережено в backup.modules_a2_20261112');
 
@@ -107,14 +107,14 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.assessments a join public.mo
       <> greatest(12, least(20, 2 * (select count(*) from public.units u join public.lessons l on l.unit_id = u.id where u.module_id = m.id)))$q$) = 0,
   'перевірка модуля — 2 завдання на урок, від 12 до 20 (схема 2026-11-07)');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.assessments a where a.cefr = 'A2' and a.slug = 'a2-mid' and a.kind = 'mid' and a.status = 'PUBLISHED'
-  and (select count(*) from public.assessment_items i where i.assessment_id = a.id) = 30$q$) = 1,
+  and (select count(*) from public.assessment_items i where i.assessment_id = a.id and i.status = 'PUBLISHED') = 30$q$) = 1,
   'середина A2 — 30 завдань');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.assessments a where a.cefr = 'A2' and a.slug = 'a2-final' and a.kind = 'final' and a.status = 'PUBLISHED'
-  and (select count(*) from public.assessment_items i where i.assessment_id = a.id) = 48$q$) = 1,
+  and (select count(*) from public.assessment_items i where i.assessment_id = a.id and i.status = 'PUBLISHED') = 48$q$) = 1,
   'фінал A2 — 48 завдань');
 select pg_temp.ok(pg_temp.n($q$select 1 from public.assessment_items i join public.assessments a on a.id = i.assessment_id
-  where a.cefr = 'A2' and a.source = 'claude_assessment_a2_v2'$q$) = 258,
-  'перевірки A2 — разом 258 завдань');
+  where a.cefr = 'A2' and a.source = 'claude_assessment_a2_v2' and i.status = 'PUBLISHED'$q$) = 260,
+  'перевірки A2 — разом 260 опублікованих завдань (було 258: a2-m11 — 7 уроків, 14 завдань; старі завдання — DEPRECATED, 2026-11-19)');
 select pg_temp.ok(pg_temp.n($q$select a.id from public.assessments a join public.assessment_items i on i.assessment_id = a.id
   where a.cefr = 'A2' and a.kind in ('module', 'mid', 'final') group by a.id having count(distinct i.skill) < 4$q$) = 0,
   'кожна перевірка A2 — на 4 навички');
