@@ -1,7 +1,8 @@
 -- =====================================================================
 -- Тести: перевірки рівня A0 / A1 за схемою 2026-11-07, «Складіть» з кількома порядками слів (M27), skill_progress · 2026-11-16
 -- Запускати ПІСЛЯ: 20261116100000_m27_assessment_answer_alternatives.sql, 20261116_assessment_sentence_orders_a2.sql,
---   20261116_assessments_a0_v5.sql, 20261116_assessments_a1_v5_part1.sql, 20261116_assessments_a1_v5_part2.sql.
+--   20261116_assessments_a0_v5.sql, 20261116_assessments_a1_v5_part1.sql, 20261116_assessments_a1_v5_part2.sql
+--   (і пізніших пакетів перевірок — до 20261119_a2_dupes_2_tests_*.sql).
 -- БЕЗПЕЧНО для робочої бази: одна транзакція, у кінці ROLLBACK.
 -- Успіх: «ALL TESTS PASSED».
 -- =====================================================================
@@ -59,11 +60,11 @@ select pg_temp.ok(pg_temp.n($q$select 1 from public.assessment_items i, unnest(i
 select pg_temp.ok(pg_temp.n($q$select 1 from public.assessment_items i join public.assessments a on a.id = i.assessment_id
   where a.cefr = 'A2' and i.status = 'PUBLISHED' and cardinality(i.answer_alternatives) > 0$q$) = 17
   and (select sum(cardinality(i.answer_alternatives)) from public.assessment_items i join public.assessments a on a.id = i.assessment_id
-       where a.cefr = 'A2' and i.status = 'PUBLISHED') = 19,
-  'A2: 17 з 24 завдань «Складіть» мають інші порядки (разом 19)');
-select pg_temp.ok(pg_temp.n($q$select 1 from v5 where item_type = 'sentence_builder' and cardinality(answer_alternatives) > 0$q$) = 26
+       where a.cefr = 'A2' and i.status = 'PUBLISHED') = 18,
+  'A2: 17 з 24 завдань «Складіть» мають інші порядки (разом 18; 2026-11-19 — перевірки A2 наново, було 19)');
+select pg_temp.ok(pg_temp.n($q$select 1 from v5 where item_type = 'sentence_builder' and cardinality(answer_alternatives) > 0$q$) = 30
   and pg_temp.n($q$select 1 from v5 where item_type = 'sentence_builder'$q$) = 59,
-  'A0 / A1: 26 з 59 завдань «Складіть» мають інші порядки (2026-11-17: нові a0-m05, a0-m06; PR 2б — нові a0-m09, a0-m11, a0-final; PR 3 — нові a1-m06, m08, m11, m12, a1-final)');
+  'A0 / A1: 30 з 59 завдань «Складіть» мають інші порядки (2026-11-17: нові a0-m05, a0-m06; PR 2б — нові a0-m09, a0-m11, a0-final; PR 3 — нові a1-m06, m08, m11, m12, a1-final; 2026-11-19 — усі тести A1 наново, було 26)');
 
 -- ---------------------------------------------------------------- склад за схемою 2026-11-07
 select pg_temp.ok(pg_temp.n($q$select 1 from v5 where source <> 'claude_assessment_v5'$q$) = 0
